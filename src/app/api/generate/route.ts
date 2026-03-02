@@ -23,7 +23,7 @@ function getGeminiModel(mode: "ad" | "medical" | "vector") {
 
 export async function POST(req: NextRequest) {
     try {
-        const { mode = "ad", brief, previousImage, assetInstruction } = await req.json();
+        const { mode = "ad", brief, image, previousImage, assetInstruction } = await req.json();
 
         if (!brief) {
             return NextResponse.json({ error: "No brief provided" }, { status: 400 });
@@ -80,9 +80,11 @@ export async function POST(req: NextRequest) {
             `Analyze this ${mode} brief and provide a technical JSON blueprint: ${brief}`
         ];
 
-        // Advanced Asset Injection: Style vs Subject vs Structure
-        if (previousImage && assetInstruction) {
-            const base64Data = previousImage.split(",")[1] || previousImage;
+        // Combine inputs: 'image' is the uploaded reference, 'previousImage' is the last render
+        const activeImage = image || previousImage;
+
+        if (activeImage) {
+            const base64Data = activeImage.split(",")[1] || activeImage;
             const assetPrompt =
                 assetInstruction === "style" ? "Analyze the STYLE, LIGHTING, and COLOR DNA of this image and replicate it in the JSON." :
                     assetInstruction === "subject" ? "Focus on the EXACT SUBJECT in this image and describe it in detail in the JSON." :
@@ -90,15 +92,15 @@ export async function POST(req: NextRequest) {
 
             promptParams.push(assetPrompt);
             promptParams.push({ inlineData: { data: base64Data, mimeType: "image/png" } });
-        } else if (previousImage) {
-            const base64Data = previousImage.split(",")[1] || previousImage;
-            promptParams.push({ inlineData: { data: base64Data, mimeType: "image/png" } });
         }
 
         const result = await model.generateContent(promptParams);
         const response = await result.response;
         const text = response.text();
-        const adData = JSON.parse(text);
+
+        // SURGICAL FIX: Remove potential markdown backticks that cause JSON.parse failure
+        const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+        const adData = JSON.parse(cleanText);
 
         const folderMap: any = { ad: "prompts", medical: "medical_prompts", vector: "vector_prompts" };
         const folder = folderMap[mode] || "prompts";
