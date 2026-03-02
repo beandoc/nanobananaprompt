@@ -191,6 +191,7 @@ export default function Home() {
       image: assetImage,
       previousImage: renderedImage, // Use the current render as visual context for the fix
       assetInstruction: assetType,
+      parentPrompt: isRefinement ? result?.data : null, // Pass the previous JSON as a baseline for consistency
     };
 
     if (!isRefinement) {
@@ -560,6 +561,18 @@ export default function Home() {
                               </button>
                             </Tooltip>
                           )}
+                          <Tooltip content="Lock this image as the 'Style DNA' for all subsequent generations. Perfect for creating a consistent book series.">
+                            <button
+                              onClick={() => {
+                                setAssetImage(renderedImage);
+                                setAssetType("style");
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                              }}
+                              className="flex items-center gap-2 px-6 py-2 bg-indigo-50 border border-indigo-200 shadow-lg shadow-indigo-50 rounded-xl text-[10px] font-black text-indigo-600 hover:bg-white transition-all uppercase tracking-widest"
+                            >
+                              <Zap className="w-3.5 h-3.5" /> Lock DNA
+                            </button>
+                          </Tooltip>
                           <Tooltip content="Download the high-resolution image to your device.">
                             <button onClick={downloadImage} className="flex items-center gap-2 px-6 py-2 bg-slate-900 shadow-lg shadow-slate-200 rounded-xl text-[10px] font-black text-white hover:bg-black transition-all uppercase tracking-widest">
                               <Download className="w-3.5 h-3.5" /> Export DPI
@@ -655,9 +668,11 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {showLibrary && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowLibrary(false)} className="fixed inset-0 bg-slate-900/10 backdrop-blur-sm z-50" />
-      )}
+      {
+        showLibrary && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowLibrary(false)} className="fixed inset-0 bg-slate-900/10 backdrop-blur-sm z-50" />
+        )
+      }
 
       {/* Global Aesthetics */}
       <style jsx global>{`
@@ -669,6 +684,6 @@ export default function Home() {
         pre::-webkit-scrollbar { height: 4px; }
         pre::-webkit-scrollbar-thumb { background: #cbd5e1; }
       `}</style>
-    </main>
+    </main >
   );
 }

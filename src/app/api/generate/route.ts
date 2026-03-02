@@ -27,7 +27,7 @@ function getGeminiModel(mode: "ad" | "medical" | "vector") {
 
 export async function POST(req: NextRequest) {
     try {
-        const { mode = "ad", brief, image, previousImage, assetInstruction } = await req.json();
+        const { mode = "ad", brief, image, previousImage, assetInstruction, parentPrompt } = await req.json();
 
         if (!brief) {
             return NextResponse.json({ error: "No brief provided" }, { status: 400 });
@@ -79,7 +79,9 @@ export async function POST(req: NextRequest) {
 
         const promptParams: any[] = [
             systemPrompt,
-            `Generate a technical JSON blueprint for this ${mode} brief: ${brief}`
+            parentPrompt
+                ? `BASELINE BLUEPRINT: ${JSON.stringify(parentPrompt)}\n\nMODIFICATION REQUEST: ${brief}\n\nApply surgical corrections to the baseline while maintaining its core technical DNA.`
+                : `Generate a technical JSON blueprint for this ${mode} brief: ${brief}`
         ];
 
         // Combine inputs: 'image' is the uploaded reference, 'previousImage' is the last render
@@ -96,7 +98,28 @@ export async function POST(req: NextRequest) {
             promptParams.push({ inlineData: { data: base64Data, mimeType: "image/png" } });
         }
 
-        const result = await model.generateContent(promptParams);
+        // 🧠 Retry logic for backend 503 errors (Service Unavailable / High Demand)
+        let result: any;
+        let lastError: any;
+        const maxRetries = 2; // Total 3 attempts
+
+        for (let i = 0; i <= maxRetries; i++) {
+            try {
+                result = await model.generateContent(promptParams);
+                if (result) break;
+            } catch (err: any) {
+                lastError = err;
+                if (err.message?.includes("503") || err.message?.includes("high demand") || err.message?.includes("Service Unavailable")) {
+                    console.warn(`Gemini 503 Attempt ${i + 1} for ${mode} mode. Retrying in 1.5s...`);
+                    await new Promise(r => setTimeout(r, 1500));
+                    continue;
+                }
+                throw err;
+            }
+        }
+
+        if (!result) throw lastError;
+
         const response = await result.response;
         const text = response.text();
         const adData = JSON.parse(text);
