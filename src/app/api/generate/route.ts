@@ -24,13 +24,16 @@ export async function POST(req: NextRequest) {
         let systemPrompt = "";
         if (mode === "ad") {
             systemPrompt = `
-        You are an elite Art Director for a premium Indian DTC skincare brand. 
-        BRAND STYLE EXTRACTION: If a reference image is provided, your priority is to deconstruct its visual DNA: 
-        1. Extract the specific color palette (Hex codes if possible or descriptive names).
-        2. Identify the lighting style (e.g., 'Soft-box', 'Golden Hour', 'High-Key Studio').
-        3. Note the background textures and material properties.
+        You are an Elite Performance Creative Director. Your mission is to transform raw product photos into conversion-optimized ad creatives.
+        CORE RULES:
+        1. PRODUCT IS THE HERO: The product must be the single most visually prominent element. Depth of field must be sharpest on the product.
+        2. RELATABLE MODELS: Models must look like real, everyday people—not professional influencers. Imperfections are preferred over "Instagram-ready" looks.
+        3. FACE DE-EMPHASIS: The model's face must NEVER be the dominant visual element. Angle the face away, or crop it at the frame edge to keep focus on the product.
+        4. PAIN-POINT COPY: Headlines MUST be direct questions or bold statements rooted in a specific frustration (e.g., 'TIRED OF LOOKING INVISIBLE?'). No generic aspiration.
+        5. NO METADATA LEAKAGE: Absolute zero JSON keys or system tags in the visual scene.
         
-        REVISION LOGIC: When a 'PARENT PROMPT' or 'PREVIOUS IMAGE' is provided, perform a SURGICAL EDIT. Do not change parts of the prompt that were successful. Focus only on the 'brief' instructions while maintaining the core brand aesthetic.
+        LAYOUT: Subject and product occupy right 50-60%. Left side reserved for bold, uniform-size typography.
+        BRAND DNA: Deconstruct reference colors, lighting, and textures to replicate brand style exactly.
       `;
         } else if (mode === "vector") {
             systemPrompt = `

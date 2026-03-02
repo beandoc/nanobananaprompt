@@ -11,6 +11,28 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+function Tooltip({ children, content }: { children: React.ReactNode; content: string }) {
+  const [isVisible, setIsVisible] = useState(false);
+  return (
+    <div className="relative inline-block" onMouseEnter={() => setIsVisible(true)} onMouseLeave={() => setIsVisible(false)}>
+      {children}
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 10 }}
+            className="absolute z-[100] bottom-full mb-2 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-slate-900 border border-slate-700 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-2xl whitespace-nowrap pointer-events-none"
+          >
+            {content}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function Home() {
   const [brief, setBrief] = useState("");
   const [isVectorizing, setIsVectorizing] = useState(false);
@@ -261,21 +283,29 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-2 p-1 bg-slate-100 rounded-2xl border border-slate-200">
-            <button onClick={() => setMode("ad")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "ad" ? "bg-white text-indigo-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
-              <Zap className="w-3.5 h-3.5" /> DTC Creative
-            </button>
-            <button onClick={() => setMode("medical")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "medical" ? "bg-white text-emerald-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
-              <Stethoscope className="w-3.5 h-3.5" /> Medical
-            </button>
-            <button onClick={() => setMode("vector")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "vector" ? "bg-white text-orange-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
-              <Layers className="w-3.5 h-3.5" /> Vector
-            </button>
+            <Tooltip content="Switch to DTC Creative mode for skincare and brand ads.">
+              <button onClick={() => setMode("ad")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "ad" ? "bg-white text-indigo-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+                <Zap className="w-3.5 h-3.5" /> DTC Creative
+              </button>
+            </Tooltip>
+            <Tooltip content="Switch to Medical mode for anatomical and clinical illustrations.">
+              <button onClick={() => setMode("medical")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "medical" ? "bg-white text-emerald-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+                <Stethoscope className="w-3.5 h-3.5" /> Medical
+              </button>
+            </Tooltip>
+            <Tooltip content="Switch to Vector mode for clean illustrations and SVG tracing.">
+              <button onClick={() => setMode("vector")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "vector" ? "bg-white text-orange-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+                <Layers className="w-3.5 h-3.5" /> Vector
+              </button>
+            </Tooltip>
           </div>
 
           <div className="flex items-center gap-4">
-            <button onClick={() => setShowLibrary(true)} className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:bg-slate-50 transition-all shadow-sm">
-              <History className="w-5 h-5" />
-            </button>
+            <Tooltip content="View previously generated blueprints and case studies.">
+              <button onClick={() => setShowLibrary(true)} className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:bg-slate-50 transition-all shadow-sm">
+                <History className="w-5 h-5" />
+              </button>
+            </Tooltip>
             <div className="w-8 h-8 rounded-full bg-slate-200 border border-white" />
           </div>
         </div>
@@ -297,9 +327,11 @@ export default function Home() {
                   <span className="font-bold text-xs text-slate-400 uppercase tracking-tighter">Drafting Board</span>
                 </div>
                 <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="image/*" className="hidden" />
-                <button onClick={() => fileInputRef.current?.click()} className={cn("px-4 py-2 rounded-full text-[10px] font-black border uppercase transition-all flex items-center gap-2", assetImage ? "bg-indigo-50 text-indigo-600 border-indigo-200" : "bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100")}>
-                  <Upload className="w-3.5 h-3.5" /> {assetImage ? "Asset Loaded" : "Link Reference"}
-                </button>
+                <Tooltip content="Upload an image to extract its style, colors, or structure.">
+                  <button onClick={() => fileInputRef.current?.click()} className={cn("px-4 py-2 rounded-full text-[10px] font-black border uppercase transition-all flex items-center gap-2", assetImage ? "bg-indigo-50 text-indigo-600 border-indigo-200" : "bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100")}>
+                    <Upload className="w-3.5 h-3.5" /> {assetImage ? "Asset Loaded" : "Link Reference"}
+                  </button>
+                </Tooltip>
               </div>
 
               {/* New Style Selector */}
@@ -359,10 +391,12 @@ export default function Home() {
                   </div>
                   <span className="text-[10px] text-slate-600 font-bold uppercase tracking-tight">Indian Identity Locked</span>
                 </div>
-                <button onClick={() => handleGenerate()} disabled={isLoading} className={cn("px-10 py-4 text-white rounded-2xl font-black text-xs uppercase tracking-[0.15em] flex items-center gap-3 transition-all shadow-lg active:scale-95 disabled:opacity-50", mode === "ad" ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200" : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200")}>
-                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
-                  {isLoading ? "Analyzing..." : "Process Brief"}
-                </button>
+                <Tooltip content="Analyze brief and generate a new technical JSON blueprint.">
+                  <button onClick={() => handleGenerate()} disabled={isLoading} className={cn("px-10 py-4 text-white rounded-2xl font-black text-xs uppercase tracking-[0.15em] flex items-center gap-3 transition-all shadow-lg active:scale-95 disabled:opacity-50", mode === "ad" ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200" : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200")}>
+                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
+                    {isLoading ? "Analyzing..." : "Process Brief"}
+                  </button>
+                </Tooltip>
               </div>
             </motion.div>
           </section>
@@ -388,40 +422,46 @@ export default function Home() {
                           </h3>
                         </div>
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
-                              const val = prompt("Paste your Technical JSON here:");
-                              if (val) {
-                                try {
-                                  const parsed = JSON.parse(val);
-                                  setResult({ ...result, data: parsed });
-                                } catch (e) {
-                                  alert("Invalid JSON format. Please ensure you copy the exact output from the web or app.");
+                          <Tooltip content="Manually import a technical JSON blueprint from your clipboard.">
+                            <button
+                              onClick={() => {
+                                const val = prompt("Paste your Technical JSON here:");
+                                if (val) {
+                                  try {
+                                    const parsed = JSON.parse(val);
+                                    setResult({ ...result, data: parsed });
+                                  } catch (e) {
+                                    alert("Invalid JSON format. Please ensure you copy the exact output from the web or app.");
+                                  }
                                 }
-                              }
-                            }}
-                            className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-1.5"
-                          >
-                            <Upload className="w-3 h-3" /> Import
-                          </button>
-                          <button
-                            onClick={() => {
-                              navigator.clipboard.writeText(JSON.stringify(result.data, null, 2));
-                              alert("Technical JSON copied to clipboard. You can now paste this into Gemini Web for rendering.");
-                            }}
-                            className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-1.5"
-                          >
-                            <Database className="w-3 h-3" /> Copy JSON
-                          </button>
-                          <button onClick={handleRenderImage} disabled={isRendering} className={cn(
-                            "px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all shadow-sm",
-                            mode === "ad" ? "bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100" :
-                              mode === "medical" ? "bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100" :
-                                "bg-orange-50 text-orange-600 border border-orange-100 hover:bg-orange-100"
-                          )}>
-                            {isRendering ? <Loader2 className="w-3 h-3 animate-spin" /> : <Eye className="w-3 h-3" />}
-                            {isRendering ? "Rendering..." : "Execute Render"}
-                          </button>
+                              }}
+                              className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-1.5"
+                            >
+                              <Upload className="w-3 h-3" /> Import
+                            </button>
+                          </Tooltip>
+                          <Tooltip content="Copy the current blueprint to take it to Gemini Web for rendering.">
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(JSON.stringify(result.data, null, 2));
+                                alert("Technical JSON copied to clipboard. You can now paste this into Gemini Web for rendering.");
+                              }}
+                              className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-1.5"
+                            >
+                              <Database className="w-3 h-3" /> Copy JSON
+                            </button>
+                          </Tooltip>
+                          <Tooltip content="Render the blueprint into an image using our integrated engine.">
+                            <button onClick={handleRenderImage} disabled={isRendering} className={cn(
+                              "px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all shadow-sm",
+                              mode === "ad" ? "bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100" :
+                                mode === "medical" ? "bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100" :
+                                  "bg-orange-50 text-orange-600 border border-orange-100 hover:bg-orange-100"
+                            )}>
+                              {isRendering ? <Loader2 className="w-3 h-3 animate-spin" /> : <Eye className="w-3 h-3" />}
+                              {isRendering ? "Rendering..." : "Execute Render"}
+                            </button>
+                          </Tooltip>
                         </div>
                       </div>
 
@@ -457,7 +497,9 @@ export default function Home() {
                         </div>
                         <div className="flex gap-3">
                           <input value={refinement} onChange={(e) => setRefinement(e.target.value)} placeholder="e.g., 'Make the efferent arteriole blue'..." className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-300" />
-                          <button onClick={() => handleGenerate(true)} disabled={isLoading || !refinement.trim()} className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-indigo-100">Update</button>
+                          <Tooltip content="Apply technical corrections to the current blueprint.">
+                            <button onClick={() => handleGenerate(true)} disabled={isLoading || !refinement.trim()} className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-indigo-100">Update</button>
+                          </Tooltip>
                         </div>
                         {renderedImage && (
                           <div className="mt-4 flex items-center gap-3 p-3 bg-white/50 rounded-xl border border-indigo-50">
@@ -492,23 +534,27 @@ export default function Home() {
                       {renderedImage && (
                         <div className="flex gap-2">
                           {mode === "vector" && (
-                            <button
-                              onClick={vectorizeToSVG}
-                              disabled={isVectorizing || !isEngineReady}
-                              className={cn(
-                                "flex items-center gap-2 px-6 py-2 shadow-lg rounded-xl text-[10px] font-black text-white transition-all uppercase tracking-widest disabled:opacity-50",
-                                isEngineReady ? "bg-orange-600 shadow-orange-100 hover:bg-orange-700" : "bg-slate-400 shadow-slate-100"
-                              )}
-                            >
-                              {isVectorizing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> :
-                                !isEngineReady ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> :
-                                  <Layers className="w-3.5 h-3.5" />}
-                              {isVectorizing ? "Tracing..." : !isEngineReady ? "Loading Engine..." : "Vectorize (SVG)"}
-                            </button>
+                            <Tooltip content="Vectorize the rendered pixels into a scalable SVG instantly.">
+                              <button
+                                onClick={vectorizeToSVG}
+                                disabled={isVectorizing || !isEngineReady}
+                                className={cn(
+                                  "flex items-center gap-2 px-6 py-2 shadow-lg rounded-xl text-[10px] font-black text-white transition-all uppercase tracking-widest disabled:opacity-50",
+                                  isEngineReady ? "bg-orange-600 shadow-orange-100 hover:bg-orange-700" : "bg-slate-400 shadow-slate-100"
+                                )}
+                              >
+                                {isVectorizing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> :
+                                  !isEngineReady ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> :
+                                    <Layers className="w-3.5 h-3.5" />}
+                                {isVectorizing ? "Tracing..." : !isEngineReady ? "Loading Engine..." : "Vectorize (SVG)"}
+                              </button>
+                            </Tooltip>
                           )}
-                          <button onClick={downloadImage} className="flex items-center gap-2 px-6 py-2 bg-slate-900 shadow-lg shadow-slate-200 rounded-xl text-[10px] font-black text-white hover:bg-black transition-all uppercase tracking-widest">
-                            <Download className="w-3.5 h-3.5" /> Export DPI
-                          </button>
+                          <Tooltip content="Download the high-resolution image to your device.">
+                            <button onClick={downloadImage} className="flex items-center gap-2 px-6 py-2 bg-slate-900 shadow-lg shadow-slate-200 rounded-xl text-[10px] font-black text-white hover:bg-black transition-all uppercase tracking-widest">
+                              <Download className="w-3.5 h-3.5" /> Export DPI
+                            </button>
+                          </Tooltip>
                         </div>
                       )}
                     </div>
