@@ -65,29 +65,29 @@ export async function POST(req: NextRequest) {
 
         let result = await response.json();
 
-        // FALLBACK POLICY: If Imagen 4 fails (Paid Tier check), try the Experimental Flash Image Model
+        // FALLBACK POLICY: If Imagen 4 fails (Paid Tier check), try the Gemini 2.5 Flash Image Model (Nano Banana)
         if (!response.ok && (response.status === 403 || response.status === 400)) {
-            console.log("Primary Imagen failed, triggering Fallback: Gemini 2.0 Flash Exp...");
+            console.log("Primary Imagen failed, triggering Fallback: Gemini 2.5 Flash Image...");
 
-            const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${apiKey}`;
+            const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${apiKey}`;
 
             response = await fetch(fallbackUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: finalPrompt }] }],
-                    generationConfig: {
-                        responseMimeType: "image/png"
-                    }
+                    contents: [{ parts: [{ text: `Generate a high-quality medical/commercial image based on this blueprint: ${finalPrompt}` }] }]
                 })
             });
 
             result = await response.json();
 
             if (response.ok) {
-                const base64Image = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-                if (base64Image) {
-                    return handleSuccessfulImage(base64Image, mode);
+                // Gemini image models return parts with inlineData containing the image data
+                const parts = result.candidates?.[0]?.content?.parts || [];
+                const imagePart = parts.find((p: any) => p.inlineData?.data);
+
+                if (imagePart?.inlineData?.data) {
+                    return handleSuccessfulImage(imagePart.inlineData.data, mode);
                 }
             }
         }
