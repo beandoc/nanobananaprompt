@@ -22,8 +22,23 @@ export default function Home() {
         setIsEngineReady(true);
         clearInterval(checkEngine);
       }
-    }, 500);
-    return () => clearInterval(checkEngine);
+    }, 200);
+
+    // Safety fallback: If after 5s it's not ready, try to manually inject the script again
+    const timer = setTimeout(() => {
+      if (!(window as any).ImageTracer) {
+        console.warn("ImageTracer timeout. Attempting manual injection...");
+        const script = document.createElement('script');
+        script.src = "https://cdn.jsdelivr.net/npm/imagetracerjs@1.2.6/imagetracer_v1.2.6.min.js";
+        script.async = true;
+        document.head.appendChild(script);
+      }
+    }, 5000);
+
+    return () => {
+      clearInterval(checkEngine);
+      clearTimeout(timer);
+    };
   }, []);
 
   const vectorizeToSVG = () => {
