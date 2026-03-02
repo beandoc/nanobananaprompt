@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "No input provided" }, { status: 400 });
         }
 
-        const model = getGeminiModel(mode as "ad" | "medical");
+        const model = getGeminiModel(mode as "ad" | "medical" | "vector");
 
         let systemPrompt = "";
         if (mode === "ad") {
@@ -28,6 +28,16 @@ export async function POST(req: NextRequest) {
         Your job is to translate briefs and reference images into Nano Banana 2 JSON payloads.
 
         REVISION LOGIC: When a 'PARENT PROMPT' or 'PREVIOUS IMAGE' is provided, perform a SURGICAL EDIT. Do not change parts of the prompt that were successful. Focus only on the 'brief' instructions while maintaining the core brand aesthetic.
+      `;
+        } else if (mode === "vector") {
+            systemPrompt = `
+        You are a Principal Brand Designer specialized in Scalable Vector Illustrations (Corporate Memphis, Flat Design, Line Art).
+        
+        RULES FOR VECTOR BLUEPRINTS:
+        1. Keep colors flat and distinct. Avoid complex 3D shading or noisy textures.
+        2. Ensure subjects are clearly separated from the background.
+        3. Aim for 'SVG Readiness': The simpler and cleaner the shapes, the better for future vectorization.
+        4. When revising, maintain 'Brand Locking'—do not change the core color palette or character proportions unless requested.
       `;
         } else {
             systemPrompt = `
@@ -78,9 +88,15 @@ export async function POST(req: NextRequest) {
         const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
         const adData = JSON.parse(cleanText);
 
-        const folder = mode === "ad" ? "prompts" : "medical_prompts";
-        const prefix = mode === "ad" ? (adData.core_prompt || "ad").substring(0, 15) : (adData.scientific_subject || "med").substring(0, 15);
-        const cleanPrefix = prefix.toLowerCase().replace(/\s+/g, '-');
+        const folderMap: any = { ad: "prompts", medical: "medical_prompts", vector: "vector_prompts" };
+        const folder = folderMap[mode] || "prompts";
+
+        let prefix = "asset";
+        if (mode === "ad") prefix = adData.core_prompt || "ad";
+        else if (mode === "medical") prefix = adData.scientific_subject || "med";
+        else if (mode === "vector") prefix = adData.illustration_subject || "vector";
+
+        const cleanPrefix = prefix.substring(0, 15).toLowerCase().replace(/\s+/g, '-');
         const filename = `${cleanPrefix}-${Date.now()}.json`;
         const promptPath = path.join(process.cwd(), folder, filename);
         const isVercel = process.env.VERCEL === "1";

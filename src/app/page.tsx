@@ -20,7 +20,7 @@ export default function Home() {
   const [renderedImage, setRenderedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [renderError, setRenderError] = useState<string | null>(null);
-  const [mode, setMode] = useState<"ad" | "medical">("ad");
+  const [mode, setMode] = useState<"ad" | "medical" | "vector">("ad");
   const [showLibrary, setShowLibrary] = useState(false);
   const [library, setLibrary] = useState<any[]>([]);
   const [isLoadingLibrary, setIsLoadingLibrary] = useState(false);
@@ -164,8 +164,15 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border transition-all duration-500", mode === "ad" ? "bg-indigo-600 border-indigo-400/20" : "bg-emerald-600 border-emerald-400/20")}>
-              {mode === "ad" ? <Sparkles className="w-5 h-5 text-white" /> : <Microscope className="w-5 h-5 text-white" />}
+            <div className={cn(
+              "w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border transition-all duration-500",
+              mode === "ad" ? "bg-indigo-600 border-indigo-400/20" :
+                mode === "medical" ? "bg-emerald-600 border-emerald-400/20" :
+                  "bg-orange-600 border-orange-400/20"
+            )}>
+              {mode === "ad" ? <Sparkles className="w-5 h-5 text-white" /> :
+                mode === "medical" ? <Microscope className="w-5 h-5 text-white" /> :
+                  <Layers className="w-5 h-5 text-white" />}
             </div>
             <div>
               <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-none mb-1">Nano Banana</h1>
@@ -174,11 +181,14 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-2 p-1 bg-slate-100 rounded-2xl border border-slate-200">
-            <button onClick={() => setMode("ad")} className={cn("px-6 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2", mode === "ad" ? "bg-white text-indigo-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+            <button onClick={() => setMode("ad")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "ad" ? "bg-white text-indigo-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
               <Zap className="w-3.5 h-3.5" /> DTC Creative
             </button>
-            <button onClick={() => setMode("medical")} className={cn("px-6 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2", mode === "medical" ? "bg-white text-emerald-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
-              <Stethoscope className="w-3.5 h-3.5" /> Medical Journal
+            <button onClick={() => setMode("medical")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "medical" ? "bg-white text-emerald-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+              <Stethoscope className="w-3.5 h-3.5" /> Medical
+            </button>
+            <button onClick={() => setMode("vector")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "vector" ? "bg-white text-orange-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+              <Layers className="w-3.5 h-3.5" /> Vector
             </button>
           </div>
 
@@ -196,7 +206,7 @@ export default function Home() {
           {/* Left: Project Input */}
           <section className="space-y-6">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-1.5 h-6 bg-indigo-500 rounded-full" />
+              <div className={cn("w-1.5 h-6 rounded-full", mode === "ad" ? "bg-indigo-500" : mode === "medical" ? "bg-emerald-500" : "bg-orange-500")} />
               <h2 className="text-sm font-black uppercase tracking-widest text-slate-500">Project Definition</h2>
             </div>
 
@@ -284,7 +294,9 @@ export default function Home() {
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-3 text-slate-400">
                         <Terminal className="w-4 h-4" />
-                        <h3 className="font-black uppercase tracking-widest text-[10px]">Technical Blueprint</h3>
+                        <h3 className="font-black uppercase tracking-widest text-[10px]">
+                          {mode === "ad" ? "Art Direction" : mode === "medical" ? "Technical Blueprint" : "Vector Blueprint"}
+                        </h3>
                       </div>
                       <div className="flex items-center gap-2">
                         <button
@@ -312,7 +324,12 @@ export default function Home() {
                         >
                           <Database className="w-3 h-3" /> Copy JSON
                         </button>
-                        <button onClick={handleRenderImage} disabled={isRendering} className={cn("px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all shadow-sm", mode === "ad" ? "bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100")}>
+                        <button onClick={handleRenderImage} disabled={isRendering} className={cn(
+                          "px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all shadow-sm",
+                          mode === "ad" ? "bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100" :
+                            mode === "medical" ? "bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100" :
+                              "bg-orange-50 text-orange-600 border border-orange-100 hover:bg-orange-100"
+                        )}>
                           {isRendering ? <Loader2 className="w-3 h-3 animate-spin" /> : <Eye className="w-3 h-3" />}
                           {isRendering ? "Rendering..." : "Execute Render"}
                         </button>

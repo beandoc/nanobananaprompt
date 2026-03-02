@@ -5,7 +5,8 @@ import path from "path";
 
 function handleSuccessfulImage(base64Image: string, mode: string) {
     const isVercel = process.env.VERCEL === "1";
-    const folder = mode === "ad" ? "renders/ad" : "renders/medical";
+    const folderMap: any = { ad: "renders/ad", medical: "renders/medical", vector: "renders/vector" };
+    const folder = folderMap[mode] || "renders/ad";
     const filename = `render-${Date.now()}.png`;
 
     if (!isVercel) {
@@ -46,6 +47,8 @@ export async function POST(req: NextRequest) {
         let finalPrompt = "";
         if (mode === "ad") {
             finalPrompt = `${promptData.core_prompt}. ${promptData.lighting}, ${promptData.camera_settings?.lens || ''}, ${promptData.camera_settings?.aesthetic || ''}. Text: ${promptData.exact_text || ''}. Negative: ${promptData.negative_prompt}`;
+        } else if (mode === "vector") {
+            finalPrompt = `${promptData.illustration_subject}. Style: ${promptData.vector_style}. Palette: ${promptData.color_palette}. Background: ${promptData.background}. Complexity: ${promptData.complexity}. Negative: ${promptData.negative_prompt}`;
         } else {
             finalPrompt = `${promptData.scientific_subject}. Illustration Style: ${promptData.illustration_style}. Textures: ${promptData.visual_accuracy?.textures || ''}. Lighting: ${promptData.visual_accuracy?.lighting || ''}. Journal Standard: ${promptData.journal_standard}. Consistency: ${promptData.consistent_character || ''}. Theme: ${promptData.visual_theme || ''}. Negative: ${promptData.negative_prompt}`;
         }

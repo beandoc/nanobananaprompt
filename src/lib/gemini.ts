@@ -85,12 +85,49 @@ export const medicalIllustrationSchema: Schema = {
     required: ["scientific_subject", "illustration_style", "visual_accuracy", "journal_standard", "negative_prompt", "consistent_character", "visual_theme"]
 };
 
-export const getGeminiModel = (mode: "ad" | "medical" = "ad") => {
+// Vector Branding Schema (Optimized for Corporate Styles & SVG conversion)
+export const vectorIllustrationSchema: Schema = {
+    description: "Schema for Vector Illustrations and Branding Assets",
+    type: SchemaType.OBJECT,
+    properties: {
+        illustration_subject: {
+            type: SchemaType.STRING,
+            description: "The main subject of the vector illustration. Describe actions and objects clearly."
+        },
+        vector_style: {
+            type: SchemaType.STRING,
+            enum: ["corporate-memphis", "flat-minimalist", "isometric-clean", "bold-line-art", "gradient-tech-glass"]
+        } as any,
+        color_palette: {
+            type: SchemaType.STRING,
+            enum: ["vibrant-primary", "startup-pastel", "monochrome-slate", "high-contrast-neon", "brand-custom"]
+        } as any,
+        background: {
+            type: SchemaType.STRING,
+            enum: ["pure-white-for-vectorization", "transparent-grid-style", "solid-brand-color"]
+        } as any,
+        complexity: {
+            type: SchemaType.STRING,
+            enum: ["simple-iconic", "medium-detailed", "comprehensive-scene"]
+        } as any,
+        negative_prompt: {
+            type: SchemaType.STRING,
+            description: "Exclude: 'photorealistic, complex gradients, noisy textures, 3D shadows, motion blur, hand-drawn charcoal'."
+        }
+    },
+    required: ["illustration_subject", "vector_style", "color_palette", "background", "complexity", "negative_prompt"]
+};
+
+export const getGeminiModel = (mode: "ad" | "medical" | "vector" = "ad") => {
+    let schema = adCreativeSchema;
+    if (mode === "medical") schema = medicalIllustrationSchema;
+    if (mode === "vector") schema = vectorIllustrationSchema;
+
     return genAI.getGenerativeModel({
         model: "gemini-flash-latest",
         generationConfig: {
             responseMimeType: "application/json",
-            responseSchema: mode === "ad" ? adCreativeSchema : medicalIllustrationSchema,
+            responseSchema: schema,
         },
     });
 };
