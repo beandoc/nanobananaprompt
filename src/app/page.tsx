@@ -180,17 +180,20 @@ export default function Home() {
     setError(null);
     setRenderError(null);
 
+    // If refinement, we wrap the brief to tell Gemini it's a correction
+    const processedBrief = isRefinement
+      ? `TECHNICAL CORRECTION: ${activeBrief}. Maintain the core structure of the previous blueprint but apply these specific changes.`
+      : activeBrief;
+
     const body: any = {
-      brief: activeBrief,
+      brief: processedBrief,
       mode,
       image: assetImage,
+      previousImage: renderedImage, // Use the current render as visual context for the fix
       assetInstruction: assetType,
     };
 
-    if (isRefinement) {
-      body.parentPrompt = result?.data;
-      body.previousImage = renderedImage;
-    } else {
+    if (!isRefinement) {
       setResult(null);
       setRenderedImage(null);
     }
