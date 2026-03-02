@@ -29,11 +29,14 @@ function handleSuccessfulImage(base64Image: string, mode: string) {
 
 export async function POST(req: NextRequest) {
     try {
-        const { promptData, mode = "ad" } = await req.json();
+        const { promptData, mode = "ad", parentImage = null } = await req.json();
 
         if (!promptData) {
             return NextResponse.json({ error: "No prompt data provided" }, { status: 400 });
         }
+
+        // Initialize or retrieve seed for consistency
+        const seed = promptData.seed || Math.floor(Math.random() * 2147483647);
 
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
@@ -47,30 +50,41 @@ export async function POST(req: NextRequest) {
             finalPrompt = `${promptData.scientific_subject}. Illustration Style: ${promptData.illustration_style}. Textures: ${promptData.visual_accuracy?.textures || ''}. Lighting: ${promptData.visual_accuracy?.lighting || ''}. Journal Standard: ${promptData.journal_standard}. Consistency: ${promptData.consistent_character || ''}. Theme: ${promptData.visual_theme || ''}. Negative: ${promptData.negative_prompt}`;
         }
 
-        // Waterfall Fallback Logic (Optimized for Nano Banana 2 availability)
+        // Waterfall Fallback Logic
         const modelsToTry = [
             { name: "imagen-4.0-generate-001", type: "imagen" },
             { name: "gemini-3.1-flash-image-preview", type: "gemini" },
-            { name: "gemini-2.0-flash-exp-image-generation", type: "gemini" },
-            { name: "gemini-2.5-flash-image", type: "gemini" }
+            { name: "gemini-2.0-flash-exp-image-generation", type: "gemini" }
         ];
 
         for (const model of modelsToTry) {
             try {
-                console.log(`Attempting Render with: ${model.name}`);
-
                 const url = model.type === "imagen"
                     ? `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:predict?key=${apiKey}`
                     : `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:generateContent?key=${apiKey}`;
 
-                const body = model.type === "imagen"
-                    ? {
+                let body: any;
+                if (model.type === "imagen") {
+                    body = {
                         instances: [{ prompt: finalPrompt }],
-                        parameters: { sampleCount: 1, aspectRatio: mode === "ad" ? (promptData.aspect_ratio || "1:1") : "1:1", outputMimeType: "image/png" }
-                    }
-                    : {
-                        contents: [{ parts: [{ text: `Generate a high-quality professional image: ${finalPrompt}` }] }]
+                        parameters: {
+                            sampleCount: 1,
+                            aspectRatio: promptData.aspect_ratio || "1:1",
+                            seed: seed,
+                            outputMimeType: "image/png"
+                        }
                     };
+                    // If we have a parent image, use it for structural consistency (if model supports it)
+                    if (parentImage) {
+                        body.instances[0].image = { bytesBase64: parentImage.split(",")[1] || parentImage };
+                    }
+                } else {
+                    const parts: any[] = [{ text: `Generate a high-quality professional image maintaining the exact structure of previous work: ${finalPrompt}` }];
+                    if (parentImage) {
+                        parts.push({ inlineData: { data: parentImage.split(",")[1] || parentImage, mimeType: "image/png" } });
+                    }
+                    body = { contents: [{ parts }] };
+                }
 
                 const response = await fetch(url, {
                     method: "POST",

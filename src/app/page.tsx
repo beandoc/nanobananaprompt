@@ -100,7 +100,11 @@ export default function Home() {
       const resp = await fetch("/api/render", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ promptData: result.data, mode }),
+        body: JSON.stringify({
+          promptData: result.data,
+          mode,
+          parentImage: renderedImage // Force structural consistency
+        }),
       });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error || "Render failed");
