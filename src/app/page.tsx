@@ -295,14 +295,33 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="p-6 bg-indigo-50/30 rounded-2xl border border-indigo-100">
-                      <div className="flex items-center gap-2 mb-4 text-[10px] font-black text-indigo-500 uppercase italic tracking-widest">
-                        <RefreshCw className="w-3.5 h-3.5" /> Technical Correction Mode
+                    <div className="p-6 bg-indigo-50/30 rounded-2xl border border-indigo-100 relative">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2 text-[10px] font-black text-indigo-500 uppercase italic tracking-widest">
+                          <RefreshCw className="w-3.5 h-3.5" /> Technical Correction Mode
+                        </div>
+                        {renderedImage && (
+                          <div className="flex items-center gap-2 px-3 py-1 bg-white border border-indigo-200 rounded-lg shadow-sm">
+                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="text-[9px] font-bold text-indigo-600 uppercase">Visual Reference Locked</span>
+                          </div>
+                        )}
                       </div>
                       <div className="flex gap-3">
-                        <input value={refinement} onChange={(e) => setRefinement(e.target.value)} placeholder="e.g., 'Increase contrast of the frontal lobe'..." className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-300" />
+                        <input value={refinement} onChange={(e) => setRefinement(e.target.value)} placeholder="e.g., 'Make the efferent arteriole blue'..." className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-300" />
                         <button onClick={() => handleGenerate(true)} disabled={isLoading || !refinement.trim()} className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-indigo-100">Update</button>
                       </div>
+                      {renderedImage && (
+                        <div className="mt-4 flex items-center gap-3 p-3 bg-white/50 rounded-xl border border-indigo-50">
+                          <div className="w-10 h-10 rounded-lg overflow-hidden border border-indigo-100">
+                            <img src={renderedImage} className="w-full h-full object-cover opacity-50 grayscale" alt="Ref" />
+                          </div>
+                          <div className="text-[9px] text-slate-400 font-bold uppercase leading-tight">
+                            Consistency Engine Active:<br />
+                            <span className="text-indigo-400">Rendering relative to previous frame</span>
+                          </div>
+                        </div>
+                      )}
                       {isLoading && (
                         <div className="mt-4 w-full h-1 bg-indigo-100 rounded-full overflow-hidden">
                           <motion.div initial={{ x: "-100%" }} animate={{ x: "0%" }} transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }} className="w-full h-full bg-indigo-500" />
