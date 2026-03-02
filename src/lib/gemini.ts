@@ -9,7 +9,7 @@ export const adCreativeSchema: Schema = {
     properties: {
         core_prompt: {
             type: SchemaType.STRING,
-            description: "The main subject and action in clear, descriptive English."
+            description: "The main subject and action. If human characters are involved, ALWAYS specify them as Indian/South Asian for brand consistency."
         },
         lighting: {
             type: SchemaType.STRING,
@@ -47,7 +47,7 @@ export const medicalIllustrationSchema: Schema = {
     properties: {
         scientific_subject: {
             type: SchemaType.STRING,
-            description: "Specific anatomical structure, cellular process, or surgical procedure (e.g., 'Glomerulosclerosis in Diabetic Nephropathy')."
+            description: "Specific anatomical structure or surgical process. If a patient or clinician is visible, ALWAYS specify them as Indian for textbook consistency."
         },
         illustration_style: {
             type: SchemaType.STRING,

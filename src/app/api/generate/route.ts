@@ -5,7 +5,7 @@ import path from "path";
 
 export async function POST(req: NextRequest) {
     try {
-        const { brief, image, mode = "ad" } = await req.json();
+        const { brief, image, mode = "ad", parentPrompt = null } = await req.json();
 
         if (!brief) {
             return NextResponse.json({ error: "No brief provided" }, { status: 400 });
@@ -16,25 +16,39 @@ export async function POST(req: NextRequest) {
         let systemPrompt = "";
         if (mode === "ad") {
             systemPrompt = `
-        You are an elite Art Director and Prompt Engineer for a high-end DTC creative agency. 
-        Your job is to translate plain-English creative briefs (and optional reference images) into highly structured JSON prompts optimized for the Nano Banana 2 image generation model.
+        You are an elite Art Director for a premium Indian DTC skincare brand. 
+        Your job is to translate briefs into Nano Banana 2 JSON payloads.
 
-        1. Eradicate the "AI Look": For UGC and lifestyle shots, always enforce photographic realism. Use terms like "shot on iPhone 15 Pro", "slight motion blur", "natural skin texture", "imperfect ambient lighting", and "candid".
-        2. Product Accuracy: Describe material properties exhaustively (e.g., "matte cardboard packaging," "high-gloss label," "condensation on glass").
-        3. Typography: Wrap the exact phrase in quotes and specify the font style and placement.
+        1. Identity Standard: All characters (UGC creators, models) MUST be of Indian descent. Use specific descriptors like "South Asian heritage," "warm olive undertones," and authentic styling.
+        2. Eradicate the "AI Look": For UGC and lifestyle shots, always enforce photographic realism. Use terms like "shot on iPhone 15 Pro", "slight motion blur", "natural skin texture", "imperfect ambient lighting", and "candid".
+        3. Product Accuracy: Describe material properties exhaustively (e.g., "matte cardboard packaging," "high-gloss label," "condensation on glass").
+        4. Typography: Wrap the exact phrase in quotes and specify the font style and placement.
       `;
         } else {
             systemPrompt = `
-        You are a Medical Illustrator specializing in high-impact journals (e.g., Nature, NEJM, The Lancet). 
-        Your job is to translate clinical case descriptions, anatomical briefs, or histology findings into structured prompts for high-fidelity medical renderings.
+        You are a World-Class Medical Illustrator specializing in Indian medical textbooks and high-impact journals (e.g., Nature, NEJM). 
+        Your job is to translate clinical cases into high-precision technical JSON for the Nano Banana 2 engine.
 
-        1. Scientific Integrity: Prioritize anatomical accuracy over artistic flair. Describe cellular structures with precision.
-        2. Textural Definition: Differentiate between fibrous, aqueous, and granulated textures.
-        3. Clean Backgrounds: Ensure medical subjects are isolated or placed against neutral, non-distracting backgrounds.
+        1. Scientific & Identity Integrity: All human clinical subjects, surgical teams, and patients MUST be of Indian descent.
+        2. Scientific Integrity: Prioritize anatomical accuracy over artistic flair. Describe cellular structures with precision.
+        3. Textural Definition: Differentiate between fibrous, aqueous, and granulated textures.
+        4. Clean Backgrounds: Ensure medical subjects are isolated or placed against neutral, non-distracting backgrounds suitable for scientific publication.
       `;
         }
 
-        const promptParams: any[] = [systemPrompt, brief];
+        let promptContent = brief;
+        if (parentPrompt) {
+            promptContent = `
+            PARENT PROMPT (JSON): ${JSON.stringify(parentPrompt)}
+            REFINEMENT INSTRUCTION: ${brief}
+            
+            Task: Modify the PARENT PROMPT JSON based on the REFINEMENT INSTRUCTION. 
+            Maintain all brand and scientific rules (Indian characters, anatomical accuracy). 
+            Return only the updated JSON object.
+            `;
+        }
+
+        const promptParams: any[] = [systemPrompt, promptContent];
 
         // If an image is provided (base64), add it as a part
         if (image) {
@@ -42,7 +56,7 @@ export async function POST(req: NextRequest) {
             promptParams.push({
                 inlineData: {
                     data: base64Data,
-                    mimeType: "image/png" // Assuming PNG for basic support
+                    mimeType: "image/png"
                 }
             });
         }
@@ -50,7 +64,10 @@ export async function POST(req: NextRequest) {
         const result = await model.generateContent(promptParams);
         const response = await result.response;
         const text = response.text();
-        const adData = JSON.parse(text);
+
+        // Clean text if Gemini adds markdown markers
+        const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+        const adData = JSON.parse(cleanText);
 
         // Dynamic folder and naming based on mode
         const folder = mode === "ad" ? "prompts" : "medical_prompts";
