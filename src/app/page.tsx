@@ -108,7 +108,7 @@ export default function Home() {
   const [renderedImage, setRenderedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [renderError, setRenderError] = useState<string | null>(null);
-  const [mode, setMode] = useState<"ad" | "medical" | "vector">("ad");
+  const [mode, setMode] = useState<"ad" | "medical" | "vector">("medical");
   const [showLibrary, setShowLibrary] = useState(false);
   const [library, setLibrary] = useState<any[]>([]);
   const [isLoadingLibrary, setIsLoadingLibrary] = useState(false);
@@ -130,6 +130,7 @@ export default function Home() {
     { label: "Cyberpunk Professional", value: "Cyberpunk aesthetic, neon accents, high-tech interface, moody professional lighting" },
     { label: "Hand-drawn Charcoal", value: "Rough hand-drawn charcoal sketch, organic textures, fine art architectural style" },
     { label: "Synthwave Retro", value: "80s synthwave style, retro-futurism, grid floors, purple and pink gradients" },
+    { label: "Classic NEJM Editorial", value: "New England Journal of Medicine style, 2.5D soft volumetric digital painting, muted clinical colors, integration of technical medical hardware (pumps, filters, catheters), directional flow dynamics with particles, layered anatomical transparency, clean white background, professional scientific textbook aesthetic" },
     { label: "Micro-3D Technical", value: "Macro-3D technical render, internal cross-sections, hyper-detailed textures, laboratory lighting" }
   ];
 
