@@ -384,6 +384,13 @@ export default function Home() {
                 className="w-full h-48 bg-slate-50/50 border border-slate-200 rounded-2xl p-6 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-300 transition-all resize-none text-sm leading-relaxed"
               />
 
+              {error && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-[10px] font-bold">
+                  <AlertCircle className="w-4 h-4" />
+                  <span>{error}</span>
+                </div>
+              )}
+
               <div className="mt-8 flex justify-between items-center bg-slate-50 -mx-8 -mb-8 p-8 border-t border-slate-100">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-100">

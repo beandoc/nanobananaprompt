@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { adCreativeSchema, medicalIllustrationSchema, vectorIllustrationSchema } from "@/lib/gemini";
 
 // 🚀 Enable Edge Runtime for maximum performance on Vercel
 export const runtime = "edge";
@@ -9,15 +10,18 @@ function getGeminiModel(mode: "ad" | "medical" | "vector") {
     const apiKey = process.env.GEMINI_API_KEY!;
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // Waterfall: Prefer Imagen 4.0 for AD/Vector, standard for Medical
-    const modelMap = {
-        ad: "gemini-1.5-pro", // Pro for complex creative
-        medical: "gemini-1.5-flash", // Flash for fast labeling
-        vector: "gemini-1.5-pro", // Pro for spatial awareness
+    const schemaMap: any = {
+        ad: adCreativeSchema,
+        medical: medicalIllustrationSchema,
+        vector: vectorIllustrationSchema
     };
+
     return genAI.getGenerativeModel({
-        model: modelMap[mode] || "gemini-1.5-flash",
-        generationConfig: { responseMimeType: "application/json" }
+        model: mode === "medical" ? "gemini-flash-latest" : "gemini-pro-latest",
+        generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: schemaMap[mode]
+        }
     });
 }
 
@@ -73,11 +77,9 @@ export async function POST(req: NextRequest) {
       `;
         }
 
-        const finalSystemPrompt = `${systemPrompt}\n\nIMPORTANT: Return ONLY valid JSON matching the required schema. No conversational filler.`;
-
         const promptParams: any[] = [
-            finalSystemPrompt,
-            `Analyze this ${mode} brief and provide a technical JSON blueprint: ${brief}`
+            systemPrompt,
+            `Generate a technical JSON blueprint for this ${mode} brief: ${brief}`
         ];
 
         // Combine inputs: 'image' is the uploaded reference, 'previousImage' is the last render
@@ -86,9 +88,9 @@ export async function POST(req: NextRequest) {
         if (activeImage) {
             const base64Data = activeImage.split(",")[1] || activeImage;
             const assetPrompt =
-                assetInstruction === "style" ? "Analyze the STYLE, LIGHTING, and COLOR DNA of this image and replicate it in the JSON." :
-                    assetInstruction === "subject" ? "Focus on the EXACT SUBJECT in this image and describe it in detail in the JSON." :
-                        "Extract the COMPOSITION and SPATIAL STRUCTURE of this image for the new JSON.";
+                assetInstruction === "style" ? "REPLICATE STYLE/DNA: Analyze the lighting and colors of this image and match them." :
+                    assetInstruction === "subject" ? "MATCH SUBJECT: Ensure the anatomical/product features match this exactly." :
+                        "MATCH COMPOSITION: Use the exact spatial layout of this reference.";
 
             promptParams.push(assetPrompt);
             promptParams.push({ inlineData: { data: base64Data, mimeType: "image/png" } });
@@ -97,10 +99,7 @@ export async function POST(req: NextRequest) {
         const result = await model.generateContent(promptParams);
         const response = await result.response;
         const text = response.text();
-
-        // SURGICAL FIX: Remove potential markdown backticks that cause JSON.parse failure
-        const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-        const adData = JSON.parse(cleanText);
+        const adData = JSON.parse(text);
 
         const folderMap: any = { ad: "prompts", medical: "medical_prompts", vector: "vector_prompts" };
         const folder = folderMap[mode] || "prompts";
