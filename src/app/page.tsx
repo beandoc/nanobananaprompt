@@ -63,10 +63,16 @@ export default function Home() {
         document.body.removeChild(link);
         setIsVectorizing(false);
       }, {
-        numberofcolors: 16,
-        strokewidth: 1,
+        numberofcolors: 32,
+        ltres: 0.1,
+        qtres: 0.1,
+        pathomit: 8,
+        strokewidth: 0.5,
+        blurradius: 0,
+        blurdelta: 0,
         viewbox: true,
-        linefilter: true
+        linefilter: true,
+        colorsampling: 2
       });
     } catch (err) {
       console.error(err);
