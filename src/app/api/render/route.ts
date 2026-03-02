@@ -47,66 +47,67 @@ export async function POST(req: NextRequest) {
             finalPrompt = `${promptData.scientific_subject}. Illustration Style: ${promptData.illustration_style}. Textures: ${promptData.visual_accuracy?.textures || ''}. Lighting: ${promptData.visual_accuracy?.lighting || ''}. Journal Standard: ${promptData.journal_standard}. Consistency: ${promptData.consistent_character || ''}. Theme: ${promptData.visual_theme || ''}. Negative: ${promptData.negative_prompt}`;
         }
 
-        // Primary Model URL (Imagen 4.0)
-        const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+        // Waterfall Fallback Logic
+        const modelsToTry = [
+            { name: "imagen-4.0-generate-001", type: "imagen" },
+            { name: "gemini-2.0-flash-exp-image-generation", type: "gemini" },
+            { name: "gemini-2.5-flash-image", type: "gemini" }
+        ];
 
-        let response = await fetch(imagenUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                instances: [{ prompt: finalPrompt }],
-                parameters: {
-                    sampleCount: 1,
-                    aspectRatio: mode === "ad" ? (promptData.aspect_ratio || "1:1") : "1:1",
-                    outputMimeType: "image/png"
+        for (const model of modelsToTry) {
+            try {
+                console.log(`Attempting Render with: ${model.name}`);
+
+                const url = model.type === "imagen"
+                    ? `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:predict?key=${apiKey}`
+                    : `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:generateContent?key=${apiKey}`;
+
+                const body = model.type === "imagen"
+                    ? {
+                        instances: [{ prompt: finalPrompt }],
+                        parameters: { sampleCount: 1, aspectRatio: mode === "ad" ? (promptData.aspect_ratio || "1:1") : "1:1", outputMimeType: "image/png" }
+                    }
+                    : {
+                        contents: [{ parts: [{ text: `Generate a high-quality professional image: ${finalPrompt}` }] }]
+                    };
+
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    let base64Image = "";
+                    if (model.type === "imagen") {
+                        base64Image = result.predictions?.[0]?.bytesBase64;
+                    } else {
+                        const parts = result.candidates?.[0]?.content?.parts || [];
+                        const imagePart = parts.find((p: any) => p.inlineData?.data || (p.text && p.text.length > 500)); // Some exp models return text-wrapped base64
+                        base64Image = imagePart?.inlineData?.data || "";
+                    }
+
+                    if (base64Image) {
+                        return handleSuccessfulImage(base64Image, mode);
+                    }
+                } else {
+                    console.warn(`Model ${model.name} failed:`, result.error?.message);
+                    // Continue to next model in loop
                 }
-            })
-        });
-
-        let result = await response.json();
-
-        // FALLBACK POLICY: If Imagen 4 fails (Paid Tier check), try the Gemini 2.5 Flash Image Model (Nano Banana)
-        if (!response.ok && (response.status === 403 || response.status === 400)) {
-            console.log("Primary Imagen failed, triggering Fallback: Gemini 2.5 Flash Image...");
-
-            const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${apiKey}`;
-
-            response = await fetch(fallbackUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: `Generate a high-quality medical/commercial image based on this blueprint: ${finalPrompt}` }] }]
-                })
-            });
-
-            result = await response.json();
-
-            if (response.ok) {
-                // Gemini image models return parts with inlineData containing the image data
-                const parts = result.candidates?.[0]?.content?.parts || [];
-                const imagePart = parts.find((p: any) => p.inlineData?.data);
-
-                if (imagePart?.inlineData?.data) {
-                    return handleSuccessfulImage(imagePart.inlineData.data, mode);
-                }
+            } catch (err) {
+                console.error(`Error with model ${model.name}:`, err);
             }
         }
 
-        if (!response.ok) {
-            console.error("All Image Models Failed:", result);
-            const errorMessage = result.error?.message || "All renderers failed. Ensure your API Key has valid quota.";
-            return NextResponse.json({ error: errorMessage }, { status: response.status });
-        }
-
-        const base64Image = result.predictions?.[0]?.bytesBase64;
-        if (!base64Image) {
-            return NextResponse.json({ error: "No image generated in response" }, { status: 500 });
-        }
-
-        return handleSuccessfulImage(base64Image, mode);
+        // If we reach here, all fallbacks failed
+        return NextResponse.json({
+            error: "All Image Models Failed/Quota Exceeded. To resolve this, please enable Billing in your Google AI Studio account to unlock high-priority Imagen 4 access."
+        }, { status: 429 });
 
     } catch (error: any) {
-        console.error("Render API Error:", error);
+        console.error("Critical Render Failure:", error);
         return NextResponse.json({ error: error.message || "Failed to process image rendering" }, { status: 500 });
     }
 }

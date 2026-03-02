@@ -1,0 +1,12 @@
+{
+  "core_prompt": "A young Indian woman with radiant, glowing skin holding a minimal glass bottle of Glow Nectar serum in a sun-drenched modern apartment in Bangalore.",
+  "lighting": "golden-hour",
+  "camera_settings": {
+    "lens": "35mm-documentary",
+    "shot_type": "medium-shot",
+    "aesthetic": "ugc-iphone-selfie"
+  },
+  "negative_prompt": "plastic skin, over-retouched, deformed fingers, warped text, watermarks, CGI, 3D render",
+  "aspect_ratio": "9:16",
+  "exact_text": "\"Glow Nectar\""
+}
