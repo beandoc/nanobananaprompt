@@ -1,0 +1,12 @@
+{
+  "core_prompt": "A high-resolution scanning electron micrograph of a podocyte cell, capturing the intricate architecture of major processes and interdigitating pedicels wrapping around a glomerular capillary, Nature journal scientific aesthetic, monochromatic grayscale, ultra-fine biological textures, clean and minimalist background.",
+  "lighting": "studio-softbox",
+  "camera_settings": {
+    "lens": "100mm-macro",
+    "shot_type": "extreme-close-up",
+    "aesthetic": "high-end-editorial"
+  },
+  "negative_prompt": "plastic skin, over-retouched, deformed fingers, warped text, watermarks, CGI, 3D render, vibrant colors, neon, blurry textures, messy environment",
+  "aspect_ratio": "4:5",
+  "exact_text": ""
+}

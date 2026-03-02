@@ -1,0 +1,11 @@
+{
+  "scientific_subject": "Podocyte ultrastructure featuring primary processes and secondary foot processes (pedicels) interlacing over a glomerular capillary basement membrane.",
+  "illustration_style": "photorealistic-electron-microscopy",
+  "visual_accuracy": {
+    "textures": "Smooth cellular membrane of the cell body contrasting with the fine, interlacing fibrous projections of the pedicels and the slightly granular surface of the basement membrane.",
+    "lighting": "microscopic-focused",
+    "labeling_safe_zones": "The peripheral margins of the frame and the negative space surrounding the central podocyte cell body."
+  },
+  "journal_standard": "Nature-modern",
+  "negative_prompt": "cartoonish, low-resolution, inaccurate anatomy, messy labels, blood-horror, vibrant-neon, artificial colorization, blurred cellular boundaries, macro-lens artifacts."
+}

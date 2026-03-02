@@ -14,13 +14,13 @@ export const adCreativeSchema: Schema = {
         lighting: {
             type: SchemaType.STRING,
             enum: ["soft-natural-daylight", "golden-hour", "studio-softbox", "harsh-direct-flash", "moody-rim-lighting"]
-        },
+        } as any,
         camera_settings: {
             type: SchemaType.OBJECT,
             properties: {
-                lens: { type: SchemaType.STRING, enum: ["14mm-ultrawide", "35mm-documentary", "50mm-standard", "85mm-portrait", "100mm-macro"] },
-                shot_type: { type: SchemaType.STRING, enum: ["extreme-close-up", "medium-shot", "full-body", "overhead-flatlay"] },
-                aesthetic: { type: SchemaType.STRING, enum: ["ugc-iphone-selfie", "high-end-editorial", "raw-polaroid", "clean-ecom"] }
+                lens: { type: SchemaType.STRING, enum: ["14mm-ultrawide", "35mm-documentary", "50mm-standard", "85mm-portrait", "100mm-macro"] } as any,
+                shot_type: { type: SchemaType.STRING, enum: ["extreme-close-up", "medium-shot", "full-body", "overhead-flatlay"] } as any,
+                aesthetic: { type: SchemaType.STRING, enum: ["ugc-iphone-selfie", "high-end-editorial", "raw-polaroid", "clean-ecom"] } as any
             },
             required: ["lens", "shot_type", "aesthetic"]
         },
@@ -35,7 +35,7 @@ export const adCreativeSchema: Schema = {
         aspect_ratio: {
             type: SchemaType.STRING,
             enum: ["1:1", "4:5", "9:16", "16:9"]
-        }
+        } as any
     },
     required: ["core_prompt", "lighting", "camera_settings", "negative_prompt", "aspect_ratio"]
 };
@@ -52,12 +52,12 @@ export const medicalIllustrationSchema: Schema = {
         illustration_style: {
             type: SchemaType.STRING,
             enum: ["photorealistic-electron-microscopy", "3d-medical-render", "clean-surgical-sketch", "scientific-diagram", "histology-stained"]
-        },
+        } as any,
         visual_accuracy: {
             type: SchemaType.OBJECT,
             properties: {
                 textures: { type: SchemaType.STRING, description: "Description of tissue textures, e.g., 'fibrous', 'aqueous', 'granulated'." },
-                lighting: { type: SchemaType.STRING, enum: ["internal-bioluminescence", "diffused-lab-lighting", "microscopic-focused", "rim-lit-anatomical"] },
+                lighting: { type: SchemaType.STRING, enum: ["internal-bioluminescence", "diffused-lab-lighting", "microscopic-focused", "rim-lit-anatomical"] } as any,
                 labeling_safe_zones: { type: SchemaType.STRING, description: "Areas to leave clear for future text annotations." }
             },
             required: ["textures", "lighting"]
@@ -65,7 +65,7 @@ export const medicalIllustrationSchema: Schema = {
         journal_standard: {
             type: SchemaType.STRING,
             enum: ["NEJM-classic", "Nature-modern", "Lancet-descriptive", "Gray-Anatomy-sketch"]
-        },
+        } as any,
         negative_prompt: {
             type: SchemaType.STRING,
             description: "Exclude: 'cartoonish, low-resolution, inaccurate anatomy, messy labels, blood-horror (unless surgical), vibrant-neon'."
@@ -76,7 +76,7 @@ export const medicalIllustrationSchema: Schema = {
 
 export const getGeminiModel = (mode: "ad" | "medical" = "ad") => {
     return genAI.getGenerativeModel({
-        model: "gemini-1.5-pro",
+        model: "gemini-flash-latest",
         generationConfig: {
             responseMimeType: "application/json",
             responseSchema: mode === "ad" ? adCreativeSchema : medicalIllustrationSchema,
