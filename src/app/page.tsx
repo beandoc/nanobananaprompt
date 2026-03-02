@@ -326,7 +326,15 @@ export default function Home() {
                     <img src={assetImage} alt="Reference" className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Asset Intent</p>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Asset Intent</p>
+                      {assetType === "style" && (
+                        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-indigo-50 border border-indigo-100 rounded-md">
+                          <Zap className="w-2.5 h-2.5 text-indigo-500" />
+                          <span className="text-[8px] font-black text-indigo-600 uppercase">Brand DNA Locked</span>
+                        </div>
+                      )}
+                    </div>
                     <div className="flex gap-2">
                       {["style", "subject", "structure"].map((type) => (
                         <button key={type} onClick={() => setAssetType(type as any)} className={cn("px-4 py-1.5 rounded-lg text-[9px] font-black border transition-all uppercase tracking-widest", assetType === type ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-slate-500 border-slate-200 hover:border-slate-300")}>{type}</button>
