@@ -81,12 +81,13 @@ export async function POST(req: NextRequest) {
         const cleanPrefix = prefix.toLowerCase().replace(/\s+/g, '-');
         const filename = `${cleanPrefix}-${Date.now()}.json`;
         const promptPath = path.join(process.cwd(), folder, filename);
-
-        if (!fs.existsSync(path.join(process.cwd(), folder))) {
-            fs.mkdirSync(path.join(process.cwd(), folder), { recursive: true });
+        const isVercel = process.env.VERCEL === "1";
+        if (!isVercel) {
+            if (!fs.existsSync(path.join(process.cwd(), folder))) {
+                fs.mkdirSync(path.join(process.cwd(), folder), { recursive: true });
+            }
+            fs.writeFileSync(promptPath, JSON.stringify(adData, null, 2));
         }
-
-        fs.writeFileSync(promptPath, JSON.stringify(adData, null, 2));
 
         return NextResponse.json({
             success: true,
