@@ -11,8 +11,59 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Client-side Script Loader helper
+const loadScript = (src: string) => {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+};
+
 export default function Home() {
   const [brief, setBrief] = useState("");
+  // ... existing states ...
+  const [isVectorizing, setIsVectorizing] = useState(false);
+
+  useEffect(() => {
+    loadScript("https://cdn.jsdelivr.net/gh/jseidelin/exif-js/exif.js");
+    loadScript("https://cdnjs.cloudflare.com/ajax/libs/imagetracerjs/1.2.6/imagetracer_v1.2.6.js");
+  }, []);
+
+  const vectorizeToSVG = () => {
+    if (!renderedImage || typeof window === 'undefined') return;
+    const ImageTracer = (window as any).ImageTracer;
+    if (!ImageTracer) {
+      alert("Vectorization engine still loading... please try again in a second.");
+      return;
+    }
+
+    setIsVectorizing(true);
+    try {
+      // Trace the rendered PNG to SVG
+      ImageTracer.imageToSVG(renderedImage, (svgString: string) => {
+        const blob = new Blob([svgString], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `nano-vector-${Date.now()}.svg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setIsVectorizing(false);
+      }, {
+        numberofcolors: 16,
+        strokewidth: 1,
+        viewbox: true,
+        linefilter: true
+      });
+    } catch (err) {
+      console.error(err);
+      setIsVectorizing(false);
+    }
+  };
   const [refinement, setRefinement] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isRendering, setIsRendering] = useState(false);
@@ -400,9 +451,21 @@ export default function Home() {
                     <div className="flex items-center justify-between mb-6">
                       <h3 className="font-black uppercase tracking-widest text-[10px] text-slate-400">Vison Console</h3>
                       {renderedImage && (
-                        <button onClick={downloadImage} className="flex items-center gap-2 px-6 py-2 bg-slate-900 shadow-lg shadow-slate-200 rounded-xl text-[10px] font-black text-white hover:bg-black transition-all uppercase tracking-widest">
-                          <Download className="w-3.5 h-3.5" /> Export DPI
-                        </button>
+                        <div className="flex gap-2">
+                          {mode === "vector" && (
+                            <button
+                              onClick={vectorizeToSVG}
+                              disabled={isVectorizing}
+                              className="flex items-center gap-2 px-6 py-2 bg-orange-600 shadow-lg shadow-orange-100 rounded-xl text-[10px] font-black text-white hover:bg-orange-700 transition-all uppercase tracking-widest disabled:opacity-50"
+                            >
+                              {isVectorizing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Layers className="w-3.5 h-3.5" />}
+                              {isVectorizing ? "Tracing..." : "Vectorize (SVG)"}
+                            </button>
+                          )}
+                          <button onClick={downloadImage} className="flex items-center gap-2 px-6 py-2 bg-slate-900 shadow-lg shadow-slate-200 rounded-xl text-[10px] font-black text-white hover:bg-black transition-all uppercase tracking-widest">
+                            <Download className="w-3.5 h-3.5" /> Export DPI
+                          </button>
+                        </div>
                       )}
                     </div>
                     <div className="w-full relative aspect-[16/9] rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center overflow-hidden shadow-inner">
@@ -461,12 +524,16 @@ export default function Home() {
                 </div>
               ) : library.map((item, i) => (
                 <button key={i} onClick={() => loadFromLibrary(item)} className="w-full text-left bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all group relative overflow-hidden">
-                  <div className={cn("absolute top-0 left-0 w-1.5 h-full", item.type === "ad" ? "bg-indigo-500" : "bg-emerald-500")} />
+                  <div className={cn("absolute top-0 left-0 w-1.5 h-full", item.type === "ad" ? "bg-indigo-500" : item.type === "medical" ? "bg-emerald-500" : "bg-orange-500")} />
                   <div className="flex items-center justify-between mb-3">
-                    <span className={cn("text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded", item.type === "ad" ? "bg-indigo-50 text-indigo-600" : "bg-emerald-50 text-emerald-600")}>{item.type}</span>
+                    <span className={cn("text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded",
+                      item.type === "ad" ? "bg-indigo-50 text-indigo-600" :
+                        item.type === "medical" ? "bg-emerald-50 text-emerald-600" :
+                          "bg-orange-50 text-orange-600"
+                    )}>{item.type}</span>
                     <span className="text-[8px] font-bold text-slate-400 font-mono">{new Date(item.timestamp).toLocaleDateString()}</span>
                   </div>
-                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-tighter truncate pr-4">{item.content.scientific_subject || item.content.core_prompt}</h4>
+                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-tighter truncate pr-4">{item.content.scientific_subject || item.content.core_prompt || item.content.illustration_subject}</h4>
                 </button>
               ))}
             </div>
