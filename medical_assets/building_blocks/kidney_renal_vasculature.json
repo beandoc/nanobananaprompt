@@ -1,0 +1,12 @@
+{
+    "scientific_subject": "Detailed renal vasculature system showing the renal artery branching into segmental and interlobar arteries against a ghosted kidney silhouette",
+    "illustration_style": "biorender-systemic-network",
+    "visual_accuracy": {
+        "textures": "smooth tubular red arteries, branching network hierarchy",
+        "lighting": "rim-lit-anatomical"
+    },
+    "journal_standard": "BioRender-standard",
+    "negative_prompt": "text, labels, annotations, digestive organs, skeletal parts",
+    "consistent_character": "No-Human-Figure",
+    "visual_theme": "Surgical-Blue"
+}

@@ -1,0 +1,12 @@
+{
+    "scientific_subject": "Macro cross-section of a healthy human kidney showing distinct renal cortex, medullary pyramids, and renal pelvis",
+    "illustration_style": "biorender-scientific-vector",
+    "visual_accuracy": {
+        "textures": "smooth semi-matte tissue, clear separation of cortex and medulla",
+        "lighting": "even-ambient-clean"
+    },
+    "journal_standard": "BioRender-standard",
+    "negative_prompt": "text, labels, annotations, microscopic detail, scarring",
+    "consistent_character": "No-Human-Figure",
+    "visual_theme": "BioRender-Pastel"
+}

@@ -1,0 +1,12 @@
+{
+    "scientific_subject": "Microscopic view of a single human nephron, emphasizing the glomerulus, Bowman's capsule, and convoluted tubules",
+    "illustration_style": "biorender-histology-layer",
+    "visual_accuracy": {
+        "textures": "smooth tube-like epithelial surfaces, intricate glomerular capillary tuft",
+        "lighting": "microscopic-focused"
+    },
+    "journal_standard": "BioRender-standard",
+    "negative_prompt": "text, labels, annotations, gross organ view, skeletal elements",
+    "consistent_character": "No-Human-Figure",
+    "visual_theme": "BioRender-Pastel"
+}

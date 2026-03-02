@@ -1,0 +1,12 @@
+{
+    "scientific_subject": "Pathological kidney cross-section representing Lupus Nephritis with localized red inflammation, tissue swelling, and sub-capsular congestion",
+    "illustration_style": "biorender-pathology-comparison",
+    "visual_accuracy": {
+        "textures": "congested renal tissue, soft red inflammatory clouds, swollen pyramids",
+        "lighting": "inflammation-glow"
+    },
+    "journal_standard": "BioRender-standard",
+    "negative_prompt": "text, labels, annotations, healthy tissue, mechanical parts",
+    "consistent_character": "No-Human-Figure",
+    "visual_theme": "Inflammation-Overlay"
+}
