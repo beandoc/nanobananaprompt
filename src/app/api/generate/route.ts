@@ -5,7 +5,14 @@ import path from "path";
 
 export async function POST(req: NextRequest) {
     try {
-        const { brief, image, mode = "ad", parentPrompt = null, assetInstruction = "style" } = await req.json();
+        const {
+            brief,
+            image,
+            mode = "ad",
+            parentPrompt = null,
+            assetInstruction = "style",
+            previousImage = null // The already rendered image we want to fix
+        } = await req.json();
 
         if (!brief && !image) {
             return NextResponse.json({ error: "No input provided" }, { status: 400 });
@@ -19,48 +26,46 @@ export async function POST(req: NextRequest) {
         You are an elite Art Director for a premium Indian DTC skincare brand. 
         Your job is to translate briefs and reference images into Nano Banana 2 JSON payloads.
 
-        1. Identity Standard: All characters (UGC creators, models) MUST be of Indian descent.
-        2. Asset Handling: If a reference image is provided, use it according to the instruction: "${assetInstruction}". 
-           - If "style": Copy the lighting, color palette, and camera aesthetic.
-           - If "subject": Use the person/product in the image as the core subject.
-           - If "structure": Follow the exact layout and composition of the image.
-        3. Photographic Realism: For UGC and lifestyle shots, always enforce photographic realism. 
+        REVISION LOGIC: When a 'PARENT PROMPT' or 'PREVIOUS IMAGE' is provided, perform a SURGICAL EDIT. Do not change parts of the prompt that were successful. Focus only on the 'brief' instructions while maintaining the core brand aesthetic.
       `;
         } else {
             systemPrompt = `
-        You are a World-Class Medical Illustrator specializing in Indian medical textbooks. 
-        Your job is to translate clinical cases and reference assets into high-precision technical JSON.
-
-        1. Scientific Identity: All human subjects MUST be of Indian descent.
-        2. Asset Handling: If a reference image/sketch is provided, use it according to: "${assetInstruction}".
-           - If "structure": This is a structural anchor (ControlNet-style). Follow the exact anatomical layout of the sketch/image.
-           - If "style": Replicate the journal-standard aesthetic (e.g., SEM monochrome or 3D render style).
-        3. Scientific Accuracy: Prioritize anatomical precision over artistic flair.
+        You are a World-Class Medical Illustrator specializing in technical accuracy for Indian medical textbooks.
+        
+        TECHNICAL ACCURACY RULES for REVISIONS:
+        1. If correcting a scientific error, use high-fidelity anatomical terms.
+        2. Maintain 'Structural Grounding': Do not shift the location of organs or cells unless explicitly asked.
+        3. If a 'PREVIOUS IMAGE' is provided, analyze it for 'hallucinations' or inaccuracies based on the new 'brief' and fix the 'scientific_subject' or 'textures' fields accordingly.
+        4. SURGICAL EDITING: Only modify the specific fields in the JSON required to achieve the correction. Keep everything else identical to ensure consistency.
       `;
         }
 
         let promptContent = brief || "Generate based on the provided reference image.";
 
+        // Context-Aware Refinement
         if (parentPrompt) {
             promptContent = `
-            PARENT PROMPT (JSON): ${JSON.stringify(parentPrompt)}
-            REFINEMENT INSTRUCTION: ${brief}
+            [CONTEXTUAL DATA]
+            PREVIOUS_JSON_BLUEPRINT: ${JSON.stringify(parentPrompt)}
+            ${previousImage ? "THE_IMAGE_THIS_PROMPT_GENERATED: [Attached as Image Part]" : ""}
+            REFINEMENT_INSTRUCTION: ${brief}
             
-            Task: Modify the PARENT PROMPT JSON based on the REFINEMENT INSTRUCTION. 
-            Return only the updated JSON object.
+            [TASK]
+            You must provide a SURGICAL REVISION of the JSON. 
+            Identify what failed in the previous attempt and update ONLY the necessary keys (e.g., textures, scientific_subject, lighting) to fix the technical grade of the illustration. 
+            Return the full updated JSON.
             `;
         }
 
         const promptParams: any[] = [systemPrompt, promptContent];
 
+        // Add the uploaded asset or the previous image for context
         if (image) {
             const base64Data = image.split(",")[1] || image;
-            promptParams.push({
-                inlineData: {
-                    data: base64Data,
-                    mimeType: "image/png"
-                }
-            });
+            promptParams.push({ inlineData: { data: base64Data, mimeType: "image/png" } });
+        } else if (previousImage) {
+            const base64Data = previousImage.split(",")[1] || previousImage;
+            promptParams.push({ inlineData: { data: base64Data, mimeType: "image/png" } });
         }
 
         const result = await model.generateContent(promptParams);
