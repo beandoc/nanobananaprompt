@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -166,7 +167,10 @@ export default function Home() {
 
               {assetImage && (
                 <div className="mb-6 bg-slate-800/80 rounded-2xl p-4 border border-white/5 flex gap-4 items-center">
-                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-white/10 bg-black"><img src={assetImage} className="w-full h-full object-cover" /></div>
+                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-white/10 bg-black">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={assetImage} alt="Reference" className="w-full h-full object-cover" />
+                  </div>
                   <div className="flex-1 flex gap-2">
                     {["style", "subject", "structure"].map((type) => (
                       <button key={type} onClick={() => setAssetType(type as any)} className={cn("px-3 py-1 rounded-md text-[9px] font-bold border transition-all uppercase", assetType === type ? "bg-white text-black border-white" : "bg-slate-900 text-slate-500 border-white/5")}>{type}</button>
@@ -223,7 +227,7 @@ export default function Home() {
                         <button onClick={() => handleGenerate(true)} disabled={isLoading || !refinement.trim()} className="px-5 py-2 bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/40 text-indigo-400 rounded-xl text-xs font-bold transition-all">Surgically Update</button>
                       </div>
                       {renderedImage && (
-                        <p className="mt-2 text-[9px] text-slate-500 italic">Visible Render attached to context. AI will now 'Study' the current image to fix it.</p>
+                        <p className="mt-2 text-[9px] text-slate-500 italic">Visible Render attached to context. AI will now &quot;Study&quot; the current image to fix it.</p>
                       )}
                     </div>
                   </div>
@@ -240,7 +244,8 @@ export default function Home() {
                     </div>
                     <div className="w-full relative aspect-[16/9] rounded-2xl bg-slate-950/50 border border-white/5 flex items-center justify-center overflow-hidden">
                       {renderedImage ? (
-                        <img src={renderedImage} className="w-full h-full object-contain" />
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={renderedImage} alt="Generated Medical Illustration" className="w-full h-full object-contain" />
                       ) : (
                         <div className="flex flex-col items-center gap-4 text-slate-800"><Sparkles className="w-12 h-12 opacity-20" /><span className="text-[10px] font-black tracking-widest">AWAITING RENDER EXECUTION</span></div>
                       )}
