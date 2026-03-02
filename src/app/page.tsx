@@ -244,10 +244,21 @@ export default function Home() {
                         <Terminal className="w-4 h-4" />
                         <h3 className="font-black uppercase tracking-widest text-[10px]">Technical Blueprint</h3>
                       </div>
-                      <button onClick={handleRenderImage} disabled={isRendering} className={cn("px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all shadow-sm", mode === "ad" ? "bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100")}>
-                        {isRendering ? <Loader2 className="w-3 h-3 animate-spin" /> : <Eye className="w-3 h-3" />}
-                        {isRendering ? "Rendering..." : "Execute Render"}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(JSON.stringify(result.data, null, 2));
+                            alert("Technical JSON copied to clipboard. You can now paste this into Gemini Web for rendering.");
+                          }}
+                          className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-1.5"
+                        >
+                          <Database className="w-3 h-3" /> Copy JSON
+                        </button>
+                        <button onClick={handleRenderImage} disabled={isRendering} className={cn("px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all shadow-sm", mode === "ad" ? "bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100")}>
+                          {isRendering ? <Loader2 className="w-3 h-3 animate-spin" /> : <Eye className="w-3 h-3" />}
+                          {isRendering ? "Rendering..." : "Execute Render"}
+                        </button>
+                      </div>
                     </div>
 
                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 max-h-[180px] overflow-auto mb-6">
@@ -262,6 +273,11 @@ export default function Home() {
                         <input value={refinement} onChange={(e) => setRefinement(e.target.value)} placeholder="e.g., 'Increase contrast of the frontal lobe'..." className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-300" />
                         <button onClick={() => handleGenerate(true)} disabled={isLoading || !refinement.trim()} className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-indigo-100">Update</button>
                       </div>
+                      {isLoading && (
+                        <div className="mt-4 w-full h-1 bg-indigo-100 rounded-full overflow-hidden">
+                          <motion.div initial={{ x: "-100%" }} animate={{ x: "0%" }} transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }} className="w-full h-full bg-indigo-500" />
+                        </div>
+                      )}
                       {renderError && (
                         <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-[10px] font-bold">
                           <AlertCircle className="w-4 h-4" />
