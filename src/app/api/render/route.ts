@@ -1,25 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+
+// 🚀 Enable Edge Runtime for maximum performance on Vercel
+export const runtime = "edge";
 
 function handleSuccessfulImage(base64Image: string, mode: string) {
-    const isVercel = process.env.VERCEL === "1";
     const folderMap: any = { ad: "renders/ad", medical: "renders/medical", vector: "renders/vector" };
     const folder = folderMap[mode] || "renders/ad";
     const filename = `render-${Date.now()}.png`;
 
-    if (!isVercel) {
-        const renderDir = path.join(process.cwd(), folder);
-        const renderPath = path.join(renderDir, filename);
-
-        if (!fs.existsSync(renderDir)) {
-            fs.mkdirSync(renderDir, { recursive: true });
-        }
-
-        const imageBuffer = Buffer.from(base64Image, 'base64');
-        fs.writeFileSync(renderPath, imageBuffer);
-    }
+    // Note: Local disk saving bypassed for Edge Runtime compatibility.
+    // This allows the Vercel app to respond as fast as Gemini generates.
 
     return NextResponse.json({
         success: true,

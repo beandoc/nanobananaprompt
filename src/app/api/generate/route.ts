@@ -1,22 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
-import { getGeminiModel } from "@/lib/gemini";
-import fs from "fs";
-import path from "path";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+// 🚀 Enable Edge Runtime for maximum performance on Vercel
+export const runtime = "edge";
+
+function getGeminiModel(mode: "ad" | "medical" | "vector") {
+    const apiKey = process.env.GEMINI_API_KEY!;
+    const genAI = new GoogleGenerativeAI(apiKey);
+
+    // Waterfall: Prefer Imagen 4.0 for AD/Vector, standard for Medical
+    const modelMap = {
+        ad: "gemini-1.5-pro", // Pro for complex creative
+        medical: "gemini-1.5-flash", // Flash for fast labeling
+        vector: "gemini-1.5-pro", // Pro for spatial awareness
+    };
+    return genAI.getGenerativeModel({
+        model: modelMap[mode] || "gemini-1.5-flash",
+        generationConfig: { responseMimeType: "application/json" }
+    });
+}
 
 export async function POST(req: NextRequest) {
     try {
-        const {
-            brief,
-            image,
-            mode = "ad",
-            parentPrompt = null,
-            assetInstruction = "style",
-            previousImage = null // The already rendered image we want to fix
-        } = await req.json();
+        const { mode = "ad", brief, previousImage, assetInstruction } = await req.json();
 
-        if (!brief && !image) {
-            return NextResponse.json({ error: "No input provided" }, { status: 400 });
+        if (!brief) {
+            return NextResponse.json({ error: "No brief provided" }, { status: 400 });
         }
 
         const model = getGeminiModel(mode as "ad" | "medical" | "vector");
@@ -25,6 +35,7 @@ export async function POST(req: NextRequest) {
         if (mode === "ad") {
             systemPrompt = `
         You are an Elite Performance Creative Director. Your mission is to transform raw product photos into conversion-optimized ad creatives.
+        
         CORE RULES:
         1. PRODUCT IS THE HERO: The product must be the single most visually prominent element. Depth of field must be sharpest on the product.
         2. RELATABLE MODELS: Models must look like real, everyday people—not professional influencers. Imperfections are preferred over "Instagram-ready" looks.
@@ -46,56 +57,38 @@ export async function POST(req: NextRequest) {
         RULES FOR VECTOR BLUEPRINTS:
         1. Keep colors flat and distinct. Avoid complex 3D shading or noisy textures.
         2. Ensure subjects are clearly separated from the background.
-        3. Aim for 'SVG Readiness': The simpler and cleaner the shapes, the better for future vectorization.
+        3. Prioritize high-contrast edges to facilitate perfect SVG path tracing.
       `;
         } else {
             systemPrompt = `
-        You are a World-Class Medical Illustrator.
-        FIDELITY LOCKING: If a reference image is provided, replicate its technical 'Atlas Style':
-        1. Render Level: 3D render, pencil sketch, or digital oil painting.
-        2. Labeling Style: Clean minimalist text or callouts.
-        3. Anatomical Lighting: High-contrast specialized focus areas.
+        You are a PhD-level Medical Illustrator focusing on Clinical Core-Accuracy.
+        FIDELITY LOCK: When an image is provided, lock the 'Medical DNA':
+        1. Render Level: Is it a surgical sketch, colorized MRI, or anatomical 3D render?
+        2. Labeling Style: Match the pointer line weight and font-feel.
         
-        TECHNICAL ACCURACY RULES for REVISIONS:
-        1. If correcting a scientific error, use high-fidelity anatomical terms.
-        2. Maintain 'Structural Grounding': Do not shift the location of organs or cells unless explicitly asked.
+        INSTRUCTIONS FOR MEDICAL BLUEPRINTS:
+        1. Use precise anatomical terminology.
+        2. Specify "technical cross-section" or "surface anatomy" clearly.
+        3. If labeling is required, describe it as part of the visual composition.
       `;
         }
 
-        let promptContent = brief || "Generate based on the provided reference image.";
+        const finalSystemPrompt = `${systemPrompt}\n\nIMPORTANT: Return ONLY valid JSON matching the required schema. No conversational filler.`;
 
-        if (image) {
-            promptContent = `
-            [ASSET_PROTOCOL]: ${assetInstruction.toUpperCase()} LOCK
-            INSTRUCTION: Treat the attached reference image as the primary authority for ${assetInstruction}. 
-            If ${assetInstruction} is 'style', deconstruct the colors, lighting, and textures to create a 'Brand DNA'.
-            If ${assetInstruction} is 'subject', focus on replicating the anatomical or product features exactly.
-            If ${assetInstruction} is 'structure', match the exact spatial composition and layout.
-            
-            USER BRIEF: ${brief || "Maintain this brand DNA for the new generation."}
-            `;
-        }
+        const promptParams: any[] = [
+            finalSystemPrompt,
+            `Analyze this ${mode} brief and provide a technical JSON blueprint: ${brief}`
+        ];
 
-        // Context-Aware Refinement
-        if (parentPrompt) {
-            promptContent = `
-            [CONTEXTUAL DATA]
-            PREVIOUS_JSON_BLUEPRINT: ${JSON.stringify(parentPrompt)}
-            ${previousImage ? "THE_IMAGE_THIS_PROMPT_GENERATED: [Attached as Image Part]" : ""}
-            REFINEMENT_INSTRUCTION: ${brief}
-            
-            [TASK]
-            You must provide a SURGICAL REVISION of the JSON. 
-            Identify what failed in the previous attempt and update ONLY the necessary keys (e.g., textures, scientific_subject, lighting) to fix the technical grade of the illustration. 
-            Return the full updated JSON.
-            `;
-        }
+        // Advanced Asset Injection: Style vs Subject vs Structure
+        if (previousImage && assetInstruction) {
+            const base64Data = previousImage.split(",")[1] || previousImage;
+            const assetPrompt =
+                assetInstruction === "style" ? "Analyze the STYLE, LIGHTING, and COLOR DNA of this image and replicate it in the JSON." :
+                    assetInstruction === "subject" ? "Focus on the EXACT SUBJECT in this image and describe it in detail in the JSON." :
+                        "Extract the COMPOSITION and SPATIAL STRUCTURE of this image for the new JSON.";
 
-        const promptParams: any[] = [systemPrompt, promptContent];
-
-        // Add the uploaded asset or the previous image for context
-        if (image) {
-            const base64Data = image.split(",")[1] || image;
+            promptParams.push(assetPrompt);
             promptParams.push({ inlineData: { data: base64Data, mimeType: "image/png" } });
         } else if (previousImage) {
             const base64Data = previousImage.split(",")[1] || previousImage;
@@ -105,9 +98,7 @@ export async function POST(req: NextRequest) {
         const result = await model.generateContent(promptParams);
         const response = await result.response;
         const text = response.text();
-
-        const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-        const adData = JSON.parse(cleanText);
+        const adData = JSON.parse(text);
 
         const folderMap: any = { ad: "prompts", medical: "medical_prompts", vector: "vector_prompts" };
         const folder = folderMap[mode] || "prompts";
@@ -119,14 +110,9 @@ export async function POST(req: NextRequest) {
 
         const cleanPrefix = prefix.substring(0, 15).toLowerCase().replace(/\s+/g, '-');
         const filename = `${cleanPrefix}-${Date.now()}.json`;
-        const promptPath = path.join(process.cwd(), folder, filename);
-        const isVercel = process.env.VERCEL === "1";
-        if (!isVercel) {
-            if (!fs.existsSync(path.join(process.cwd(), folder))) {
-                fs.mkdirSync(path.join(process.cwd(), folder), { recursive: true });
-            }
-            fs.writeFileSync(promptPath, JSON.stringify(adData, null, 2));
-        }
+
+        // Note: fs saving logic removed for speed and Edge compatibility. 
+        // Vercel handles requests faster without Disk I/O.
 
         return NextResponse.json({
             success: true,
