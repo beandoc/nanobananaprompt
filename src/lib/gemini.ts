@@ -52,24 +52,24 @@ export const medicalIllustrationSchema: Schema = {
         },
         illustration_style: {
             type: SchemaType.STRING,
-            enum: ["photorealistic-electron-microscopy", "3d-medical-render", "clean-surgical-sketch", "scientific-diagram", "histology-stained"]
+            enum: ["photorealistic-electron-microscopy", "3d-medical-render", "biorender-scientific-vector", "biorender-icon-asset", "biorender-equipment-render", "biorender-musculoskeletal", "biorender-histology-layer", "biorender-pathology-comparison", "biorender-pathway-diagram", "biorender-silhouette-icon", "biorender-systemic-network", "biorender-schematic-flowchart", "biorender-gallery-layout", "biorender-multisystem-pathology", "biorender-mechanism-action", "clean-surgical-sketch", "scientific-diagram", "histology-stained"]
         } as any,
         visual_accuracy: {
             type: SchemaType.OBJECT,
             properties: {
                 textures: { type: SchemaType.STRING, description: "Description of tissue textures, e.g., 'fibrous', 'aqueous', 'granulated'." },
-                lighting: { type: SchemaType.STRING, enum: ["internal-bioluminescence", "diffused-lab-lighting", "microscopic-focused", "rim-lit-anatomical"] } as any,
+                lighting: { type: SchemaType.STRING, enum: ["internal-bioluminescence", "diffused-lab-lighting", "microscopic-focused", "rim-lit-anatomical", "even-ambient-clean", "inflammation-glow"] } as any,
                 labeling_safe_zones: { type: SchemaType.STRING, description: "Areas to leave clear for future text annotations." }
             },
             required: ["textures", "lighting"]
         },
         journal_standard: {
             type: SchemaType.STRING,
-            enum: ["NEJM-classic", "Nature-modern", "Lancet-descriptive", "Gray-Anatomy-sketch"]
+            enum: ["NEJM-classic", "Nature-modern", "Lancet-descriptive", "Gray-Anatomy-sketch", "BioRender-standard"]
         } as any,
         negative_prompt: {
             type: SchemaType.STRING,
-            description: "Exclude: 'cartoonish, low-resolution, inaccurate anatomy, messy labels, blood-horror (unless surgical), vibrant-neon'."
+            description: "Exclude: 'cartoonish, low-resolution, inaccurate anatomy, messy labels, blood-horror (unless surgical), vibrant-neon, text, arrows, leader-lines, annotations, grids, excessive-gradients'."
         },
         consistent_character: {
             type: SchemaType.STRING,
@@ -78,7 +78,7 @@ export const medicalIllustrationSchema: Schema = {
         } as any,
         visual_theme: {
             type: SchemaType.STRING,
-            enum: ["Clinical-Neutral", "Surgical-Blue", "Anatomy-White-Background"],
+            enum: ["Clinical-Neutral", "Surgical-Blue", "Anatomy-White-Background", "BioRender-Pastel", "Asset-Solo-White", "Ghosted-Anatomy", "Comparison-Split", "Pathway-Logic-Clean", "Silhouette-Blue-Medical", "Inflammation-Overlay", "Systemic-Green-Lymphatic", "Schematic-Logic-White", "Disease-Mapping-Vibrant", "Systemic-Pathogenesis"],
             description: "Forces a consistent color palette across different images."
         } as any
     },

@@ -1,0 +1,12 @@
+{
+    "scientific_subject": "Ghosted light gray female silhouette showing multi-organ systemic involvement: butterfly rash on face, inflamed joints, and localized renal inflammation",
+    "illustration_style": "biorender-multisystem-pathology",
+    "visual_accuracy": {
+        "textures": "soft red skin overlays, glowing joint inflammation, localized renal hotspot",
+        "lighting": "inflammation-glow"
+    },
+    "journal_standard": "BioRender-standard",
+    "negative_prompt": "text, labels, arrows, annotations, photographic realism, complex background, grids",
+    "consistent_character": "Female-Subject-B",
+    "visual_theme": "Disease-Mapping-Vibrant"
+}

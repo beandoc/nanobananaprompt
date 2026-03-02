@@ -1,0 +1,12 @@
+{
+    "scientific_subject": "Cross-section of a human kidney showing microscopic nephron detail and pathogenic glomerular scarring",
+    "illustration_style": "biorender-histology-layer",
+    "visual_accuracy": {
+        "textures": "granulated renal cortex, smooth medullary pyramids, fibrous white scarring patterns",
+        "lighting": "microscopic-focused"
+    },
+    "journal_standard": "BioRender-standard",
+    "negative_prompt": "text, labels, arrows, annotations, photographic realism, messy layers",
+    "consistent_character": "No-Human-Figure",
+    "visual_theme": "BioRender-Pastel"
+}

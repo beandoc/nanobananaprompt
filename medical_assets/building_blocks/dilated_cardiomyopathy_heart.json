@@ -1,0 +1,12 @@
+{
+    "scientific_subject": "Human heart showing severe dilated cardiomyopathy with weakened, thinned ventricular walls and enlarged chambers",
+    "illustration_style": "biorender-pathology-comparison",
+    "visual_accuracy": {
+        "textures": "weakened semi-translucent heart muscle, thinned wall pathology, smooth distended chambers",
+        "lighting": "even-ambient-clean"
+    },
+    "journal_standard": "BioRender-standard",
+    "negative_prompt": "text, labels, arrows, annotations, photographic realism, blood-horror, sharp shadows",
+    "consistent_character": "No-Human-Figure",
+    "visual_theme": "Comparison-Split"
+}

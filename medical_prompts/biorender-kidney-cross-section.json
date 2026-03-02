@@ -1,0 +1,13 @@
+{
+    "scientific_subject": "Internal cross-section of a healthy human kidney, depicting the cortex, renal medulla with simplified pyramids, and renal pelvis transitioning to the ureter. Focused on clean anatomical representation.",
+    "illustration_style": "biorender-scientific-vector",
+    "visual_accuracy": {
+        "textures": "smooth matte surfaces, 2.5D volume shading, plastic-like organic textures",
+        "lighting": "soft-ambient-constant, subtle inner glows on vessels",
+        "labeling_safe_zones": "Total isolation on white background"
+    },
+    "journal_standard": "BioRender-educational-standard",
+    "negative_prompt": "text, labels, arrows, leader-lines, annotations, messy-hand-drawn, dark-grunge, photographic-realism, complex-lighting, shadow-heavy",
+    "consistent_character": "No-Human-Figure",
+    "visual_theme": "Clean-Medical-Asset"
+}
