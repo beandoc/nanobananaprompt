@@ -47,9 +47,10 @@ export async function POST(req: NextRequest) {
             finalPrompt = `${promptData.scientific_subject}. Illustration Style: ${promptData.illustration_style}. Textures: ${promptData.visual_accuracy?.textures || ''}. Lighting: ${promptData.visual_accuracy?.lighting || ''}. Journal Standard: ${promptData.journal_standard}. Consistency: ${promptData.consistent_character || ''}. Theme: ${promptData.visual_theme || ''}. Negative: ${promptData.negative_prompt}`;
         }
 
-        // Waterfall Fallback Logic
+        // Waterfall Fallback Logic (Optimized for Nano Banana 2 availability)
         const modelsToTry = [
             { name: "imagen-4.0-generate-001", type: "imagen" },
+            { name: "gemini-3.1-flash-image-preview", type: "gemini" },
             { name: "gemini-2.0-flash-exp-image-generation", type: "gemini" },
             { name: "gemini-2.5-flash-image", type: "gemini" }
         ];

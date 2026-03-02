@@ -1,0 +1,13 @@
+{
+  "scientific_subject": "Superior-lateral view of the human brain emphasizing the frontal and temporal lobes, detailing the prefrontal cortex and superior temporal gyrus, depicted as part of an Indian anatomical research study.",
+  "illustration_style": "3d-medical-render",
+  "visual_accuracy": {
+    "textures": "Glistening, moist convoluted gyri with deep sulci and visible fine arachnoid vasculature.",
+    "lighting": "rim-lit-anatomical",
+    "labeling_safe_zones": "Clean white space surrounding the frontal pole and the Sylvian fissure for anatomical annotations."
+  },
+  "journal_standard": "Nature-modern",
+  "negative_prompt": "cartoonish, low-resolution, inaccurate anatomy, messy labels, blood-horror (unless surgical), vibrant-neon",
+  "consistent_character": "No-Human-Figure",
+  "visual_theme": "Anatomy-White-Background"
+}
