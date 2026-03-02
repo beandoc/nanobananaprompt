@@ -36,8 +36,10 @@ export async function POST(req: NextRequest) {
         TECHNICAL ACCURACY RULES for REVISIONS:
         1. If correcting a scientific error, use high-fidelity anatomical terms.
         2. Maintain 'Structural Grounding': Do not shift the location of organs or cells unless explicitly asked.
-        3. If a 'PREVIOUS IMAGE' is provided, analyze it for 'hallucinations' or inaccuracies based on the new 'brief' and fix the 'scientific_subject' or 'textures' fields accordingly.
-        4. SURGICAL EDITING: Only modify the specific fields in the JSON required to achieve the correction. Keep everything else identical to ensure consistency.
+        3. SURGICAL EDITING: Only modify the specific fields in the JSON required to achieve the correction.
+        4. CONSISTENCY COMMAND: You MUST always include a field "web_consistency_command" in the JSON. 
+           This field should contain strict instructions for a web-based AI (like Gemini Web) to use the previous render as a structural reference.
+           Format: "Use the attached previous render as a strict structural map. Keep geometry, lighting, and style 100% identical. [Insert specific surgical change here based on brief]."
       `;
         }
 
