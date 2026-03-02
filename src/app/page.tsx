@@ -80,6 +80,7 @@ export default function Home() {
   const [assetType, setAssetType] = useState<"style" | "subject" | "structure">("style");
   const [selectedStyle, setSelectedStyle] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const externalRenderRef = useRef<HTMLInputElement>(null);
 
   const stylePresets = [
     { label: "Default Training", value: "" },
@@ -111,6 +112,19 @@ export default function Home() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => setAssetImage(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleExternalUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setRenderedImage(reader.result as string);
+        setMode("vector"); // Force vector mode for tracing
+        setResult({ data: { core_prompt: "External Manual Upload" } }); // Mock result to show UI
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -472,6 +486,17 @@ export default function Home() {
                       {renderedImage ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img src={renderedImage} alt="Analysis Result" className="w-full h-full object-contain" />
+                      ) : mode === "vector" ? (
+                        <div className="flex flex-col items-center gap-6 p-12">
+                          <input type="file" ref={externalRenderRef} onChange={handleExternalUpload} className="hidden" accept="image/*" />
+                          <div className="w-20 h-20 rounded-3xl bg-orange-50 border-2 border-dashed border-orange-200 flex items-center justify-center group-hover:scale-110 transition-transform cursor-pointer" onClick={() => externalRenderRef.current?.click()}>
+                            <Upload className="w-8 h-8 text-orange-400" />
+                          </div>
+                          <div className="text-center">
+                            <h5 className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Manual Vectorizer</h5>
+                            <p className="text-[9px] font-bold text-slate-300 uppercase max-w-[200px] leading-relaxed">Have a PNG from the web? Upload it here to trace it into a Scalable SVG for free.</p>
+                          </div>
+                        </div>
                       ) : (
                         <div className="flex flex-col items-center gap-6 text-slate-300">
                           <div className="w-20 h-20 rounded-full border-2 border-dashed border-slate-200 flex items-center justify-center"><ImageIcon className="w-8 h-8 opacity-40" /></div>
