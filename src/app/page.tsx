@@ -352,118 +352,120 @@ export default function Home() {
             </div>
 
             <AnimatePresence mode="wait">
-              {result ? (
+              {result || (mode === "vector" && !renderedImage) ? (
                 <motion.div key="result" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
-                  {/* JSON Blueprint Console */}
-                  <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl relative overflow-hidden">
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-3 text-slate-400">
-                        <Terminal className="w-4 h-4" />
-                        <h3 className="font-black uppercase tracking-widest text-[10px]">
-                          {mode === "ad" ? "Art Direction" : mode === "medical" ? "Technical Blueprint" : "Vector Blueprint"}
-                        </h3>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => {
-                            const val = prompt("Paste your Technical JSON here:");
-                            if (val) {
-                              try {
-                                const parsed = JSON.parse(val);
-                                setResult({ ...result, data: parsed });
-                              } catch (e) {
-                                alert("Invalid JSON format. Please ensure you copy the exact output from the web or app.");
+                  {/* JSON Blueprint Console (Only show if we have data or NOT in manual vector mode) */}
+                  {(result?.data) && (
+                    <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl relative overflow-hidden">
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3 text-slate-400">
+                          <Terminal className="w-4 h-4" />
+                          <h3 className="font-black uppercase tracking-widest text-[10px]">
+                            {mode === "ad" ? "Art Direction" : mode === "medical" ? "Technical Blueprint" : "Vector Blueprint"}
+                          </h3>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              const val = prompt("Paste your Technical JSON here:");
+                              if (val) {
+                                try {
+                                  const parsed = JSON.parse(val);
+                                  setResult({ ...result, data: parsed });
+                                } catch (e) {
+                                  alert("Invalid JSON format. Please ensure you copy the exact output from the web or app.");
+                                }
                               }
+                            }}
+                            className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-1.5"
+                          >
+                            <Upload className="w-3 h-3" /> Import
+                          </button>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(JSON.stringify(result.data, null, 2));
+                              alert("Technical JSON copied to clipboard. You can now paste this into Gemini Web for rendering.");
+                            }}
+                            className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-1.5"
+                          >
+                            <Database className="w-3 h-3" /> Copy JSON
+                          </button>
+                          <button onClick={handleRenderImage} disabled={isRendering} className={cn(
+                            "px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all shadow-sm",
+                            mode === "ad" ? "bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100" :
+                              mode === "medical" ? "bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100" :
+                                "bg-orange-50 text-orange-600 border border-orange-100 hover:bg-orange-100"
+                          )}>
+                            {isRendering ? <Loader2 className="w-3 h-3 animate-spin" /> : <Eye className="w-3 h-3" />}
+                            {isRendering ? "Rendering..." : "Execute Render"}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 max-h-[220px] overflow-auto mb-6 group/code relative">
+                        <textarea
+                          value={JSON.stringify(result.data, null, 2)}
+                          onChange={(e) => {
+                            try {
+                              const parsed = JSON.parse(e.target.value);
+                              setResult({ ...result, data: parsed });
+                            } catch (err) {
+                              // Allow typing even if invalid JSON temporarily
                             }
                           }}
-                          className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-1.5"
-                        >
-                          <Upload className="w-3 h-3" /> Import
-                        </button>
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(JSON.stringify(result.data, null, 2));
-                            alert("Technical JSON copied to clipboard. You can now paste this into Gemini Web for rendering.");
-                          }}
-                          className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-1.5"
-                        >
-                          <Database className="w-3 h-3" /> Copy JSON
-                        </button>
-                        <button onClick={handleRenderImage} disabled={isRendering} className={cn(
-                          "px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all shadow-sm",
-                          mode === "ad" ? "bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100" :
-                            mode === "medical" ? "bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100" :
-                              "bg-orange-50 text-orange-600 border border-orange-100 hover:bg-orange-100"
-                        )}>
-                          {isRendering ? <Loader2 className="w-3 h-3 animate-spin" /> : <Eye className="w-3 h-3" />}
-                          {isRendering ? "Rendering..." : "Execute Render"}
-                        </button>
+                          className="w-full h-full min-h-[150px] bg-transparent text-[11px] text-slate-500 font-mono leading-relaxed outline-none resize-none"
+                        />
+                        <div className="absolute top-2 right-2 opacity-0 group-hover/code:opacity-100 transition-opacity bg-white text-[9px] font-bold px-2 py-1 rounded border border-slate-200 text-slate-400 pointer-events-none">
+                          LIVE EDITOR ACTIVE
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 max-h-[220px] overflow-auto mb-6 group/code relative">
-                      <textarea
-                        value={JSON.stringify(result.data, null, 2)}
-                        onChange={(e) => {
-                          try {
-                            const parsed = JSON.parse(e.target.value);
-                            setResult({ ...result, data: parsed });
-                          } catch (err) {
-                            // Allow typing even if invalid JSON temporarily
-                          }
-                        }}
-                        className="w-full h-full min-h-[150px] bg-transparent text-[11px] text-slate-500 font-mono leading-relaxed outline-none resize-none"
-                      />
-                      <div className="absolute top-2 right-2 opacity-0 group-hover/code:opacity-100 transition-opacity bg-white text-[9px] font-bold px-2 py-1 rounded border border-slate-200 text-slate-400 pointer-events-none">
-                        LIVE EDITOR ACTIVE
-                      </div>
-                    </div>
-
-                    <div className="p-6 bg-indigo-50/30 rounded-2xl border border-indigo-100 relative">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2 text-[10px] font-black text-indigo-500 uppercase italic tracking-widest">
-                          <RefreshCw className="w-3.5 h-3.5" /> Technical Correction Mode
+                      <div className="p-6 bg-indigo-50/30 rounded-2xl border border-indigo-100 relative">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-2 text-[10px] font-black text-indigo-500 uppercase italic tracking-widest">
+                            <RefreshCw className="w-3.5 h-3.5" /> Technical Correction Mode
+                          </div>
+                          {renderedImage && (
+                            <div className="flex items-center gap-2 px-3 py-1 bg-white border border-indigo-200 rounded-lg shadow-sm">
+                              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                              <span className="text-[9px] font-bold text-indigo-600 uppercase">Visual Reference Locked</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex gap-3">
+                          <input value={refinement} onChange={(e) => setRefinement(e.target.value)} placeholder="e.g., 'Make the efferent arteriole blue'..." className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-300" />
+                          <button onClick={() => handleGenerate(true)} disabled={isLoading || !refinement.trim()} className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-indigo-100">Update</button>
                         </div>
                         {renderedImage && (
-                          <div className="flex items-center gap-2 px-3 py-1 bg-white border border-indigo-200 rounded-lg shadow-sm">
-                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="text-[9px] font-bold text-indigo-600 uppercase">Visual Reference Locked</span>
+                          <div className="mt-4 flex items-center gap-3 p-3 bg-white/50 rounded-xl border border-indigo-50">
+                            <div className="w-10 h-10 rounded-lg overflow-hidden border border-indigo-100">
+                              <img src={renderedImage} className="w-full h-full object-cover opacity-50 grayscale" alt="Ref" />
+                            </div>
+                            <div className="text-[9px] text-slate-400 font-bold uppercase leading-tight">
+                              Consistency Engine Active:<br />
+                              <span className="text-indigo-400">Rendering relative to previous frame</span>
+                            </div>
+                          </div>
+                        )}
+                        {isLoading && (
+                          <div className="mt-4 w-full h-1 bg-indigo-100 rounded-full overflow-hidden">
+                            <motion.div initial={{ x: "-100%" }} animate={{ x: "0%" }} transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }} className="w-full h-full bg-indigo-500" />
+                          </div>
+                        )}
+                        {renderError && (
+                          <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-[10px] font-bold">
+                            <AlertCircle className="w-4 h-4" />
+                            <span>{renderError}</span>
                           </div>
                         )}
                       </div>
-                      <div className="flex gap-3">
-                        <input value={refinement} onChange={(e) => setRefinement(e.target.value)} placeholder="e.g., 'Make the efferent arteriole blue'..." className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-300" />
-                        <button onClick={() => handleGenerate(true)} disabled={isLoading || !refinement.trim()} className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-indigo-100">Update</button>
-                      </div>
-                      {renderedImage && (
-                        <div className="mt-4 flex items-center gap-3 p-3 bg-white/50 rounded-xl border border-indigo-50">
-                          <div className="w-10 h-10 rounded-lg overflow-hidden border border-indigo-100">
-                            <img src={renderedImage} className="w-full h-full object-cover opacity-50 grayscale" alt="Ref" />
-                          </div>
-                          <div className="text-[9px] text-slate-400 font-bold uppercase leading-tight">
-                            Consistency Engine Active:<br />
-                            <span className="text-indigo-400">Rendering relative to previous frame</span>
-                          </div>
-                        </div>
-                      )}
-                      {isLoading && (
-                        <div className="mt-4 w-full h-1 bg-indigo-100 rounded-full overflow-hidden">
-                          <motion.div initial={{ x: "-100%" }} animate={{ x: "0%" }} transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }} className="w-full h-full bg-indigo-500" />
-                        </div>
-                      )}
-                      {renderError && (
-                        <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-[10px] font-bold">
-                          <AlertCircle className="w-4 h-4" />
-                          <span>{renderError}</span>
-                        </div>
-                      )}
                     </div>
-                  </div>
+                  )}
 
                   {/* Visual Console */}
                   <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl overflow-hidden group">
                     <div className="flex items-center justify-between mb-6">
-                      <h3 className="font-black uppercase tracking-widest text-[10px] text-slate-400">Vison Console</h3>
+                      <h3 className="font-black uppercase tracking-widest text-[10px] text-slate-400">Vision Console</h3>
                       {renderedImage && (
                         <div className="flex gap-2">
                           {mode === "vector" && (
@@ -503,13 +505,16 @@ export default function Home() {
                           <span className="text-[10px] font-black tracking-[0.3em] uppercase">Ready for processing</span>
                         </div>
                       )}
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/80 to-transparent p-6 pointer-events-none">
-                        <h4 className="text-sm font-black text-slate-800 mb-2 uppercase tracking-tighter truncate">{result.data.scientific_subject || result.data.core_prompt}</h4>
-                        <div className="flex gap-2">
-                          <span className="text-[9px] px-3 py-1 bg-slate-100 text-slate-500 rounded-lg border border-slate-200 uppercase font-black">Ref: {mode}</span>
-                          <span className="text-[9px] px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg border border-indigo-100 uppercase font-black tracking-widest">V-Intelligence</span>
+
+                      {result?.data && (
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/80 to-transparent p-6 pointer-events-none">
+                          <h4 className="text-sm font-black text-slate-800 mb-2 uppercase tracking-tighter truncate">{result.data.scientific_subject || result.data.core_prompt}</h4>
+                          <div className="flex gap-2">
+                            <span className="text-[9px] px-3 py-1 bg-slate-100 text-slate-500 rounded-lg border border-slate-200 uppercase font-black">Ref: {mode}</span>
+                            <span className="text-[9px] px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg border border-indigo-100 uppercase font-black tracking-widest">V-Intelligence</span>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>
