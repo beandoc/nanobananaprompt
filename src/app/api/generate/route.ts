@@ -5,10 +5,10 @@ import path from "path";
 
 export async function POST(req: NextRequest) {
     try {
-        const { brief, image, mode = "ad", parentPrompt = null } = await req.json();
+        const { brief, image, mode = "ad", parentPrompt = null, assetInstruction = "style" } = await req.json();
 
-        if (!brief) {
-            return NextResponse.json({ error: "No brief provided" }, { status: 400 });
+        if (!brief && !image) {
+            return NextResponse.json({ error: "No input provided" }, { status: 400 });
         }
 
         const model = getGeminiModel(mode as "ad" | "medical");
@@ -17,40 +17,42 @@ export async function POST(req: NextRequest) {
         if (mode === "ad") {
             systemPrompt = `
         You are an elite Art Director for a premium Indian DTC skincare brand. 
-        Your job is to translate briefs into Nano Banana 2 JSON payloads.
+        Your job is to translate briefs and reference images into Nano Banana 2 JSON payloads.
 
-        1. Identity Standard: All characters (UGC creators, models) MUST be of Indian descent. Use specific descriptors like "South Asian heritage," "warm olive undertones," and authentic styling.
-        2. Eradicate the "AI Look": For UGC and lifestyle shots, always enforce photographic realism. Use terms like "shot on iPhone 15 Pro", "slight motion blur", "natural skin texture", "imperfect ambient lighting", and "candid".
-        3. Product Accuracy: Describe material properties exhaustively (e.g., "matte cardboard packaging," "high-gloss label," "condensation on glass").
-        4. Typography: Wrap the exact phrase in quotes and specify the font style and placement.
+        1. Identity Standard: All characters (UGC creators, models) MUST be of Indian descent.
+        2. Asset Handling: If a reference image is provided, use it according to the instruction: "${assetInstruction}". 
+           - If "style": Copy the lighting, color palette, and camera aesthetic.
+           - If "subject": Use the person/product in the image as the core subject.
+           - If "structure": Follow the exact layout and composition of the image.
+        3. Photographic Realism: For UGC and lifestyle shots, always enforce photographic realism. 
       `;
         } else {
             systemPrompt = `
-        You are a World-Class Medical Illustrator specializing in Indian medical textbooks and high-impact journals (e.g., Nature, NEJM). 
-        Your job is to translate clinical cases into high-precision technical JSON for the Nano Banana 2 engine.
+        You are a World-Class Medical Illustrator specializing in Indian medical textbooks. 
+        Your job is to translate clinical cases and reference assets into high-precision technical JSON.
 
-        1. Scientific & Identity Integrity: All human clinical subjects, surgical teams, and patients MUST be of Indian descent.
-        2. Scientific Integrity: Prioritize anatomical accuracy over artistic flair. Describe cellular structures with precision.
-        3. Textural Definition: Differentiate between fibrous, aqueous, and granulated textures.
-        4. Clean Backgrounds: Ensure medical subjects are isolated or placed against neutral, non-distracting backgrounds suitable for scientific publication.
+        1. Scientific Identity: All human subjects MUST be of Indian descent.
+        2. Asset Handling: If a reference image/sketch is provided, use it according to: "${assetInstruction}".
+           - If "structure": This is a structural anchor (ControlNet-style). Follow the exact anatomical layout of the sketch/image.
+           - If "style": Replicate the journal-standard aesthetic (e.g., SEM monochrome or 3D render style).
+        3. Scientific Accuracy: Prioritize anatomical precision over artistic flair.
       `;
         }
 
-        let promptContent = brief;
+        let promptContent = brief || "Generate based on the provided reference image.";
+
         if (parentPrompt) {
             promptContent = `
             PARENT PROMPT (JSON): ${JSON.stringify(parentPrompt)}
             REFINEMENT INSTRUCTION: ${brief}
             
             Task: Modify the PARENT PROMPT JSON based on the REFINEMENT INSTRUCTION. 
-            Maintain all brand and scientific rules (Indian characters, anatomical accuracy). 
             Return only the updated JSON object.
             `;
         }
 
         const promptParams: any[] = [systemPrompt, promptContent];
 
-        // If an image is provided (base64), add it as a part
         if (image) {
             const base64Data = image.split(",")[1] || image;
             promptParams.push({
@@ -65,11 +67,9 @@ export async function POST(req: NextRequest) {
         const response = await result.response;
         const text = response.text();
 
-        // Clean text if Gemini adds markdown markers
         const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
         const adData = JSON.parse(cleanText);
 
-        // Dynamic folder and naming based on mode
         const folder = mode === "ad" ? "prompts" : "medical_prompts";
         const prefix = mode === "ad" ? (adData.core_prompt || "ad").substring(0, 15) : (adData.scientific_subject || "med").substring(0, 15);
         const cleanPrefix = prefix.toLowerCase().replace(/\s+/g, '-');

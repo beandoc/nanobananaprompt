@@ -1,0 +1,13 @@
+{
+  "scientific_subject": "Cross-section of a human kidney exhibiting Chronic Kidney Disease (CKD) pathophysiology, including cortical thinning, scarred parenchyma, and granular surface texture. If an Indian patient or clinician is depicted in the background, they must adhere to Indian physiognomy for textbook consistency.",
+  "illustration_style": "3d-medical-render",
+  "visual_accuracy": {
+    "textures": "granulated and scarred cortical surface, fibrous internal parenchyma, atrophied renal pyramids",
+    "lighting": "rim-lit-anatomical",
+    "labeling_safe_zones": "Outer peripheral margins and the bottom right quadrant of the canvas"
+  },
+  "journal_standard": "Nature-modern",
+  "negative_prompt": "cartoonish, low-resolution, inaccurate anatomy, messy labels, blood-horror, vibrant-neon, anthropomorphized features, smiling organs",
+  "consistent_character": "No-Human-Figure",
+  "visual_theme": "Clinical-Neutral"
+}
