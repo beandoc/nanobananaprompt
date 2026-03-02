@@ -82,7 +82,17 @@ export async function POST(req: NextRequest) {
         const promptParams: any[] = [
             systemPrompt,
             parentPrompt
-                ? `BASELINE BLUEPRINT: ${JSON.stringify(parentPrompt)}\n\nMODIFICATION REQUEST: ${brief}\n\nApply surgical corrections to the baseline while maintaining its core technical DNA.`
+                ? `
+                ### SURGICAL REFINEMENT PROTOCOL ###
+                You are modifying an existing technical blueprint.
+                BASELINE JSON: ${JSON.stringify(parentPrompt)}
+                MODIFICATION REQUEST: "${brief}"
+
+                RULES FOR REFINEMENT:
+                1. MANDATORY OVERRIDE: If the request asks to change a style, color, or subject, you MUST update the corresponding JSON keys (e.g., 'illustration_style', 'textures') with literal adherence.
+                2. PRESERVE DNA: Keep all other technical details that weren't mentioned in the request.
+                3. NO STUBBORNNESS: Do not ignore specific style changes in favor of "standard" medical rendering. If asked for '2.5D painting', the 'illustration_style' key MUST reflect that exactly.
+                `
                 : `Generate a technical JSON blueprint for this ${mode} brief: ${brief}`
         ];
 
