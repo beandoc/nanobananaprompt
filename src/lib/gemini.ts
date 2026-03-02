@@ -69,9 +69,19 @@ export const medicalIllustrationSchema: Schema = {
         negative_prompt: {
             type: SchemaType.STRING,
             description: "Exclude: 'cartoonish, low-resolution, inaccurate anatomy, messy labels, blood-horror (unless surgical), vibrant-neon'."
-        }
+        },
+        consistent_character: {
+            type: SchemaType.STRING,
+            enum: ["Male-Subject-A", "Female-Subject-B", "No-Human-Figure"],
+            description: "Locks the physical characteristics of the human figure for textbook-wide consistency."
+        } as any,
+        visual_theme: {
+            type: SchemaType.STRING,
+            enum: ["Clinical-Neutral", "Surgical-Blue", "Anatomy-White-Background"],
+            description: "Forces a consistent color palette across different images."
+        } as any
     },
-    required: ["scientific_subject", "illustration_style", "visual_accuracy", "journal_standard", "negative_prompt"]
+    required: ["scientific_subject", "illustration_style", "visual_accuracy", "journal_standard", "negative_prompt", "consistent_character", "visual_theme"]
 };
 
 export const getGeminiModel = (mode: "ad" | "medical" = "ad") => {

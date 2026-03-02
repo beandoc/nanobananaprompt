@@ -57,8 +57,10 @@ Your job is to translate clinical case descriptions, anatomical briefs, or histo
       }
     },
     "journal_standard": { "enum": ["NEJM-classic", "Nature-modern", "Lancet-descriptive", "Gray-Anatomy-sketch"] },
-    "negative_prompt": { "type": "string" }
+    "negative_prompt": { "type": "string" },
+    "consistent_character": { "enum": ["Male-Subject-A", "Female-Subject-B", "No-Human-Figure"] },
+    "visual_theme": { "enum": ["Clinical-Neutral", "Surgical-Blue", "Anatomy-White-Background"] }
   },
-  "required": ["scientific_subject", "illustration_style", "visual_accuracy", "journal_standard", "negative_prompt"]
+  "required": ["scientific_subject", "illustration_style", "visual_accuracy", "journal_standard", "negative_prompt", "consistent_character", "visual_theme"]
 }
 ```
