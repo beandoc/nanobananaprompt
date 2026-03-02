@@ -247,6 +247,22 @@ export default function Home() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => {
+                            const val = prompt("Paste your Technical JSON here:");
+                            if (val) {
+                              try {
+                                const parsed = JSON.parse(val);
+                                setResult({ ...result, data: parsed });
+                              } catch (e) {
+                                alert("Invalid JSON format. Please ensure you copy the exact output from the web or app.");
+                              }
+                            }
+                          }}
+                          className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-1.5"
+                        >
+                          <Upload className="w-3 h-3" /> Import
+                        </button>
+                        <button
+                          onClick={() => {
                             navigator.clipboard.writeText(JSON.stringify(result.data, null, 2));
                             alert("Technical JSON copied to clipboard. You can now paste this into Gemini Web for rendering.");
                           }}
@@ -261,8 +277,22 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 max-h-[180px] overflow-auto mb-6">
-                      <pre className="text-[11px] text-slate-500 font-mono leading-relaxed">{JSON.stringify(result.data, null, 2)}</pre>
+                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 max-h-[220px] overflow-auto mb-6 group/code relative">
+                      <textarea
+                        value={JSON.stringify(result.data, null, 2)}
+                        onChange={(e) => {
+                          try {
+                            const parsed = JSON.parse(e.target.value);
+                            setResult({ ...result, data: parsed });
+                          } catch (err) {
+                            // Allow typing even if invalid JSON temporarily
+                          }
+                        }}
+                        className="w-full h-full min-h-[150px] bg-transparent text-[11px] text-slate-500 font-mono leading-relaxed outline-none resize-none"
+                      />
+                      <div className="absolute top-2 right-2 opacity-0 group-hover/code:opacity-100 transition-opacity bg-white text-[9px] font-bold px-2 py-1 rounded border border-slate-200 text-slate-400 pointer-events-none">
+                        LIVE EDITOR ACTIVE
+                      </div>
                     </div>
 
                     <div className="p-6 bg-indigo-50/30 rounded-2xl border border-indigo-100">
