@@ -11,32 +11,26 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Client-side Script Loader helper
-const loadScript = (src: string) => {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = src;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.appendChild(script);
-  });
-};
-
 export default function Home() {
   const [brief, setBrief] = useState("");
-  // ... existing states ...
   const [isVectorizing, setIsVectorizing] = useState(false);
+  const [isEngineReady, setIsEngineReady] = useState(false);
 
   useEffect(() => {
-    loadScript("https://cdn.jsdelivr.net/gh/jseidelin/exif-js/exif.js");
-    loadScript("https://cdnjs.cloudflare.com/ajax/libs/imagetracerjs/1.2.6/imagetracer_v1.2.6.js");
+    const checkEngine = setInterval(() => {
+      if ((window as any).ImageTracer) {
+        setIsEngineReady(true);
+        clearInterval(checkEngine);
+      }
+    }, 500);
+    return () => clearInterval(checkEngine);
   }, []);
 
   const vectorizeToSVG = () => {
     if (!renderedImage || typeof window === 'undefined') return;
     const ImageTracer = (window as any).ImageTracer;
     if (!ImageTracer) {
-      alert("Vectorization engine still loading... please try again in a second.");
+      alert("Vectorization engine is still downloading from the cloud. Please wait 5-10 seconds for initial load.");
       return;
     }
 
@@ -471,11 +465,16 @@ export default function Home() {
                           {mode === "vector" && (
                             <button
                               onClick={vectorizeToSVG}
-                              disabled={isVectorizing}
-                              className="flex items-center gap-2 px-6 py-2 bg-orange-600 shadow-lg shadow-orange-100 rounded-xl text-[10px] font-black text-white hover:bg-orange-700 transition-all uppercase tracking-widest disabled:opacity-50"
+                              disabled={isVectorizing || !isEngineReady}
+                              className={cn(
+                                "flex items-center gap-2 px-6 py-2 shadow-lg rounded-xl text-[10px] font-black text-white transition-all uppercase tracking-widest disabled:opacity-50",
+                                isEngineReady ? "bg-orange-600 shadow-orange-100 hover:bg-orange-700" : "bg-slate-400 shadow-slate-100"
+                              )}
                             >
-                              {isVectorizing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Layers className="w-3.5 h-3.5" />}
-                              {isVectorizing ? "Tracing..." : "Vectorize (SVG)"}
+                              {isVectorizing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> :
+                                !isEngineReady ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> :
+                                  <Layers className="w-3.5 h-3.5" />}
+                              {isVectorizing ? "Tracing..." : !isEngineReady ? "Loading Engine..." : "Vectorize (SVG)"}
                             </button>
                           )}
                           <button onClick={downloadImage} className="flex items-center gap-2 px-6 py-2 bg-slate-900 shadow-lg shadow-slate-200 rounded-xl text-[10px] font-black text-white hover:bg-black transition-all uppercase tracking-widest">
