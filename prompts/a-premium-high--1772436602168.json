@@ -1,0 +1,12 @@
+{
+  "core_prompt": "A premium high-end editorial portrait of a professional Indian male clinician wearing a sleek charcoal grey lab coat, focused on examining a futuristic digital stethoscope with glowing blue accents inside a minimalist high-tech Indian diagnostic center.",
+  "lighting": "studio-softbox",
+  "camera_settings": {
+    "lens": "85mm-portrait",
+    "shot_type": "medium-shot",
+    "aesthetic": "high-end-editorial"
+  },
+  "negative_prompt": "plastic skin, over-retouched, deformed fingers, warped text, watermarks, CGI, 3D render",
+  "aspect_ratio": "4:5",
+  "exact_text": ""
+}

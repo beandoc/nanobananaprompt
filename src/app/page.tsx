@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Terminal, Camera, Zap, AlertCircle, Loader2, Download, Image as ImageIcon, Microscope, Stethoscope, Dna, FileText, History, X, Check, ArrowRight, CornerDownRight, Upload, Layers, Eye, RefreshCw, ShieldCheck } from "lucide-react";
+import { Sparkles, Terminal, Camera, Zap, AlertCircle, Loader2, Download, Image as ImageIcon, Microscope, Stethoscope, Dna, FileText, History, X, Check, ArrowRight, CornerDownRight, Upload, Layers, Eye, RefreshCw, ShieldCheck, Search, Database } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -57,7 +57,6 @@ export default function Home() {
     setError(null);
     setRenderError(null);
 
-    // Logic: If refining, we pass the current result AND the current render back to Gemini
     const body: any = {
       brief: activeBrief,
       mode,
@@ -67,7 +66,7 @@ export default function Home() {
 
     if (isRefinement) {
       body.parentPrompt = result?.data;
-      body.previousImage = renderedImage; // Crucial: Gemini sees the "buggy" image to fix it
+      body.previousImage = renderedImage;
     } else {
       setResult(null);
       setRenderedImage(null);
@@ -131,144 +130,184 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 selection:bg-indigo-500/30 font-sans overflow-x-hidden">
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.05),transparent_50%)] pointer-events-none" />
-      <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none brightness-50 contrast-150" />
+    <main className="min-h-screen bg-[#FDFDFD] text-slate-900 selection:bg-indigo-100 font-sans overflow-x-hidden">
+      {/* Dynamic Professional Backgrounds */}
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.03),transparent_50%)] pointer-events-none" />
+      <div className="fixed inset-0 bg-[#f8fafc]/50 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#e5e7eb 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }} />
 
-      <div className="max-w-6xl mx-auto px-6 py-12 relative">
-        <header className="mb-12 flex flex-col items-center text-center">
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className={cn("w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-2xl border transition-all duration-500", mode === "ad" ? "bg-indigo-600 border-indigo-400/20" : "bg-emerald-600 border-emerald-400/20 shadow-emerald-500/30 font-bold")}>
-            {mode === "ad" ? <Sparkles className="w-8 h-8 text-white" /> : <Microscope className="w-8 h-8 text-white" />}
-          </motion.div>
-          <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-5xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-400">
-            Nano Banana <span className={mode === "ad" ? "text-indigo-400" : "text-emerald-400"}>{mode === "ad" ? "Ad Creative" : "Medical Illustrator"}</span>
-          </motion.h1>
-          <div className="flex bg-slate-900/80 p-1.5 rounded-2xl border border-white/5 mb-12">
-            <button onClick={() => setMode("ad")} className={cn("px-6 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2", mode === "ad" ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-slate-200")}><Zap className="w-4 h-4" /> DTC Ad Creative</button>
-            <button onClick={() => setMode("medical")} className={cn("px-6 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2", mode === "medical" ? "bg-emerald-600 text-white" : "text-slate-400 hover:text-slate-200")}><Stethoscope className="w-4 h-4" /> Medical Journal</button>
-            <button onClick={() => setShowLibrary(true)} className="ml-2 p-2 bg-slate-800 hover:bg-slate-700 rounded-xl border border-white/5 text-slate-400 transition-all"><History className="w-5 h-5" /></button>
+      {/* Header Navigation */}
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border transition-all duration-500", mode === "ad" ? "bg-indigo-600 border-indigo-400/20" : "bg-emerald-600 border-emerald-400/20")}>
+              {mode === "ad" ? <Sparkles className="w-5 h-5 text-white" /> : <Microscope className="w-5 h-5 text-white" />}
+            </div>
+            <div>
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-none mb-1">Nano Banana</h1>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Intelligence Pipeline</p>
+            </div>
           </div>
-        </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Left: Input */}
+          <div className="flex items-center gap-2 p-1 bg-slate-100 rounded-2xl border border-slate-200">
+            <button onClick={() => setMode("ad")} className={cn("px-6 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2", mode === "ad" ? "bg-white text-indigo-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+              <Zap className="w-3.5 h-3.5" /> DTC Creative
+            </button>
+            <button onClick={() => setMode("medical")} className={cn("px-6 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2", mode === "medical" ? "bg-white text-emerald-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+              <Stethoscope className="w-3.5 h-3.5" /> Medical Journal
+            </button>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button onClick={() => setShowLibrary(true)} className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:bg-slate-50 transition-all shadow-sm">
+              <History className="w-5 h-5" />
+            </button>
+            <div className="w-8 h-8 rounded-full bg-slate-200 border border-white" />
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-8 py-12 relative">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          {/* Left: Project Input */}
           <section className="space-y-6">
-            <motion.div layout className="bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3 text-indigo-400">
-                  <Terminal className="w-5 h-5 text-slate-500" />
-                  <h2 className="font-semibold uppercase tracking-wider text-xs">{mode === "ad" ? "Campaign Brief" : "Clinical Case Description"}</h2>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-1.5 h-6 bg-indigo-500 rounded-full" />
+              <h2 className="text-sm font-black uppercase tracking-widest text-slate-500">Project Definition</h2>
+            </div>
+
+            <motion.div layout className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden group">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <FileText className="w-4 h-4 text-slate-400" />
+                  <span className="font-bold text-xs text-slate-400 uppercase tracking-tighter">Drafting Board</span>
                 </div>
                 <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="image/*" className="hidden" />
-                <button onClick={() => fileInputRef.current?.click()} className={cn("px-4 py-1.5 rounded-full text-[10px] font-bold border flex items-center gap-2 transition-all", assetImage ? "bg-indigo-500/20 border-indigo-500/50 text-indigo-400" : "bg-slate-800 border-white/5 text-slate-400")}>
-                  <Upload className="w-3 h-3" /> {assetImage ? "Asset Active" : "Reference Asset"}
+                <button onClick={() => fileInputRef.current?.click()} className={cn("px-4 py-2 rounded-full text-[10px] font-black border uppercase transition-all flex items-center gap-2", assetImage ? "bg-indigo-50 text-indigo-600 border-indigo-200" : "bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100")}>
+                  <Upload className="w-3.5 h-3.5" /> {assetImage ? "Asset Loaded" : "Link Reference"}
                 </button>
               </div>
 
               {assetImage && (
-                <div className="mb-6 bg-slate-800/80 rounded-2xl p-4 border border-white/5 flex gap-4 items-center">
-                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-white/10 bg-black">
+                <div className="mb-8 p-6 bg-slate-50 rounded-[1.5rem] border border-slate-200 flex gap-6 items-center">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden border border-white shadow-sm ring-1 ring-slate-200">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={assetImage} alt="Reference" className="w-full h-full object-cover" />
                   </div>
-                  <div className="flex-1 flex gap-2">
-                    {["style", "subject", "structure"].map((type) => (
-                      <button key={type} onClick={() => setAssetType(type as any)} className={cn("px-3 py-1 rounded-md text-[9px] font-bold border transition-all uppercase", assetType === type ? "bg-white text-black border-white" : "bg-slate-900 text-slate-500 border-white/5")}>{type}</button>
-                    ))}
+                  <div className="flex-1">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Asset Intent</p>
+                    <div className="flex gap-2">
+                      {["style", "subject", "structure"].map((type) => (
+                        <button key={type} onClick={() => setAssetType(type as any)} className={cn("px-4 py-1.5 rounded-lg text-[9px] font-black border transition-all uppercase tracking-widest", assetType === type ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-slate-500 border-slate-200 hover:border-slate-300")}>{type}</button>
+                      ))}
+                    </div>
                   </div>
-                  <button onClick={() => setAssetImage(null)}><X className="w-4 h-4 text-slate-500" /></button>
+                  <button onClick={() => setAssetImage(null)} className="p-2 hover:bg-slate-200 rounded-full transition-all"><X className="w-4 h-4 text-slate-400" /></button>
                 </div>
               )}
 
-              <textarea value={brief} onChange={(e) => setBrief(e.target.value)} placeholder={mode === "ad" ? "Describe your brand campaign..." : "Describe the anatomical case with specific pathology details..."} className="w-full h-40 bg-slate-800/50 border border-white/5 rounded-2xl p-5 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 transition-all resize-none shadow-inner" />
+              <textarea
+                value={brief}
+                onChange={(e) => setBrief(e.target.value)}
+                placeholder={mode === "ad" ? "Specify your campaign parameters and visual narrative..." : "Describe clinical findings, pathology, or surgical sequences..."}
+                className="w-full h-48 bg-slate-50/50 border border-slate-200 rounded-2xl p-6 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-300 transition-all resize-none text-sm leading-relaxed"
+              />
 
-              <div className="mt-6 flex justify-between items-center">
-                <div className="flex gap-2">
-                  <span className="px-3 py-1 rounded-full bg-slate-800 border border-white/5 text-[10px] text-slate-400 flex items-center gap-1.5 font-bold italic">
-                    <ShieldCheck className="w-3 h-3 text-indigo-400" /> INDIAN IDENTITY LOCKED
-                  </span>
+              <div className="mt-8 flex justify-between items-center bg-slate-50 -mx-8 -mb-8 p-8 border-t border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-100">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <span className="text-[10px] text-slate-600 font-bold uppercase tracking-tight">Indian Identity Locked</span>
                 </div>
-                <button onClick={() => handleGenerate()} disabled={isLoading} className={cn("px-8 py-3 text-white rounded-xl font-bold flex items-center gap-2 transition-all hover:scale-105 active:scale-95 disabled:opacity-50", mode === "ad" ? "bg-indigo-600 hover:bg-indigo-500" : "bg-emerald-600 hover:bg-emerald-500")}>
-                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5 fill-current" />} Analyze Brief
+                <button onClick={() => handleGenerate()} disabled={isLoading} className={cn("px-10 py-4 text-white rounded-2xl font-black text-xs uppercase tracking-[0.15em] flex items-center gap-3 transition-all shadow-lg active:scale-95 disabled:opacity-50", mode === "ad" ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200" : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200")}>
+                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
+                  {isLoading ? "Analyzing..." : "Process Brief"}
                 </button>
               </div>
             </motion.div>
           </section>
 
-          {/* Right: Results + Technical Correction Layer */}
+          {/* Right: Technical Output + Preview */}
           <section className="space-y-6">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-1.5 h-6 bg-slate-300 rounded-full" />
+              <h2 className="text-sm font-black uppercase tracking-widest text-slate-500">Intelligent Output</h2>
+            </div>
+
             <AnimatePresence mode="wait">
               {result ? (
                 <motion.div key="result" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
-                  {/* JSON Result + Correction Console */}
-                  <div className="bg-slate-900 border border-white/10 rounded-3xl p-8 shadow-2xl relative">
+                  {/* JSON Blueprint Console */}
+                  <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl relative overflow-hidden">
                     <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-3 text-indigo-400">
-                        <Terminal className="w-5 h-5" />
-                        <h2 className="font-semibold uppercase tracking-wider text-xs">Technical Blueprint</h2>
+                      <div className="flex items-center gap-3 text-slate-400">
+                        <Terminal className="w-4 h-4" />
+                        <h3 className="font-black uppercase tracking-widest text-[10px]">Technical Blueprint</h3>
                       </div>
-                      <button onClick={handleRenderImage} disabled={isRendering} className={cn("px-5 py-2 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all hover:scale-105", mode === "ad" ? "bg-indigo-600 text-white shadow-indigo-500/20" : "bg-emerald-600 text-white shadow-emerald-500/20")}>
+                      <button onClick={handleRenderImage} disabled={isRendering} className={cn("px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all shadow-sm", mode === "ad" ? "bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100")}>
                         {isRendering ? <Loader2 className="w-3 h-3 animate-spin" /> : <Eye className="w-3 h-3" />}
-                        {isRendering ? "Simulating..." : "Execute Render"}
+                        {isRendering ? "Rendering..." : "Execute Render"}
                       </button>
                     </div>
 
-                    <div className="bg-black/40 rounded-xl p-4 border border-white/5 max-h-[150px] overflow-auto custom-scrollbar italic text-slate-500 text-[11px] mb-6">
-                      <pre>{JSON.stringify(result.data, null, 2)}</pre>
+                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 max-h-[180px] overflow-auto mb-6">
+                      <pre className="text-[11px] text-slate-500 font-mono leading-relaxed">{JSON.stringify(result.data, null, 2)}</pre>
                     </div>
 
-                    {/* Technical Correction Input */}
-                    <div className="bg-slate-800/50 rounded-2xl p-4 border border-indigo-500/10">
-                      <div className="flex items-center gap-2 mb-3 text-[10px] font-bold text-indigo-300 uppercase italic leading-none">
-                        <RefreshCw className="w-3 h-3" /> Technical Correction Mode
+                    <div className="p-6 bg-indigo-50/30 rounded-2xl border border-indigo-100">
+                      <div className="flex items-center gap-2 mb-4 text-[10px] font-black text-indigo-500 uppercase italic tracking-widest">
+                        <RefreshCw className="w-3.5 h-3.5" /> Technical Correction Mode
                       </div>
-                      <div className="flex gap-2">
-                        <input value={refinement} onChange={(e) => setRefinement(e.target.value)} placeholder="e.g., 'The pedicels look too thick, make them more hair-like'..." className="flex-1 bg-slate-900 border border-white/5 rounded-xl px-4 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500/50" />
-                        <button onClick={() => handleGenerate(true)} disabled={isLoading || !refinement.trim()} className="px-5 py-2 bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/40 text-indigo-400 rounded-xl text-xs font-bold transition-all">Surgically Update</button>
+                      <div className="flex gap-3">
+                        <input value={refinement} onChange={(e) => setRefinement(e.target.value)} placeholder="e.g., 'Increase contrast of the frontal lobe'..." className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-300" />
+                        <button onClick={() => handleGenerate(true)} disabled={isLoading || !refinement.trim()} className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-indigo-100">Update</button>
                       </div>
-                      {renderedImage && (
-                        <p className="mt-2 text-[9px] text-slate-500 italic">Visible Render attached to context. AI will now &quot;Study&quot; the current image to fix it.</p>
-                      )}
                       {renderError && (
-                        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-2 text-red-400 text-[10px]">
-                          <AlertCircle className="w-3 h-3" />
+                        <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-[10px] font-bold">
+                          <AlertCircle className="w-4 h-4" />
                           <span>{renderError}</span>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  {/* High Quality Visual Console */}
-                  <div className="bg-slate-900 border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
+                  {/* Visual Console */}
+                  <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl overflow-hidden group">
                     <div className="flex items-center justify-between mb-6">
-                      <h2 className="font-semibold uppercase tracking-wider text-xs text-slate-400">Vison Console</h2>
+                      <h3 className="font-black uppercase tracking-widest text-[10px] text-slate-400">Vison Console</h3>
                       {renderedImage && (
-                        <button onClick={downloadImage} className="flex items-center gap-2 px-4 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-[10px] font-bold text-white transition-all">
-                          <Download className="w-3 h-3" /> Download High-DPI
+                        <button onClick={downloadImage} className="flex items-center gap-2 px-6 py-2 bg-slate-900 shadow-lg shadow-slate-200 rounded-xl text-[10px] font-black text-white hover:bg-black transition-all uppercase tracking-widest">
+                          <Download className="w-3.5 h-3.5" /> Export DPI
                         </button>
                       )}
                     </div>
-                    <div className="w-full relative aspect-[16/9] rounded-2xl bg-slate-950/50 border border-white/5 flex items-center justify-center overflow-hidden">
+                    <div className="w-full relative aspect-[16/9] rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center overflow-hidden shadow-inner">
                       {renderedImage ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
-                        <img src={renderedImage} alt="Generated Medical Illustration" className="w-full h-full object-contain" />
+                        <img src={renderedImage} alt="Analysis Result" className="w-full h-full object-contain" />
                       ) : (
-                        <div className="flex flex-col items-center gap-4 text-slate-800"><Sparkles className="w-12 h-12 opacity-20" /><span className="text-[10px] font-black tracking-widest">AWAITING RENDER EXECUTION</span></div>
+                        <div className="flex flex-col items-center gap-6 text-slate-300">
+                          <div className="w-20 h-20 rounded-full border-2 border-dashed border-slate-200 flex items-center justify-center"><ImageIcon className="w-8 h-8 opacity-40" /></div>
+                          <span className="text-[10px] font-black tracking-[0.3em] uppercase">Ready for processing</span>
+                        </div>
                       )}
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-6 pointer-events-none">
-                        <h3 className="text-sm font-bold text-white mb-1 uppercase tracking-tight">{result.data.scientific_subject || result.data.core_prompt}</h3>
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/80 to-transparent p-6 pointer-events-none">
+                        <h4 className="text-sm font-black text-slate-800 mb-2 uppercase tracking-tighter truncate">{result.data.scientific_subject || result.data.core_prompt}</h4>
                         <div className="flex gap-2">
-                          <span className="text-[8px] px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30 uppercase font-bold">Scientific Std</span>
-                          <span className="text-[8px] px-2 py-0.5 bg-indigo-500/20 text-indigo-400 rounded border border-indigo-500/30 uppercase font-bold">Indian Heritage</span>
+                          <span className="text-[9px] px-3 py-1 bg-slate-100 text-slate-500 rounded-lg border border-slate-200 uppercase font-black">Ref: {mode}</span>
+                          <span className="text-[9px] px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg border border-indigo-100 uppercase font-black tracking-widest">V-Intelligence</span>
                         </div>
                       </div>
                     </div>
                   </div>
                 </motion.div>
               ) : (
-                <div className="h-full bg-slate-900/30 border border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center p-12 text-center text-slate-800 min-h-[500px]">
-                  <Layers className="w-16 h-16 opacity-10 mb-8" />
-                  <p className="text-xs uppercase tracking-[0.2em] font-black opacity-30 italic">Initialize Blueprint to start</p>
+                <div className="h-full bg-white border border-dashed border-slate-200 rounded-[2.5rem] flex flex-col items-center justify-center p-16 text-center text-slate-300 min-h-[600px] shadow-sm">
+                  <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-8 border border-slate-100">
+                    <Layers className="w-10 h-10 opacity-30" />
+                  </div>
+                  <h3 className="text-lg font-black text-slate-400 uppercase tracking-widest mb-2 italic">Awaiting Protocol</h3>
+                  <p className="max-w-[240px] text-[11px] font-bold text-slate-400 uppercase tracking-tight leading-relaxed">Initialize a campaign brief or clinical case to begin multimodal analysis.</p>
                 </div>
               )}
             </AnimatePresence>
@@ -276,9 +315,54 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Slide-out Library Panel */}
+      <AnimatePresence>
+        {showLibrary && (
+          <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed inset-y-0 right-0 w-[400px] bg-white shadow-2xl z-[60] border-l border-slate-200 flex flex-col">
+            <div className="p-8 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h2 className="text-sm font-black uppercase tracking-widest text-slate-800">Resource Library</h2>
+                <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase">Persistent Asset History</p>
+              </div>
+              <button onClick={() => setShowLibrary(false)} className="p-2.5 hover:bg-slate-50 rounded-xl border border-slate-100 transition-all"><X className="w-5 h-5 text-slate-500" /></button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/30">
+              {isLoadingLibrary ? (
+                <div className="h-full flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-slate-200" /></div>
+              ) : library.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-slate-300 gap-4 opacity-50">
+                  <Database className="w-12 h-12" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">No records found</span>
+                </div>
+              ) : library.map((item, i) => (
+                <button key={i} onClick={() => loadFromLibrary(item)} className="w-full text-left bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all group relative overflow-hidden">
+                  <div className={cn("absolute top-0 left-0 w-1.5 h-full", item.type === "ad" ? "bg-indigo-500" : "bg-emerald-500")} />
+                  <div className="flex items-center justify-between mb-3">
+                    <span className={cn("text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded", item.type === "ad" ? "bg-indigo-50 text-indigo-600" : "bg-emerald-50 text-emerald-600")}>{item.type}</span>
+                    <span className="text-[8px] font-bold text-slate-400 font-mono">{new Date(item.timestamp).toLocaleDateString()}</span>
+                  </div>
+                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-tighter truncate pr-4">{item.content.scientific_subject || item.content.core_prompt}</h4>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {showLibrary && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowLibrary(false)} className="fixed inset-0 bg-slate-900/10 backdrop-blur-sm z-50" />
+      )}
+
+      {/* Global Aesthetics */}
       <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 3px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+        
+        pre::-webkit-scrollbar { height: 4px; }
+        pre::-webkit-scrollbar-thumb { background: #cbd5e1; }
       `}</style>
     </main>
   );
