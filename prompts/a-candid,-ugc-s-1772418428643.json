@@ -1,0 +1,12 @@
+{
+  "core_prompt": "A candid, UGC-style iPhone video still of a young Indian woman with radiant, glowing skin, smiling subtly. She is holding a minimal glass bottle labeled 'Glow Nectar' serum in her hand. The scene is a sun-drenched modern apartment in Bangalore with soft indoor plants in the background.",
+  "lighting": "golden-hour",
+  "camera_settings": {
+    "lens": "35mm-documentary",
+    "shot_type": "medium-shot",
+    "aesthetic": "ugc-iphone-selfie"
+  },
+  "negative_prompt": "plastic skin, over-retouched, deformed fingers, warped text, watermarks, CGI, 3D render",
+  "aspect_ratio": "9:16",
+  "exact_text": "'Glow Nectar'"
+}

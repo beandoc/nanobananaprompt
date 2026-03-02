@@ -229,6 +229,12 @@ export default function Home() {
                       {renderedImage && (
                         <p className="mt-2 text-[9px] text-slate-500 italic">Visible Render attached to context. AI will now &quot;Study&quot; the current image to fix it.</p>
                       )}
+                      {renderError && (
+                        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-2 text-red-400 text-[10px]">
+                          <AlertCircle className="w-3 h-3" />
+                          <span>{renderError}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 

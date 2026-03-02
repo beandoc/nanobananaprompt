@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
             finalPrompt = `${promptData.scientific_subject}. Illustration Style: ${promptData.illustration_style}. Textures: ${promptData.visual_accuracy?.textures || ''}. Lighting: ${promptData.visual_accuracy?.lighting || ''}. Journal Standard: ${promptData.journal_standard}. Consistency: ${promptData.consistent_character || ''}. Theme: ${promptData.visual_theme || ''}. Negative: ${promptData.negative_prompt}`;
         }
 
-        // Prepare the request for Imagen (Note: This requires Paid Tier or Vertex AI access)
-        const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${apiKey}`;
+        // Prepare the request for Imagen 4.0 (Model verified on your key)
+        const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
 
         // For now, if it's the free tier, this might fail with 400/403.
         // We will catch that and return a descriptive error to the UI.
