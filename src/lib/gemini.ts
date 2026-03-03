@@ -83,8 +83,8 @@ export const medicalIllustrationSchema: Schema = {
         } as any,
         visual_theme: {
             type: SchemaType.STRING,
-            enum: ["Clinical-Neutral", "Surgical-Blue", "Anatomy-White-Background", "BioRender-Pastel", "Asset-Solo-White", "Ghosted-Anatomy", "Comparison-Split", "Pathway-Logic-Clean", "Silhouette-Blue-Medical", "Inflammation-Overlay", "Systemic-Green-Lymphatic", "Schematic-Logic-White", "Disease-Mapping-Vibrant", "Systemic-Pathogenesis"],
-            description: "Forces a consistent color palette across different images."
+            enum: ["Clinical-Neutral", "Surgical-Blue", "Anatomy-White-Background", "BioRender-Pastel", "Asset-Solo-White", "Ghosted-Anatomy", "Comparison-Split", "Pathway-Logic-Clean", "Silhouette-Blue-Medical", "Inflammation-Overlay", "Systemic-Green-Lymphatic", "Schematic-Logic-White", "Disease-Mapping-Vibrant", "Systemic-Pathogenesis", "BioRender-Warm-Tonal-Ghosting"],
+            description: "Forces a consistent color palette across different images. 'BioRender-Warm-Tonal-Ghosting' uses translucent Indian skin tones instead of light gray for ghosted figures."
         } as any
     },
     required: ["scientific_subject", "layout_composition", "illustration_style", "visual_accuracy", "journal_standard", "negative_prompt", "consistent_character", "visual_theme"]
