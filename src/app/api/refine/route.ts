@@ -29,13 +29,16 @@ export async function POST(req: NextRequest) {
         - If an image is provided, PRIORITIZE its visual structure (e.g. JAR vs BOTTLE). 
         - For DTC: Do NOT just describe the product. You MUST build a "Commercial Grade Narrative." If the user wants a "pool deck," describe "caustic water reflections, dappled sunlight through palm fronds, and professional set-design textures." Force the AI away from white backgrounds.
         - For VIDEO/STORYBOARD: You MUST explicitly include professional Camera Motion [Dolly in, Dolly out, Orbit left/right/up/low, Dolly in zoom out] and Camera Position [Center, Left, Right, High, Low] in the paragraph.
-        - For ARTISTIC STYLES: If "Claymation" or "Studio Ghibli" is in the STYLE CONTEXT, strictly describe tactile frame-by-frame jitter (for clay) or soft watercolor hand-drawn textures (for Ghibli).
+        - ARTISTIC STYLE OVERRIDE: If "Studio Ghibli" or "Claymation" is in the STYLE CONTEXT:
+            1. Start the paragraph with: "MASTER STYLE LOCK: [Studio Ghibli 2D Watercolor / Claymation Hand-Sculpted]".
+            2. For Ghibli: Explicitly mandate "Zero Photorealism", "Flat 2D painting", "Hand-drawn line art".
+            3. STRIP OUT 3D-trigger words like "Caustics", "Volumetric fog", "Bioluminescence", or "Micro-textures" when an artistic style is active.
         
         STYLE CONTEXT: ${style ? style : "Professional BioRender Style (2.5D matte vector finish, warm-tonal translucent skin, subtle internal glows)."}
         
         CRITICAL LOGIC:
         1. NO HALLUCINATION: Describe only objects in the brief/image. 
-        2. ATMOSPHERIC DEPTH: Use high-end photography terms (Bokeh, Rim-lighting, Volumetric fog, Caustics).
+        2. ATMOSPHERIC DEPTH: Only use high-end terms (Bokeh, Rim-lighting, Volumetric fog, Caustics) if in MEDICAL or DTC mode. 
         3. IDENTITY LOCK: Always include the "Indian model silhouette" for human interaction.
         4. HARD ZERO-TEXT BAN: End with: "Visual-only asset. No text, symbols, or labels."
         
