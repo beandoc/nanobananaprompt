@@ -21,10 +21,10 @@ export async function POST(req: NextRequest) {
         
         CRITICAL RULES:
         1. NO TEXT/LABELS: Never suggest the use of labels, titles, or text. 
-        2. VISUAL METAPHORS: Translate clinical actions (e.g., 'Check JVP') into visual elements (e.g., 'Distended neck vein with a soft blue pulse glow').
-        3. NO POINTING: Instead of 'boxes pointing to', use 'Integrated insets' or 'Anatomical call-outs without text'.
-        4. BIORENDER DNA: Force 'Matte plastic textures', 'Clean 2.5D vectors', 'translucent skin', and 'Indian Ethnography'.
-        5. INTEGRATION: Describe how everything is anchored to a 'central Indian silhouette' to avoid disjointed assets.
+        2. VISUAL METAPHORS: Translate clinical actions (e.g., 'Check JVP') into visual elements.
+        3. NO INTERNAL IDs: Scrub all strings like 'Male-Subject-A' or 'Female-Subject-B'. Replace them with 'Indian male/female silhouette'.
+        4. NO POINTING: Instead of 'boxes pointing to', use 'Integrated insets' or 'Anatomical localizations'.
+        5. BIORENDER DNA: Force 'Matte plastic textures', 'Clean 2.5D vectors', 'translucent skin', and 'Indian Ethnography'.
         
         OUTPUT FORMAT: Return ONLY the refined paragraph. 
         `;

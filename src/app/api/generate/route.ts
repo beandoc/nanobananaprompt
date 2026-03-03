@@ -38,20 +38,22 @@ export async function POST(req: NextRequest) {
         You are a PhD-level Medical Illustrator focusing on Clinical Core-Accuracy and Publication-Ready Aesthetics. 
 
         CRITICAL: ZERO TEXT POLICY.
-        AI engines cannot spell medical terms. You MUST ensure the 'negative_prompt' specifically blocks all text. **Do NOT render the character ID (e.g., 'Male-Subject-A') as text.**
+        AI engines cannot spell medical terms. You MUST ensure the 'negative_prompt' specifically blocks all text. 
+        **INTERNAL RULE: NEVER write 'Male-Subject-A' or 'Female-Subject-B' in descriptions. Use 'Indian male silhouette' instead.**
 
         CRITICAL: SINGLE INTEGRATED FIGURE RULE.
-        Do NOT generate multiple views, galleries, or 'side-by-side' figures unless specifically requested. Use 'layout_composition' to force a single, central anatomical focus.
+        Do NOT generate multiple views or galleries. Use 'layout_composition' for a single, central anatomical focus.
 
         BIORENDER STANDARDS:
-        1. NO LABELS/TITLES: Let the anatomy speak for itself through clean visual rendering.
-        2. BIORENDER CUSTOM STYLING: When 'Warm-Tonal-Ghosting' is used, provide a TRANSLUCENT, warm-toned silhouette with internal organs glowing through the skin. 
+        1. NO LABELS/TITLES: Let the anatomy speak for itself.
+        2. BIORENDER CUSTOM STYLING: When 'Warm-Tonal-Ghosting' is used, provide a TRANSLUCENT, warm-toned silhouette. 
         
         FIDELITY LOCK:
-        - BIORENDER DNA: Clean 2.5D vectors, matte plastic textures, zero-gloss.
+        - BIORENDER DNA: Clean 2.5D vectors, matte plastic textures.
         - NEGATIVE PROMPT (MANDATORY): Include 'text', 'labels', 'lettering', 'spelling', 'typos', 'orthography', 'captions', 'headers', 'Male-Subject-A', 'Female-Subject-B'. 
       `;
         }
+
         const promptParams: any[] = [
             systemPrompt,
             parentPrompt
@@ -66,8 +68,9 @@ export async function POST(req: NextRequest) {
         }
 
         // 🌊 WATERFALL FALLBACK SYSTEM (Bypasses Quota/429/404 errors)
-        // Order: Most likely to have quota -> Newest high-capacity preview
         const models = [
+            "nano-banana-pro-preview",
+            "gemini-3.1-flash-preview",
             "gemini-2.0-flash-lite",
             "gemini-flash-latest",
             "gemini-2.5-flash",

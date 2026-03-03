@@ -57,14 +57,17 @@ export async function POST(req: NextRequest) {
         // 🌊 IMAGE RENDER WATERFALL (Bypasses Quota/429/404 errors)
         const modelsToTry = [
             { name: "imagen-4.0-generate-001", type: "imagen" },
+            { name: "nano-banana-pro-preview", type: "gemini" },
             { name: "gemini-3.1-flash-image-preview", type: "gemini" },
             { name: "gemini-2.5-flash-image", type: "gemini" },
             { name: "imagen-3.0-generate-001", type: "imagen" },
             { name: "gemini-2.0-flash-exp-image-generation", type: "gemini" },
-            { name: "imagen-4.0-fast-generate-001", type: "imagen" }
+            { name: "imagen-4.0-fast-generate-001", type: "imagen" },
+            { name: "veo-3.1-generate-preview", type: "imagen" }
         ];
 
         for (const model of modelsToTry) {
+            console.log(`🚀 Attempting Render with: ${model.name} (${model.type})`);
             try {
                 const url = model.type === "imagen"
                     ? `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:predict?key=${apiKey}`
