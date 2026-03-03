@@ -8,34 +8,42 @@ export const runtime = "edge";
 
 export async function POST(req: NextRequest) {
     try {
-        const { brief, mode, style } = await req.json();
+        const { brief, mode, style, image } = await req.json();
 
-        if (!brief) {
-            return NextResponse.json({ error: "No brief provided" }, { status: 400 });
+        if (!brief && !image) {
+            return NextResponse.json({ error: "No brief or image provided" }, { status: 400 });
         }
 
         const apiKey = process.env.GEMINI_API_KEY!;
         const genAI = new GoogleGenerativeAI(apiKey);
 
-        // 🧠 Refinement Intelligence Prompt (Logic-Hardened)
+        const inlineImageData = image ? {
+            inlineData: { data: image.split(",")[1] || image, mimeType: "image/png" }
+        } : null;
+
+        // 🧠 Refinement Intelligence Prompt (Vision-Aware)
         const systemPrompt = `
-        You are a Master Medical Illustrator. Your task is to transform a raw clinical brief into a "Direct-Flow Rendering Paragraph."
+        You are a Master Performance Creative & Medical Illustrator. Your task is to transform a raw brief AND an optional reference image into a "Direct-Flow Rendering Paragraph."
         
-        CRITICAL STYLE RULE: 
-        - If the STYLE CONTEXT mentions "NEJM", "Editorial", or "Painting", use soft volumetric digital painting with muted clinical colors. Abandon BioRender "plastic" looks.
-        
-        CRITICAL LOGIC RULES:
-        1. PATHOLOGICAL CONSISTENCY: Ensure causes and effects are on the same side. If a stone is in the right ureter, only the right kidney should be distended.
-        2. ANATOMICAL SKELETON: The Indian male silhouette must be a clean, ghosted container. Do NOT draw organs outside the body or tubes coming from the arms.
-        3. HARDWARE ANCHORING: Clinical hardware (catheters/pumps) must be precisely anchored to the anatomical entry point (e.g. renal pelvis) and follow a single logical path. No floating wires.
+        CRITICAL VISION RULE: 
+        - If an image is provided, PRIORITIZE its visual structure (e.g. JAR vs BOTTLE). 
+        - For DTC: Do NOT just describe the product. You MUST build a "Commercial Grade Narrative." If the user wants a "pool deck," describe "caustic water reflections, dappled sunlight through palm fronds, and professional set-design textures." Force the AI away from white backgrounds.
+        - For VIDEO/STORYBOARD: You MUST explicitly include professional Camera Motion [Dolly in, Dolly out, Orbit left/right/up/low, Dolly in zoom out] and Camera Position [Center, Left, Right, High, Low] in the paragraph.
+        - For ARTISTIC STYLES: If "Claymation" or "Studio Ghibli" is in the STYLE CONTEXT, strictly describe tactile frame-by-frame jitter (for clay) or soft watercolor hand-drawn textures (for Ghibli).
         
         STYLE CONTEXT: ${style ? style : "Professional BioRender Style (2.5D matte vector finish, warm-tonal translucent skin, subtle internal glows)."}
         
-        OUTPUT FORMAT: Return ONLY the paragraph. No meta-text.
+        CRITICAL LOGIC:
+        1. NO HALLUCINATION: Describe only objects in the brief/image. 
+        2. ATMOSPHERIC DEPTH: Use high-end photography terms (Bokeh, Rim-lighting, Volumetric fog, Caustics).
+        3. IDENTITY LOCK: Always include the "Indian model silhouette" for human interaction.
+        4. HARD ZERO-TEXT BAN: End with: "Visual-only asset. No text, symbols, or labels."
+        
+        OUTPUT FORMAT: Return ONLY the refined paragraph.
         `;
 
         const geminiApiKey = process.env.GEMINI_API_KEY;
-        const geminiModels = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"];
+        const geminiModels = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
         let refinedPrompt = "";
 
         if (geminiApiKey) {
@@ -43,7 +51,10 @@ export async function POST(req: NextRequest) {
             for (const modelName of geminiModels) {
                 try {
                     const model = genAI.getGenerativeModel({ model: modelName });
-                    const result = await model.generateContent([systemPrompt, `REFINE THIS IDEA FOR BIORENDER ${mode} MODE: ${brief}`]);
+                    const promptPieces: any[] = [systemPrompt, `REFINE THIS IDEA: ${brief}`];
+                    if (inlineImageData) promptPieces.push(inlineImageData);
+
+                    const result = await model.generateContent(promptPieces);
                     refinedPrompt = result.response.text();
                     if (refinedPrompt) break;
                 } catch (err) {

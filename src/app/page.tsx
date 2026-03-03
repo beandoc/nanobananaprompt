@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Terminal, Camera, Zap, AlertCircle, Loader2, Download, Image as ImageIcon, Microscope, Stethoscope, Dna, FileText, History, X, Check, ArrowRight, CornerDownRight, Upload, Layers, Eye, RefreshCw, ShieldCheck, Search, Database, Copy } from "lucide-react";
+import { Sparkles, Terminal, Camera, Zap, AlertCircle, Loader2, Download, Image as ImageIcon, Microscope, Stethoscope, Dna, FileText, History, X, Check, ArrowRight, CornerDownRight, Upload, Layers, Eye, RefreshCw, ShieldCheck, Search, Database, Copy, Film, Mic, Video } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -108,7 +108,7 @@ export default function Home() {
   const [renderedImage, setRenderedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [renderError, setRenderError] = useState<string | null>(null);
-  const [mode, setMode] = useState<"ad" | "medical" | "vector">("medical");
+  const [mode, setMode] = useState<"ad" | "medical" | "vector" | "video" | "storyboard">("medical");
   const [showLibrary, setShowLibrary] = useState(false);
   const [library, setLibrary] = useState<any[]>([]);
   const [isLoadingLibrary, setIsLoadingLibrary] = useState(false);
@@ -128,15 +128,12 @@ export default function Home() {
 
   const stylePresets = [
     { label: "Default Training", value: "" },
-    { label: "Corporate Memphis (Trending)", value: "Corporate Memphis illustration, flat design, vibrant primary colors, abstract characters" },
-    { label: "3D Claymorphism", value: "3D claymorphism style, soft lighting, matte finish, playful and rounded proportions" },
-    { label: "Glassmorphism UI", value: "Glassmorphism design, frosted glass textures, vibrant gradients, modern interface aesthetic" },
-    { label: "Minimalist Editorial", value: "High-end minimalist editorial photography, muted tones, sharp focus, clean composition" },
-    { label: "Isometric Vector", value: "Isometric vector illustration, clean lines, technical perspective, soft shadows" },
-    { label: "Bento Box Grid", value: "Modern bento-style layout illustration, modular glass panels, tech-startup aesthetic" },
-    { label: "Cyberpunk Professional", value: "Cyberpunk aesthetic, neon accents, high-tech interface, moody professional lighting" },
-    { label: "Hand-drawn Charcoal", value: "Rough hand-drawn charcoal sketch, organic textures, fine art architectural style" },
-    { label: "Synthwave Retro", value: "80s synthwave style, retro-futurism, grid floors, purple and pink gradients" },
+    { label: "Claymation Stop-Motion (Video)", value: "Hand-sculpted claymation style, visible fingerprints on clay surfaces, 12fps stop-motion jitter, organic tactile textures, playful lighting" },
+    { label: "Studio Ghibli Cinematic (Video)", value: "Classic Studio Ghibli hand-painted aesthetic, lush watercolor backgrounds, expressive character animation, soft nostalgic lighting, Miyazaki-inspired environmental detail" },
+    { label: "Anamorphic Cinematic (Video)", value: "Anamorphic 2.39:1 widescreen, cinematic lighting, 8K RED Helium look, deep depth of field, subtle lens flare" },
+    { label: "Macro-Probe Pan (Video)", value: "Ultra-macro probe lens movement, 1000fps slow motion, scientific microscopic focus, internal-lit textures" },
+    { label: "Drone-Orbit 4K (Video)", value: "Sweeping 360-degree orbital drone shot, golden hour lighting, stabilized 3-axis gimbal motion" },
+    { label: "Documentary Handheld (Video)", value: "Raw 16mm handheld documentary style, natural grain, organic camera shake, realistic focus pulling" },
     { label: "Classic NEJM Editorial", value: "New England Journal of Medicine style, 2.5D soft volumetric digital painting, muted clinical colors, integration of technical medical hardware (pumps, filters, catheters), directional flow dynamics with particles, layered anatomical transparency, clean white background, professional scientific textbook aesthetic" },
     { label: "Professional BioRender Style", value: "BioRender-standard scientific illustration, clean 2.5D vector assets, matte plastic textures, even-ambient-clean lighting, soft pastel clinical palette, professional research poster aesthetic, optimized for complex anatomical pathways and systemic mapping" },
     { label: "Micro-3D Technical", value: "Macro-3D technical render, internal cross-sections, hyper-detailed textures, laboratory lighting" }
@@ -263,7 +260,7 @@ export default function Home() {
       const response = await fetch("/api/refine", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ brief, mode, style: selectedStyle })
+        body: JSON.stringify({ brief, mode, style: selectedStyle, image: assetImage })
       });
       const result = await response.json();
       if (result.success) {
@@ -357,6 +354,16 @@ export default function Home() {
             <Tooltip content="Switch to Vector mode for clean illustrations and SVG tracing.">
               <button onClick={() => setMode("vector")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "vector" ? "bg-white text-orange-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
                 <Layers className="w-3.5 h-3.5" /> Vector
+              </button>
+            </Tooltip>
+            <Tooltip content="Switch to Video mode for 8-second cinematic motion sequences.">
+              <button onClick={() => setMode("video")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "video" ? "bg-white text-violet-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+                <Camera className="w-3.5 h-3.5" /> Video
+              </button>
+            </Tooltip>
+            <Tooltip content="Switch to Storyboard mode for long-form multi-scene video scripts.">
+              <button onClick={() => setMode("storyboard")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "storyboard" ? "bg-white text-rose-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+                <Film className="w-3.5 h-3.5" /> Storyboard
               </button>
             </Tooltip>
           </div>
@@ -614,6 +621,100 @@ export default function Home() {
                         )}
                       </div>
                     </div>
+                  )}
+
+                  {/* 🎬 Storyboard Sequence Engine */}
+                  {result?.data?.scenes && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="space-y-4"
+                    >
+                      <div className="flex items-center gap-3 px-4">
+                        <Film className="w-4 h-4 text-rose-500" />
+                        <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">
+                          Production Storyboard ({result.data.total_project_duration})
+                        </h2>
+                      </div>
+
+                      <div className="grid gap-4">
+                        {result.data.scenes.map((scene: any, idx: number) => (
+                          <div
+                            key={idx}
+                            className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl hover:shadow-2xl transition-all group/scene relative overflow-hidden"
+                          >
+                            <div className="absolute top-0 left-0 w-2 h-full bg-rose-500/20" />
+
+                            <div className="flex items-start justify-between mb-6">
+                              <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-sm font-black text-rose-600 shadow-sm">
+                                  {scene.scene_number || idx + 1}
+                                </div>
+                                <div>
+                                  <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Scene Segment</h3>
+                                  <p className="text-[11px] font-bold text-slate-600 uppercase tracking-tight">{scene.shot_duration || '8.0s'}</p>
+                                </div>
+                              </div>
+
+                              <div className="flex gap-3">
+                                <Tooltip content="Copy Visual Prompt for AI Video Gen">
+                                  <button
+                                    onClick={() => handleCopy(scene.visual_prompt, `sc-v-${idx}`)}
+                                    className={cn(
+                                      "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
+                                      copySuccess === `sc-v-${idx}` ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-slate-50 text-slate-500 border border-slate-200 hover:bg-white"
+                                    )}
+                                  >
+                                    {copySuccess === `sc-v-${idx}` ? <Check className="w-3.5 h-3.5" /> : <Video className="w-3.5 h-3.5" />}
+                                    {copySuccess === `sc-v-${idx}` ? "Copied" : "Copy Visual"}
+                                  </button>
+                                </Tooltip>
+
+                                <Tooltip content="Copy Narration / VO Script">
+                                  <button
+                                    onClick={() => handleCopy(scene.narration_vo, `sc-n-${idx}`)}
+                                    className={cn(
+                                      "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
+                                      copySuccess === `sc-n-${idx}` ? "bg-amber-50 text-amber-600 border border-amber-100" : "bg-slate-50 text-slate-500 border border-slate-200 hover:bg-white"
+                                    )}
+                                  >
+                                    {copySuccess === `sc-n-${idx}` ? <Check className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+                                    {copySuccess === `sc-n-${idx}` ? "Copied" : "Copy VO"}
+                                  </button>
+                                </Tooltip>
+                              </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-6">
+                              <div className="space-y-4">
+                                <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 group-hover/scene:bg-white transition-colors">
+                                  <div className="flex items-center gap-2 mb-2 text-[9px] font-black text-amber-500 uppercase tracking-widest">
+                                    <Mic className="w-3 h-3" /> Audio Script
+                                  </div>
+                                  <p className="text-xs text-slate-600 font-medium leading-relaxed italic">
+                                    "{scene.narration_vo}"
+                                  </p>
+                                </div>
+                                {scene.motion_instruction && (
+                                  <div className="flex items-center gap-2 text-[9px] font-black uppercase text-rose-500 tracking-widest bg-rose-50 px-3 py-1.5 rounded-lg w-fit border border-rose-100">
+                                    <RefreshCw className="w-3 h-3" /> {scene.motion_instruction}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="space-y-2">
+                                <div className="text-[9px] font-black text-rose-400 uppercase tracking-widest flex items-center gap-2">
+                                  <Video className="w-3 h-3" /> Visual Directive
+                                </div>
+                                <p className="text-[11px] text-slate-500 leading-relaxed font-medium line-clamp-4 group-hover/scene:line-clamp-none transition-all">
+                                  {scene.visual_prompt}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
                   )}
 
                   {/* Visual Console */}

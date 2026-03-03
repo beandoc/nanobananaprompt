@@ -123,13 +123,74 @@ export const vectorIllustrationSchema: Schema = {
     required: ["illustration_subject", "vector_style", "color_palette", "background", "complexity", "negative_prompt"]
 };
 
-export const getGeminiModel = (mode: "ad" | "medical" | "vector" = "ad") => {
+// Cinematic Video Schema (Optimized for Veo/Sora/Luma 8sec sequences)
+export const videoIllustrationSchema: Schema = {
+    description: "Schema for Cinematic Motion and Video Generation prompts",
+    type: SchemaType.OBJECT,
+    properties: {
+        video_subject: {
+            type: SchemaType.STRING,
+            description: "The core subject performing a specific 8-second sequence of actions."
+        },
+        motion_dynamics: {
+            type: SchemaType.STRING,
+            description: "Describe the speed, fluidity, and specific physical motion (e.g., 'slow-motion cell division', 'rapid water splash', 'dynamic camera orbit')."
+        },
+        camera_movement: {
+            type: SchemaType.STRING,
+            enum: ["static", "slow-push-in", "dolly-zoom", "360-orbit", "handheld-tracking", "drone-overhead", "macro-pan"],
+            description: "The cinematic camera path for the 8-second shot."
+        } as any,
+        temporal_storyboard: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING },
+            description: "A 3-part breakdown of what happens at 0s, 4s, and 8s."
+        } as any,
+        visual_style: {
+            type: SchemaType.STRING,
+            description: "Art direction (e.g., 'National Geographic 8K RAW', 'Cyberpunk Neon Cinematic', 'Medical Documentary Gray-Scale')."
+        },
+        negative_prompt: {
+            type: SchemaType.STRING,
+            description: "Exclude: 'shaky camera, low framerate, flickering, distorted faces, text, watermarks, morphing artifacts'."
+        }
+    },
+    required: ["video_subject", "motion_dynamics", "camera_movement", "temporal_storyboard", "visual_style", "negative_prompt"]
+};
+
+// Long-form Cinematic Storyboard Schema (Multi-Scene breakdown)
+export const storyboardSchema: Schema = {
+    description: "Schema for multi-scene video storyboard generation",
+    type: SchemaType.OBJECT,
+    properties: {
+        total_project_duration: { type: SchemaType.STRING, description: "Total duration (e.g., '60 seconds')." },
+        scenes: {
+            type: SchemaType.ARRAY,
+            items: {
+                type: SchemaType.OBJECT,
+                properties: {
+                    scene_number: { type: SchemaType.NUMBER },
+                    shot_duration: { type: SchemaType.STRING, description: "Usually '8 seconds'." },
+                    visual_prompt: { type: SchemaType.STRING, description: "Detailed cinematic prompt specifically for the 8s animation." },
+                    narration_vo: { type: SchemaType.STRING, description: "The script text to be read/generated as VO for this segment." },
+                    motion_instruction: { type: SchemaType.STRING, description: "Specific camera/motion dynamics for this shot." }
+                },
+                required: ["scene_number", "visual_prompt", "narration_vo"]
+            }
+        }
+    },
+    required: ["total_project_duration", "scenes"]
+};
+
+export const getGeminiModel = (mode: "ad" | "medical" | "vector" | "video" | "storyboard" = "ad") => {
     let schema = adCreativeSchema;
     if (mode === "medical") schema = medicalIllustrationSchema;
     if (mode === "vector") schema = vectorIllustrationSchema;
+    if (mode === "video") schema = videoIllustrationSchema;
+    if (mode === "storyboard") schema = storyboardSchema;
 
     return genAI.getGenerativeModel({
-        model: "gemini-flash-latest",
+        model: "gemini-2.0-flash-exp",
         generationConfig: {
             responseMimeType: "application/json",
             responseSchema: schema,

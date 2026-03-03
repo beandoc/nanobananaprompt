@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Groq } from "groq-sdk";
 import { Anthropic } from "@anthropic-ai/sdk";
-import { adCreativeSchema, medicalIllustrationSchema, vectorIllustrationSchema } from "@/lib/gemini";
+import { adCreativeSchema, medicalIllustrationSchema, vectorIllustrationSchema, videoIllustrationSchema, storyboardSchema } from "@/lib/gemini";
 
 // 🚀 Enable Edge Runtime for maximum performance on Vercel
 export const runtime = "edge";
@@ -19,7 +19,9 @@ export async function POST(req: NextRequest) {
         const schemaMap: any = {
             ad: adCreativeSchema,
             medical: medicalIllustrationSchema,
-            vector: vectorIllustrationSchema
+            vector: vectorIllustrationSchema,
+            video: videoIllustrationSchema,
+            storyboard: storyboardSchema
         };
 
         const currentSchema = schemaMap[mode];
@@ -33,6 +35,31 @@ export async function POST(req: NextRequest) {
         } else if (mode === "vector") {
             systemPrompt = `
         You are a Principal Brand Designer specialized in Scalable Vector Illustrations. 1. Keep colors flat and distinct. 2. Ensure subjects are clearly separated from the background.
+      `;
+        } else if (mode === "video") {
+            systemPrompt = `
+        You are an Elite Cinematic Director of Photography and Art Director. Your task is to design an 8-second cinematic sequence. 
+        
+        MANDATORY CAMERA PROTOCOLS:
+        1. CAMERA MOTION: You MUST specify one of: [Dolly in, Dolly out, Orbit left, Orbit right, Orbit up, Orbit low, Dolly in zoom out].
+        2. CAMERA POSITION: You MUST specify one of: [Center, Left, Right, High, Low].
+        3. LIGHTING: Describe professional cinematic lighting (e.g., Rim-lighting, Volumetric fog, High-key, Moody low-key, or Dappled sunlight).
+        
+        1. TEMPORAL CONTINUITY: Define exactly what happens at 0s, 4s, and 8s to ensure a logical action arc.
+        2. MOTION FIDELITY: Describe the physics of movement (inertia, fluid dynamics, gravity).
+        3. IDENTITY: Maintain the 'Indian subject' lock for brand consistency.
+        
+        Visual-only asset. No text, symbols, or labels.
+      `;
+        } else if (mode === "storyboard") {
+            systemPrompt = `
+        You are an Elite Screenwriter and Director. Your task is to break down a long-form script into multiple 8-second intervals. 
+        
+        MANDATORY CINEMATOGRAPHY RULES:
+        - For EVERY scene, you MUST assign a specific CAMERA MOTION ([Dolly in, Dolly out, Orbit left, Orbit right, Orbit up, Orbit low, Dolly in zoom out]) and CAMERA POSITION ([Center, Left, Right, High, Low]).
+        - VISUAL CONTINUITY: If Scene 1 is 'Center Dolly In', Scene 2 should logically follow or transition (e.g., 'Center Dolly Out' or 'Center Orbit').
+        - SYNCED NARRATION: Provide exact VO text for each 8s shot.
+        - DIRECT-FLOW RENDERING: Write a single, high-fidelity paragraph for each visual_prompt.
       `;
         } else {
             systemPrompt = `
@@ -146,9 +173,9 @@ export async function POST(req: NextRequest) {
             }, { status: 429 });
         }
 
-        const folderMap: any = { ad: "prompts", medical: "medical_prompts", vector: "vector_prompts" };
+        const folderMap: any = { ad: "prompts", medical: "medical_prompts", vector: "vector_prompts", video: "video_prompts", storyboard: "storyboards" };
         const folder = folderMap[mode] || "prompts";
-        const cleanSubject = (adData.scientific_subject || adData.core_prompt || adData.illustration_subject || "asset")
+        const cleanSubject = (adData.scientific_subject || adData.core_prompt || adData.illustration_subject || adData.video_subject || adData.total_project_duration || "storyboard")
             .substring(0, 15).toLowerCase().replace(/\s+/g, '-');
         const filename = `${cleanSubject}-${Date.now()}.json`;
 
