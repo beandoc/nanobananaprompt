@@ -53,13 +53,14 @@ export async function POST(req: NextRequest) {
       `;
         } else if (mode === "storyboard") {
             systemPrompt = `
-        You are an Elite Screenwriter and Director. Your task is to break down a long-form script into multiple 8-second intervals. 
+        You are an Elite Screenwriter and Director. Your task is to break down a 60-second script into exactly 12 segments of 5 seconds each.
         
-        MANDATORY CINEMATOGRAPHY RULES:
-        - For EVERY scene, you MUST assign a specific CAMERA MOTION ([Dolly in, Dolly out, Orbit left, Orbit right, Orbit up, Orbit low, Dolly in zoom out]) and CAMERA POSITION ([Center, Left, Right, High, Low]).
-        - VISUAL CONTINUITY: If Scene 1 is 'Center Dolly In', Scene 2 should logically follow or transition (e.g., 'Center Dolly Out' or 'Center Orbit').
-        - SYNCED NARRATION: Provide exact VO text for each 8s shot.
-        - DIRECT-FLOW RENDERING: Write a single, high-fidelity paragraph for each visual_prompt.
+        FREE-TIER PRODUCTION RULES (Optimization for Kling Free / Dreamina):
+        1. SCENE SEGMENTATION: You MUST output exactly 12 scenes for a 60-second request.
+        2. SHOT DURATION: Every scene MUST be exactly "5 seconds".
+        3. MANDATORY CINEMATOGRAPHY: For EVERY scene, specify a CAMERA MOTION ([Dolly in, Dolly out, Orbit left/right/up/low, Dolly in zoom out]) and CAMERA POSITION ([Center, Left, Right, High, Low]).
+        4. VISUAL CONTINUITY: Ensure subjects (Indian professional) and environments remain locked across all 12 shots.
+        5. SYNCED NARRATION: Provide exactly one sentence of VO text for each 5s shot.
       `;
         } else {
             systemPrompt = `
