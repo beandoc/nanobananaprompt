@@ -41,7 +41,16 @@ export async function POST(req: NextRequest) {
         } else if (mode === "vector") {
             finalPrompt = `${promptData.illustration_subject}. Style: ${promptData.vector_style}. Palette: ${promptData.color_palette}. Background: ${promptData.background}. Complexity: ${promptData.complexity}. Negative: ${promptData.negative_prompt}`;
         } else {
-            finalPrompt = `${promptData.scientific_subject}. Illustration Style: ${promptData.illustration_style}. Textures: ${promptData.visual_accuracy?.textures || ''}. Lighting: ${promptData.visual_accuracy?.lighting || ''}. Journal Standard: ${promptData.journal_standard}. Consistency: ${promptData.consistent_character || ''}. Theme: ${promptData.visual_theme || ''}. Negative: ${promptData.negative_prompt}`;
+            const characterDesc = promptData.consistent_character === "Male-Subject-A" ? "middle-aged Indian male silhouette" :
+                promptData.consistent_character === "Female-Subject-B" ? "middle-aged Indian female silhouette" : "";
+
+            finalPrompt = `SINGLE INTEGRATED FIGURE: Ensure exactly one central anatomical subject. No galleries, no multiple views, no inset splits unless requested.
+            SUBJECT: ${promptData.scientific_subject}. 
+            CHARACTER STYLE: ${characterDesc}.
+            ILLUSTRATION DNA: ${promptData.illustration_style}, matte plastic textures, ${promptData.visual_accuracy?.textures || ''}, ${promptData.visual_accuracy?.lighting || ''}. 
+            JOURNAL STANDARD: ${promptData.journal_standard}. 
+            THEME: ${promptData.visual_theme || ''}. 
+            NEGATIVE RULES (CRITICAL): ${promptData.negative_prompt}, labels, text, captions, headers, signatures, Male-Subject-A, Female-Subject-B, watermarks, character-names.`;
         }
 
         // 🌊 IMAGE RENDER WATERFALL (Bypasses Quota/429/404 errors)

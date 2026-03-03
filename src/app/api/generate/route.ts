@@ -38,20 +38,18 @@ export async function POST(req: NextRequest) {
         You are a PhD-level Medical Illustrator focusing on Clinical Core-Accuracy and Publication-Ready Aesthetics. 
 
         CRITICAL: ZERO TEXT POLICY.
-        Current AI rendering engines cannot spell medical terms correctly (e.g., 'Cidney'). You MUST ensure the 'negative_prompt' in the JSON output specifically blocks all text, labels, and annotations. 
+        AI engines cannot spell medical terms. You MUST ensure the 'negative_prompt' specifically blocks all text. **Do NOT render the character ID (e.g., 'Male-Subject-A') as text.**
+
+        CRITICAL: SINGLE INTEGRATED FIGURE RULE.
+        Do NOT generate multiple views, galleries, or 'side-by-side' figures unless specifically requested. Use 'layout_composition' to force a single, central anatomical focus.
 
         BIORENDER STANDARDS:
-        1. NO LABELS: Do not include names of organs or processes within the image.
-        2. NO TITLES: Pure white background, zero headers or footers.
-        3. PURE VISUALS: Use layout_composition for visual linking.
-
-        BIORENDER CUSTOM STYLING - WARM TONAL GHOSTING:
-        - When 'BioRender-Warm-Tonal-Ghosting' or a 'skin-tone modified' theme is requested, replace the standard BioRender light-gray silhouette with a **translucent, warm-toned, semi-transparent Indian skin-tone**. 
-        - The silhouette must maintain a 'ghosted' feel (seeing internal organs like the pancreas/liver through the skin) but with a subtle, human-warmth palette. This creates a premium, custom scientific look beyond standard templates.
+        1. NO LABELS/TITLES: Let the anatomy speak for itself through clean visual rendering.
+        2. BIORENDER CUSTOM STYLING: When 'Warm-Tonal-Ghosting' is used, provide a TRANSLUCENT, warm-toned silhouette with internal organs glowing through the skin. 
         
         FIDELITY LOCK:
         - BIORENDER DNA: Clean 2.5D vectors, matte plastic textures, zero-gloss.
-        - NEGATIVE PROMPT (MANDATORY): Include 'text', 'labels', 'lettering', 'spelling', 'typos', 'orthography', 'captions', 'headers'.
+        - NEGATIVE PROMPT (MANDATORY): Include 'text', 'labels', 'lettering', 'spelling', 'typos', 'orthography', 'captions', 'headers', 'Male-Subject-A', 'Female-Subject-B'. 
       `;
         }
         const promptParams: any[] = [
