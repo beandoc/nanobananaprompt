@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Groq } from "groq-sdk";
+import { Anthropic } from "@anthropic-ai/sdk";
 import { adCreativeSchema, medicalIllustrationSchema, vectorIllustrationSchema } from "@/lib/gemini";
 
 // 🚀 Enable Edge Runtime for maximum performance on Vercel
@@ -14,14 +16,13 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "No brief provided" }, { status: 400 });
         }
 
-        const apiKey = process.env.GEMINI_API_KEY!;
-        const genAI = new GoogleGenerativeAI(apiKey);
-
         const schemaMap: any = {
             ad: adCreativeSchema,
             medical: medicalIllustrationSchema,
             vector: vectorIllustrationSchema
         };
+
+        const currentSchema = schemaMap[mode];
 
         let systemPrompt = "";
         if (mode === "ad") {
@@ -36,6 +37,9 @@ export async function POST(req: NextRequest) {
         } else {
             systemPrompt = `
         You are a PhD-level Medical Illustrator focusing on Clinical Core-Accuracy and Publication-Ready Aesthetics. 
+
+        CRITICAL: ANATOMICAL PRECISION.
+        You must describe structures with microscopic accuracy. If the user asks for a 'Kidney', describe the 'Glomeruli, Nephrons, and Renal Pelvis' as if for a medical textbook. Never use generic 'blob' descriptions. Use precise spatial relationships: superior, inferior, lateral, medial.
 
         CRITICAL: ZERO TEXT POLICY.
         AI engines cannot spell medical terms. You MUST ensure the 'negative_prompt' specifically blocks all text. 
@@ -54,61 +58,97 @@ export async function POST(req: NextRequest) {
       `;
         }
 
-        const promptParams: any[] = [
-            systemPrompt,
-            parentPrompt
-                ? `BASELINE JSON: ${JSON.stringify(parentPrompt)}. MODIFICATION REQUEST: "${brief}"`
-                : `Generate a technical JSON blueprint for this ${mode} brief: ${brief}`
-        ];
+        const userPrompt = parentPrompt
+            ? `BASELINE JSON: ${JSON.stringify(parentPrompt)}. MODIFICATION REQUEST: "${brief}"`
+            : `Generate a technical JSON blueprint for this ${mode} brief: ${brief}`;
 
         const activeImage = image || previousImage;
-        if (activeImage) {
-            const base64Data = activeImage.split(",")[1] || activeImage;
-            promptParams.push({ inlineData: { data: base64Data, mimeType: "image/png" } });
-        }
-
-        // 🌊 FREE-TIER OPTIMIZED WATERFALL
-        const models = [
-            "gemini-2.0-flash-lite",
-            "gemini-1.5-flash",
-            "gemini-1.5-pro-002", // Pro 002 is often on a fresh quota
-            "gemini-1.0-pro"
-        ];
+        const inlineImageData = activeImage ? {
+            inlineData: { data: activeImage.split(",")[1] || activeImage, mimeType: "image/png" }
+        } : null;
 
         let adData: any = null;
         let lastError: any;
 
-        for (const modelName of models) {
-            console.log(`🧠 Generating Master Blueprint: ${modelName}`);
-            try {
-                const model = genAI.getGenerativeModel({
-                    model: modelName,
-                    generationConfig: {
-                        responseMimeType: "application/json",
-                        responseSchema: schemaMap[mode]
-                    }
-                });
+        // --- 1. LAYER ONE: GOOGLE GEMINI (Core Waterfall) ---
+        const geminiApiKey = process.env.GEMINI_API_KEY;
+        if (geminiApiKey) {
+            const genAI = new GoogleGenerativeAI(geminiApiKey);
+            const geminiModels = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash", "gemini-pro-latest"];
 
-                const result = await model.generateContent(promptParams);
-                const response = await result.response;
-                adData = JSON.parse(response.text());
-                if (adData) break; // Success!
+            for (const modelName of geminiModels) {
+                try {
+                    console.log(`🧠 [Gemini] Generating Master Blueprint: ${modelName}`);
+                    const model = genAI.getGenerativeModel({
+                        model: modelName,
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                            responseSchema: currentSchema
+                        }
+                    });
+
+                    const promptPieces: any[] = [systemPrompt, userPrompt];
+                    if (inlineImageData) promptPieces.push(inlineImageData);
+
+                    const result = await model.generateContent(promptPieces);
+                    const text = result.response.text();
+                    adData = JSON.parse(text);
+                    if (adData) break;
+                } catch (err: any) {
+                    lastError = err;
+                    console.warn(`Waterfall Fallback: Gemini ${modelName} failed. Reason: ${err.message}`);
+                }
+            }
+        }
+
+        // --- 2. LAYER TWO: GROQ (Llama 3 70B - FAST FALLBACK) ---
+        if (!adData && process.env.GROQ_API_KEY) {
+            try {
+                console.log("🐺 [Groq] Falling back to Llama 3 70B...");
+                const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+                const completion = await groq.chat.completions.create({
+                    messages: [
+                        { role: "system", content: systemPrompt + "\n\nANATOMICAL PRECISION RULE: Use Gray's Anatomy level detail. Prioritize correct spatial relationships. Return ONLY valid JSON matching this schema: " + JSON.stringify(currentSchema) },
+                        { role: "user", content: userPrompt }
+                    ],
+                    model: "llama-3.3-70b-versatile",
+                    response_format: { type: "json_object" }
+                });
+                adData = JSON.parse(completion.choices[0]?.message?.content || "{}");
             } catch (err: any) {
                 lastError = err;
-                console.warn(`Waterfall Fallback: ${modelName} failed. Reason: ${err.message}`);
-                continue; // Move to next model
+                console.warn(`Waterfall Fallback: Groq failed. Reason: ${err.message}`);
+            }
+        }
+
+        // --- 3. LAYER THREE: ANTHROPIC (Claude 3.5 Sonnet - QUALITY FALLBACK) ---
+        if (!adData && process.env.ANTHROPIC_API_KEY) {
+            try {
+                console.log("🐦 [Anthropic] Falling back to Claude 3.5 Sonnet...");
+                const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+                const msg = await anthropic.messages.create({
+                    model: "claude-3-5-sonnet-20241022",
+                    max_tokens: 1024,
+                    system: systemPrompt + "\n\nReturn ONLY a JSON object followed exactly by this structure: " + JSON.stringify(currentSchema),
+                    messages: [{ role: "user", content: userPrompt }],
+                });
+                const contentText: any = msg.content[0];
+                adData = JSON.parse(contentText.text || "{}");
+            } catch (err: any) {
+                lastError = err;
+                console.warn(`Waterfall Fallback: Anthropic failed. Reason: ${err.message}`);
             }
         }
 
         if (!adData) {
             return NextResponse.json({
-                error: `All Gemini models exhausted. Please wait 60 seconds (Quota resets). Last Error: ${lastError?.message}`
+                error: `All models exhausted (Gemini, Groq, Anthropic). Last Error: ${lastError?.message}`
             }, { status: 429 });
         }
 
         const folderMap: any = { ad: "prompts", medical: "medical_prompts", vector: "vector_prompts" };
         const folder = folderMap[mode] || "prompts";
-        const cleanSubject = (adData.scientific_subject || adData.core_prompt || "asset")
+        const cleanSubject = (adData.scientific_subject || adData.core_prompt || adData.illustration_subject || "asset")
             .substring(0, 15).toLowerCase().replace(/\s+/g, '-');
         const filename = `${cleanSubject}-${Date.now()}.json`;
 
@@ -120,7 +160,7 @@ export async function POST(req: NextRequest) {
         });
 
     } catch (error: any) {
-        console.error("Critical Gemini API Error:", error);
+        console.error("Critical Multi-AI Error:", error);
         return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
     }
 }
