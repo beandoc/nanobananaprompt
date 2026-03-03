@@ -325,49 +325,63 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#FDFDFD] text-slate-900 selection:bg-indigo-100 font-sans overflow-x-hidden">
-      {/* Dynamic Professional Backgrounds */}
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.03),transparent_50%)] pointer-events-none" />
-      <div className="fixed inset-0 bg-[#f8fafc]/50 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#e5e7eb 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }} />
+    <main className="min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-indigo-100 font-sans overflow-x-hidden relative">
+      {/* 🌌 Premium Ambient Background */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-200/20 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-200/20 blur-[120px] rounded-full animate-pulse [animation-delay:2s]" />
+        <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-rose-200/10 blur-[120px] rounded-full animate-pulse [animation-delay:4s]" />
+      </div>
+
+      {/* 🏁 Subtle Grid Overlay */}
+      <div className="fixed inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
       {/* Header Navigation */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+      <header className="sticky top-0 z-[60] bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_1px_10px_rgba(0,0,0,0.02)]">
         <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className={cn(
-              "w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border transition-all duration-500",
-              mode === "ad" ? "bg-indigo-600 border-indigo-400/20" :
-                mode === "medical" ? "bg-emerald-600 border-emerald-400/20" :
-                  "bg-orange-600 border-orange-400/20"
-            )}>
-              {mode === "ad" ? <Sparkles className="w-5 h-5 text-white" /> :
-                mode === "medical" ? <Microscope className="w-5 h-5 text-white" /> :
-                  <Layers className="w-5 h-5 text-white" />}
-            </div>
+          <div className="flex items-center gap-5">
+            <motion.div
+              whileHover={{ rotate: 5, scale: 1.05 }}
+              className={cn(
+                "w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg border transition-all duration-500",
+                mode === "ad" ? "bg-gradient-to-br from-indigo-500 to-indigo-700 border-indigo-400/30 shadow-indigo-200/50" :
+                  mode === "medical" ? "bg-gradient-to-br from-emerald-500 to-emerald-700 border-emerald-400/30 shadow-emerald-200/50" :
+                    "bg-gradient-to-br from-orange-500 to-orange-700 border-orange-400/30 shadow-orange-200/50"
+              )}
+            >
+              {mode === "ad" ? <Sparkles className="w-6 h-6 text-white" /> :
+                mode === "medical" ? <Microscope className="w-6 h-6 text-white" /> :
+                  <Layers className="w-6 h-6 text-white" />}
+            </motion.div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-none mb-1">Nano Banana</h1>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Intelligence Pipeline</p>
+              <h1 className="text-xl font-black tracking-tight text-slate-900 leading-none mb-1">Nano Banana</h1>
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Intelligence Pipeline</span>
+                <span className="w-1 h-1 rounded-full bg-slate-300" />
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-indigo-500 animate-pulse">v2.5 Pro</span>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 p-1 bg-slate-100 rounded-2xl border border-slate-200">
+          <div className="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded-[1.25rem] shadow-inner">
             <Tooltip content="Switch to DTC Creative mode for skincare and brand ads.">
-              <button onClick={() => setMode("ad")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "ad" ? "bg-white text-indigo-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+              <button onClick={() => setMode("ad")} className={cn("px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "ad" ? "bg-white text-indigo-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50")}>
                 <Zap className="w-3.5 h-3.5" /> DTC Creative
               </button>
             </Tooltip>
+            {/* ... other modes ... */}
             <Tooltip content="Switch to Medical mode for anatomical and clinical illustrations.">
-              <button onClick={() => setMode("medical")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "medical" ? "bg-white text-emerald-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+              <button onClick={() => setMode("medical")} className={cn("px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "medical" ? "bg-white text-emerald-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50")}>
                 <Stethoscope className="w-3.5 h-3.5" /> Medical
               </button>
             </Tooltip>
             <Tooltip content="Switch to Vector mode for clean illustrations and SVG tracing.">
-              <button onClick={() => setMode("vector")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "vector" ? "bg-white text-orange-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+              <button onClick={() => setMode("vector")} className={cn("px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "vector" ? "bg-white text-orange-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50")}>
                 <Layers className="w-3.5 h-3.5" /> Vector
               </button>
             </Tooltip>
             <Tooltip content="Switch to Video mode for 8-second cinematic motion sequences.">
-              <button onClick={() => setMode("video")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "video" ? "bg-white text-violet-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
+              <button onClick={() => setMode("video")} className={cn("px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "video" ? "bg-white text-violet-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50")}>
                 <Camera className="w-3.5 h-3.5" /> Video
               </button>
             </Tooltip>
@@ -387,15 +401,20 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-8 py-12 relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left: Project Input */}
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 mb-2">
-              <div className={cn("w-1.5 h-6 rounded-full", mode === "ad" ? "bg-indigo-500" : mode === "medical" ? "bg-emerald-500" : "bg-orange-500")} />
-              <h2 className="text-sm font-black uppercase tracking-widest text-slate-500">Project Definition</h2>
+          <section className="space-y-6 lg:sticky lg:top-32 h-fit">
+            <div className="flex items-center gap-3 px-4">
+              <div className={cn("w-2 h-7 rounded-full", mode === "ad" ? "bg-indigo-500" : mode === "medical" ? "bg-emerald-500" : "bg-orange-500")} />
+              <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Project Definition</h2>
             </div>
 
-            <motion.div layout className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden group">
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner">
+            <motion.div
+              layout
+              className="bg-white/80 backdrop-blur-xl border border-white rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative overflow-hidden group"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50/50 blur-[50px] -mr-16 -mt-16 pointer-events-none" />
+
+              <div className="flex items-center justify-between mb-10">
+                <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shadow-inner">
                   <button
                     onClick={() => setIsStoryboard(false)}
                     className={cn("px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all", !isStoryboard ? "bg-white text-slate-800 shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600")}
@@ -418,91 +437,96 @@ export default function Home() {
               </div>
 
               {/* New Style Selector */}
-              <div className="mb-6">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <div className="mb-8">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2 px-1">
                   <Layers className="w-3 h-3" /> Visual Direction Matrix
                 </p>
-                <select
-                  value={selectedStyle}
-                  onChange={(e) => setSelectedStyle(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold text-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-300 appearance-none cursor-pointer"
-                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1rem' }}
-                >
-                  {stylePresets.map((style) => (
-                    <option key={style.label} value={style.value}>{style.label}</option>
-                  ))}
-                </select>
+                <div className="relative group/select">
+                  <select
+                    value={selectedStyle}
+                    onChange={(e) => setSelectedStyle(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-xs font-bold text-slate-700 outline-none hover:border-indigo-200 transition-all cursor-pointer appearance-none shadow-sm focus:ring-2 focus:ring-indigo-500/10"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.25rem center', backgroundSize: '1rem' }}
+                  >
+                    {stylePresets.map((style) => (
+                      <option key={style.label} value={style.value}>{style.label}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {assetImage && (
-                <div className="mb-8 p-6 bg-slate-50 rounded-[1.5rem] border border-slate-200 flex gap-6 items-center">
-                  <div className="w-16 h-16 rounded-xl overflow-hidden border border-white shadow-sm ring-1 ring-slate-200">
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-10 p-8 bg-indigo-50/40 rounded-[2rem] border border-indigo-100 flex gap-8 items-center shadow-inner relative group/asset">
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-xl ring-2 ring-indigo-500/20 group-hover/asset:scale-105 transition-transform duration-500">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={assetImage} alt="Reference" className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center justify-between mb-3">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Asset Intent</p>
-                      {assetType === "style" && (
-                        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-indigo-50 border border-indigo-100 rounded-md">
-                          <Zap className="w-2.5 h-2.5 text-indigo-500" />
-                          <span className="text-[8px] font-black text-indigo-600 uppercase">Brand DNA Locked</span>
-                        </div>
-                      )}
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest italic flex items-center gap-2">
+                        <Zap className="w-3.5 h-3.5" /> Visual DNA Seed
+                      </p>
+                      <div className="flex items-center gap-1.5 px-3 py-1 bg-white/80 border border-indigo-100 rounded-lg shadow-sm">
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                        <span className="text-[9px] font-black text-indigo-600 uppercase">Analysis Engine ON</span>
+                      </div>
                     </div>
                     <div className="flex gap-2">
                       {["style", "subject", "structure"].map((type) => (
-                        <button key={type} onClick={() => setAssetType(type as any)} className={cn("px-4 py-1.5 rounded-lg text-[9px] font-black border transition-all uppercase tracking-widest", assetType === type ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-slate-500 border-slate-200 hover:border-slate-300")}>{type}</button>
+                        <button key={type} onClick={() => setAssetType(type as any)} className={cn("px-5 py-2 rounded-xl text-[9px] font-black border transition-all uppercase tracking-widest shadow-sm", assetType === type ? "bg-indigo-600 text-white border-indigo-600 shadow-indigo-100" : "bg-white text-slate-400 border-slate-200 hover:border-indigo-200 hover:text-indigo-400")}>{type}</button>
                       ))}
                     </div>
                   </div>
-                  <button onClick={() => setAssetImage(null)} className="p-2 hover:bg-slate-200 rounded-full transition-all"><X className="w-4 h-4 text-slate-400" /></button>
-                </div>
+                  <button onClick={() => setAssetImage(null)} className="absolute -top-3 -right-3 w-8 h-8 bg-white border border-slate-200 shadow-lg rounded-full flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 hover:border-rose-100 transition-all"><X className="w-4 h-4" /></button>
+                </motion.div>
               )}
 
-              <textarea
-                value={brief}
-                onChange={(e) => setBrief(e.target.value)}
-                placeholder={mode === "ad" ? "Specify your campaign parameters and visual narrative..." : "Describe clinical findings, pathology, or surgical sequences..."}
-                className="w-full h-48 bg-slate-50/50 border border-slate-200 rounded-2xl p-6 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-300 transition-all resize-none text-sm leading-relaxed"
-              />
+              <div className="relative">
+                <textarea
+                  value={brief}
+                  onChange={(e) => setBrief(e.target.value)}
+                  placeholder={mode === "ad" ? "Specify your campaign parameters and visual narrative..." : "Describe clinical findings, pathology, or surgical sequences..."}
+                  className="w-full h-56 bg-white border border-slate-200 rounded-[2rem] p-8 text-slate-800 placeholder:text-slate-300 outline-none hover:border-indigo-100 transition-all resize-none text-[15px] leading-relaxed shadow-inner"
+                />
+                <div className="absolute bottom-6 right-6 flex items-center gap-2 opacity-50">
+                  <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">{brief.length} / 1000</span>
+                </div>
+              </div>
 
               {error && (
-                <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-[10px] font-bold">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>{error}</span>
-                </div>
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-6 p-5 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-4 text-rose-600 shadow-sm">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-[11px] font-bold tracking-tight">{error}</span>
+                </motion.div>
               )}
 
-              <div className="mt-8 flex justify-between items-center bg-slate-50 -mx-8 -mb-8 p-8 border-t border-slate-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-100">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <div className="mt-10 flex justify-between items-center -mx-10 -mb-10 px-10 py-10 bg-slate-50/50 border-t border-slate-100">
+                <div className="flex items-center gap-4 group/lock">
+                  <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-100 shadow-sm group-hover/lock:scale-110 transition-transform">
+                    <ShieldCheck className="w-5 h-5 text-emerald-600" />
                   </div>
-                  <span className="text-[10px] text-slate-600 font-bold uppercase tracking-tight">Indian Identity Locked</span>
+                  <div>
+                    <span className="block text-[10px] text-slate-600 font-black uppercase tracking-widest leading-none mb-1">Indian Identity</span>
+                    <span className="text-[9px] text-emerald-500 font-bold uppercase tracking-tight">Biometric Lock: ACTIVE</span>
+                  </div>
                 </div>
-                <div className="flex gap-4">
-                  <Tooltip content="Copy the current prompt to your clipboard.">
-                    <button
-                      onClick={() => handleCopy(brief, 'brief')}
-                      disabled={!brief}
-                      className={cn(
-                        "px-6 py-4 bg-white border border-slate-200 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 disabled:opacity-30",
-                        copySuccess === 'brief' ? "text-emerald-500 border-emerald-200 bg-emerald-50" : "text-slate-500 hover:bg-slate-50"
-                      )}
-                    >
-                      {copySuccess === 'brief' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                      {copySuccess === 'brief' ? "Copied" : "Copy Prompt"}
-                    </button>
-                  </Tooltip>
+                <div className="flex gap-3">
                   <Tooltip content="Refine your raw ideas into a professional BioRender-standard prompt.">
-                    <button onClick={() => refinePrompt()} disabled={isLoading} className="px-6 py-4 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-50">
+                    <button onClick={() => refinePrompt()} disabled={isLoading} className="px-6 py-4 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:border-indigo-200 transition-all active:scale-95 disabled:opacity-50">
                       {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-amber-500" />}
-                      Refine Idea
+                      Refine
                     </button>
                   </Tooltip>
                   <Tooltip content="Analyze brief and generate a new technical JSON blueprint.">
-                    <button onClick={() => handleGenerate()} disabled={isLoading} className={cn("px-10 py-4 text-white rounded-2xl font-black text-xs uppercase tracking-[0.15em] flex items-center gap-3 transition-all shadow-lg active:scale-95 disabled:opacity-50", mode === "ad" ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200" : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200")}>
+                    <button
+                      onClick={() => handleGenerate()}
+                      disabled={isLoading}
+                      className={cn(
+                        "px-10 py-4 text-white rounded-[1.25rem] font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 transition-all relative overflow-hidden group/btn shadow-[0_10px_20px_rgba(0,0,0,0.1)] active:scale-95 disabled:opacity-50",
+                        mode === "ad" ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-100/50" : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-100/50"
+                      )}
+                    >
+                      <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
                       {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
                       {isLoading ? "Analyzing..." : "Process Brief"}
                     </button>
@@ -524,116 +548,70 @@ export default function Home() {
                 <motion.div key="result" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
                   {/* JSON Blueprint Console (Only show if we have data or NOT in manual vector mode) */}
                   {(result?.data && !isStoryboard) && (
-                    <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl relative overflow-hidden">
-                      <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-3 text-slate-400">
-                          <Terminal className="w-4 h-4" />
-                          <h3 className="font-black uppercase tracking-widest text-[10px]">
-                            {mode === "ad" ? "Art Direction" : mode === "medical" ? "Technical Blueprint" : "Vector Blueprint"}
-                          </h3>
+                    <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative overflow-hidden group/console">
+                      <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center shadow-lg">
+                            <Terminal className="w-4 h-4 text-emerald-400" />
+                          </div>
+                          <div>
+                            <h3 className="font-black uppercase tracking-[0.2em] text-[10px] text-slate-400">
+                              {mode === "ad" ? "Art Direction" : mode === "medical" ? "Technical Blueprint" : "Vector Blueprint"}
+                            </h3>
+                            <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Compiler: Gemini 2.5 Pro</p>
+                          </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Tooltip content="Manually import a technical JSON blueprint from your clipboard.">
-                            <button
-                              onClick={() => {
-                                const val = prompt("Paste your Technical JSON here:");
-                                if (val) {
-                                  try {
-                                    const parsed = JSON.parse(val);
-                                    setResult({ ...result, data: parsed });
-                                  } catch (e) {
-                                    alert("Invalid JSON format. Please ensure you copy the exact output from the web or app.");
-                                  }
-                                }
-                              }}
-                              className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-1.5"
-                            >
-                              <Upload className="w-3 h-3" /> Import
-                            </button>
-                          </Tooltip>
                           <Tooltip content="Copy the current blueprint to take it to Gemini Web for rendering.">
                             <button
                               onClick={() => {
                                 navigator.clipboard.writeText(JSON.stringify(result.data, null, 2));
-                                alert("Technical JSON copied to clipboard. You can now paste this into Gemini Web for rendering.");
+                                alert("Technical JSON copied to clipboard.");
                               }}
-                              className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-1.5"
+                              className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-500 hover:border-indigo-100 transition-all shadow-sm"
                             >
-                              <Database className="w-3 h-3" /> Copy JSON
+                              <Database className="w-4 h-4" />
                             </button>
                           </Tooltip>
-                          <Tooltip content="Render the blueprint into an image using our integrated engine.">
+                          <Tooltip content="Execute the high-fidelity render engine.">
                             <button onClick={handleRenderImage} disabled={isRendering} className={cn(
-                              "px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all shadow-sm",
-                              mode === "ad" ? "bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100" :
-                                mode === "medical" ? "bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100" :
-                                  "bg-orange-50 text-orange-600 border border-orange-100 hover:bg-orange-100"
+                              "px-6 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-3 transition-all shadow-lg active:scale-95 disabled:opacity-50",
+                              mode === "ad" ? "bg-indigo-600 text-white shadow-indigo-100/50" :
+                                mode === "medical" ? "bg-emerald-600 text-white shadow-emerald-100/50" :
+                                  "bg-orange-600 text-white shadow-orange-100/50"
                             )}>
-                              {isRendering ? <Loader2 className="w-3 h-3 animate-spin" /> : <Eye className="w-3 h-3" />}
-                              {isRendering ? "Rendering..." : "Execute Render"}
+                              {isRendering ? <Loader2 className="w-4 h-4 animate-spin" /> : <Eye className="w-4 h-4" />}
+                              Execute Render
                             </button>
                           </Tooltip>
                         </div>
                       </div>
 
-                      <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 max-h-[220px] overflow-auto mb-6 group/code relative">
-                        <textarea
-                          value={JSON.stringify(result.data, null, 2)}
-                          onChange={(e) => {
-                            try {
-                              const parsed = JSON.parse(e.target.value);
-                              setResult({ ...result, data: parsed });
-                            } catch (err) {
-                              // Allow typing even if invalid JSON temporarily
-                            }
-                          }}
-                          className="w-full h-full min-h-[150px] bg-transparent text-[11px] text-slate-500 font-mono leading-relaxed outline-none resize-none"
-                        />
-                        <div className="absolute top-2 right-2 opacity-0 group-hover/code:opacity-100 transition-opacity bg-white text-[9px] font-bold px-2 py-1 rounded border border-slate-200 text-slate-400 pointer-events-none">
-                          LIVE EDITOR ACTIVE
+                      <div className="bg-slate-900 rounded-[2rem] p-8 border border-white/5 max-h-[250px] overflow-auto mb-8 shadow-2xl relative group/code">
+                        <pre className="text-[11px] text-indigo-300 font-mono leading-relaxed whitespace-pre-wrap">
+                          {JSON.stringify(result.data, null, 2)}
+                        </pre>
+                        <div className="absolute top-4 right-4 flex items-center gap-2 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest">Validated Blueprint</span>
                         </div>
                       </div>
 
-                      <div className="p-6 bg-indigo-50/30 rounded-2xl border border-indigo-100 relative">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center gap-2 text-[10px] font-black text-indigo-500 uppercase italic tracking-widest">
-                            <RefreshCw className="w-3.5 h-3.5" /> Technical Correction Mode
+                      <div className="p-8 bg-slate-50/80 rounded-[2rem] border border-slate-200 relative">
+                        <div className="flex items-center justify-between mb-6">
+                          <div className="flex items-center gap-2 text-[10px] font-black text-indigo-500 uppercase italic tracking-widest px-1">
+                            <RefreshCw className="w-4 h-4 animate-spin-slow" /> Technical Refinement
                           </div>
-                          {renderedImage && (
-                            <div className="flex items-center gap-2 px-3 py-1 bg-white border border-indigo-200 rounded-lg shadow-sm">
-                              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                              <span className="text-[9px] font-bold text-indigo-600 uppercase">Visual Reference Locked</span>
-                            </div>
-                          )}
                         </div>
                         <div className="flex gap-3">
-                          <input value={refinement} onChange={(e) => setRefinement(e.target.value)} placeholder="e.g., 'Make the efferent arteriole blue'..." className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-300" />
-                          <Tooltip content="Apply technical corrections to the current blueprint.">
-                            <button onClick={() => handleGenerate(true)} disabled={isLoading || !refinement.trim()} className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-indigo-100">Update</button>
-                          </Tooltip>
+                          <input
+                            value={refinement}
+                            onChange={(e) => setRefinement(e.target.value)}
+                            placeholder="e.g., 'Change the camera angle to low-orbit'..."
+                            className="flex-1 bg-white border border-slate-200 rounded-[1.25rem] px-5 py-4 text-xs text-slate-700 placeholder:text-slate-300 outline-none hover:border-indigo-200 transition-all shadow-sm"
+                          />
+                          <button onClick={() => handleGenerate(true)} disabled={isLoading || !refinement.trim()} className="px-8 py-4 bg-slate-900 text-white rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all shadow-xl active:scale-95 disabled:opacity-30">Update</button>
                         </div>
-                        {renderedImage && (
-                          <div className="mt-4 flex items-center gap-3 p-3 bg-white/50 rounded-xl border border-indigo-50">
-                            <div className="w-10 h-10 rounded-lg overflow-hidden border border-indigo-100">
-                              <img src={renderedImage} className="w-full h-full object-cover opacity-50 grayscale" alt="Ref" />
-                            </div>
-                            <div className="text-[9px] text-slate-400 font-bold uppercase leading-tight">
-                              Consistency Engine Active:<br />
-                              <span className="text-indigo-400">Rendering relative to previous frame</span>
-                            </div>
-                          </div>
-                        )}
-                        {isLoading && (
-                          <div className="mt-4 w-full h-1 bg-indigo-100 rounded-full overflow-hidden">
-                            <motion.div initial={{ x: "-100%" }} animate={{ x: "0%" }} transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }} className="w-full h-full bg-indigo-500" />
-                          </div>
-                        )}
-                        {renderError && (
-                          <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-[10px] font-bold">
-                            <AlertCircle className="w-4 h-4" />
-                            <span>{renderError}</span>
-                          </div>
-                        )}
                       </div>
                     </div>
                   )}
@@ -641,168 +619,196 @@ export default function Home() {
                   {/* 🎬 Storyboard Sequence Engine */}
                   {result?.data?.scenes && (
                     <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="space-y-4"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="space-y-6 mb-8"
                     >
-                      <div className="flex items-center gap-3 px-4">
-                        <Film className="w-4 h-4 text-rose-500" />
-                        <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">
-                          Production Storyboard ({result.data.total_project_duration})
-                        </h2>
+                      <div className="flex items-center gap-4 px-6">
+                        <div className="w-10 h-10 rounded-2xl bg-rose-500 flex items-center justify-center shadow-lg shadow-rose-200">
+                          <Film className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <h2 className="text-sm font-black uppercase tracking-[0.3em] text-slate-900 leading-none mb-1">
+                            Production Storyboard
+                          </h2>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{result.data.total_project_duration}</span>
+                            <span className="w-1 h-1 rounded-full bg-slate-300" />
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{result.data.scenes.length} Master Segments</span>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="grid gap-4">
+                      <div className="grid gap-6">
                         {result.data.scenes.map((scene: any, idx: number) => (
-                          <div
+                          <motion.div
                             key={idx}
-                            className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl hover:shadow-2xl transition-all group/scene relative overflow-hidden"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.05 }}
+                            className="bg-white/90 backdrop-blur-xl border border-white rounded-[2.5rem] p-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.08)] transition-all group/scene relative overflow-hidden"
                           >
-                            <div className="absolute top-0 left-0 w-2 h-full bg-rose-500/20" />
+                            <div className="absolute top-0 left-0 w-2.5 h-full bg-rose-500 opacity-20" />
 
-                            <div className="flex items-start justify-between mb-6">
-                              <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-sm font-black text-rose-600 shadow-sm">
+                            <div className="flex items-start justify-between mb-8">
+                              <div className="flex items-center gap-5">
+                                <div className="w-14 h-14 rounded-[1.25rem] bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center text-lg font-black text-white shadow-xl shadow-rose-200/50">
                                   {scene.scene_number || idx + 1}
                                 </div>
                                 <div>
-                                  <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Scene Segment</h3>
-                                  <p className="text-[11px] font-bold text-slate-600 uppercase tracking-tight">{scene.shot_duration || '8.0s'}</p>
+                                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Scene Segment</h3>
+                                  <div className="flex items-center gap-2">
+                                    <div className="px-3 py-1 bg-slate-100 rounded-lg text-[10px] font-black text-slate-600 uppercase tracking-widest border border-slate-200 shadow-sm">
+                                      {scene.shot_duration || '5s'}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
 
-                              <div className="flex gap-3">
-                                <Tooltip content="Copy Visual Prompt for AI Video Gen">
+                              <div className="flex gap-2">
+                                <Tooltip content="Copy Visual Directive">
                                   <button
                                     onClick={() => handleCopy(scene.visual_prompt, `sc-v-${idx}`)}
                                     className={cn(
-                                      "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
-                                      copySuccess === `sc-v-${idx}` ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-slate-50 text-slate-500 border border-slate-200 hover:bg-white"
+                                      "w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-sm border",
+                                      copySuccess === `sc-v-${idx}` ? "bg-emerald-500 text-white border-emerald-400 shadow-emerald-200" : "bg-white text-slate-400 border-slate-200 hover:text-indigo-500 hover:border-indigo-100 hover:bg-indigo-50/30"
                                     )}
                                   >
-                                    {copySuccess === `sc-v-${idx}` ? <Check className="w-3.5 h-3.5" /> : <Video className="w-3.5 h-3.5" />}
-                                    {copySuccess === `sc-v-${idx}` ? "Copied" : "Copy Visual"}
+                                    {copySuccess === `sc-v-${idx}` ? <Check className="w-5 h-5" /> : <Video className="w-5 h-5" />}
                                   </button>
                                 </Tooltip>
-
-                                <Tooltip content="Copy Narration / VO Script">
+                                <Tooltip content="Copy Audio Script">
                                   <button
                                     onClick={() => handleCopy(scene.narration_vo, `sc-n-${idx}`)}
                                     className={cn(
-                                      "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
-                                      copySuccess === `sc-n-${idx}` ? "bg-amber-50 text-amber-600 border border-amber-100" : "bg-slate-50 text-slate-500 border border-slate-200 hover:bg-white"
+                                      "w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-sm border",
+                                      copySuccess === `sc-n-${idx}` ? "bg-amber-500 text-white border-amber-400 shadow-amber-200" : "bg-white text-slate-400 border-slate-200 hover:text-indigo-500 hover:border-indigo-100 hover:bg-indigo-50/30"
                                     )}
                                   >
-                                    {copySuccess === `sc-n-${idx}` ? <Check className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
-                                    {copySuccess === `sc-n-${idx}` ? "Copied" : "Copy VO"}
+                                    {copySuccess === `sc-n-${idx}` ? <Check className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                                   </button>
                                 </Tooltip>
                               </div>
                             </div>
 
-                            <div className="grid md:grid-cols-2 gap-6">
-                              <div className="space-y-4">
-                                <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 group-hover/scene:bg-white transition-colors">
-                                  <div className="flex items-center gap-2 mb-2 text-[9px] font-black text-amber-500 uppercase tracking-widest">
-                                    <Mic className="w-3 h-3" /> Audio Script
+                            <div className="grid lg:grid-cols-2 gap-8">
+                              <div className="space-y-6">
+                                <div className="p-8 bg-slate-50/50 rounded-[1.5rem] border border-slate-100 group-hover/scene:bg-white transition-all duration-500">
+                                  <div className="flex items-center gap-2 mb-4 text-[10px] font-black text-amber-500 uppercase tracking-widest">
+                                    <Mic className="w-4 h-4" /> Audio Narration
                                   </div>
-                                  <p className="text-xs text-slate-600 font-medium leading-relaxed italic">
+                                  <p className="text-sm text-slate-600 font-medium leading-relaxed italic">
                                     &quot;{scene.narration_vo}&quot;
                                   </p>
                                 </div>
                                 {scene.motion_instruction && (
-                                  <div className="flex items-center gap-2 text-[9px] font-black uppercase text-rose-500 tracking-widest bg-rose-50 px-3 py-1.5 rounded-lg w-fit border border-rose-100">
-                                    <RefreshCw className="w-3 h-3" /> {scene.motion_instruction}
+                                  <div className="flex items-center gap-3 text-[10px] font-black uppercase text-rose-500 tracking-widest bg-rose-50 px-5 py-2.5 rounded-xl w-fit border border-rose-100 shadow-sm">
+                                    <RefreshCw className="w-4 h-4" /> {scene.motion_instruction}
                                   </div>
                                 )}
                               </div>
 
-                              <div className="space-y-2">
-                                <div className="text-[9px] font-black text-rose-400 uppercase tracking-widest flex items-center gap-2">
-                                  <Video className="w-3 h-3" /> Visual Directive
+                              <div className="space-y-4">
+                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 px-1">
+                                  <Video className="w-4 h-4" /> Visual Directive
                                 </div>
-                                <p className="text-[11px] text-slate-500 leading-relaxed font-medium line-clamp-4 group-hover/scene:line-clamp-none transition-all">
+                                <p className="text-xs text-slate-500 leading-relaxed font-medium bg-slate-50/30 p-8 rounded-[1.5rem] border border-slate-100/50 group-hover/scene:bg-white transition-all duration-500">
                                   {scene.visual_prompt}
                                 </p>
                               </div>
                             </div>
-                          </div>
+                          </motion.div>
                         ))}
                       </div>
                     </motion.div>
                   )}
 
                   {/* Visual Console */}
-                  <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl overflow-hidden group">
-                    <div className="flex items-center justify-between mb-6">
-                      <h3 className="font-black uppercase tracking-widest text-[10px] text-slate-400">Vision Console</h3>
-                      {renderedImage && (
-                        <div className="flex gap-2">
-                          {mode === "vector" && (
-                            <Tooltip content="Vectorize the rendered pixels into a scalable SVG instantly.">
+                  <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden group/vision">
+                    <div className="flex items-center justify-between mb-8">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center">
+                          <ImageIcon className="w-5 h-5 text-indigo-400" />
+                        </div>
+                        <h3 className="font-black uppercase tracking-[0.2em] text-[10px] text-slate-400">Vision Console</h3>
+                      </div>
+                      <div className="flex gap-2">
+                        {renderedImage && (
+                          <>
+                            {mode === "vector" && (
                               <button
                                 onClick={vectorizeToSVG}
                                 disabled={isVectorizing || !isEngineReady}
-                                className={cn(
-                                  "flex items-center gap-2 px-6 py-2 shadow-lg rounded-xl text-[10px] font-black text-white transition-all uppercase tracking-widest disabled:opacity-50",
-                                  isEngineReady ? "bg-orange-600 shadow-orange-100 hover:bg-orange-700" : "bg-slate-400 shadow-slate-100"
-                                )}
+                                className="flex items-center gap-3 px-6 py-3 bg-orange-600 text-white shadow-xl shadow-orange-100 rounded-xl text-[10px] font-black transition-all uppercase tracking-widest active:scale-95"
                               >
-                                {isVectorizing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> :
-                                  !isEngineReady ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> :
-                                    <Layers className="w-3.5 h-3.5" />}
-                                {isVectorizing ? "Tracing..." : !isEngineReady ? "Loading Engine..." : "Vectorize (SVG)"}
+                                {isVectorizing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Layers className="w-4 h-4" />}
+                                Tracing SVG
                               </button>
-                            </Tooltip>
-                          )}
-                          <Tooltip content="Lock this image as the 'Style DNA' for all subsequent generations. Perfect for creating a consistent book series.">
+                            )}
                             <button
                               onClick={() => {
                                 setAssetImage(renderedImage);
                                 setAssetType("style");
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                               }}
-                              className="flex items-center gap-2 px-6 py-2 bg-indigo-50 border border-indigo-200 shadow-lg shadow-indigo-50 rounded-xl text-[10px] font-black text-indigo-600 hover:bg-white transition-all uppercase tracking-widest"
+                              className="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95"
                             >
-                              <Zap className="w-3.5 h-3.5" /> Lock DNA
+                              <Zap className="w-5 h-5" />
                             </button>
-                          </Tooltip>
-                          <Tooltip content="Download the high-resolution image to your device.">
-                            <button onClick={downloadImage} className="flex items-center gap-2 px-6 py-2 bg-slate-900 shadow-lg shadow-slate-200 rounded-xl text-[10px] font-black text-white hover:bg-black transition-all uppercase tracking-widest">
-                              <Download className="w-3.5 h-3.5" /> Export DPI
+                            <button onClick={downloadImage} className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xl shadow-slate-200 hover:bg-black transition-all active:scale-95">
+                              <Download className="w-5 h-5" />
                             </button>
-                          </Tooltip>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="w-full relative aspect-[16/10] rounded-[2rem] bg-slate-950 border border-white/10 flex items-center justify-center overflow-hidden shadow-2xl group-hover/vision:shadow-indigo-200/20 transition-all duration-700">
+                      {isRendering && (
+                        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-950/40 backdrop-blur-sm">
+                          <div className="relative">
+                            <div className="w-32 h-32 rounded-full border-t-2 border-indigo-500 animate-spin" />
+                            <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-indigo-400 uppercase tracking-widest">Rendering</div>
+                          </div>
                         </div>
                       )}
-                    </div>
-                    <div className="w-full relative aspect-[16/9] rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center overflow-hidden shadow-inner">
+
                       {renderedImage ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img src={renderedImage} alt="Analysis Result" className="w-full h-full object-contain" />
                       ) : mode === "vector" ? (
-                        <div className="flex flex-col items-center gap-6 p-12">
+                        <div className="flex flex-col items-center gap-8 px-12 py-20 text-center">
                           <input type="file" ref={externalRenderRef} onChange={handleExternalUpload} className="hidden" accept="image/*" />
-                          <div className="w-20 h-20 rounded-3xl bg-orange-50 border-2 border-dashed border-orange-200 flex items-center justify-center group-hover:scale-110 transition-transform cursor-pointer" onClick={() => externalRenderRef.current?.click()}>
-                            <Upload className="w-8 h-8 text-orange-400" />
-                          </div>
-                          <div className="text-center">
-                            <h5 className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Manual Vectorizer</h5>
-                            <p className="text-[9px] font-bold text-slate-300 uppercase max-w-[200px] leading-relaxed">Have a PNG from the web? Upload it here to trace it into a Scalable SVG for free.</p>
+                          <motion.div
+                            whileHover={{ scale: 1.1, rotate: 10 }}
+                            className="w-24 h-24 rounded-[2rem] bg-orange-600/10 border-2 border-dashed border-orange-500/30 flex items-center justify-center cursor-pointer shadow-2xl"
+                            onClick={() => externalRenderRef.current?.click()}
+                          >
+                            <Upload className="w-10 h-10 text-orange-500" />
+                          </motion.div>
+                          <div>
+                            <h5 className="text-[12px] font-black uppercase text-white tracking-[0.3em] mb-3">External Vectorizer</h5>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase max-w-[280px] leading-relaxed">Drop a flat icon or medical sketch here to convert pixels into scalable SVG paths.</p>
                           </div>
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center gap-6 text-slate-300">
-                          <div className="w-20 h-20 rounded-full border-2 border-dashed border-slate-200 flex items-center justify-center"><ImageIcon className="w-8 h-8 opacity-40" /></div>
-                          <span className="text-[10px] font-black tracking-[0.3em] uppercase">Ready for processing</span>
+                        <div className="flex flex-col items-center gap-8 opacity-40">
+                          <div className="relative">
+                            <div className="w-24 h-24 rounded-full border border-dashed border-slate-700 flex items-center justify-center">
+                              <ImageIcon className="w-10 h-10 text-slate-500" />
+                            </div>
+                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-slate-800 rounded-full border border-slate-700 animate-pulse" />
+                          </div>
+                          <span className="text-[11px] font-black tracking-[0.4em] uppercase text-slate-500">Awaiting Signal</span>
                         </div>
                       )}
 
                       {result?.data && (
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/80 to-transparent p-6 pointer-events-none">
-                          <h4 className="text-sm font-black text-slate-800 mb-2 uppercase tracking-tighter truncate">{result.data.scientific_subject || result.data.core_prompt}</h4>
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-6 pointer-events-none">
+                          <h4 className="text-sm font-black text-white mb-2 uppercase tracking-tighter truncate">{result.data.scientific_subject || result.data.core_prompt}</h4>
                           <div className="flex gap-2">
-                            <span className="text-[9px] px-3 py-1 bg-slate-100 text-slate-500 rounded-lg border border-slate-200 uppercase font-black">Ref: {mode}</span>
-                            <span className="text-[9px] px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg border border-indigo-100 uppercase font-black tracking-widest">V-Intelligence</span>
+                            <span className="text-[9px] px-3 py-1 bg-white/10 text-white/60 rounded-lg border border-white/10 uppercase font-black">Ref: {mode}</span>
+                            <span className="text-[9px] px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-lg border border-indigo-500/20 uppercase font-black tracking-widest text-glow-indigo">V-Intelligence</span>
                           </div>
                         </div>
                       )}
@@ -862,11 +868,9 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {
-        showLibrary && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowLibrary(false)} className="fixed inset-0 bg-slate-900/10 backdrop-blur-sm z-50" />
-        )
-      }
+      {showLibrary && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowLibrary(false)} className="fixed inset-0 bg-slate-900/10 backdrop-blur-sm z-50" />
+      )}
 
       {/* Global Aesthetics */}
       <style jsx global>{`
@@ -878,6 +882,6 @@ export default function Home() {
         pre::-webkit-scrollbar { height: 4px; }
         pre::-webkit-scrollbar-thumb { background: #cbd5e1; }
       `}</style>
-    </main >
+    </main>
   );
 }
