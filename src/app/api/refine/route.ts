@@ -8,7 +8,7 @@ export const runtime = "edge";
 
 export async function POST(req: NextRequest) {
     try {
-        const { brief, mode } = await req.json();
+        const { brief, mode, style } = await req.json();
 
         if (!brief) {
             return NextResponse.json({ error: "No brief provided" }, { status: 400 });
@@ -17,18 +17,21 @@ export async function POST(req: NextRequest) {
         const apiKey = process.env.GEMINI_API_KEY!;
         const genAI = new GoogleGenerativeAI(apiKey);
 
-        // 🧠 Refinement Intelligence Prompt
+        // 🧠 Refinement Intelligence Prompt (Logic-Hardened)
         const systemPrompt = `
-        You are an Elite Medical Illustrator Prompt Engineer. Your job is to transform raw clinical ideas into a "Gemini-Web Master Prompt."
+        You are a Master Medical Illustrator. Your task is to transform a raw clinical brief into a "Direct-Flow Rendering Paragraph."
         
-        CRITICAL RULES FOR WEB-COPY:
-        1. CONVERSATIONAL AUTHORITY: Start with "Generate a professional BioRender medical illustration..."
-        2. NO TEXT/LABELS: Explicitly tell the AI "DO NOT render ANY text, labels, or pointers."
-        3. ETHNICITY LOCKED: Specify "Single central Indian male silhouette" to ensure cultural accuracy.
-        4. WARM-TONAL DNA: Describe the "warm-tonal translucent skin with glowing internal organs" in vivid detail.
-        6. ANATOMICAL FIDELITY: Incorporate precise anatomical terminology (e.g., 'latissimus dorsi' instead of 'back muscle', 'renal medulla' instead of 'middle kidney'). Use Grey's Anatomy as the naming standard.
+        CRITICAL STYLE RULE: 
+        - If the STYLE CONTEXT mentions "NEJM", "Editorial", or "Painting", use soft volumetric digital painting with muted clinical colors. Abandon BioRender "plastic" looks.
         
-        OUTPUT FORMAT: Return ONLY the refined paragraph ready for copy-pasting into Gemini Web. 
+        CRITICAL LOGIC RULES:
+        1. PATHOLOGICAL CONSISTENCY: Ensure causes and effects are on the same side. If a stone is in the right ureter, only the right kidney should be distended.
+        2. ANATOMICAL SKELETON: The Indian male silhouette must be a clean, ghosted container. Do NOT draw organs outside the body or tubes coming from the arms.
+        3. HARDWARE ANCHORING: Clinical hardware (catheters/pumps) must be precisely anchored to the anatomical entry point (e.g. renal pelvis) and follow a single logical path. No floating wires.
+        
+        STYLE CONTEXT: ${style ? style : "Professional BioRender Style (2.5D matte vector finish, warm-tonal translucent skin, subtle internal glows)."}
+        
+        OUTPUT FORMAT: Return ONLY the paragraph. No meta-text.
         `;
 
         const geminiApiKey = process.env.GEMINI_API_KEY;

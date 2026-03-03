@@ -9,14 +9,22 @@ function handleSuccessfulImage(base64Image: string, mode: string) {
     const folder = folderMap[mode] || "renders/ad";
     const filename = `render-${Date.now()}.png`;
 
-    // Note: Local disk saving bypassed for Edge Runtime compatibility.
-    // This allows the Vercel app to respond as fast as Gemini generates.
-
     return NextResponse.json({
         success: true,
         imageUrl: `data:image/png;base64,${base64Image}`,
         localPath: `/${folder}/${filename}`
     });
+}
+
+// Helper for Edge-compatible Base64 conversion
+function arrayBufferToBase64(buffer: ArrayBuffer) {
+    const uint8Array = new Uint8Array(buffer);
+    let binary = '';
+    const len = uint8Array.byteLength;
+    for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(uint8Array[i]);
+    }
+    return btoa(binary);
 }
 
 export async function POST(req: NextRequest) {
@@ -27,10 +35,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "No prompt data provided" }, { status: 400 });
         }
 
-        // Initialize or retrieve seed for consistency
         const seed = promptData.seed || Math.floor(Math.random() * 2147483647);
-
         const apiKey = process.env.GEMINI_API_KEY;
+
         if (!apiKey) {
             return NextResponse.json({ error: "API Key missing" }, { status: 500 });
         }
@@ -46,24 +53,21 @@ export async function POST(req: NextRequest) {
 
             finalPrompt = `CRITICAL: ZERO TEXT POLICY. ABSOLUTELY NO FONT, LABELS, LETTERS, OR TITLES ALLOWED.
             VISUAL-ONLY TRANSFORMATION:
-            - CONVERSION: Transform all clinical nouns in the following description into VISUAL ANATOMY only. Do NOT write the words.
             - SUBJECT: ${promptData.scientific_subject}. 
             - CHARACTER: Central single ${characterDesc} with ${promptData.visual_theme}.
-            - ASSET DNA: ${promptData.illustration_style}, high-fidelity 3D matte vector finish, ${promptData.visual_accuracy?.textures || ''}.
-            - TEXTURE: Translucent Indian skin tones with 3D depth. Internal organs should be semi-transparent matte plastic with soft internal glows.
-            - NEGATIVE (STRICT): ${promptData.negative_prompt}, text, words, labels, call-outs, arrows, fonts, captions, headers, signatures, Male-Subject-A, Male-Subject-B, infographic-lines, pointers.`;
+            - ASSET DNA: ${promptData.illustration_style}, high-fidelity 3D matte vector finish.
+            - TEXTURE: Translucent Indian skin tones. Internal organs semi-transparent matte plastic.
+            - NEGATIVE (STRICT): ${promptData.negative_prompt}, text, words, labels, call-outs, arrows, fonts, captions, headers.`;
         }
 
-        // 🌊 IMAGE RENDER WATERFALL (Bypasses Quota/429/404 errors)
+        // 🌊 IMAGE RENDER WATERFALL
         const modelsToTry = [
-            { name: "imagen-4.0-generate-001", type: "imagen" },
-            { name: "nano-banana-pro-preview", type: "gemini" },
-            { name: "gemini-3.1-flash-image-preview", type: "gemini" },
-            { name: "gemini-2.5-flash-image", type: "gemini" },
-            { name: "imagen-3.0-generate-001", type: "imagen" },
-            { name: "gemini-2.0-flash-exp-image-generation", type: "gemini" },
-            { name: "imagen-4.0-fast-generate-001", type: "imagen" },
-            { name: "veo-3.1-generate-preview", type: "imagen" }
+            { name: "imagen-4.0-generate-001", type: "imagen", supportsSeed: true },
+            { name: "imagen-4.0-fast-generate-001", type: "imagen", supportsSeed: false },
+            { name: "imagen-4.0-ultra-generate-001", type: "imagen", supportsSeed: true },
+            { name: "gemini-1.5-flash-latest", type: "gemini", supportsSeed: true },
+            { name: "gemini-1.5-pro-latest", type: "gemini", supportsSeed: true },
+            { name: "gemini-2.0-flash-exp-image-generation", type: "gemini", supportsSeed: true }
         ];
 
         for (const model of modelsToTry) {
@@ -75,24 +79,19 @@ export async function POST(req: NextRequest) {
 
                 let body: any;
                 if (model.type === "imagen") {
+                    const params: any = {
+                        sampleCount: 1,
+                        aspectRatio: promptData.aspect_ratio || "1:1",
+                        outputMimeType: "image/png"
+                    };
+                    if (model.supportsSeed) params.seed = seed;
+
                     body = {
                         instances: [{ prompt: finalPrompt }],
-                        parameters: {
-                            sampleCount: 1,
-                            aspectRatio: promptData.aspect_ratio || "1:1",
-                            seed: seed,
-                            outputMimeType: "image/png"
-                        }
+                        parameters: params
                     };
-                    // If we have a parent image, use it for structural consistency (if model supports it)
-                    if (parentImage) {
-                        body.instances[0].image = { bytesBase64: parentImage.split(",")[1] || parentImage };
-                    }
                 } else {
-                    const parts: any[] = [{ text: `Generate a high-quality professional image maintaining the exact structure of previous work: ${finalPrompt}` }];
-                    if (parentImage) {
-                        parts.push({ inlineData: { data: parentImage.split(",")[1] || parentImage, mimeType: "image/png" } });
-                    }
+                    const parts: any[] = [{ text: `Generate clear 2.5D medical illustration: ${finalPrompt}` }];
                     body = { contents: [{ parts }] };
                 }
 
@@ -103,32 +102,72 @@ export async function POST(req: NextRequest) {
                 });
 
                 const result = await response.json();
-
                 if (response.ok) {
                     let base64Image = "";
                     if (model.type === "imagen") {
                         base64Image = result.predictions?.[0]?.bytesBase64;
                     } else {
                         const parts = result.candidates?.[0]?.content?.parts || [];
-                        const imagePart = parts.find((p: any) => p.inlineData?.data || (p.text && p.text.length > 500)); // Some exp models return text-wrapped base64
+                        const imagePart = parts.find((p: any) => p.inlineData?.data || (p.text && p.text.length > 500));
                         base64Image = imagePart?.inlineData?.data || "";
                     }
-
-                    if (base64Image) {
-                        return handleSuccessfulImage(base64Image, mode);
-                    }
-                } else {
-                    console.warn(`Model ${model.name} failed:`, result.error?.message);
-                    // Continue to next model in loop
+                    if (base64Image) return handleSuccessfulImage(base64Image, mode);
                 }
             } catch (err) {
-                console.error(`Error with model ${model.name}:`, err);
+                console.warn(`${model.name} failed`);
             }
         }
 
-        // If we reach here, all fallbacks failed
+        // 🌊 FINAL FALLBACK: Replicate (FLUX)
+        if (process.env.REPLICATE_API_TOKEN) {
+            console.log("🐺 [Replicate] Attempting Fallback...");
+            try {
+                const response = await fetch("https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Token ${process.env.REPLICATE_API_TOKEN}`,
+                        "Content-Type": "application/json",
+                        "Prefer": "wait"
+                    },
+                    body: JSON.stringify({
+                        input: {
+                            prompt: finalPrompt,
+                            aspect_ratio: "1:1",
+                            output_format: "png"
+                        }
+                    })
+                });
+
+                const result = await response.json();
+                const imageUrl = result.output?.[0] || result.output;
+                if (imageUrl) {
+                    const imgRes = await fetch(imageUrl);
+                    const arrayBuffer = await imgRes.arrayBuffer();
+                    return handleSuccessfulImage(arrayBufferToBase64(arrayBuffer), mode);
+                }
+            } catch (err) {
+                console.warn("Replicate failed");
+            }
+        }
+
+        // 🌊 ULTIMATE FAIL-SAFE: Pollinations (Ultra-Clean Prompt)
+        console.log("🌸 [Pollinations] Emergency Render...");
+        try {
+            const safePrompt = `${promptData.scientific_subject}`.replace(/[^a-zA-Z0-9 ]/g, ' ').substring(0, 100);
+            // Adding .jpg extension can bypass some edge cache blocks
+            const pollinationUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(safePrompt)}.jpg?seed=${Math.floor(Math.random() * 1000000)}&nologo=true&width=1024&height=1024`;
+
+            const pollRes = await fetch(pollinationUrl);
+            if (pollRes.ok) {
+                const arrayBuffer = await pollRes.arrayBuffer();
+                return handleSuccessfulImage(arrayBufferToBase64(arrayBuffer), mode);
+            }
+        } catch (err) {
+            console.warn("Pollinations failed");
+        }
+
         return NextResponse.json({
-            error: "All Image Models Failed/Quota Exceeded. To resolve this, please enable Billing in your Google AI Studio account to unlock high-priority Imagen 4 access."
+            error: "Quotas Exhausted. Google Labs is highly recommended for this level of detail. Please retry in 60s."
         }, { status: 429 });
 
     } catch (error: any) {

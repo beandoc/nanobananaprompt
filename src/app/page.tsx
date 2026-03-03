@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Terminal, Camera, Zap, AlertCircle, Loader2, Download, Image as ImageIcon, Microscope, Stethoscope, Dna, FileText, History, X, Check, ArrowRight, CornerDownRight, Upload, Layers, Eye, RefreshCw, ShieldCheck, Search, Database } from "lucide-react";
+import { Sparkles, Terminal, Camera, Zap, AlertCircle, Loader2, Download, Image as ImageIcon, Microscope, Stethoscope, Dna, FileText, History, X, Check, ArrowRight, CornerDownRight, Upload, Layers, Eye, RefreshCw, ShieldCheck, Search, Database, Copy } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -112,6 +112,13 @@ export default function Home() {
   const [showLibrary, setShowLibrary] = useState(false);
   const [library, setLibrary] = useState<any[]>([]);
   const [isLoadingLibrary, setIsLoadingLibrary] = useState(false);
+  const [copySuccess, setCopySuccess] = useState<string | null>(null);
+
+  const handleCopy = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopySuccess(id);
+    setTimeout(() => setCopySuccess(null), 2000);
+  };
 
   const [assetImage, setAssetImage] = useState<string | null>(null);
   const [assetType, setAssetType] = useState<"style" | "subject" | "structure">("style");
@@ -256,7 +263,7 @@ export default function Home() {
       const response = await fetch("/api/refine", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ brief, mode })
+        body: JSON.stringify({ brief, mode, style: selectedStyle })
       });
       const result = await response.json();
       if (result.success) {
@@ -453,6 +460,19 @@ export default function Home() {
                   <span className="text-[10px] text-slate-600 font-bold uppercase tracking-tight">Indian Identity Locked</span>
                 </div>
                 <div className="flex gap-4">
+                  <Tooltip content="Copy the current prompt to your clipboard.">
+                    <button
+                      onClick={() => handleCopy(brief, 'brief')}
+                      disabled={!brief}
+                      className={cn(
+                        "px-6 py-4 bg-white border border-slate-200 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 disabled:opacity-30",
+                        copySuccess === 'brief' ? "text-emerald-500 border-emerald-200 bg-emerald-50" : "text-slate-500 hover:bg-slate-50"
+                      )}
+                    >
+                      {copySuccess === 'brief' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {copySuccess === 'brief' ? "Copied" : "Copy Prompt"}
+                    </button>
+                  </Tooltip>
                   <Tooltip content="Refine your raw ideas into a professional BioRender-standard prompt.">
                     <button onClick={() => refinePrompt()} disabled={isLoading} className="px-6 py-4 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-50">
                       {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-amber-500" />}
