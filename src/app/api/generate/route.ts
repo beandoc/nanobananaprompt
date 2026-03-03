@@ -16,8 +16,9 @@ function getGeminiModel(mode: "ad" | "medical" | "vector") {
         vector: vectorIllustrationSchema
     };
 
+    // 🎯 Use the verified 2.0-Flash model for your special preview tier
     return genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.0-flash",
         generationConfig: {
             responseMimeType: "application/json",
             responseSchema: schemaMap[mode]
