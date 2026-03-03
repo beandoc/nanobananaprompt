@@ -85,16 +85,16 @@ export default function Home() {
         document.body.removeChild(link);
         setIsVectorizing(false);
       }, {
-        numberofcolors: 32,
-        ltres: 0.1,
-        qtres: 0.1,
-        pathomit: 8,
+        numberofcolors: 12,
+        ltres: 1.0,
+        qtres: 1.0,
+        pathomit: 32,
         strokewidth: 0.5,
-        blurradius: 0,
-        blurdelta: 0,
+        blurradius: 0.5,
+        blurdelta: 20,
         viewbox: true,
         linefilter: true,
-        colorsampling: 2
+        colorsampling: 1
       });
     } catch (err) {
       console.error(err);
@@ -146,11 +146,35 @@ export default function Home() {
 
   useEffect(() => { if (showLibrary) fetchLibrary(); }, [showLibrary]);
 
+  const compressImage = (base64: string, maxWidth = 1024): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = base64;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.8));
+      };
+    });
+  };
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => setAssetImage(reader.result as string);
+      reader.onloadend = async () => {
+        const compressed = await compressImage(reader.result as string);
+        setAssetImage(compressed);
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -159,10 +183,11 @@ export default function Home() {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setRenderedImage(reader.result as string);
-        setMode("vector"); // Force vector mode for tracing
-        setResult({ data: { core_prompt: "External Manual Upload" } }); // Mock result to show UI
+      reader.onloadend = async () => {
+        const compressed = await compressImage(reader.result as string);
+        setRenderedImage(compressed);
+        setMode("vector");
+        setResult({ data: { core_prompt: "External Manual Upload" } });
       };
       reader.readAsDataURL(file);
     }
@@ -187,13 +212,16 @@ export default function Home() {
       ? `TECHNICAL CORRECTION: ${activeBrief}. Maintain the core structure of the previous blueprint but apply these specific changes.`
       : activeBrief;
 
+    // 🛡️ MEMORY GUARD: Prevent 75MB SVGs from crashing the API request
+    const isSvg = renderedImage?.startsWith("data:image/svg+xml");
+
     const body: any = {
       brief: processedBrief,
       mode,
       image: assetImage,
-      previousImage: renderedImage, // Use the current render as visual context for the fix
+      previousImage: isSvg ? null : renderedImage, // Only send PNG/JPG to Gemini
       assetInstruction: assetType,
-      parentPrompt: isRefinement ? result?.data : null, // Pass the previous JSON as a baseline for consistency
+      parentPrompt: isRefinement ? result?.data : null,
     };
 
     if (!isRefinement) {

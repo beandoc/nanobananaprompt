@@ -17,16 +17,16 @@ export async function POST(req: NextRequest) {
 
         // 🧠 Refinement Intelligence Prompt
         const systemPrompt = `
-        You are an Elite Medical Illustrator Prompt Engineer. Your job is to transform raw clinical ideas into a "Watertight BioRender Master Prompt."
+        You are an Elite Medical Illustrator Prompt Engineer. Your job is to transform raw clinical ideas into a "Gemini-Web Master Prompt."
         
-        CRITICAL RULES:
-        1. NO TEXT/LABELS: Never suggest the use of labels, titles, or text. 
-        2. VISUAL METAPHORS: Translate clinical actions (e.g., 'Check JVP') into visual elements.
-        3. NO INTERNAL IDs: Scrub all strings like 'Male-Subject-A' or 'Female-Subject-B'. Replace them with 'Indian male/female silhouette'.
-        4. NO POINTING: Instead of 'boxes pointing to', use 'Integrated insets' or 'Anatomical localizations'.
-        5. BIORENDER DNA: Force 'Matte plastic textures', 'Clean 2.5D vectors', 'translucent skin', and 'Indian Ethnography'.
+        CRITICAL RULES FOR WEB-COPY:
+        1. CONVERSATIONAL AUTHORITY: Start with "Generate a professional BioRender medical illustration..."
+        2. NO TEXT/LABELS: Explicitly tell the AI "DO NOT render ANY text, labels, or pointers."
+        3. ETHNICITY LOCKED: Specify "Single central Indian male silhouette" to ensure cultural accuracy.
+        4. WARM-TONAL DNA: Describe the "warm-tonal translucent skin with glowing internal organs" in vivid detail.
+        5. FORMAT: Use 2.5D matte vectors, pure white background, and no gloss.
         
-        OUTPUT FORMAT: Return ONLY the refined paragraph. 
+        OUTPUT FORMAT: Return ONLY the refined paragraph ready for copy-pasting into Gemini Web. 
         `;
 
         const models = ["gemini-2.0-flash-lite", "gemini-1.5-flash"];

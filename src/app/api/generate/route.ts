@@ -67,22 +67,19 @@ export async function POST(req: NextRequest) {
             promptParams.push({ inlineData: { data: base64Data, mimeType: "image/png" } });
         }
 
-        // 🌊 WATERFALL FALLBACK SYSTEM (Bypasses Quota/429/404 errors)
+        // 🌊 FREE-TIER OPTIMIZED WATERFALL
         const models = [
-            "nano-banana-pro-preview",
-            "gemini-3.1-flash-preview",
             "gemini-2.0-flash-lite",
-            "gemini-flash-latest",
-            "gemini-2.5-flash",
             "gemini-1.5-flash",
-            "gemini-2.0-flash",
-            "gemini-3-flash-preview"
+            "gemini-1.5-pro-002", // Pro 002 is often on a fresh quota
+            "gemini-1.0-pro"
         ];
 
         let adData: any = null;
         let lastError: any;
 
         for (const modelName of models) {
+            console.log(`🧠 Generating Master Blueprint: ${modelName}`);
             try {
                 const model = genAI.getGenerativeModel({
                     model: modelName,
