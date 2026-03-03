@@ -17,7 +17,7 @@ function getGeminiModel(mode: "ad" | "medical" | "vector") {
     };
 
     return genAI.getGenerativeModel({
-        model: mode === "medical" ? "gemini-flash-latest" : "gemini-pro-latest",
+        model: "gemini-1.5-flash-latest",
         generationConfig: {
             responseMimeType: "application/json",
             responseSchema: schemaMap[mode]
