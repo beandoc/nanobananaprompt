@@ -131,6 +131,7 @@ export default function Home() {
     { label: "Hand-drawn Charcoal", value: "Rough hand-drawn charcoal sketch, organic textures, fine art architectural style" },
     { label: "Synthwave Retro", value: "80s synthwave style, retro-futurism, grid floors, purple and pink gradients" },
     { label: "Classic NEJM Editorial", value: "New England Journal of Medicine style, 2.5D soft volumetric digital painting, muted clinical colors, integration of technical medical hardware (pumps, filters, catheters), directional flow dynamics with particles, layered anatomical transparency, clean white background, professional scientific textbook aesthetic" },
+    { label: "Professional BioRender Style", value: "BioRender-standard scientific illustration, clean 2.5D vector assets, matte plastic textures, even-ambient-clean lighting, soft pastel clinical palette, professional research poster aesthetic, optimized for complex anatomical pathways and systemic mapping" },
     { label: "Micro-3D Technical", value: "Macro-3D technical render, internal cross-sections, hyper-detailed textures, laboratory lighting" }
   ];
 

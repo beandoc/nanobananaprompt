@@ -48,8 +48,13 @@ export const medicalIllustrationSchema: Schema = {
     properties: {
         scientific_subject: {
             type: SchemaType.STRING,
-            description: "Specific anatomical structure or surgical process. If a patient or clinician is visible, ALWAYS specify them as Indian for textbook consistency."
+            description: "Detailed description of the anatomical or clinical subject."
         },
+        layout_composition: {
+            type: SchemaType.STRING,
+            enum: ["central-figure-with-callouts", "side-by-side-comparison", "micro-macro-inset", "full-body-pathology-map", "linear-process-flow", "isolated-asset-only"],
+            description: "Defines the infographic arrangement. Essential for complex multi-organ views."
+        } as any,
         illustration_style: {
             type: SchemaType.STRING,
             enum: ["photorealistic-electron-microscopy", "3d-medical-render", "biorender-scientific-vector", "biorender-icon-asset", "biorender-equipment-render", "biorender-musculoskeletal", "biorender-histology-layer", "biorender-pathology-comparison", "biorender-pathway-diagram", "biorender-silhouette-icon", "biorender-systemic-network", "biorender-schematic-flowchart", "biorender-gallery-layout", "biorender-multisystem-pathology", "biorender-mechanism-action", "clean-surgical-sketch", "scientific-diagram", "histology-stained"]
@@ -82,7 +87,7 @@ export const medicalIllustrationSchema: Schema = {
             description: "Forces a consistent color palette across different images."
         } as any
     },
-    required: ["scientific_subject", "illustration_style", "visual_accuracy", "journal_standard", "negative_prompt", "consistent_character", "visual_theme"]
+    required: ["scientific_subject", "layout_composition", "illustration_style", "visual_accuracy", "journal_standard", "negative_prompt", "consistent_character", "visual_theme"]
 };
 
 // Vector Branding Schema (Optimized for Corporate Styles & SVG conversion)
