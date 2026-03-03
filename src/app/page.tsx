@@ -221,6 +221,26 @@ export default function Home() {
     }
   };
 
+  const refinePrompt = async () => {
+    if (!brief) return;
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/refine", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ brief, mode })
+      });
+      const result = await response.json();
+      if (result.success) {
+        setBrief(result.refinedPrompt);
+      }
+    } catch (error) {
+      console.error("Refinement failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleRenderImage = async () => {
     if (!result?.data) return;
     setIsRendering(true);
@@ -404,12 +424,20 @@ export default function Home() {
                   </div>
                   <span className="text-[10px] text-slate-600 font-bold uppercase tracking-tight">Indian Identity Locked</span>
                 </div>
-                <Tooltip content="Analyze brief and generate a new technical JSON blueprint.">
-                  <button onClick={() => handleGenerate()} disabled={isLoading} className={cn("px-10 py-4 text-white rounded-2xl font-black text-xs uppercase tracking-[0.15em] flex items-center gap-3 transition-all shadow-lg active:scale-95 disabled:opacity-50", mode === "ad" ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200" : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200")}>
-                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
-                    {isLoading ? "Analyzing..." : "Process Brief"}
-                  </button>
-                </Tooltip>
+                <div className="flex gap-4">
+                  <Tooltip content="Refine your raw ideas into a professional BioRender-standard prompt.">
+                    <button onClick={() => refinePrompt()} disabled={isLoading} className="px-6 py-4 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-50">
+                      {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-amber-500" />}
+                      Refine Idea
+                    </button>
+                  </Tooltip>
+                  <Tooltip content="Analyze brief and generate a new technical JSON blueprint.">
+                    <button onClick={() => handleGenerate()} disabled={isLoading} className={cn("px-10 py-4 text-white rounded-2xl font-black text-xs uppercase tracking-[0.15em] flex items-center gap-3 transition-all shadow-lg active:scale-95 disabled:opacity-50", mode === "ad" ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200" : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200")}>
+                      {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
+                      {isLoading ? "Analyzing..." : "Process Brief"}
+                    </button>
+                  </Tooltip>
+                </div>
               </div>
             </motion.div>
           </section>

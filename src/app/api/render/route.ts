@@ -42,15 +42,16 @@ export async function POST(req: NextRequest) {
             finalPrompt = `${promptData.illustration_subject}. Style: ${promptData.vector_style}. Palette: ${promptData.color_palette}. Background: ${promptData.background}. Complexity: ${promptData.complexity}. Negative: ${promptData.negative_prompt}`;
         } else {
             const characterDesc = promptData.consistent_character === "Male-Subject-A" ? "middle-aged Indian male silhouette" :
-                promptData.consistent_character === "Female-Subject-B" ? "middle-aged Indian female silhouette" : "";
+                promptData.consistent_character === "Female-Subject-B" ? "middle-aged Indian female silhouette" : "human silhouette";
 
-            finalPrompt = `SINGLE INTEGRATED FIGURE: Ensure exactly one central anatomical subject. No galleries, no multiple views, no inset splits unless requested.
-            SUBJECT: ${promptData.scientific_subject}. 
-            CHARACTER STYLE: ${characterDesc}.
-            ILLUSTRATION DNA: ${promptData.illustration_style}, matte plastic textures, ${promptData.visual_accuracy?.textures || ''}, ${promptData.visual_accuracy?.lighting || ''}. 
-            JOURNAL STANDARD: ${promptData.journal_standard}. 
-            THEME: ${promptData.visual_theme || ''}. 
-            NEGATIVE RULES (CRITICAL): ${promptData.negative_prompt}, labels, text, captions, headers, signatures, Male-Subject-A, Female-Subject-B, watermarks, character-names.`;
+            finalPrompt = `CRITICAL: ZERO TEXT POLICY. ABSOLUTELY NO FONT, LABELS, LETTERS, OR TITLES ALLOWED.
+            VISUAL-ONLY TRANSFORMATION:
+            - CONVERSION: Transform all clinical nouns in the following description into VISUAL ANATOMY only. Do NOT write the words.
+            - SUBJECT: ${promptData.scientific_subject}. 
+            - CHARACTER: Central single ${characterDesc} with ${promptData.visual_theme}.
+            - ASSET DNA: ${promptData.illustration_style}, high-fidelity 3D matte vector finish, ${promptData.visual_accuracy?.textures || ''}.
+            - TEXTURE: Translucent Indian skin tones with 3D depth. Internal organs should be semi-transparent matte plastic with soft internal glows.
+            - NEGATIVE (STRICT): ${promptData.negative_prompt}, text, words, labels, call-outs, arrows, fonts, captions, headers, signatures, Male-Subject-A, Male-Subject-B, infographic-lines, pointers.`;
         }
 
         // 🌊 IMAGE RENDER WATERFALL (Bypasses Quota/429/404 errors)
