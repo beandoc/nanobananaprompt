@@ -255,6 +255,13 @@ export default function Home() {
 
   const refinePrompt = async () => {
     if (!brief) return;
+
+    // If we're in storyboard mode, "Refining" should trigger the full multi-scene generation
+    if (mode === "storyboard") {
+      handleGenerate();
+      return;
+    }
+
     setIsLoading(true);
     try {
       const response = await fetch("/api/refine", {
