@@ -10,7 +10,7 @@ export const runtime = "edge";
 
 export async function POST(req: NextRequest) {
     try {
-        const { mode = "ad", brief, image, previousImage, parentPrompt } = await req.json();
+        const { mode = "ad", brief, image, previousImage, parentPrompt, isStoryboard, style } = await req.json();
 
         if (!brief) {
             return NextResponse.json({ error: "No brief provided" }, { status: 400 });
@@ -24,71 +24,62 @@ export async function POST(req: NextRequest) {
             storyboard: storyboardSchema
         };
 
-        const currentSchema = schemaMap[mode];
+        const currentSchema = isStoryboard ? storyboardSchema : schemaMap[mode];
 
-        let systemPrompt = "";
+        let domainInstruction = "";
         if (mode === "ad") {
-            systemPrompt = `
+            domainInstruction = `
         You are an Elite Performance Creative Director. Your mission is to transform raw product photos into conversion-optimized ad creatives.
         CORE RULES: 1. PRODUCT IS THE HERO. 2. RELATABLE MODELS. 3. FACE DE-EMPHASIS. 4. PAIN-POINT COPY.
       `;
         } else if (mode === "vector") {
-            systemPrompt = `
+            domainInstruction = `
         You are a Principal Brand Designer specialized in Scalable Vector Illustrations. 1. Keep colors flat and distinct. 2. Ensure subjects are clearly separated from the background.
       `;
         } else if (mode === "video") {
-            systemPrompt = `
+            domainInstruction = `
         You are an Elite Cinematic Director of Photography and Art Director. Your task is to design an 8-second cinematic sequence. 
-        
-        MANDATORY CAMERA PROTOCOLS:
-        1. CAMERA MOTION: You MUST specify one of: [Dolly in, Dolly out, Orbit left, Orbit right, Orbit up, Orbit low, Dolly in zoom out].
-        2. CAMERA POSITION: You MUST specify one of: [Center, Left, Right, High, Low].
-        3. LIGHTING: Describe professional cinematic lighting (e.g., Rim-lighting, Volumetric fog, High-key, Moody low-key, or Dappled sunlight).
-        
-        1. TEMPORAL CONTINUITY: Define exactly what happens at 0s, 4s, and 8s to ensure a logical action arc.
-        2. MOTION FIDELITY: Describe the physics of movement (inertia, fluid dynamics, gravity).
-        3. IDENTITY: Maintain the 'Indian subject' lock for brand consistency.
-        
-        Visual-only asset. No text, symbols, or labels.
+        MANDATORY CAMERA PROTOCOLS: [Dolly in, Dolly out, Orbit left, Orbit right, Orbit up, Orbit low, Dolly in zoom out].
+        IDENTITY: Maintain the 'Indian subject' lock for brand consistency.
       `;
-        } else if (mode === "storyboard") {
+        } else {
+            domainInstruction = `
+        You are a PhD-level Medical Illustrator focusing on Clinical Core-Accuracy and Publication-Ready Aesthetics. 
+        CRITICAL: ANATOMICAL PRECISION. Use Gray's Anatomy level detail. 
+        INTERNAL RULE: NEVER write 'Male-Subject-A' or 'Female-Subject-B'. Use 'Indian male silhouette'.
+      `;
+        }
+
+        let systemPrompt = "";
+        if (isStoryboard) {
             systemPrompt = `
-        You are an Elite Screenwriter and Director. Your task is to break down a 60-second script into exactly 12 segments of 5 seconds each.
+        You are an Elite Screenwriter and Director. Your task is to break down a 60-second documentary or commercial script into exactly 12 segments of 5 seconds each.
         
-        FREE-TIER PRODUCTION RULES (Optimization for Kling Free / Dreamina):
+        DOMAIN CONTEXT (APPLY THIS TO EVERY SCENE):
+        ${domainInstruction}
+
+        FREE-TIER PRODUCTION RULES:
         1. SCENE SEGMENTATION: You MUST output exactly 12 scenes for a 60-second request.
         2. SHOT DURATION: Every scene MUST be exactly "5 seconds".
-        3. MANDATORY CINEMATOGRAPHY: For EVERY scene, specify a CAMERA MOTION ([Dolly in, Dolly out, Orbit left/right/up/low, Dolly in zoom out]) and CAMERA POSITION ([Center, Left, Right, High, Low]).
-        4. VISUAL CONTINUITY: Ensure subjects (Indian professional) and environments remain locked across all 12 shots.
+        3. MANDATORY CINEMATOGRAPHY: For EVERY scene, specify a CAMERA MOTION and CAMERA POSITION.
+        4. VISUAL CONTINUITY: Ensure subjects and environments remain locked across all 12 shots.
         5. SYNCED NARRATION: Provide exactly one sentence of VO text for each 5s shot.
       `;
         } else {
-            systemPrompt = `
-        You are a PhD-level Medical Illustrator focusing on Clinical Core-Accuracy and Publication-Ready Aesthetics. 
-
-        CRITICAL: ANATOMICAL PRECISION.
-        You must describe structures with microscopic accuracy. If the user asks for a 'Kidney', describe the 'Glomeruli, Nephrons, and Renal Pelvis' as if for a medical textbook. Never use generic 'blob' descriptions. Use precise spatial relationships: superior, inferior, lateral, medial.
-
+            systemPrompt = domainInstruction + `
+        
         CRITICAL: ZERO TEXT POLICY.
         AI engines cannot spell medical terms. You MUST ensure the 'negative_prompt' specifically blocks all text. 
-        **INTERNAL RULE: NEVER write 'Male-Subject-A' or 'Female-Subject-B' in descriptions. Use 'Indian male silhouette' instead.**
-
-        CRITICAL: SINGLE INTEGRATED FIGURE RULE.
-        Do NOT generate multiple views or galleries. Use 'layout_composition' for a single, central anatomical focus.
 
         BIORENDER STANDARDS:
-        1. NO LABELS/TITLES: Let the anatomy speak for itself.
-        2. BIORENDER CUSTOM STYLING: When 'Warm-Tonal-Ghosting' is used, provide a TRANSLUCENT, warm-toned silhouette. 
-        
-        FIDELITY LOCK:
-        - BIORENDER DNA: Clean 2.5D vectors, matte plastic textures.
-        - NEGATIVE PROMPT (MANDATORY): Include 'text', 'labels', 'lettering', 'spelling', 'typos', 'orthography', 'captions', 'headers', 'Male-Subject-A', 'Female-Subject-B'. 
+        1. NO LABELS/TITLES: Let the visual speak for itself.
+        2. FIDELITY LOCK: Clean 2.5D vectors, matte plastic textures.
       `;
         }
 
         const userPrompt = parentPrompt
             ? `BASELINE JSON: ${JSON.stringify(parentPrompt)}. MODIFICATION REQUEST: "${brief}"`
-            : `Generate a technical JSON blueprint for this ${mode} brief: ${brief}`;
+            : `Generate a technical ${isStoryboard ? "PRODUCTION STORYBOARD (12 Scenes)" : "SINGLE-SHOT JSON BLUEPRINT"} for this ${mode} brief: ${brief}. ${style ? `\n\nREQUIRED VISUAL STYLE: ${style}` : ""}`;
 
         const activeImage = image || previousImage;
         const inlineImageData = activeImage ? {
@@ -102,7 +93,7 @@ export async function POST(req: NextRequest) {
         const geminiApiKey = process.env.GEMINI_API_KEY;
         if (geminiApiKey) {
             const genAI = new GoogleGenerativeAI(geminiApiKey);
-            const geminiModels = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash", "gemini-pro-latest"];
+            const geminiModels = ["gemini-2.0-flash", "gemini-2.0-flash-exp", "gemini-1.5-pro", "gemini-1.5-flash"];
 
             for (const modelName of geminiModels) {
                 try {
@@ -136,7 +127,7 @@ export async function POST(req: NextRequest) {
                 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
                 const completion = await groq.chat.completions.create({
                     messages: [
-                        { role: "system", content: systemPrompt + "\n\nANATOMICAL PRECISION RULE: Use Gray's Anatomy level detail. Prioritize correct spatial relationships. Return ONLY valid JSON matching this schema: " + JSON.stringify(currentSchema) },
+                        { role: "system", content: systemPrompt + "\n\nRETURN ONLY VALID JSON MATCHING THIS SCHEMA: " + JSON.stringify(currentSchema) },
                         { role: "user", content: userPrompt }
                     ],
                     model: "llama-3.3-70b-versatile",
@@ -157,7 +148,7 @@ export async function POST(req: NextRequest) {
                 const msg = await anthropic.messages.create({
                     model: "claude-3-5-sonnet-20241022",
                     max_tokens: 1024,
-                    system: systemPrompt + "\n\nReturn ONLY a JSON object followed exactly by this structure: " + JSON.stringify(currentSchema),
+                    system: systemPrompt + "\n\nReturn ONLY a JSON object matching this structure: " + JSON.stringify(currentSchema),
                     messages: [{ role: "user", content: userPrompt }],
                 });
                 const contentText: any = msg.content[0];

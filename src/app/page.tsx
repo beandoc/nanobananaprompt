@@ -108,7 +108,8 @@ export default function Home() {
   const [renderedImage, setRenderedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [renderError, setRenderError] = useState<string | null>(null);
-  const [mode, setMode] = useState<"ad" | "medical" | "vector" | "video" | "storyboard">("medical");
+  const [mode, setMode] = useState<"ad" | "medical" | "vector" | "video">("medical");
+  const [isStoryboard, setIsStoryboard] = useState(false);
   const [showLibrary, setShowLibrary] = useState(false);
   const [library, setLibrary] = useState<any[]>([]);
   const [isLoadingLibrary, setIsLoadingLibrary] = useState(false);
@@ -222,6 +223,8 @@ export default function Home() {
     const body: any = {
       brief: processedBrief,
       mode,
+      isStoryboard,
+      style: selectedStyle,
       image: assetImage,
       previousImage: isSvg ? null : renderedImage, // Only send PNG/JPG to Gemini
       assetInstruction: assetType,
@@ -257,7 +260,7 @@ export default function Home() {
     if (!brief) return;
 
     // If we're in storyboard mode, "Refining" should trigger the full multi-scene generation
-    if (mode === "storyboard") {
+    if (isStoryboard) {
       handleGenerate();
       return;
     }
@@ -267,7 +270,7 @@ export default function Home() {
       const response = await fetch("/api/refine", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ brief, mode, style: selectedStyle, image: assetImage })
+        body: JSON.stringify({ brief, mode, isStoryboard, style: selectedStyle, image: assetImage })
       });
       const result = await response.json();
       if (result.success) {
@@ -368,11 +371,6 @@ export default function Home() {
                 <Camera className="w-3.5 h-3.5" /> Video
               </button>
             </Tooltip>
-            <Tooltip content="Switch to Storyboard mode for long-form multi-scene video scripts.">
-              <button onClick={() => setMode("storyboard")} className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "storyboard" ? "bg-white text-rose-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700")}>
-                <Film className="w-3.5 h-3.5" /> Storyboard
-              </button>
-            </Tooltip>
           </div>
 
           <div className="flex items-center gap-4">
@@ -397,9 +395,19 @@ export default function Home() {
 
             <motion.div layout className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden group">
               <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-4 h-4 text-slate-400" />
-                  <span className="font-bold text-xs text-slate-400 uppercase tracking-tighter">Drafting Board</span>
+                <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner">
+                  <button
+                    onClick={() => setIsStoryboard(false)}
+                    className={cn("px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all", !isStoryboard ? "bg-white text-slate-800 shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600")}
+                  >
+                    Single Shot
+                  </button>
+                  <button
+                    onClick={() => setIsStoryboard(true)}
+                    className={cn("px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5", isStoryboard ? "bg-white text-rose-600 shadow-sm border border-rose-100" : "text-slate-400 hover:text-slate-600")}
+                  >
+                    <Film className="w-3 h-3" /> Storyboard
+                  </button>
                 </div>
                 <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="image/*" className="hidden" />
                 <Tooltip content="Upload an image to extract its style, colors, or structure.">
@@ -515,7 +523,7 @@ export default function Home() {
               {result || (mode === "vector" && !renderedImage) ? (
                 <motion.div key="result" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
                   {/* JSON Blueprint Console (Only show if we have data or NOT in manual vector mode) */}
-                  {(result?.data) && (
+                  {(result?.data && !isStoryboard) && (
                     <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl relative overflow-hidden">
                       <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-3 text-slate-400">
@@ -699,7 +707,7 @@ export default function Home() {
                                     <Mic className="w-3 h-3" /> Audio Script
                                   </div>
                                   <p className="text-xs text-slate-600 font-medium leading-relaxed italic">
-                                    "{scene.narration_vo}"
+                                    &quot;{scene.narration_vo}&quot;
                                   </p>
                                 </div>
                                 {scene.motion_instruction && (

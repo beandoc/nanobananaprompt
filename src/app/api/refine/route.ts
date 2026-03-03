@@ -8,7 +8,7 @@ export const runtime = "edge";
 
 export async function POST(req: NextRequest) {
     try {
-        const { brief, mode, style, image } = await req.json();
+        const { brief, mode, style, image, isStoryboard } = await req.json();
 
         if (!brief && !image) {
             return NextResponse.json({ error: "No brief or image provided" }, { status: 400 });
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
         CRITICAL VISION RULE: 
         - If an image is provided, PRIORITIZE its visual structure (e.g. JAR vs BOTTLE). 
         - For DTC: Do NOT just describe the product. You MUST build a "Commercial Grade Narrative." If the user wants a "pool deck," describe "caustic water reflections, dappled sunlight through palm fronds, and professional set-design textures." Force the AI away from white backgrounds.
-        - For VIDEO/STORYBOARD: You MUST explicitly include professional Camera Motion [Dolly in, Dolly out, Orbit left/right/up/low, Dolly in zoom out] and Camera Position [Center, Left, Right, High, Low] in the paragraph.
+        - For VIDEO or STORYBOARD Active: You MUST explicitly include professional Camera Motion [Dolly in, Dolly out, Orbit left/right/up/low, Dolly in zoom out] and Camera Position [Center, Left, Right, High, Low] in the paragraph.
         - ARTISTIC STYLE OVERRIDE: If "Studio Ghibli" or "Claymation" is in the STYLE CONTEXT:
             1. Start the paragraph with: "MASTER STYLE LOCK: [Studio Ghibli 2D Watercolor / Claymation Hand-Sculpted]".
             2. For Ghibli: Explicitly mandate "Zero Photorealism", "Flat 2D painting", "Hand-drawn line art".
