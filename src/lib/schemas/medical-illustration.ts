@@ -35,7 +35,7 @@ export const medicalIllustrationSchema: Schema = {
         },
         negative_prompt: {
             type: SchemaType.STRING,
-            description: "Exclude: 'cartoonish, low-resolution, inaccurate anatomy, messy labels, blood-horror (unless surgical), vibrant-neon, text, arrows, leader-lines, annotations, grids, excessive-gradients'."
+            description: "MANDATORY EXCLUSIONS (always include ALL of these): 'ABSOLUTELY NO TEXT of any kind - no labels, no captions, no titles, no words, no letters, no numbers. No arrows, no leader-lines, no annotations, no callout boxes with text. No medical devices, implants, pacemakers, stents, catheters, or surgical hardware UNLESS explicitly requested in the scientific_subject. No cartoonish rendering, no low-resolution, no inaccurate anatomy, no blood-horror (unless surgical context), no vibrant-neon, no grids, no excessive-gradients'."
         },
         consistent_character: {
             type: SchemaType.STRING,

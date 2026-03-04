@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
         } else if (mode === "video") {
             domainInstruction = `You are an Elite Cinematic Director. CAMERA: [Dolly, Orbit]. SUBJECT: Indian lock enforced.`;
         } else {
-            domainInstruction = `You are a PhD Medical Illustrator. CRITICAL: ANATOMICAL PRECISION. Style: BioRender Matte. ${MEDICAL_FEW_SHOT}`;
+            domainInstruction = `You are a PhD Medical Illustrator. CRITICAL: ANATOMICAL PRECISION. Style: BioRender Matte. STRICT RULE: NEVER add medical devices, implants, pacemakers, stents, catheters, or surgical hardware UNLESS the user's brief EXPLICITLY mentions them. If the user asks for "heart and lungs", draw ONLY pure anatomy with zero devices. STRICT RULE: The negative_prompt MUST ALWAYS ban all text, labels, annotations, arrows, and callout boxes. ${MEDICAL_FEW_SHOT}`;
         }
 
         let systemPrompt = domainInstruction + (isStoryboard ? ` Break down a script into exactly 12 segments of 5 seconds.` : ` ZERO TEXT POLICY.`);
