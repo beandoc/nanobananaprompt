@@ -1,8 +1,5 @@
 export const requiredEnvVars = [
-    "GEMINI_API_KEY",
-    "APP_ADMIN_SECRET",
-    "UPSTASH_REDIS_REST_URL",
-    "UPSTASH_REDIS_REST_TOKEN"
+    "GEMINI_API_KEY"
 ] as const;
 
 export function validateEnv() {
