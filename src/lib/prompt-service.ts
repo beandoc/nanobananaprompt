@@ -1,13 +1,20 @@
 import { Redis } from "@upstash/redis";
 import { LibraryItem } from "@/types";
 
-const redis = Redis.fromEnv();
+let redis: Redis | null = null;
+try {
+    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+        redis = Redis.fromEnv();
+    }
+} catch (e) {
+    console.warn("Redis configuration missing. Library persistence disabled.");
+}
 
 const PROMPT_LIBRARY_KEY = "nb_prompt_library";
 
 export const promptService = {
     async savePrompt(item: Omit<LibraryItem, 'timestamp'>) {
-        if (!process.env.UPSTASH_REDIS_REST_URL) return;
+        if (!redis) return;
 
         const newItem: LibraryItem = {
             ...item,
@@ -25,7 +32,7 @@ export const promptService = {
     },
 
     async getPrompts(): Promise<LibraryItem[]> {
-        if (!process.env.UPSTASH_REDIS_REST_URL) return [];
+        if (!redis) return [];
 
         try {
             const data = await redis.lrange(PROMPT_LIBRARY_KEY, 0, -1);
