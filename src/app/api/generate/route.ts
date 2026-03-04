@@ -1,185 +1,152 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { NextRequest } from "next/server";
+import { GoogleGenerativeAI, Schema } from "@google/generative-ai";
 import { Groq } from "groq-sdk";
 import { Anthropic } from "@anthropic-ai/sdk";
-import { adCreativeSchema, medicalIllustrationSchema, vectorIllustrationSchema, videoIllustrationSchema, storyboardSchema } from "@/lib/gemini";
+import { adCreativeSchema } from "@/lib/schemas/ad-creative";
+import { medicalIllustrationSchema } from "@/lib/schemas/medical-illustration";
+import { vectorIllustrationSchema } from "@/lib/schemas/vector-branding";
+import { videoIllustrationSchema } from "@/lib/schemas/cinematic-video";
+import { storyboardSchema } from "@/lib/schemas/storyboard";
+import { Mode, BlueprintData, GenerateRequest } from "@/types";
+import { ResponseManager } from "@/lib/api-response";
+import { promptService } from "@/lib/prompt-service";
+import { validateEnv } from "@/lib/env";
 
-// 🚀 Enable Edge Runtime for maximum performance on Vercel
 export const runtime = "edge";
 
+const schemaMap: Record<Mode, Schema> = {
+    ad: adCreativeSchema,
+    medical: medicalIllustrationSchema,
+    vector: vectorIllustrationSchema,
+    video: videoIllustrationSchema,
+    storyboard: storyboardSchema
+};
+
+const folderMap: Record<Mode, string> = {
+    ad: "prompts",
+    medical: "medical_prompts",
+    vector: "vector_prompts",
+    video: "video_prompts",
+    storyboard: "storyboards"
+};
+
+const MEDICAL_FEW_SHOT = `
+EXAMPLE 1 (Perfect Medical Blueprint):
+{
+  "scientific_subject": "Coronary Arterial Stent Deployment",
+  "biological_context": "Intravascular cross-section of a coronary artery showing atherosclerotic plaque.",
+  "illustration_style": "BioRender standard, 2.5D matte technical render, clinical soft palette",
+  "visual_theme": "High-transparency vessel walls with realistic particle flow for blood cells",
+  "consistent_character": "None",
+  "labels_required": [],
+  "aspect_ratio": "16:9"
+}
+
+EXAMPLE 2 (Perfect Vector Icon):
+{
+  "illustration_subject": "DNA Double Helix Abstract Logo",
+  "vector_style": "Modern flat vector with geometric symmetry, bold outlines",
+  "color_palette": "Indigo-600, Sky-400, White",
+  "complexity_level": "Minimalist"
+}
+`;
+
 export async function POST(req: NextRequest) {
+    validateEnv();
     try {
-        const { mode = "ad", brief, image, previousImage, parentPrompt, isStoryboard, style } = await req.json();
+        const body: GenerateRequest = await req.json();
+        const { mode = "ad", brief, image, previousImage, parentPrompt, isStoryboard, style } = body;
 
-        if (!brief) {
-            return NextResponse.json({ error: "No brief provided" }, { status: 400 });
+        if (!brief && !image) {
+            return ResponseManager.badRequest("No brief or image provided");
         }
-
-        const schemaMap: any = {
-            ad: adCreativeSchema,
-            medical: medicalIllustrationSchema,
-            vector: vectorIllustrationSchema,
-            video: videoIllustrationSchema,
-            storyboard: storyboardSchema
-        };
 
         const currentSchema = isStoryboard ? storyboardSchema : schemaMap[mode];
 
         let domainInstruction = "";
         if (mode === "ad") {
-            domainInstruction = `
-        You are an Elite Performance Creative Director. Your mission is to transform raw product photos into conversion-optimized ad creatives.
-        CORE RULES: 1. PRODUCT IS THE HERO. 2. RELATABLE MODELS. 3. FACE DE-EMPHASIS. 4. PAIN-POINT COPY.
-      `;
+            domainInstruction = `You are an Elite Performance Creative Director. CORE RULES: 1. PRODUCT IS THE HERO. 2. RELATABLE MODELS (Indian subjects). 3. FACE DE-EMPHASIS.`;
         } else if (mode === "vector") {
-            domainInstruction = `
-        You are a Principal Brand Designer specialized in Scalable Vector Illustrations. 1. Keep colors flat and distinct. 2. Ensure subjects are clearly separated from the background.
-      `;
+            domainInstruction = `You are a Principal Brand Designer specialized in Scalable Vector Illustrations. Rule 1: Flat colors. Rule 2: High contrast.`;
         } else if (mode === "video") {
-            domainInstruction = `
-        You are an Elite Cinematic Director of Photography and Art Director. Your task is to design an 8-second cinematic sequence. 
-        MANDATORY CAMERA PROTOCOLS: [Dolly in, Dolly out, Orbit left, Orbit right, Orbit up, Orbit low, Dolly in zoom out].
-        IDENTITY: Maintain the 'Indian subject' lock for brand consistency.
-      `;
+            domainInstruction = `You are an Elite Cinematic Director. CAMERA: [Dolly, Orbit]. SUBJECT: Indian lock enforced.`;
         } else {
-            domainInstruction = `
-        You are a PhD-level Medical Illustrator focusing on Clinical Core-Accuracy and Publication-Ready Aesthetics. 
-        CRITICAL: ANATOMICAL PRECISION. Use Gray's Anatomy level detail. 
-        INTERNAL RULE: NEVER write 'Male-Subject-A' or 'Female-Subject-B'. Use 'Indian male silhouette'.
-      `;
+            domainInstruction = `You are a PhD Medical Illustrator. CRITICAL: ANATOMICAL PRECISION. Style: BioRender Matte. ${MEDICAL_FEW_SHOT}`;
         }
 
-        let systemPrompt = "";
-        if (isStoryboard) {
-            systemPrompt = `
-        You are an Elite Screenwriter and Director. Your task is to break down a 60-second documentary or commercial script into exactly 12 segments of 5 seconds each.
-        
-        DOMAIN CONTEXT (APPLY THIS TO EVERY SCENE):
-        ${domainInstruction}
-
-        FREE-TIER PRODUCTION RULES:
-        1. SCENE SEGMENTATION: You MUST output exactly 12 scenes for a 60-second request.
-        2. SHOT DURATION: Every scene MUST be exactly "5 seconds".
-        3. MANDATORY CINEMATOGRAPHY: For EVERY scene, specify a CAMERA MOTION and CAMERA POSITION.
-        4. VISUAL CONTINUITY: Ensure subjects and environments remain locked across all 12 shots.
-        5. SYNCED NARRATION: Provide exactly one sentence of VO text for each 5s shot.
-      `;
-        } else {
-            systemPrompt = domainInstruction + `
-        
-        CRITICAL: ZERO TEXT POLICY.
-        AI engines cannot spell medical terms. You MUST ensure the 'negative_prompt' specifically blocks all text. 
-
-        BIORENDER STANDARDS:
-        1. NO LABELS/TITLES: Let the visual speak for itself.
-        2. FIDELITY LOCK: Clean 2.5D vectors, matte plastic textures.
-      `;
-        }
+        let systemPrompt = domainInstruction + (isStoryboard ? ` Break down a script into exactly 12 segments of 5 seconds.` : ` ZERO TEXT POLICY.`);
 
         const userPrompt = parentPrompt
             ? `BASELINE JSON: ${JSON.stringify(parentPrompt)}. MODIFICATION REQUEST: "${brief}"`
-            : `Generate a technical ${isStoryboard ? "PRODUCTION STORYBOARD (12 Scenes)" : "SINGLE-SHOT JSON BLUEPRINT"} for this ${mode} brief: ${brief}. ${style ? `\n\nREQUIRED VISUAL STYLE: ${style}` : ""}`;
+            : `Generate a technical ${isStoryboard ? "STORYBOARD" : "JSON BLUEPRINT"} for this ${mode} brief: ${brief}. ${style ? `\n\nSTYLE: ${style}` : ""}`;
 
         const activeImage = image || previousImage;
         const inlineImageData = activeImage ? {
             inlineData: { data: activeImage.split(",")[1] || activeImage, mimeType: "image/png" }
         } : null;
 
-        let adData: any = null;
-        let lastError: any;
+        let adData: BlueprintData | null = null;
+        let lastError: Error | null = null;
 
-        // --- 1. LAYER ONE: GOOGLE GEMINI (Core Waterfall) ---
         const geminiApiKey = process.env.GEMINI_API_KEY;
         if (geminiApiKey) {
             const genAI = new GoogleGenerativeAI(geminiApiKey);
-            const geminiModels = ["gemini-2.0-flash", "gemini-2.0-flash-exp", "gemini-1.5-pro", "gemini-1.5-flash"];
+            const geminiModels = ["gemini-2.0-flash", "gemini-1.5-pro"];
 
             for (const modelName of geminiModels) {
                 try {
-                    console.log(`🧠 [Gemini] Generating Master Blueprint: ${modelName}`);
                     const model = genAI.getGenerativeModel({
                         model: modelName,
-                        generationConfig: {
-                            responseMimeType: "application/json",
-                            responseSchema: currentSchema
-                        }
+                        generationConfig: { responseMimeType: "application/json", responseSchema: currentSchema }
                     });
-
-                    const promptPieces: any[] = [systemPrompt, userPrompt];
+                    const promptPieces: (string | { inlineData: { data: string; mimeType: string } })[] = [systemPrompt, userPrompt];
                     if (inlineImageData) promptPieces.push(inlineImageData);
-
                     const result = await model.generateContent(promptPieces);
-                    const text = result.response.text();
-                    adData = JSON.parse(text);
+                    adData = JSON.parse(result.response.text()) as BlueprintData;
                     if (adData) break;
-                } catch (err: any) {
-                    lastError = err;
-                    console.warn(`Waterfall Fallback: Gemini ${modelName} failed. Reason: ${err.message}`);
+                } catch (err) {
+                    lastError = err as Error;
                 }
             }
         }
 
-        // --- 2. LAYER TWO: GROQ (Llama 3 70B - FAST FALLBACK) ---
         if (!adData && process.env.GROQ_API_KEY) {
             try {
-                console.log("🐺 [Groq] Falling back to Llama 3 70B...");
                 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
                 const completion = await groq.chat.completions.create({
                     messages: [
-                        { role: "system", content: systemPrompt + "\n\nRETURN ONLY VALID JSON MATCHING THIS SCHEMA: " + JSON.stringify(currentSchema) },
+                        { role: "system", content: systemPrompt + " Return JSON matching: " + JSON.stringify(currentSchema) },
                         { role: "user", content: userPrompt }
                     ],
                     model: "llama-3.3-70b-versatile",
                     response_format: { type: "json_object" }
                 });
-                adData = JSON.parse(completion.choices[0]?.message?.content || "{}");
-            } catch (err: any) {
-                lastError = err;
-                console.warn(`Waterfall Fallback: Groq failed. Reason: ${err.message}`);
-            }
-        }
-
-        // --- 3. LAYER THREE: ANTHROPIC (Claude 3.5 Sonnet - QUALITY FALLBACK) ---
-        if (!adData && process.env.ANTHROPIC_API_KEY) {
-            try {
-                console.log("🐦 [Anthropic] Falling back to Claude 3.5 Sonnet...");
-                const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-                const msg = await anthropic.messages.create({
-                    model: "claude-3-5-sonnet-20241022",
-                    max_tokens: 1024,
-                    system: systemPrompt + "\n\nReturn ONLY a JSON object matching this structure: " + JSON.stringify(currentSchema),
-                    messages: [{ role: "user", content: userPrompt }],
-                });
-                const contentText: any = msg.content[0];
-                adData = JSON.parse(contentText.text || "{}");
-            } catch (err: any) {
-                lastError = err;
-                console.warn(`Waterfall Fallback: Anthropic failed. Reason: ${err.message}`);
-            }
+                adData = JSON.parse(completion.choices[0]?.message?.content || "{}") as BlueprintData;
+            } catch (err) { lastError = err as Error; }
         }
 
         if (!adData) {
-            return NextResponse.json({
-                error: `All models exhausted (Gemini, Groq, Anthropic). Last Error: ${lastError?.message}`
-            }, { status: 429 });
+            return ResponseManager.error(`All models exhausted. Last Error: ${lastError?.message}`, 429);
         }
 
-        const folderMap: any = { ad: "prompts", medical: "medical_prompts", vector: "vector_prompts", video: "video_prompts", storyboard: "storyboards" };
-        const folder = folderMap[mode] || "prompts";
-        const cleanSubject = (adData.scientific_subject || adData.core_prompt || adData.illustration_subject || adData.video_subject || adData.total_project_duration || "storyboard")
-            .substring(0, 15).toLowerCase().replace(/\s+/g, '-');
-        const filename = `${cleanSubject}-${Date.now()}.json`;
+        // Persistence in Library
+        const subject = (adData.scientific_subject || adData.core_prompt || adData.illustration_subject || "new-generation");
+        const filename = `${subject.substring(0, 15).toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.json`;
 
-        return NextResponse.json({
-            success: true,
-            data: adData,
-            promptFile: filename,
-            folder
+        await promptService.savePrompt({
+            name: filename,
+            type: mode,
+            content: adData
         });
 
-    } catch (error: any) {
+        return ResponseManager.success({
+            data: adData,
+            promptFile: filename,
+            folder: folderMap[mode] || "prompts"
+        });
+
+    } catch (error) {
         console.error("Critical Multi-AI Error:", error);
-        return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+        return ResponseManager.error((error as Error).message);
     }
 }

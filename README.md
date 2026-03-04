@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍌 Nano Banana Prompt
 
-## Getting Started
+> **Elite Multimodal Intelligence Pipeline**
+> Transform raw creative briefs into professional, technical blueprints and high-fidelity renders across multiple AI models.
 
-First, run the development server:
+## 🚀 Overview
 
+Nano Banana Prompt is a production-grade AI creative workbench designed for **Performance Creative Directors**, **Medical Illustrators**, and **Brand Designers**. It features a robust multi-model waterfall architecture to ensure 100% uptime and the highest quality output for scientific and commercial assets.
+
+### Key Capabilities
+
+-   🎨 **Commercial Ad Creative**: ROI-focused design generation with hero product emphasis.
+-   🩺 **Medical Illustration**: BioRender-standard scientific accuracy with 2.5D matte finish.
+-   📐 **Scalable Branding**: Flat vector-style illustrations with automatic SVG tracing.
+-   🎬 **Storyboard Engine**: Automated 12-segment script-to-visual breakdown for video production.
+-   🛡️ **Identity Lock**: Native Indian subject silhouette enforcement for human interaction scenes.
+
+## 🛠️ Architecture
+
+### AI Infrastructure (Waterfall Architecture)
+
+The system is built on a resilient "Waterfall" pattern to prevent quota exhaustion and downtime:
+
+1.  **Generation Engine**: `Gemini 2.0 Flash` → `Groq (Llama 3.3 70B)` → `Anthropic Claude 3.5`.
+2.  **Rendering Pipeline**: `Imagen 4.0` → `Gemini 2.0` → `Replicate` → `Pollinations`.
+3.  **Persistence**: Cloud-native prompt library powered by **Upstash Redis**.
+4.  **Edge Runtime**: All API operations run on **Vercel Edge** for sub-second latency.
+
+## 📦 Deployment
+
+### Local Development
 ```bash
+npm install
+cp .env.example .env.local # Fill in your API keys
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Docker Support (Containerized)
+```bash
+docker build -t nano-banana .
+docker run -p 3000:3000 --env-file .env.local nano-banana
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Vercel Deployment
+Optimized for the Mumbai region (`bom1`) for optimal performance in India.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧪 DevOps & Reliability
 
-## Learn More
+-   **CI/CD**: Automated GitHub Actions for Type Checking, Linting, and Vitest runs.
+-   **Validation**: Strict environment variable validation at runtime.
+-   **Security**: Bearer token authentication for all API endpoints.
+-   **Performance**: Memory-efficient Blob-to-URL image handling and Next.js lazy-loading.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 License
+Private Repository. All Rights Reserved. © 2026.

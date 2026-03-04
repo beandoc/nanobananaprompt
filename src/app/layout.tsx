@@ -28,8 +28,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Script src="https://cdnjs.cloudflare.com/ajax/libs/imagetracerjs/1.2.6/imagetracer_v1.2.6.js" strategy="beforeInteractive" />
-        <Script src="https://cdn.jsdelivr.net/gh/jseidelin/exif-js/exif.js" strategy="beforeInteractive" />
+        <Script src="https://cdnjs.cloudflare.com/ajax/libs/imagetracerjs/1.2.6/imagetracer_v1.2.6.js" strategy="lazyOnload" />
+        <Script src="https://cdn.jsdelivr.net/gh/jseidelin/exif-js/exif.js" strategy="lazyOnload" />
         {children}
       </body>
     </html>

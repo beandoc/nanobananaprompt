@@ -1,878 +1,254 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Terminal, Camera, Zap, AlertCircle, Loader2, Download, Image as ImageIcon, Microscope, Stethoscope, Dna, FileText, History, X, Check, ArrowRight, CornerDownRight, Upload, Layers, Eye, RefreshCw, ShieldCheck, Search, Database, Copy, Film, Mic, Video } from "lucide-react";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { useState, useRef, useEffect, useCallback, Suspense } from "react";
+import dynamic from "next/dynamic";
+import { Header } from "@/components/Header";
+import { ProjectInput } from "@/components/ProjectInput";
 
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+// Lazy load heavy UI sections
+const LibraryPanel = dynamic(() => import("@/components/LibraryPanel").then(mod => mod.LibraryPanel), { ssr: false });
+const StoryboardEngine = dynamic(() => import("@/components/StoryboardEngine").then(mod => mod.StoryboardEngine), { ssr: false });
+const BlueprintConsole = dynamic(() => import("@/components/VisionConsole/BlueprintConsole").then(mod => mod.BlueprintConsole), { ssr: false });
 
-function Tooltip({ children, content }: { children: React.ReactNode; content: string }) {
-  const [isVisible, setIsVisible] = useState(false);
-  return (
-    <div className="relative inline-block" onMouseEnter={() => setIsVisible(true)} onMouseLeave={() => setIsVisible(false)}>
-      {children}
-      <AnimatePresence>
-        {isVisible && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 10 }}
-            className="absolute z-[100] bottom-full mb-2 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-slate-900 border border-slate-700 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-2xl whitespace-nowrap pointer-events-none"
-          >
-            {content}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
+import { useEngineStatus } from "@/hooks/useEngineStatus";
+import { useFileUpload } from "@/hooks/useFileUpload";
+import { useLibrary } from "@/hooks/useLibrary";
+import { useGenerate } from "@/hooks/useGenerate";
+import { useRefine } from "@/hooks/useRefine";
+import { useImageActions } from "@/hooks/useImageActions";
+
+import { Mode, AssetType, LibraryItem } from "@/types";
+import { apiClient } from "@/lib/api-client";
+import { motion } from "framer-motion";
+import { Lock, ShieldAlert, Key, Loader2 } from "lucide-react";
+import { AUTH_CONSTANTS, APP_CONFIG, UI_CONSTANTS } from "@/lib/constants";
 
 export default function Home() {
-  const [brief, setBrief] = useState("");
-  const [isVectorizing, setIsVectorizing] = useState(false);
-  const [isEngineReady, setIsEngineReady] = useState(false);
+  // --- Grouped State: Auth ---
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authInput, setAuthInput] = useState("");
+  const [authError, setAuthError] = useState(false);
 
-  useEffect(() => {
-    const checkEngine = setInterval(() => {
-      if ((window as any).ImageTracer) {
-        setIsEngineReady(true);
-        clearInterval(checkEngine);
-      }
-    }, 200);
-
-    // Safety fallback: If after 5s it's not ready, try to manually inject the script again
-    const timer = setTimeout(() => {
-      if (!(window as any).ImageTracer) {
-        console.warn("ImageTracer timeout. Attempting manual injection...");
-        const script = document.createElement('script');
-        script.src = "https://cdn.jsdelivr.net/npm/imagetracerjs@1.2.6/imagetracer_v1.2.6.min.js";
-        script.async = true;
-        document.head.appendChild(script);
-      }
-    }, 5000);
-
-    return () => {
-      clearInterval(checkEngine);
-      clearTimeout(timer);
-    };
-  }, []);
-
-  const vectorizeToSVG = () => {
-    if (!renderedImage || typeof window === 'undefined') return;
-    const ImageTracer = (window as any).ImageTracer;
-    if (!ImageTracer) {
-      alert("Vectorization engine is still downloading from the cloud. Please wait 5-10 seconds for initial load.");
-      return;
-    }
-
-    setIsVectorizing(true);
-    try {
-      // Trace the rendered PNG to SVG
-      ImageTracer.imageToSVG(renderedImage, (svgString: string) => {
-        const blob = new Blob([svgString], { type: 'image/svg+xml' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `nano-vector-${Date.now()}.svg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setIsVectorizing(false);
-      }, {
-        numberofcolors: 12,
-        ltres: 1.0,
-        qtres: 1.0,
-        pathomit: 32,
-        strokewidth: 0.5,
-        blurradius: 0.5,
-        blurdelta: 20,
-        viewbox: true,
-        linefilter: true,
-        colorsampling: 1
-      });
-    } catch (err) {
-      console.error(err);
-      setIsVectorizing(false);
-    }
-  };
-  const [refinement, setRefinement] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRendering, setIsRendering] = useState(false);
-  const [result, setResult] = useState<any>(null);
-  const [renderedImage, setRenderedImage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [renderError, setRenderError] = useState<string | null>(null);
-  const [mode, setMode] = useState<"ad" | "medical" | "vector" | "video">("medical");
+  // --- Grouped State: Mode & Configuration ---
+  const [mode, setMode] = useState<Mode>("medical");
   const [isStoryboard, setIsStoryboard] = useState(false);
-  const [showLibrary, setShowLibrary] = useState(false);
-  const [library, setLibrary] = useState<any[]>([]);
-  const [isLoadingLibrary, setIsLoadingLibrary] = useState(false);
-  const [copySuccess, setCopySuccess] = useState<string | null>(null);
-
-  const handleCopy = (text: string, id: string) => {
-    navigator.clipboard.writeText(text);
-    setCopySuccess(id);
-    setTimeout(() => setCopySuccess(null), 2000);
-  };
-
-  const [assetImage, setAssetImage] = useState<string | null>(null);
-  const [assetType, setAssetType] = useState<"style" | "subject" | "structure">("style");
+  const [assetType, setAssetType] = useState<AssetType>("style");
   const [selectedStyle, setSelectedStyle] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // --- Grouped State: Navigation & Modals ---
+  const [showLibrary, setShowLibrary] = useState(false);
+  const [refinement, setRefinement] = useState("");
+
+  // --- External Refs ---
   const externalRenderRef = useRef<HTMLInputElement>(null);
 
-  const stylePresets = [
-    { label: "Default Training", value: "" },
-    { label: "Claymation Stop-Motion (Video)", value: "Hand-sculpted claymation style, visible fingerprints on clay surfaces, 12fps stop-motion jitter, organic tactile textures, playful lighting" },
-    { label: "Studio Ghibli Cinematic (Video)", value: "Classic Studio Ghibli hand-painted aesthetic, lush watercolor backgrounds, expressive character animation, soft nostalgic lighting, Miyazaki-inspired environmental detail" },
-    { label: "Anamorphic Cinematic (Video)", value: "Anamorphic 2.39:1 widescreen, cinematic lighting, 8K RED Helium look, deep depth of field, subtle lens flare" },
-    { label: "Macro-Probe Pan (Video)", value: "Ultra-macro probe lens movement, 1000fps slow motion, scientific microscopic focus, internal-lit textures" },
-    { label: "Drone-Orbit 4K (Video)", value: "Sweeping 360-degree orbital drone shot, golden hour lighting, stabilized 3-axis gimbal motion" },
-    { label: "Documentary Handheld (Video)", value: "Raw 16mm handheld documentary style, natural grain, organic camera shake, realistic focus pulling" },
-    { label: "Classic NEJM Editorial", value: "New England Journal of Medicine style, 2.5D soft volumetric digital painting, muted clinical colors, integration of technical medical hardware (pumps, filters, catheters), directional flow dynamics with particles, layered anatomical transparency, clean white background, professional scientific textbook aesthetic" },
-    { label: "Professional BioRender Style", value: "BioRender-standard scientific illustration, clean 2.5D vector assets, matte plastic textures, even-ambient-clean lighting, soft pastel clinical palette, professional research poster aesthetic, optimized for complex anatomical pathways and systemic mapping" },
-    { label: "Micro-3D Technical", value: "Macro-3D technical render, internal cross-sections, hyper-detailed textures, laboratory lighting" }
-  ];
+  // --- Auth Check ---
+  useEffect(() => {
+    const secret = apiClient.getSecret();
+    if (secret) setIsAuthenticated(true);
+  }, []);
 
-  const fetchLibrary = async () => {
-    setIsLoadingLibrary(true);
-    try {
-      const resp = await fetch("/api/library");
-      const data = await resp.json();
-      if (data.success) setLibrary(data.prompts);
-    } catch (err) { console.error(err); } finally { setIsLoadingLibrary(false); }
-  };
+  const handleLogin = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    if (authInput.trim()) {
+      apiClient.setSecret(authInput);
+      setIsAuthenticated(true);
+      window.location.reload();
+    }
+  }, [authInput]);
 
-  useEffect(() => { if (showLibrary) fetchLibrary(); }, [showLibrary]);
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem(AUTH_CONSTANTS.LOCAL_STORAGE_KEY);
+    setIsAuthenticated(false);
+    window.location.reload();
+  }, []);
 
-  const compressImage = (base64: string, maxWidth = 1024): Promise<string> => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.src = base64;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
-        }
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', 0.8));
-      };
+  // --- Custom Hooks Integration ---
+  const { isEngineReady } = useEngineStatus();
+  const {
+    assetImage,
+    setAssetImage,
+    fileInputRef,
+    handleFileUpload,
+    handleExternalUpload
+  } = useFileUpload();
+
+  const { library, isLoadingLibrary } = useLibrary(showLibrary);
+  const { brief, setBrief, isLoading, result, setResult, error, generateBlueprint } = useGenerate();
+  const { isRefining, refineBrief } = useRefine();
+
+  const {
+    handleCopy,
+    copySuccess
+  } = useImageActions(null);
+
+  // --- Core Handlers (Memoized) ---
+  const loadFromLibrary = useCallback((item: LibraryItem) => {
+    setResult({
+      data: item.content,
+      folder: item.type === 'ad' ? 'prompts' : 'medical_prompts',
+      promptFile: item.name
     });
-  };
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const compressed = await compressImage(reader.result as string);
-        setAssetImage(compressed);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleExternalUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const compressed = await compressImage(reader.result as string);
-        setRenderedImage(compressed);
-        setMode("vector");
-        setResult({ data: { core_prompt: "External Manual Upload" } });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleGenerate = async (isRefinement: boolean = false) => {
-    let activeBrief = isRefinement ? refinement : brief;
-
-    // Inject Style Preset if active
-    if (!isRefinement && selectedStyle) {
-      activeBrief = `[STYLE: ${selectedStyle}] ${activeBrief}`;
-    }
-
-    if (!activeBrief.trim() && !assetImage) return;
-
-    setIsLoading(true);
-    setError(null);
-    setRenderError(null);
-
-    // If refinement, we wrap the brief to tell Gemini it's a correction
-    const processedBrief = isRefinement
-      ? `TECHNICAL CORRECTION: ${activeBrief}. Maintain the core structure of the previous blueprint but apply these specific changes.`
-      : activeBrief;
-
-    // 🛡️ MEMORY GUARD: Prevent 75MB SVGs from crashing the API request
-    const isSvg = renderedImage?.startsWith("data:image/svg+xml");
-
-    const body: any = {
-      brief: processedBrief,
-      mode,
-      isStoryboard,
-      style: selectedStyle,
-      image: assetImage,
-      previousImage: isSvg ? null : renderedImage, // Only send PNG/JPG to Gemini
-      assetInstruction: assetType,
-      parentPrompt: isRefinement ? result?.data : null,
-    };
-
-    if (!isRefinement) {
-      setResult(null);
-      setRenderedImage(null);
-    }
-
-    try {
-      const resp = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      const data = await resp.json();
-      if (!resp.ok) throw new Error(data.error || "Failed to generate blueprint");
-
-      setResult(data);
-      setRefinement("");
-      if (!isRefinement) setBrief("");
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const refinePrompt = async () => {
-    if (!brief) return;
-
-    // If we're in storyboard mode, "Refining" should trigger the full multi-scene generation
-    if (isStoryboard) {
-      handleGenerate();
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/refine", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ brief, mode, isStoryboard, style: selectedStyle, image: assetImage })
-      });
-      const result = await response.json();
-      if (result.success) {
-        setBrief(result.refinedPrompt);
-      }
-    } catch (error) {
-      console.error("Refinement failed:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleRenderImage = async () => {
-    if (!result?.data) return;
-    setIsRendering(true);
-    setRenderError(null);
-    try {
-      const resp = await fetch("/api/render", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          promptData: result.data,
-          mode,
-          parentImage: renderedImage // Force structural consistency
-        }),
-      });
-      const data = await resp.json();
-      if (!resp.ok) throw new Error(data.error || "Render failed");
-      setRenderedImage(data.imageUrl);
-    } catch (err: any) {
-      setRenderError(err.message);
-    } finally {
-      setIsRendering(false);
-    }
-  };
-
-  const downloadImage = () => {
-    if (!renderedImage) return;
-    const link = document.createElement("a");
-    link.href = renderedImage;
-    link.download = `nano-banana-${mode}-${Date.now()}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const loadFromLibrary = (item: any) => {
-    setResult({ data: item.content, folder: item.type === 'ad' ? 'prompts' : 'medical_prompts', promptFile: item.name });
-    setRenderedImage(null);
     setMode(item.type);
     setShowLibrary(false);
-  };
+  }, [setResult]);
+
+  const onGenerate = useCallback(async (isRefinement = false) => {
+    const res = await generateBlueprint({
+      mode,
+      isStoryboard,
+      selectedStyle,
+      assetImage,
+      assetType,
+      isRefinement,
+      refinement
+    });
+    if (!res && !error) {
+      setAuthError(true);
+    }
+    if (res && isRefinement) setRefinement("");
+  }, [generateBlueprint, mode, isStoryboard, selectedStyle, assetImage, assetType, refinement, error]);
+
+  const onRefine = useCallback(async () => {
+    if (isStoryboard) {
+      onGenerate(false);
+      return;
+    }
+    const refined = await refineBrief(brief, mode, isStoryboard, selectedStyle, assetImage);
+    if (refined) setBrief(refined);
+  }, [isStoryboard, onGenerate, refineBrief, brief, mode, selectedStyle, assetImage, setBrief]);
+
+  const onExternalUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    handleExternalUpload(e, (compressedUrl) => {
+      setMode("vector");
+      setResult({
+        data: { illustration_subject: "External Manual Upload" },
+        promptFile: "external",
+        folder: "external"
+      });
+    });
+  }, [handleExternalUpload, setResult]);
+
+  if (!isAuthenticated) {
+    return (
+      <main className="min-h-screen bg-slate-950 flex items-center justify-center p-6 font-sans">
+        <div className="fixed inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'linear-gradient(#4f46e5 1px, transparent 1px), linear-gradient(90deg, #4f46e5 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-12 relative z-10 shadow-2xl overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-[50px] -mr-16 -mt-16" />
+          <div className="flex flex-col items-center text-center space-y-8">
+            <div className="w-20 h-20 bg-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-indigo-500/40">
+              <Lock className="w-10 h-10 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-white uppercase tracking-[0.2em] mb-2 leading-none">Security Access</h1>
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{APP_CONFIG.NAME} {APP_CONFIG.SUBTITLE} v{APP_CONFIG.VERSION}</p>
+            </div>
+            <form onSubmit={handleLogin} className="w-full space-y-4">
+              <div className="relative group">
+                <input
+                  type="password"
+                  value={authInput}
+                  onChange={(e) => setAuthInput(e.target.value)}
+                  placeholder="Enter Admin Secret..."
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white text-center font-bold placeholder:text-slate-600 outline-none focus:border-indigo-500/50 transition-all shadow-inner"
+                />
+                <Key className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
+              </div>
+              <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl py-4 font-black uppercase tracking-[0.2em] text-[11px] transition-all active:scale-95 shadow-xl shadow-indigo-500/20">Authorize Access</button>
+            </form>
+            <div className="flex items-center gap-2 px-4 py-2 bg-rose-500/5 border border-rose-500/20 rounded-xl">
+              <ShieldAlert className="w-3.5 h-3.5 text-rose-500" />
+              <span className="text-[9px] font-black text-rose-400 uppercase tracking-widest leading-none">Protection Layer: Active</span>
+            </div>
+          </div>
+        </motion.div>
+      </main>
+    )
+  }
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-indigo-100 font-sans overflow-x-hidden relative">
-      {/* 🌌 Premium Ambient Background */}
+    <main className="min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-indigo-100 font-sans overflow-x-hidden relative text-pretty">
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-200/20 blur-[120px] rounded-full animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-200/20 blur-[120px] rounded-full animate-pulse [animation-delay:2s]" />
         <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-rose-200/10 blur-[120px] rounded-full animate-pulse [animation-delay:4s]" />
       </div>
 
-      {/* 🏁 Subtle Grid Overlay */}
-      <div className="fixed inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+      <div className="fixed inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: `${UI_CONSTANTS.GRID_SIZE}px ${UI_CONSTANTS.GRID_SIZE}px` }} />
 
-      {/* Header Navigation */}
-      <header className="sticky top-0 z-[60] bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_1px_10px_rgba(0,0,0,0.02)]">
-        <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-5">
-            <motion.div
-              whileHover={{ rotate: 5, scale: 1.05 }}
-              className={cn(
-                "w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg border transition-all duration-500",
-                mode === "ad" ? "bg-gradient-to-br from-indigo-500 to-indigo-700 border-indigo-400/30 shadow-indigo-200/50" :
-                  mode === "medical" ? "bg-gradient-to-br from-emerald-500 to-emerald-700 border-emerald-400/30 shadow-emerald-200/50" :
-                    "bg-gradient-to-br from-orange-500 to-orange-700 border-orange-400/30 shadow-orange-200/50"
-              )}
-            >
-              {mode === "ad" ? <Sparkles className="w-6 h-6 text-white" /> :
-                mode === "medical" ? <Microscope className="w-6 h-6 text-white" /> :
-                  <Layers className="w-6 h-6 text-white" />}
-            </motion.div>
-            <div>
-              <h1 className="text-xl font-black tracking-tight text-slate-900 leading-none mb-1">Nano Banana</h1>
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Intelligence Pipeline</span>
-                <span className="w-1 h-1 rounded-full bg-slate-300" />
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-indigo-500 animate-pulse">v2.5 Pro</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded-[1.25rem] shadow-inner">
-            <Tooltip content="Switch to DTC Creative mode for skincare and brand ads.">
-              <button onClick={() => setMode("ad")} className={cn("px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "ad" ? "bg-white text-indigo-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50")}>
-                <Zap className="w-3.5 h-3.5" /> DTC Creative
-              </button>
-            </Tooltip>
-            {/* ... other modes ... */}
-            <Tooltip content="Switch to Medical mode for anatomical and clinical illustrations.">
-              <button onClick={() => setMode("medical")} className={cn("px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "medical" ? "bg-white text-emerald-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50")}>
-                <Stethoscope className="w-3.5 h-3.5" /> Medical
-              </button>
-            </Tooltip>
-            <Tooltip content="Switch to Vector mode for clean illustrations and SVG tracing.">
-              <button onClick={() => setMode("vector")} className={cn("px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "vector" ? "bg-white text-orange-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50")}>
-                <Layers className="w-3.5 h-3.5" /> Vector
-              </button>
-            </Tooltip>
-            <Tooltip content="Switch to Video mode for 8-second cinematic motion sequences.">
-              <button onClick={() => setMode("video")} className={cn("px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2", mode === "video" ? "bg-white text-violet-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50")}>
-                <Camera className="w-3.5 h-3.5" /> Video
-              </button>
-            </Tooltip>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Tooltip content="View previously generated blueprints and case studies.">
-              <button onClick={() => setShowLibrary(true)} className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:bg-slate-50 transition-all shadow-sm">
-                <History className="w-5 h-5" />
-              </button>
-            </Tooltip>
-            <div className="w-8 h-8 rounded-full bg-slate-200 border border-white" />
-          </div>
-        </div>
-      </header>
+      <Header mode={mode} setMode={setMode} setShowLibrary={setShowLibrary} onLogout={handleLogout} />
 
       <div className="max-w-7xl mx-auto px-8 py-12 relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Left: Project Input */}
-          <section className="space-y-6 lg:sticky lg:top-32 h-fit">
-            <div className="flex items-center gap-3 px-4">
-              <div className={cn("w-2 h-7 rounded-full", mode === "ad" ? "bg-indigo-500" : mode === "medical" ? "bg-emerald-500" : "bg-orange-500")} />
-              <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Project Definition</h2>
-            </div>
+          <ProjectInput
+            mode={mode}
+            brief={brief}
+            setBrief={setBrief}
+            isStoryboard={isStoryboard}
+            setIsStoryboard={setIsStoryboard}
+            assetImage={assetImage}
+            setAssetImage={setAssetImage}
+            assetType={assetType}
+            setAssetType={setAssetType}
+            selectedStyle={selectedStyle}
+            setSelectedStyle={setSelectedStyle}
+            isLoading={isLoading || isRefining}
+            handleGenerate={() => onGenerate(false)}
+            refinePrompt={onRefine}
+            fileInputRef={fileInputRef}
+            handleFileUpload={handleFileUpload}
+          />
 
-            <motion.div
-              layout
-              className="bg-white/80 backdrop-blur-xl border border-white rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative overflow-hidden group"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50/50 blur-[50px] -mr-16 -mt-16 pointer-events-none" />
-
-              <div className="flex items-center justify-between mb-10">
-                <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shadow-inner">
-                  <button
-                    onClick={() => setIsStoryboard(false)}
-                    className={cn("px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all", !isStoryboard ? "bg-white text-slate-800 shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600")}
-                  >
-                    Single Shot
-                  </button>
-                  <button
-                    onClick={() => setIsStoryboard(true)}
-                    className={cn("px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5", isStoryboard ? "bg-white text-rose-600 shadow-sm border border-rose-100" : "text-slate-400 hover:text-slate-600")}
-                  >
-                    <Film className="w-3 h-3" /> Storyboard
-                  </button>
-                </div>
-                <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="image/*" className="hidden" />
-                <Tooltip content="Upload an image to extract its style, colors, or structure.">
-                  <button onClick={() => fileInputRef.current?.click()} className={cn("px-4 py-2 rounded-full text-[10px] font-black border uppercase transition-all flex items-center gap-2", assetImage ? "bg-indigo-50 text-indigo-600 border-indigo-200" : "bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100")}>
-                    <Upload className="w-3.5 h-3.5" /> {assetImage ? "Asset Loaded" : "Link Reference"}
-                  </button>
-                </Tooltip>
-              </div>
-
-              {/* New Style Selector */}
-              <div className="mb-8">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2 px-1">
-                  <Layers className="w-3 h-3" /> Visual Direction Matrix
-                </p>
-                <div className="relative group/select">
-                  <select
-                    value={selectedStyle}
-                    onChange={(e) => setSelectedStyle(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-xs font-bold text-slate-700 outline-none hover:border-indigo-200 transition-all cursor-pointer appearance-none shadow-sm focus:ring-2 focus:ring-indigo-500/10"
-                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.25rem center', backgroundSize: '1rem' }}
-                  >
-                    {stylePresets.map((style) => (
-                      <option key={style.label} value={style.value}>{style.label}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {assetImage && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-10 p-8 bg-indigo-50/40 rounded-[2rem] border border-indigo-100 flex gap-8 items-center shadow-inner relative group/asset">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-xl ring-2 ring-indigo-500/20 group-hover/asset:scale-105 transition-transform duration-500">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={assetImage} alt="Reference" className="w-full h-full object-cover" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-4">
-                      <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest italic flex items-center gap-2">
-                        <Zap className="w-3.5 h-3.5" /> Visual DNA Seed
-                      </p>
-                      <div className="flex items-center gap-1.5 px-3 py-1 bg-white/80 border border-indigo-100 rounded-lg shadow-sm">
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                        <span className="text-[9px] font-black text-indigo-600 uppercase">Analysis Engine ON</span>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      {["style", "subject", "structure"].map((type) => (
-                        <button key={type} onClick={() => setAssetType(type as any)} className={cn("px-5 py-2 rounded-xl text-[9px] font-black border transition-all uppercase tracking-widest shadow-sm", assetType === type ? "bg-indigo-600 text-white border-indigo-600 shadow-indigo-100" : "bg-white text-slate-400 border-slate-200 hover:border-indigo-200 hover:text-indigo-400")}>{type}</button>
-                      ))}
-                    </div>
-                  </div>
-                  <button onClick={() => setAssetImage(null)} className="absolute -top-3 -right-3 w-8 h-8 bg-white border border-slate-200 shadow-lg rounded-full flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 hover:border-rose-100 transition-all"><X className="w-4 h-4" /></button>
-                </motion.div>
-              )}
-
-              <div className="relative">
-                <textarea
-                  value={brief}
-                  onChange={(e) => setBrief(e.target.value)}
-                  placeholder={mode === "ad" ? "Specify your campaign parameters and visual narrative..." : "Describe clinical findings, pathology, or surgical sequences..."}
-                  className="w-full h-56 bg-white border border-slate-200 rounded-[2rem] p-8 text-slate-800 placeholder:text-slate-300 outline-none hover:border-indigo-100 transition-all resize-none text-[15px] leading-relaxed shadow-inner"
-                />
-                <div className="absolute bottom-6 right-6 flex items-center gap-2 opacity-50">
-                  <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">{brief.length} / 1000</span>
-                </div>
-              </div>
-
-              {error && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-6 p-5 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-4 text-rose-600 shadow-sm">
-                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                  <span className="text-[11px] font-bold tracking-tight">{error}</span>
-                </motion.div>
-              )}
-
-              <div className="mt-10 flex justify-between items-center -mx-10 -mb-10 px-10 py-10 bg-slate-50/50 border-t border-slate-100">
-                <div className="flex items-center gap-4 group/lock">
-                  <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-100 shadow-sm group-hover/lock:scale-110 transition-transform">
-                    <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                  </div>
-                  <div>
-                    <span className="block text-[10px] text-slate-600 font-black uppercase tracking-widest leading-none mb-1">Indian Identity</span>
-                    <span className="text-[9px] text-emerald-500 font-bold uppercase tracking-tight">Biometric Lock: ACTIVE</span>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <Tooltip content="Refine your raw ideas into a professional BioRender-standard prompt.">
-                    <button onClick={() => refinePrompt()} disabled={isLoading} className="px-6 py-4 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:border-indigo-200 transition-all active:scale-95 disabled:opacity-50">
-                      {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-amber-500" />}
-                      Refine
-                    </button>
-                  </Tooltip>
-                  <Tooltip content="Analyze brief and generate a new technical JSON blueprint.">
-                    <button
-                      onClick={() => handleGenerate()}
-                      disabled={isLoading}
-                      className={cn(
-                        "px-10 py-4 text-white rounded-[1.25rem] font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 transition-all relative overflow-hidden group/btn shadow-[0_10px_20px_rgba(0,0,0,0.1)] active:scale-95 disabled:opacity-50",
-                        mode === "ad" ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-100/50" : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-100/50"
-                      )}
-                    >
-                      <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
-                      {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
-                      {isLoading ? "Analyzing..." : "Process Brief"}
-                    </button>
-                  </Tooltip>
-                </div>
-              </div>
-            </motion.div>
-          </section>
-
-          {/* Right: Technical Output + Preview */}
-          <section className="space-y-6">
+          <div className="space-y-6">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-1.5 h-6 bg-slate-300 rounded-full" />
               <h2 className="text-sm font-black uppercase tracking-widest text-slate-500">Intelligent Output</h2>
             </div>
 
-            <AnimatePresence mode="wait">
-              {result || (mode === "vector" && !renderedImage) ? (
-                <motion.div key="result" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
-                  {/* JSON Blueprint Console (Only show if we have data or NOT in manual vector mode) */}
-                  {(result?.data && !isStoryboard) && (
-                    <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative overflow-hidden group/console">
-                      <div className="flex items-center justify-between mb-8">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center shadow-lg">
-                            <Terminal className="w-4 h-4 text-emerald-400" />
-                          </div>
-                          <div>
-                            <h3 className="font-black uppercase tracking-[0.2em] text-[10px] text-slate-400">
-                              {mode === "ad" ? "Art Direction" : mode === "medical" ? "Technical Blueprint" : "Vector Blueprint"}
-                            </h3>
-                            <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Compiler: Gemini 2.5 Pro</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Tooltip content="Copy the current blueprint to take it to Gemini Web for rendering.">
-                            <button
-                              onClick={() => {
-                                navigator.clipboard.writeText(JSON.stringify(result.data, null, 2));
-                                alert("Technical JSON copied to clipboard.");
-                              }}
-                              className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-500 hover:border-indigo-100 transition-all shadow-sm"
-                            >
-                              <Database className="w-4 h-4" />
-                            </button>
-                          </Tooltip>
-                          <Tooltip content="Execute the high-fidelity render engine.">
-                            <button onClick={handleRenderImage} disabled={isRendering} className={cn(
-                              "px-6 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-3 transition-all shadow-lg active:scale-95 disabled:opacity-50",
-                              mode === "ad" ? "bg-indigo-600 text-white shadow-indigo-100/50" :
-                                mode === "medical" ? "bg-emerald-600 text-white shadow-emerald-100/50" :
-                                  "bg-orange-600 text-white shadow-orange-100/50"
-                            )}>
-                              {isRendering ? <Loader2 className="w-4 h-4 animate-spin" /> : <Eye className="w-4 h-4" />}
-                              Execute Render
-                            </button>
-                          </Tooltip>
-                        </div>
-                      </div>
-
-                      <div className="bg-slate-900 rounded-[2rem] p-8 border border-white/5 max-h-[250px] overflow-auto mb-8 shadow-2xl relative group/code">
-                        <pre className="text-[11px] text-indigo-300 font-mono leading-relaxed whitespace-pre-wrap">
-                          {JSON.stringify(result.data, null, 2)}
-                        </pre>
-                        <div className="absolute top-4 right-4 flex items-center gap-2 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                          <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest">Validated Blueprint</span>
-                        </div>
-                      </div>
-
-                      <div className="p-8 bg-slate-50/80 rounded-[2rem] border border-slate-200 relative">
-                        <div className="flex items-center justify-between mb-6">
-                          <div className="flex items-center gap-2 text-[10px] font-black text-indigo-500 uppercase italic tracking-widest px-1">
-                            <RefreshCw className="w-4 h-4 animate-spin-slow" /> Technical Refinement
-                          </div>
-                        </div>
-                        <div className="flex gap-3">
-                          <input
-                            value={refinement}
-                            onChange={(e) => setRefinement(e.target.value)}
-                            placeholder="e.g., 'Change the camera angle to low-orbit'..."
-                            className="flex-1 bg-white border border-slate-200 rounded-[1.25rem] px-5 py-4 text-xs text-slate-700 placeholder:text-slate-300 outline-none hover:border-indigo-200 transition-all shadow-sm"
-                          />
-                          <button onClick={() => handleGenerate(true)} disabled={isLoading || !refinement.trim()} className="px-8 py-4 bg-slate-900 text-white rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all shadow-xl active:scale-95 disabled:opacity-30">Update</button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 🎬 Storyboard Sequence Engine */}
-                  {result?.data?.scenes && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="space-y-6 mb-8"
-                    >
-                      <div className="flex items-center gap-4 px-6">
-                        <div className="w-10 h-10 rounded-2xl bg-rose-500 flex items-center justify-center shadow-lg shadow-rose-200">
-                          <Film className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                          <h2 className="text-sm font-black uppercase tracking-[0.3em] text-slate-900 leading-none mb-1">
-                            Production Storyboard
-                          </h2>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{result.data.total_project_duration}</span>
-                            <span className="w-1 h-1 rounded-full bg-slate-300" />
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{result.data.scenes.length} Master Segments</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="grid gap-6">
-                        {result.data.scenes.map((scene: any, idx: number) => (
-                          <motion.div
-                            key={idx}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: idx * 0.05 }}
-                            className="bg-white/90 backdrop-blur-xl border border-white rounded-[2.5rem] p-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.08)] transition-all group/scene relative overflow-hidden"
-                          >
-                            <div className="absolute top-0 left-0 w-2.5 h-full bg-rose-500 opacity-20" />
-
-                            <div className="flex items-start justify-between mb-8">
-                              <div className="flex items-center gap-5">
-                                <div className="w-14 h-14 rounded-[1.25rem] bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center text-lg font-black text-white shadow-xl shadow-rose-200/50">
-                                  {scene.scene_number || idx + 1}
-                                </div>
-                                <div>
-                                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Scene Segment</h3>
-                                  <div className="flex items-center gap-2">
-                                    <div className="px-3 py-1 bg-slate-100 rounded-lg text-[10px] font-black text-slate-600 uppercase tracking-widest border border-slate-200 shadow-sm">
-                                      {scene.shot_duration || '5s'}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="flex gap-2">
-                                <Tooltip content="Copy Visual Directive">
-                                  <button
-                                    onClick={() => handleCopy(scene.visual_prompt, `sc-v-${idx}`)}
-                                    className={cn(
-                                      "w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-sm border",
-                                      copySuccess === `sc-v-${idx}` ? "bg-emerald-500 text-white border-emerald-400 shadow-emerald-200" : "bg-white text-slate-400 border-slate-200 hover:text-indigo-500 hover:border-indigo-100 hover:bg-indigo-50/30"
-                                    )}
-                                  >
-                                    {copySuccess === `sc-v-${idx}` ? <Check className="w-5 h-5" /> : <Video className="w-5 h-5" />}
-                                  </button>
-                                </Tooltip>
-                                <Tooltip content="Copy Audio Script">
-                                  <button
-                                    onClick={() => handleCopy(scene.narration_vo, `sc-n-${idx}`)}
-                                    className={cn(
-                                      "w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-sm border",
-                                      copySuccess === `sc-n-${idx}` ? "bg-amber-500 text-white border-amber-400 shadow-amber-200" : "bg-white text-slate-400 border-slate-200 hover:text-indigo-500 hover:border-indigo-100 hover:bg-indigo-50/30"
-                                    )}
-                                  >
-                                    {copySuccess === `sc-n-${idx}` ? <Check className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-                                  </button>
-                                </Tooltip>
-                              </div>
-                            </div>
-
-                            <div className="grid lg:grid-cols-2 gap-8">
-                              <div className="space-y-6">
-                                <div className="p-8 bg-slate-50/50 rounded-[1.5rem] border border-slate-100 group-hover/scene:bg-white transition-all duration-500">
-                                  <div className="flex items-center gap-2 mb-4 text-[10px] font-black text-amber-500 uppercase tracking-widest">
-                                    <Mic className="w-4 h-4" /> Audio Narration
-                                  </div>
-                                  <p className="text-sm text-slate-600 font-medium leading-relaxed italic">
-                                    &quot;{scene.narration_vo}&quot;
-                                  </p>
-                                </div>
-                                {scene.motion_instruction && (
-                                  <div className="flex items-center gap-3 text-[10px] font-black uppercase text-rose-500 tracking-widest bg-rose-50 px-5 py-2.5 rounded-xl w-fit border border-rose-100 shadow-sm">
-                                    <RefreshCw className="w-4 h-4" /> {scene.motion_instruction}
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="space-y-4">
-                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 px-1">
-                                  <Video className="w-4 h-4" /> Visual Directive
-                                </div>
-                                <p className="text-xs text-slate-500 leading-relaxed font-medium bg-slate-50/30 p-8 rounded-[1.5rem] border border-slate-100/50 group-hover/scene:bg-white transition-all duration-500">
-                                  {scene.visual_prompt}
-                                </p>
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* Visual Console */}
-                  <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden group/vision">
-                    <div className="flex items-center justify-between mb-8">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center">
-                          <ImageIcon className="w-5 h-5 text-indigo-400" />
-                        </div>
-                        <h3 className="font-black uppercase tracking-[0.2em] text-[10px] text-slate-400">Vision Console</h3>
-                      </div>
-                      <div className="flex gap-2">
-                        {renderedImage && (
-                          <>
-                            {mode === "vector" && (
-                              <button
-                                onClick={vectorizeToSVG}
-                                disabled={isVectorizing || !isEngineReady}
-                                className="flex items-center gap-3 px-6 py-3 bg-orange-600 text-white shadow-xl shadow-orange-100 rounded-xl text-[10px] font-black transition-all uppercase tracking-widest active:scale-95"
-                              >
-                                {isVectorizing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Layers className="w-4 h-4" />}
-                                Tracing SVG
-                              </button>
-                            )}
-                            <button
-                              onClick={() => {
-                                setAssetImage(renderedImage);
-                                setAssetType("style");
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                              }}
-                              className="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95"
-                            >
-                              <Zap className="w-5 h-5" />
-                            </button>
-                            <button onClick={downloadImage} className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xl shadow-slate-200 hover:bg-black transition-all active:scale-95">
-                              <Download className="w-5 h-5" />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="w-full relative aspect-[16/10] rounded-[2rem] bg-slate-950 border border-white/10 flex items-center justify-center overflow-hidden shadow-2xl group-hover/vision:shadow-indigo-200/20 transition-all duration-700">
-                      {isRendering && (
-                        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-950/40 backdrop-blur-sm">
-                          <div className="relative">
-                            <div className="w-32 h-32 rounded-full border-t-2 border-indigo-500 animate-spin" />
-                            <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-indigo-400 uppercase tracking-widest">Rendering</div>
-                          </div>
-                        </div>
-                      )}
-
-                      {renderedImage ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img src={renderedImage} alt="Analysis Result" className="w-full h-full object-contain" />
-                      ) : mode === "vector" ? (
-                        <div className="flex flex-col items-center gap-8 px-12 py-20 text-center">
-                          <input type="file" ref={externalRenderRef} onChange={handleExternalUpload} className="hidden" accept="image/*" />
-                          <motion.div
-                            whileHover={{ scale: 1.1, rotate: 10 }}
-                            className="w-24 h-24 rounded-[2rem] bg-orange-600/10 border-2 border-dashed border-orange-500/30 flex items-center justify-center cursor-pointer shadow-2xl"
-                            onClick={() => externalRenderRef.current?.click()}
-                          >
-                            <Upload className="w-10 h-10 text-orange-500" />
-                          </motion.div>
-                          <div>
-                            <h5 className="text-[12px] font-black uppercase text-white tracking-[0.3em] mb-3">External Vectorizer</h5>
-                            <p className="text-[10px] font-bold text-slate-500 uppercase max-w-[280px] leading-relaxed">Drop a flat icon or medical sketch here to convert pixels into scalable SVG paths.</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center gap-8 opacity-40">
-                          <div className="relative">
-                            <div className="w-24 h-24 rounded-full border border-dashed border-slate-700 flex items-center justify-center">
-                              <ImageIcon className="w-10 h-10 text-slate-500" />
-                            </div>
-                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-slate-800 rounded-full border border-slate-700 animate-pulse" />
-                          </div>
-                          <span className="text-[11px] font-black tracking-[0.4em] uppercase text-slate-500">Awaiting Signal</span>
-                        </div>
-                      )}
-
-                      {result?.data && (
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-6 pointer-events-none">
-                          <h4 className="text-sm font-black text-white mb-2 uppercase tracking-tighter truncate">{result.data.scientific_subject || result.data.core_prompt}</h4>
-                          <div className="flex gap-2">
-                            <span className="text-[9px] px-3 py-1 bg-white/10 text-white/60 rounded-lg border border-white/10 uppercase font-black">Ref: {mode}</span>
-                            <span className="text-[9px] px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-lg border border-indigo-500/20 uppercase font-black tracking-widest text-glow-indigo">V-Intelligence</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              ) : (
-                <div className="h-full bg-white border border-dashed border-slate-200 rounded-[2.5rem] flex flex-col items-center justify-center p-16 text-center text-slate-300 min-h-[600px] shadow-sm">
-                  <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-8 border border-slate-100">
-                    <Layers className="w-10 h-10 opacity-30" />
-                  </div>
-                  <h3 className="text-lg font-black text-slate-400 uppercase tracking-widest mb-2 italic">Awaiting Protocol</h3>
-                  <p className="max-w-[240px] text-[11px] font-bold text-slate-400 uppercase tracking-tight leading-relaxed">Initialize a campaign brief or clinical case to begin multimodal analysis.</p>
-                </div>
+            <Suspense fallback={<div className="h-48 flex items-center justify-center bg-white/50 backdrop-blur rounded-[2.5rem] border border-white"><Loader2 className="w-8 h-8 animate-spin text-indigo-500" /></div>}>
+              {result?.data && !result?.data?.scenes && (
+                <BlueprintConsole
+                  mode={mode}
+                  data={result.data}
+                  isLoading={isLoading}
+                  refinement={refinement}
+                  setRefinement={setRefinement}
+                  handleRefine={() => onGenerate(true)}
+                />
               )}
-            </AnimatePresence>
-          </section>
+
+              {result?.data?.scenes && (
+                <StoryboardEngine
+                  totalProjectDuration={result.data.total_project_duration || ""}
+                  scenes={result.data.scenes}
+                  handleCopy={handleCopy}
+                  copySuccess={copySuccess}
+                />
+              )}
+            </Suspense>
+
+            {(error || authError) && (
+              <div className="p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-xs font-bold uppercase flex items-center justify-between">
+                <span>{error || "Authentication Session Invalid"}</span>
+                <button onClick={handleLogout} className="underline">Re-Auth</button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Slide-out Library Panel */}
-      <AnimatePresence>
-        {showLibrary && (
-          <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed inset-y-0 right-0 w-[400px] bg-white shadow-2xl z-[60] border-l border-slate-200 flex flex-col">
-            <div className="p-8 border-b border-slate-100 flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-black uppercase tracking-widest text-slate-800">Resource Library</h2>
-                <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase">Persistent Asset History</p>
-              </div>
-              <button onClick={() => setShowLibrary(false)} className="p-2.5 hover:bg-slate-50 rounded-xl border border-slate-100 transition-all"><X className="w-5 h-5 text-slate-500" /></button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/30">
-              {isLoadingLibrary ? (
-                <div className="h-full flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-slate-200" /></div>
-              ) : library.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-slate-300 gap-4 opacity-50">
-                  <Database className="w-12 h-12" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">No records found</span>
-                </div>
-              ) : library.map((item, i) => (
-                <button key={i} onClick={() => loadFromLibrary(item)} className="w-full text-left bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all group relative overflow-hidden">
-                  <div className={cn("absolute top-0 left-0 w-1.5 h-full", item.type === "ad" ? "bg-indigo-500" : item.type === "medical" ? "bg-emerald-500" : "bg-orange-500")} />
-                  <div className="flex items-center justify-between mb-3">
-                    <span className={cn("text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded",
-                      item.type === "ad" ? "bg-indigo-50 text-indigo-600" :
-                        item.type === "medical" ? "bg-emerald-50 text-emerald-600" :
-                          "bg-orange-50 text-orange-600"
-                    )}>{item.type}</span>
-                    <span className="text-[8px] font-bold text-slate-400 font-mono">{new Date(item.timestamp).toLocaleDateString()}</span>
-                  </div>
-                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-tighter truncate pr-4">{item.content.scientific_subject || item.content.core_prompt || item.content.illustration_subject}</h4>
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {showLibrary && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowLibrary(false)} className="fixed inset-0 bg-slate-900/10 backdrop-blur-sm z-50" />
+        <Suspense fallback={null}>
+          <LibraryPanel
+            showLibrary={showLibrary}
+            setShowLibrary={setShowLibrary}
+            isLoadingLibrary={isLoadingLibrary}
+            library={library}
+            loadFromLibrary={loadFromLibrary}
+          />
+        </Suspense>
       )}
 
-      {/* Global Aesthetics */}
       <style jsx global>{`
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
