@@ -20,10 +20,11 @@ export async function POST(req: NextRequest) {
             inlineData: { data: image.split(",")[1] || image, mimeType: "image/png" }
         } : null;
 
+        const isPhysical = style.toLowerCase().includes('stop-motion') || style.toLowerCase().includes('claymation') || style.toLowerCase().includes('puppet') || style.toLowerCase().includes('paper-cut');
         const systemPrompt = `
         You are a Master Creative Director. Transform a raw brief/image into a professional "Direct-Flow Rendering Paragraph."
         STYLE CONTEXT: ${style ? style : "Professional BioRender Style (2.5D matte vector finish)."}
-        IDENTITY LOCK: Always include "Indian model silhouette" for humans.
+        IDENTITY LOCK: ${isPhysical ? "Characters must be handcrafted physical models (clay/puppet) with clear Indian cultural features and clothing." : "Always include 'Indian model silhouette' for humans."}
         HARD ZERO-TEXT BAN: End with: "Visual-only asset. No text, symbols, or labels."
         RETURN ONLY THE PARAGRAPH.
         `;
