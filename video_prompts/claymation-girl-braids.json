@@ -1,0 +1,12 @@
+{
+    "video_subject": "A young Indian girl with long black hair in traditional braids, wearing a deep navy blue school tunic over a cream-colored collared shirt. She has a contemplative, slightly saddened expression, sculpted with expressive clay realism.",
+    "motion_dynamics": "Subtle 12fps stop-motion jitter; the character slowly tilts her head down while her eyelids blink with a slight clay-drag effect; organic tactile movement.",
+    "camera_movement": "static",
+    "temporal_storyboard": [
+        "0s: The girl looks directly ahead with a solemn expression, hands resting at her sides.",
+        "4s: She begins to slowly lower her gaze, her clay eyelids mid-blink, showing the tactile texture of the sculpt.",
+        "8s: She looks down completely, a soft shadow falling across her face as the background character in a plaid shirt passes by."
+    ],
+    "visual_style": "Premium cinematic claymation with authentic Indian cultural details. Visible handcrafted clay fingerprints on the skin surfaces, tactile putty textures, soft domestic indoor lighting, shallow depth of field with a blurred background.",
+    "negative_prompt": "shaky camera, low framerate, flickering, distorted faces, text, watermarks, morphing artifacts, 3D CGI, smooth plastic textures, generic anime style."
+}

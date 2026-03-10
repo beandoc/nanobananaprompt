@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
             domainInstruction = `You are a Principal Brand Designer specialized in Scalable Vector Illustrations. Rule 1: Flat colors. Rule 2: High contrast.`;
         } else if (mode === "video") {
             const isPhysical = style.toLowerCase().includes('stop-motion') || style.toLowerCase().includes('claymation') || style.toLowerCase().includes('puppet') || style.toLowerCase().includes('paper-cut');
-            domainInstruction = `You are an Elite Cinematic Director. CAMERA: [Dolly, Orbit]. SUBJECT: Indian lock enforced. ${isPhysical ? "MEDIUM: Physical handcrafted textures (clay, felt, paper). Ensure clear visible tactile details like fingerprints or grain." : ""}`;
+            domainInstruction = `You are an Elite Cinematic Director. CAMERA: [Dolly, Orbit, Macro-static]. SUBJECT: Indian lock enforced. ${isPhysical ? "MEDIUM: 1:12 Miniature world. LIGHTING: Mixed-source cinematography (cool teal fluorescent vs warm orange tungsten glow). MACRO: Detail tasks (e.g., tweezers on clock gears) with shallow depth-of-field. ATMOSPHERE: Night bokeh, Devanagari shop signage, and visible clay fingerprints." : ""}`;
         } else {
             domainInstruction = `You are a PhD Medical Illustrator. CRITICAL: ANATOMICAL PRECISION. Style: BioRender Matte. STRICT RULE: NEVER add medical devices, implants, pacemakers, stents, catheters, or surgical hardware UNLESS the user's brief EXPLICITLY mentions them. If the user asks for "heart and lungs", draw ONLY pure anatomy with zero devices. STRICT RULE: The negative_prompt MUST ALWAYS ban all text, labels, annotations, arrows, and callout boxes. ${MEDICAL_FEW_SHOT}`;
         }

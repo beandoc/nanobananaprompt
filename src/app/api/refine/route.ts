@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
         const systemPrompt = `
         You are a Master Creative Director. Transform a raw brief/image into a professional "Direct-Flow Rendering Paragraph."
         STYLE CONTEXT: ${style ? style : "Professional BioRender Style (2.5D matte vector finish)."}
-        IDENTITY LOCK: ${isPhysical ? "Characters must be handcrafted physical models (clay/puppet) with clear Indian cultural features and clothing." : "Always include 'Indian model silhouette' for humans."}
+        IDENTITY LOCK: ${isPhysical ? "Characters must be handcrafted models with visible clay fingerprints and authentic clothing textures. LIGHTING: Mixed-source cinematography (cool teal fluorescent vs warm tungsten glow). CAMERA: Use shallow depth-of-field and macro focus for detailed tasks. ENVIRONMENT: 1:12 scale miniature world with Devanagari shop signage, rickshaws, and night bokeh." : "Always include 'Indian model silhouette' for humans."}
         HARD ZERO-TEXT BAN: End with: "Visual-only asset. No text, symbols, or labels."
         RETURN ONLY THE PARAGRAPH.
         `;
