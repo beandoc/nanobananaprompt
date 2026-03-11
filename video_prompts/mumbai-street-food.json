@@ -1,0 +1,12 @@
+{
+    "video_subject": "A street vendor in Mumbai, an elderly Indian man with weathered features, skillfully preparing Vada Pav. He flips the golden-brown batata vada in a bubbling cauldron of oil with a focused, proud expression.",
+    "motion_dynamics": "High-velocity oil splashes in slow-motion; steam rising in thick swirls; rapid rhythmic movements of the vendor's hands as he assembles the pav.",
+    "camera_movement": "macro-pan",
+    "temporal_storyboard": [
+        "0s: Close-up of the vendor's hands sliding a fresh vada into the hot oil.",
+        "4s: Mid-shot of the vendor's face through a layer of steam, a subtle smile as he works.",
+        "8s: The final Vada Pav is held up, wrapped in a scrap of newspaper, with the vibrant green chutney dripping slightly."
+    ],
+    "visual_style": "Raw editorial photography style. Authentic urban Indian aesthetic, moody street lighting using ambient vendor stall bulbs, high contrast with deep shadows, shallow depth-of-field.",
+    "negative_prompt": "shaky camera, low framerate, flickering, distorted faces, text, watermarks, morphing artifacts, generic CGI, clean sterile kitchen."
+}

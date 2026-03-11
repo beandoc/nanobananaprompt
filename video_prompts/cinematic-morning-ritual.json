@@ -1,0 +1,12 @@
+{
+    "video_subject": "A middle-aged Indian woman in a vibrant saffron saree performing a morning Surya Namaskar on a sun-drenched balcony. Her movements are fluid and disciplined, capturing the grace of the yoga sequence in 8 seconds.",
+    "motion_dynamics": "Slow, meditative transition from a standing prayer pose to a full upward-facing dog; soft focus on the dust motes dancing in the golden morning light.",
+    "camera_movement": "slow-push-in",
+    "temporal_storyboard": [
+        "0s: Subject stands with palms together, eyes closed, in a serene morning light.",
+        "4s: She gracefully transitions into an arched backbend, her saree catching the breeze.",
+        "8s: She completes the movement in a low cobra pose, looking towards the rising sun."
+    ],
+    "visual_style": "High-end cinematic documentary style. Warm golden-hour lighting, high dynamic range, 8K resolution, slight film grain for a nostalgic feel.",
+    "negative_prompt": "shaky camera, low framerate, flickering, distorted faces, text, watermarks, morphing artifacts, generic CGI, flat lighting."
+}

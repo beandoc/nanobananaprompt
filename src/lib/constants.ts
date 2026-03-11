@@ -13,8 +13,8 @@ export const UI_CONSTANTS = {
 };
 
 export const API_CONSTANTS = {
-    STORYBOARD_SCENE_COUNT: 12,
-    STORYBOARD_SCENE_DURATION: "5 seconds",
+    STORYBOARD_SCENE_COUNT: 8,
+    STORYBOARD_SCENE_DURATION: "8 seconds",
     REPLICATE_MODEL: "black-forest-labs/flux-schnell",
     IMAGE_MIME_TYPE: "image/png",
 };

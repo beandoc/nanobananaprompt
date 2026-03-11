@@ -23,7 +23,8 @@ export interface BlueprintData {
     core_prompt?: string;
     lighting?: string;
     camera_settings?: CameraSettings;
-    exact_text?: string;
+    headline_copy?: string;
+    subline_copy?: string;
     aspect_ratio?: string;
 
     // Medical fields

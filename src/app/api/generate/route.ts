@@ -65,17 +65,30 @@ export async function POST(req: NextRequest) {
 
         let domainInstruction = "";
         if (mode === "ad") {
-            domainInstruction = `You are an Elite Performance Creative Director. CORE RULES: 1. PRODUCT IS THE HERO. 2. RELATABLE MODELS (Indian subjects). 3. FACE DE-EMPHASIS.`;
+            domainInstruction = `You are an Elite Performance Creative Director. CORE MISSION: Transform mundane briefs into scroll-stopping ad creatives. 
+            RULES: 
+            1. PRODUCT IS THE HERO: Product must be the sharpest, most lit element. Entire product must be in frame. 
+            2. RELATABLE MODELS: Use Indian everyday people (mid-30s/40s). No influencers, no jewelry, no styled hair. 
+            3. FACE DE-EMPHASIS: Model's face MUST be partially cropped at top or looking down at product. 
+            4. PAIN-POINT COPY: Headline must be a direct question or bold statement naming a frustration (e.g. 'STILL FREEZING?'). NO duplicate words. 
+            5. COMPOSITION: Product/Subject on Right, Copy on Left (40% width). Background simple and blurry.
+            STYLE PALETTES:
+            - Outdoor/Rugged: Earthy tones (forest green, rust, mud brown).
+            - Beauty/Wellness: Soft warm tones (peach, ivory, blush).
+            - Tech/Minimal: Cool tones (charcoal, slate, clean daylight).
+            - Home/Living: Warm neutrals (linen, oak, soft window light).`;
         } else if (mode === "vector") {
             domainInstruction = `You are a Principal Brand Designer specialized in Scalable Vector Illustrations. Rule 1: Flat colors. Rule 2: High contrast.`;
         } else if (mode === "video") {
             const isPhysical = style.toLowerCase().includes('stop-motion') || style.toLowerCase().includes('claymation') || style.toLowerCase().includes('puppet') || style.toLowerCase().includes('paper-cut');
-            domainInstruction = `You are an Elite Cinematic Director. CAMERA: [Dolly, Orbit, Macro-static]. SUBJECT: Indian lock enforced. ${isPhysical ? "MEDIUM: 1:12 Miniature world. LIGHTING: Mixed-source cinematography (cool teal fluorescent vs warm orange tungsten glow). MACRO: Detail tasks (e.g., tweezers on clock gears) with shallow depth-of-field. ATMOSPHERE: Night bokeh, Devanagari shop signage, and visible clay fingerprints." : ""}`;
+            domainInstruction = `You are an Elite Cinematic Director. CAMERA: [Dolly, Orbit, Macro-static]. SUBJECT: Indian everyday people. DURATION: 8-second continuous sequence. 
+            STORYBOARD: Position 0s (Intro), 4s (Peak Action/Pain Resolution), 8s (Final Product Hero Shot). 
+            ${isPhysical ? "MEDIUM: 1:12 Miniature world. LIGHTING: Mixed-source cinematography. MACRO: High detail with fingerprints." : ""}`;
         } else {
-            domainInstruction = `You are a PhD Medical Illustrator. CRITICAL: ANATOMICAL PRECISION. Style: BioRender Matte. STRICT RULE: NEVER add medical devices, implants, pacemakers, stents, catheters, or surgical hardware UNLESS the user's brief EXPLICITLY mentions them. If the user asks for "heart and lungs", draw ONLY pure anatomy with zero devices. STRICT RULE: The negative_prompt MUST ALWAYS ban all text, labels, annotations, arrows, and callout boxes. ${MEDICAL_FEW_SHOT}`;
+            domainInstruction = `You are a PhD Medical Illustrator. CRITICAL: ANATOMICAL PRECISION. Style: BioRender Matte. STRICT RULE: NEVER add medical devices UNLESS explicitly mentioned. The negative_prompt MUST ALWAYS ban all text, labels, and annotations. ${MEDICAL_FEW_SHOT}`;
         }
 
-        let systemPrompt = domainInstruction + (isStoryboard ? ` Break down a script into exactly 12 segments of 5 seconds.` : ` ZERO TEXT POLICY.`);
+        let systemPrompt = domainInstruction + (isStoryboard ? ` Break down a script into exactly 8 segments of 8 seconds each for a cinematic 64-second production.` : ` ZERO TEXT POLICY.`);
 
         const userPrompt = parentPrompt
             ? `BASELINE JSON: ${JSON.stringify(parentPrompt)}. MODIFICATION REQUEST: "${brief}"`
