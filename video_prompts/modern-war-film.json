@@ -1,0 +1,12 @@
+{
+    "video_subject": "A squad of elite Indian soldiers in modern tactical gear advancing through a destroyed urban battlefield. Smoke and embers fill the air between ruined concrete structures.",
+    "motion_dynamics": "Tactical movement 'slice the pie' around corners; helicopters flying low overhead with rapid blade blur; sparks and debris falling from burning vehicles; high-tension kinetic motion.",
+    "camera_movement": "handheld-tracking",
+    "temporal_storyboard": [
+        "0s: Soldiers move through a thick cloud of smoke, weapons raised, with a burning humvee in the background.",
+        "4s: A helicopter roars overhead, kicking up dust as the lead soldier signals the squad to halt.",
+        "8s: The camera follows the soldiers as they breach a ruined building, sparks raining from a flickering wire."
+    ],
+    "visual_style": "Modern War Film. Camera: Cinema Digital 35mm, Lens: Anamorphic, Focal Length: 35mm, Aperture: f/4. Fine grain film stock, Desaturated trenches movie look. Intense cinematic realism.",
+    "negative_prompt": "shaky camera (unstable), low framerate, flickering, distorted faces, text, watermarks, morphing artifacts, saturation, beautiful flowers, clean streets."
+}

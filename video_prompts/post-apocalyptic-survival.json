@@ -1,0 +1,12 @@
+{
+    "video_subject": "An armored road warrior vehicle driven by a determined Indian man with authentic South Asian features, racing across a massive desert wasteland filled with rusted metal ruins. An enormous sandstorm swallows the horizon behind it.",
+    "motion_dynamics": "High-velocity desert racing; thick plumes of dust and debris flying from the tires; intense vibration and heat haze; the sandstorm looms with terrifying, fast-moving scale.",
+    "camera_movement": "handheld-tracking",
+    "temporal_storyboard": [
+        "0s: The vehicle tears across the screen, dust kicked up in the foreground against a backdrop of ruins.",
+        "4s: Mid-shot of the driver through the dusty windshield, focused and intense as the sandstorm closes in.",
+        "8s: The sandstorm begins to swallow the vehicle completely as it speeds towards a distant ruin."
+    ],
+    "visual_style": "Post-Apocalyptic Survival Blockbuster. Camera: Cinema Digital 35mm, Lens: Anamorphic Classic, Focal Length: 24mm, Aperture: f/5.6. Saturated Film stock, Saturated Apocalyptic Desert movie look. Deep shadows and high contrast.",
+    "negative_prompt": "shaky camera (excessive), low framerate, flickering, distorted faces, text, watermarks, morphing artifacts, clean vehicles, lush greenery."
+}

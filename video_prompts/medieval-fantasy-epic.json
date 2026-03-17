@@ -1,0 +1,12 @@
+{
+    "video_subject": "An armored Indian knight in ornate, battle-worn steel plate armor, standing on a jagged rocky cliff facing a colossal medieval fortress. Two enormous dragons circle through dark storm clouds above.",
+    "motion_dynamics": "Dragons soaring with rhythmic wing beats; lightning illuminating the clouds; the knight's heavy cape flapping violently in the coastal gale; smoke rising from the fortress in the distance.",
+    "camera_movement": "slow-push-in",
+    "temporal_storyboard": [
+        "0s: Grand wide shot of the knight overlooking the valley where the massive fortress sits.",
+        "4s: A dragon dives from the clouds, its shadow passing over the knight as they grip their sword hilt.",
+        "8s: Close-up on the knight's face, jaw set with determination, with the fortress and dragons in the blurred background."
+    ],
+    "visual_style": "Medieval Fantasy Epic. Camera: Cinema 70mm Film, Lens: Anamorphic Classic, Focal Length: 35mm, Aperture: f/8. Warm Fine Grain film stock, Golden Ancient Rome movie look. Monumental cinematic scale.",
+    "negative_prompt": "shaky camera, low framerate, flickering, distorted faces, text, watermarks, morphing artifacts, generic CGI, modern technology, bright neon colors."
+}

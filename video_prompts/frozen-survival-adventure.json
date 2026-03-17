@@ -1,0 +1,12 @@
+{
+    "video_subject": "A lone Indian arctic explorer, with frost on their beard and goggles, laboriously climbing a frozen mountain ridge during a violent snowstorm. Authentic South Asian features visible behind the thermal gear.",
+    "motion_dynamics": "Struggling movements against powerful 80mph winds; snow swirls violently in frozen vortexes; the character's breath forms thick ice crystals in the air; heavy, slow, deliberate climbing pace.",
+    "camera_movement": "drone-overhead",
+    "temporal_storyboard": [
+        "0s: Wide shot showing the minute scale of the explorer against the gargantuan icy ridge.",
+        "4s: Mid-shot of the explorer slamming an ice axe into the ridge as a gust almost knocks them back.",
+        "8s: The explorer reaches the crest, looking out over an endless range of icy peaks stretching to the horizon."
+    ],
+    "visual_style": "Frozen Survival Adventure. Camera: Cinema Digital 70mm, Lens: Anamorphic Classic, Focal Length: 35mm, Aperture: f/8. Cinema Daylight film stock, Cold Wilderness movie look. High dynamic range with bright whites and deep blue shadows.",
+    "negative_prompt": "shaky camera, low framerate, flickering, distorted faces, text, watermarks, morphing artifacts, warm colors, tropical elements, clear skies."
+}

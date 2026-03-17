@@ -1,0 +1,39 @@
+{
+    "narrative_arc": "A young Indian girl named Ananya discovers a dormant mechanical tiger made of brass and turquoise in the basement of a centuries-old village temple.",
+    "art_style": "Detailed line art with vibrant watercolor washes; gold-leaf accents on the tiger.",
+    "lettering_style": "Classic comic San-serif with soft-edged bubbles.",
+    "comic_panels": [
+        {
+            "panel_number": 1,
+            "shot_type": "High-Angle Establishing Shot",
+            "characters": "Ananya (8 years old, wearing a bright yellow cotton dress, curious expression) holding a small flashlight.",
+            "action": "Ananya slowly descends the ancient stone stairs of the temple basement.",
+            "background": "Dark, cobweb-filled room with dusty carvings on the walls; the flashlight beam cuts through the dark.",
+            "dialogue": "Grandmother said there was a secret down here..."
+        },
+        {
+            "panel_number": 2,
+            "shot_type": "Close-up",
+            "characters": "Ananya's eyes wide with wonder, reflecting a faint teal glow.",
+            "action": "She pulls back a heavy, dusty tarp to reveal something metallic.",
+            "background": "Glinting brass and turquoise patterns emerging from the shadows."
+        },
+        {
+            "panel_number": 3,
+            "shot_type": "Wide Reveal Shot",
+            "characters": "Ananya stands small in front of a massive, intricately designed mechanical tiger. The tiger is hunched over, its turquoise eyes slowly flickering to life.",
+            "action": "The mechanical tiger's head tilts slightly; clockwork gears are visible in its joints.",
+            "background": "Stone pillars of the temple basement; incense smoke drifting from a corner.",
+            "onomatopoeia": "WHIRRR-CLICK"
+        },
+        {
+            "panel_number": 4,
+            "shot_type": "Eye-Level Shot",
+            "characters": "Ananya bravely reaching out her hand to touch the tiger's brass nose.",
+            "action": "A connection is made; a small spark of blue light at the point of contact.",
+            "background": "Soft glow illuminating the entire basement.",
+            "dialogue": "Hello... are you the protector?"
+        }
+    ],
+    "negative_prompt": "modern technology, clean environment, low detail, different characters, inconsistent art style"
+}

@@ -24,9 +24,11 @@ export const medicalIllustrationSchema: Schema = {
             properties: {
                 textures: { type: SchemaType.STRING, description: "Description of tissue textures, e.g., 'fibrous', 'aqueous', 'granulated'." },
                 lighting: { type: SchemaType.STRING, format: "enum", enum: ["internal-bioluminescence", "diffused-lab-lighting", "microscopic-focused", "rim-lit-anatomical", "even-ambient-clean", "inflammation-glow"] },
+                tissue_physics: { type: SchemaType.STRING, description: "How light interacts with tissue (e.g., 'subsurface scattering in flesh', 'high specular reflection on mucosa')." },
+                anatomical_keys: { type: SchemaType.STRING, description: "Critical cellular/anatomical markers to emphasize for publication accuracy." },
                 labeling_safe_zones: { type: SchemaType.STRING, description: "Areas to leave clear for future text annotations." }
             },
-            required: ["textures", "lighting"]
+            required: ["textures", "lighting", "tissue_physics", "anatomical_keys"]
         },
         journal_standard: {
             type: SchemaType.STRING,

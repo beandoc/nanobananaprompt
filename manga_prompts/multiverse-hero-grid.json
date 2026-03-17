@@ -1,0 +1,70 @@
+{
+    "manga_subject": "A young Indian man with sharp, determined features and short messy black hair. He has a small scar on his left cheek and warm South Asian skin tones.",
+    "layout": "3x3 grid layout (nine panels)",
+    "panels": [
+        {
+            "panel_number": 1,
+            "universe": "Naruto (Hidden Leaf Village)",
+            "art_style": "Masashi Kishimoto style: clean fine-line work, specific eye shapes, tactical shading",
+            "outfit": "Konoha flak jacket over a black mesh shirt with a forehead protector",
+            "environment": "Training ground with wooden posts and lush green trees"
+        },
+        {
+            "panel_number": 2,
+            "universe": "One Piece (Grand Line)",
+            "art_style": "Eiichiro Oda style: bold varied line weights, exaggerated expressions, vibrant patterns",
+            "outfit": "Open tropical shirt with a captain's coat draped over shoulders",
+            "environment": "Sunny deck of a pirate ship with the Jolly Roger flying"
+        },
+        {
+            "panel_number": 3,
+            "universe": "Dragon Ball Z (Planet Namek)",
+            "art_style": "Akira Toriyama style: sharp angular muscle definition, iconic spiky hair highlights",
+            "outfit": "Weighted training gi with wristbands and martial arts boots",
+            "environment": "Cyan grass and green skies with multiple moons"
+        },
+        {
+            "panel_number": 4,
+            "universe": "Bleach (Soul Society)",
+            "art_style": "Tite Kubo style: high-contrast black and white, sharp clothing folds, intense gazes",
+            "outfit": "Shinigami black kimono (shihakusho) with a zanpakuto at the waist",
+            "environment": "Traditional Japanese architecture with white stone walls"
+        },
+        {
+            "panel_number": 5,
+            "universe": "JoJo's Bizarre Adventure (Golden Wind)",
+            "art_style": "Hirohiko Araki style: heavy cross-hatching, dramatic fashion posing, neon color theory",
+            "outfit": "High-fashion designer suit with heart-shaped cutouts and gold chains",
+            "environment": "Baroque Italian street with dramatic speed lines"
+        },
+        {
+            "panel_number": 6,
+            "universe": "Studio Ghibli (Spirited Away)",
+            "art_style": "Hayao Miyazaki style: soft painterly textures, watercolor backgrounds, gentle features",
+            "outfit": "Traditional humble cotton robes (yukata)",
+            "environment": "A bridge over a glowing river at twilight with bathhouse lanterns"
+        },
+        {
+            "panel_number": 7,
+            "universe": "Akira (Neo-Tokyo)",
+            "art_style": "Katsuhiro Otomo style: hyper-detailed urban decay, mechanical realism, cinematic lighting",
+            "outfit": "Red leather biker jacket and tech-wear trousers",
+            "environment": "Cyberpunk city street with glowing neon signs and cracked concrete"
+        },
+        {
+            "panel_number": 8,
+            "universe": "Demon Slayer (Taisho Era)",
+            "art_style": "Koyoharu Gotouge style: Ukiyo-e woodblock print aesthetic, flowy line art, elemental effects",
+            "outfit": "Checkered haori over a demon slayer uniform with a Nichirin sword",
+            "environment": "Snowy pine forest at night with wisteria hanging"
+        },
+        {
+            "panel_number": 9,
+            "universe": "Attack on Titan (Paradis Island)",
+            "art_style": "Hajime Isayama style: gritty textures, thick outlines, intense emotional line work",
+            "outfit": "Survey Corps scout regiment jacket with the Wings of Freedom emblem",
+            "environment": "Top of a massive stonewall looking over a vast green valley"
+        }
+    ],
+    "negative_prompt": "low quality, blurry, distorted features, text, watermark, different faces, inconsistent anatomy"
+}

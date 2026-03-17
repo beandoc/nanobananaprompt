@@ -1,37 +1,46 @@
 import { Schema, SchemaType } from "@google/generative-ai";
 
 export const vectorIllustrationSchema: Schema = {
-    description: "Schema for Vector Illustrations and Branding Assets",
+    description: "Principal Brand Designer JSON Schema for Scalable Vector Illustrations",
     type: SchemaType.OBJECT,
     properties: {
         illustration_subject: {
             type: SchemaType.STRING,
-            description: "The main subject of the vector illustration. Describe actions and objects clearly."
+            description: "The main subject of the vector illustration. If human, MUST be Indian descent/South Asian features."
         },
-        vector_style: {
+        style_framework: {
             type: SchemaType.STRING,
-            format: "enum",
-            enum: ["corporate-memphis", "flat-minimalist", "isometric-clean", "bold-line-art", "gradient-tech-glass"]
+            description: "Core aesthetic framework (e.g., 'Flat Minimalism', 'Isometric 2.5D', 'Bold Line Art', 'Corporate Memphis')."
         },
-        color_palette: {
+        geometric_logic: {
             type: SchemaType.STRING,
-            format: "enum",
-            enum: ["vibrant-primary", "startup-pastel", "monochrome-slate", "high-contrast-neon", "brand-custom"]
+            description: "Rules for shapes and lines (e.g., 'perfectly circular corners', 'sharp 45-degree angles', 'organic hand-drawn curves')."
         },
-        background: {
+        stroke_weight: {
             type: SchemaType.STRING,
-            format: "enum",
-            enum: ["pure-white-for-vectorization", "transparent-grid-style", "solid-brand-color"]
+            description: "Line thickness and consistent border rules (e.g., 'uniform 3px bold outlines', 'variable line weights', 'no outlines/flat edges')."
         },
-        complexity: {
+        color_profile: {
             type: SchemaType.STRING,
-            format: "enum",
-            enum: ["simple-iconic", "medium-detailed", "comprehensive-scene"]
+            description: "Specific color palette logic (e.g., 'Vibrant Indian festival colors', 'Monochrome Tech Blue', 'Pastel Professional')."
+        },
+        shading_type: {
+            type: SchemaType.STRING,
+            description: "How depth is handled (e.g., 'Zero shading/pure flat', 'Hard cell-shaded shadows', 'Soft grain gradients')."
+        },
+        background_setting: {
+            type: SchemaType.STRING,
+            description: "Environment context (e.g., 'Isolated on pure white #FFFFFF', 'Subtle geometric pattern background')."
         },
         negative_prompt: {
             type: SchemaType.STRING,
-            description: "Exclude: 'photorealistic, complex gradients, noisy textures, 3D shadows, motion blur, hand-drawn charcoal'."
+            description: "Exclusions to ensure vector cleanlines (e.g., 'photorealistic, textures, noise, blur, 3D shadows')."
+        },
+        keywords: {
+            type: SchemaType.ARRAY,
+            description: "Brand tags for consistency.",
+            items: { type: SchemaType.STRING }
         }
     },
-    required: ["illustration_subject", "vector_style", "color_palette", "background", "complexity", "negative_prompt"]
+    required: ["illustration_subject", "style_framework", "geometric_logic", "color_profile", "negative_prompt", "keywords"]
 };

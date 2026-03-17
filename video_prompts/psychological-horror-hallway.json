@@ -1,0 +1,12 @@
+{
+    "video_subject": "A terrified Indian woman in a simple cotton outfit, walking slowly through a long abandoned hospital corridor under flickering fluorescent lights, her South Asian features highlighted by the harsh, eerie lighting.",
+    "motion_dynamics": "Slow, trembling walk; flickering light pulses; deep shadows creeping along the walls; subtle breath vapor visible in the damp air; high-tension stillness.",
+    "camera_movement": "slow-push-in",
+    "temporal_storyboard": [
+        "0s: Subject enters the frame at the end of a long corridor, looking into the darkness with visible dread.",
+        "4s: The overhead lights flicker violently as she stops, her face partially obscured by shadow.",
+        "8s: Close-up on her eyes, wide with terror, reflecting the cold greenish cast of the flickering lights."
+    ],
+    "visual_style": "Psychological Horror. Camera: Cinema Digital 35mm, Lens: Prime Lens Classic, Focal Length: 85mm, Aperture: f/2. Green Cast film stock, Desaturated dread movie look. Moody rim lighting and high-contrast shadows.",
+    "negative_prompt": "shaky camera, low framerate, flickering (unintentional), distorted faces, text, watermarks, morphing artifacts, warm lighting, bright saturated colors."
+}

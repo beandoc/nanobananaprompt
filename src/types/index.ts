@@ -1,4 +1,4 @@
-export type Mode = 'ad' | 'medical' | 'vector' | 'video' | 'storyboard';
+export type Mode = 'ad' | 'medical' | 'vector' | 'video' | 'storyboard' | 'manga' | 'comic';
 export type AssetType = 'style' | 'subject' | 'structure';
 
 export interface StylePreset {
@@ -15,7 +15,46 @@ export interface CameraSettings {
 export interface VisualAccuracy {
     textures: string;
     lighting: string;
+    tissue_physics?: string;
+    anatomical_keys?: string;
     labeling_safe_zones?: string;
+}
+
+export interface ProVideoShot {
+    composition: string;
+    lens: string;
+    frame_rate: string;
+    camera_movement: string;
+}
+
+export interface ProVideoSubject {
+    description: string;
+    props: string;
+}
+
+export interface ProVideoScene {
+    location: string;
+    time_of_day: string;
+    environment: string;
+}
+
+export interface ProVideoVisualDetails {
+    action: string;
+    special_effects: string;
+    hair_clothing_motion: string;
+}
+
+export interface ProVideoCinematography {
+    lighting: string;
+    color_palette: string;
+    tone: string;
+}
+
+export interface ProVideoAudio {
+    music: string;
+    ambient: string;
+    sound_effects: string;
+    mix_level: string;
 }
 
 export interface BlueprintData {
@@ -38,10 +77,13 @@ export interface BlueprintData {
 
     // Vector fields
     illustration_subject?: string;
-    vector_style?: string;
-    color_palette?: string;
-    background?: string;
-    complexity?: string;
+    style_framework?: string;
+    geometric_logic?: string;
+    stroke_weight?: string;
+    color_profile?: string;
+    shading_type?: string;
+    background_setting?: string;
+    complexity?: string; // Legacy
 
     // Video/Storyboard fields
     video_subject?: string;
@@ -50,10 +92,59 @@ export interface BlueprintData {
     temporal_storyboard?: string[];
     visual_style?: string;
     total_project_duration?: string;
+    
+    // Pro Video (Nano Banana Pro / Veo 3)
+    description?: string;
+    style?: string;
+    camera?: string;
+    lens?: string;
+    environment?: string;
+    audio?: string;
+    elements?: string[];
+    motion?: string;
+    ending?: string;
+    text?: string;
+
+    // Legacy Nested Video structures
+    shot?: ProVideoShot;
+    subject?: ProVideoSubject;
+    scene?: ProVideoScene;
+    visual_details?: ProVideoVisualDetails;
+    cinematography?: ProVideoCinematography;
+    audio_nested?: ProVideoAudio;
+
+    // Manga/Comic Multi-Universe
+    manga_subject?: string;
+    panels?: MangaPanel[];
+
+    // Comic Strip (Narrative Sequential)
+    narrative_arc?: string;
+    comic_panels?: ComicPanel[];
+    lettering_style?: string;
+
     scenes?: StoryboardScene[];
 
     // Common
     negative_prompt?: string;
+    keywords?: string[];
+}
+
+export interface MangaPanel {
+    panel_number: number;
+    universe: string;
+    art_style: string;
+    outfit: string;
+    environment: string;
+}
+
+export interface ComicPanel {
+    panel_number: number;
+    shot_type: string;
+    characters: string;
+    action: string;
+    background: string;
+    dialogue?: string;
+    onomatopoeia?: string;
 }
 
 export interface StoryboardScene {

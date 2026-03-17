@@ -1,0 +1,14 @@
+{
+    "description": "A customized yellow auto-rickshaw with neon underglow drifting through the narrow, rain-slicked streets of Mumbai at midnight, pursued by two sleek corporate security bikes.",
+    "style": "Cinematic action, gritty hyperrealism, Neo-Noir aesthetic.",
+    "camera": "Low-angle tracking shot, fast-paced following the rickshaw's wheel; sudden whip-pan to the chasing bikes.",
+    "lens": "24mm Wide-Angle, deep focus on the rickshaw with motion blur on the background buildings.",
+    "lighting": "Intermittent flashes of blue and red police lights, reflected on wet asphalt; golden-yellow light from the rickshaw's headlamp.",
+    "environment": "Mumbai street with crowded market stalls, hanging wires, and tall neon-lit signs in Marathi; heavy rain creating puddles and mist.",
+    "audio": "High-pitched whine of electric bikes, the roar of the rickshaw engine, screeching tires on wet metal, heavy rainfall, and energetic percussion.",
+    "elements": ["Modified yellow auto-rickshaw", "Corporate security bikes", "Neon signs", "Market stalls", "Rain droplets", "Puddles"],
+    "motion": "Rickshaw hydroplaning slightly during the drift; sparks flying as the metal bumper scrapes a street post; rain whipping horizontally across the frame.",
+    "ending": "The rickshaw disappears into a wall of thick steam rising from a sewer grate; camera stays on the steam as the red tail-lights fade.",
+    "text": "none",
+    "keywords": ["chase", "mumbai", "action", "neon", "drifting", "veo-3-pro"]
+}

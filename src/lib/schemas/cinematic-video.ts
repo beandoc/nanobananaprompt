@@ -1,36 +1,59 @@
 import { Schema, SchemaType } from "@google/generative-ai";
 
 export const videoIllustrationSchema: Schema = {
-    description: "Schema for Cinematic Motion and Video Generation prompts",
+    description: "Google Veo 3 JSON Blueprint Generator",
     type: SchemaType.OBJECT,
     properties: {
-        video_subject: {
-            type: SchemaType.STRING,
-            description: "The core subject performing a specific 8-second sequence of actions."
+        description: { 
+            type: SchemaType.STRING, 
+            description: "Cinematic summary of the scene - what happens visually. Must feature Indian/South Asian characters if human." 
         },
-        motion_dynamics: {
-            type: SchemaType.STRING,
-            description: "Describe the speed, fluidity, and specific physical motion (e.g., 'slow-motion cell division', 'rapid water splash', 'dynamic camera orbit')."
+        style: { 
+            type: SchemaType.STRING, 
+            description: "Visual mood or aesthetic (e.g. cinematic, magical realism, high-fashion editorial)." 
         },
-        camera_movement: {
-            type: SchemaType.STRING,
-            format: "enum",
-            enum: ["static", "slow-push-in", "dolly-zoom", "360-orbit", "handheld-tracking", "drone-overhead", "macro-pan"],
-            description: "The cinematic camera path for the 8-second shot."
+        camera: { 
+            type: SchemaType.STRING, 
+            description: "Camera movement or framing (e.g. dolly-in, fixed wide shot, slow tracking pan)." 
         },
-        temporal_storyboard: {
-            type: SchemaType.ARRAY,
-            items: { type: SchemaType.STRING },
-            description: "A 3-part breakdown of what happens at 0s, 4s, and 8s."
+        lens: { 
+            type: SchemaType.STRING, 
+            description: "Lens or framing type (e.g. 35mm anamorphic, 100mm macro, 14mm ultra-wide)." 
         },
-        visual_style: {
-            type: SchemaType.STRING,
-            description: "Art direction (e.g., 'National Geographic 8K RAW', 'Cyberpunk Neon Cinematic', 'Medical Documentary Gray-Scale')."
+        lighting: { 
+            type: SchemaType.STRING, 
+            description: "How the scene is lit (e.g. neon glow, golden hour sunset, harsh direct flash, soft studio light)." 
         },
-        negative_prompt: {
-            type: SchemaType.STRING,
-            description: "Exclude: 'shaky camera, low framerate, flickering, distorted faces, text, watermarks, morphing artifacts'."
+        environment: { 
+            type: SchemaType.STRING, 
+            description: "Detailed scene location or space (e.g. bustling Mumbai spice market, rain-slicked rooftop in Neo-Tokyo)." 
+        },
+        audio: { 
+            type: SchemaType.STRING, 
+            description: "Music or sound design instructions (e.g. rhythmic tabla beats, heavy rain, distant cyber-sirens)." 
+        },
+        elements: { 
+            type: SchemaType.ARRAY, 
+            description: "List of objects, subjects, or visual items that must appear in the shot.",
+            items: { type: SchemaType.STRING }
+        },
+        motion: { 
+            type: SchemaType.STRING, 
+            description: "How objects move or transform in the scene (e.g. fabric blowing in desert wind, sparks flying from metal)." 
+        },
+        ending: { 
+            type: SchemaType.STRING, 
+            description: "What the final visual moment or shot looks like (e.g. fade to silhouette, camera tilts to the moon)." 
+        },
+        text: { 
+            type: SchemaType.STRING, 
+            description: "Usually 'none' unless on-screen text is mentioned." 
+        },
+        keywords: { 
+            type: SchemaType.ARRAY, 
+            description: "Descriptive tags that reinforce theme, tone, or subject.",
+            items: { type: SchemaType.STRING }
         }
     },
-    required: ["video_subject", "motion_dynamics", "camera_movement", "temporal_storyboard", "visual_style", "negative_prompt"]
+    required: ["description", "style", "camera", "lighting", "elements", "motion", "ending", "text", "keywords"]
 };

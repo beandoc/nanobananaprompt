@@ -1,0 +1,12 @@
+{
+    "video_subject": "A young Indian woman with warm South Asian skin tones and authentic Indian features, sitting on the hood of an old car in a vast desert landscape at sunset. She has a contemplative expression, wearing modern urban Indian styling.",
+    "motion_dynamics": "Soft wind moving through her hair and the dry grass; dust motes dancing in the warm golden light; subtle chest movement as she breathes deeply.",
+    "camera_movement": "slow-push-in",
+    "temporal_storyboard": [
+        "0s: Wide shot of the woman sitting on the car hood, looking out over the desert as the sun begins to set.",
+        "4s: Medium shot of the woman, her hair blowing gently, eyes fixed on the horizon with a quiet, emotional stillness.",
+        "8s: Close-up on her face, the golden hour light highlighting her features as she looks toward the camera with a subtle, reflective smile."
+    ],
+    "visual_style": "Poetic Indie Drama. Camera: Medium Format Film, Lens: Medium Format, Focal Length: 50mm, Aperture: f/2. Soft Warm film stock, Dreamlike memories movie look. High-end editorial photography style.",
+    "negative_prompt": "shaky camera, low framerate, flickering, distorted faces, text, watermarks, morphing artifacts, generic CGI, flat lighting."
+}

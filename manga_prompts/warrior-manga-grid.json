@@ -1,0 +1,70 @@
+{
+    "manga_subject": "A fierce Indian female warrior with a sharp jawline, a bindi, and long dark hair tied in a combat braid. She has a deep scar across her right eyebrow.",
+    "layout": "3x3 grid layout (nine panels)",
+    "panels": [
+        {
+            "panel_number": 1,
+            "universe": "Berserk (Kentaro Miura)",
+            "art_style": "Hyper-detailed cross-hatching, heavy ink work, dark and gritty atmosphere, realistic anatomical proportions.",
+            "outfit": "Heavy plate armor with battle damage; a massive serrated sword on her back.",
+            "environment": "A battlefield of eclipse; dark, swirling clouds and demonic silhouettes."
+        },
+        {
+            "panel_number": 2,
+            "universe": "Sailor Moon (Naoko Takeuchi)",
+            "art_style": "Soft, flowy lines, large sparkling eyes with many highlights, pastel color palette, delicate features.",
+            "outfit": "Ornate warrior gown with celestial patterns and a glowing tiara.",
+            "environment": "A dreamy moonlit garden with floating rose petals."
+        },
+        {
+            "panel_number": 3,
+            "universe": "Akira (Katsuhiro Otomo)",
+            "art_style": "Realistic urban detail, cinematic lighting, thick outlines, focus on mechanical and architectural grit.",
+            "outfit": "Cybernetic battle suit with wires and futuristic plating.",
+            "environment": "A neon-lit street of Neo-Tokyo with cracked concrete and debris."
+        },
+        {
+            "panel_number": 4,
+            "universe": "Studio Ghibli (Hayao Miyazaki)",
+            "art_style": "Painterly, watercolor textures, gentle character design, emphasis on nature and soft lighting.",
+            "outfit": "Traditional simple linen robes with a leather belt and a small wooden flute.",
+            "environment": "A lush, sun-dappled forest with a sparkling waterfall."
+        },
+        {
+            "panel_number": 5,
+            "universe": "JoJo's Bizarre Adventure (Hirohiko Araki)",
+            "art_style": "Dramatic high-fashion posing, heavy shading, vibrant and unusual color theory, bold facial features.",
+            "outfit": "Designer leather armor with gold studs and heart-shaped cutouts.",
+            "environment": "A baroque palace with dramatic speed lines and 'Menacing' onomatopoeia."
+        },
+        {
+            "panel_number": 6,
+            "universe": "Demon Slayer (Koyoharu Gotouge)",
+            "art_style": "Ukiyo-e woodblock print aesthetic, bold line art, flowing elemental effects (water/fire).",
+            "outfit": "Checkered sari-patterned haori over a demon slayer uniform.",
+            "environment": "A snowy mountain path with wisteria flowers in the evening."
+        },
+        {
+            "panel_number": 7,
+            "universe": "Naruto (Masashi Kishimoto)",
+            "art_style": "Clean line work, specific hand-drawn shading, tactical character design.",
+            "outfit": "Jonin-style flak jacket with an Indian-motif forehead protector.",
+            "environment": "A training ground in the Hidden Leaf Village with wooden targets."
+        },
+        {
+            "panel_number": 8,
+            "universe": "Dragon Ball Z (Akira Toriyama)",
+            "art_style": "Angular muscle definition, sharp eyes, iconic spiky hair highlights, saturated colors.",
+            "outfit": "Saiyan-style combat armor with gold-plated shoulder pads.",
+            "environment": "A barren, rocky wasteland with floating debris and a dual sun."
+        },
+        {
+            "panel_number": 9,
+            "universe": "Bleach (Tite Kubo)",
+            "art_style": "High-contrast black and white, sharp clothing folds, intense and stylish character design.",
+            "outfit": "A sleek white Shinigami-style captain's robe (haori) with a curved sword.",
+            "environment": "White stone buildings of the Seireitei under a clear blue sky."
+        }
+    ],
+    "negative_prompt": "low quality, blurry, incorrect anatomy, text, western features, inconsistent face"
+}

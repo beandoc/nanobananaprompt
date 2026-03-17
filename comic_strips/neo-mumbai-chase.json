@@ -1,0 +1,42 @@
+{
+    "narrative_arc": "A high-stakes chase through the neon-drenched streets of Neo-Mumbai as a rogue tech-wizard flees from a corporate security drone.",
+    "art_style": "Futuristic Cyberpunk Noir with high-contrast shadows and glowing neon highlights (Pink, Cyan, and Deep Purple).",
+    "lettering_style": "Digital-glitch style balloons with sharp, clean sans-serif text; sound effects in bold, glowing block letters.",
+    "comic_panels": [
+        {
+            "panel_number": 1,
+            "shot_type": "Wide Establishing Shot",
+            "characters": "Arjun (rogue wizard, mid-20s, Indian features, glowing cyber-hand, wearing a tech-worn trench coat) sprinting across a rainy rooftop.",
+            "action": "Arjun leaps from one building ledge to another, rain splashing around his boots.",
+            "background": "The dense skyline of Neo-Mumbai, packed with holographic ads and flying traffic; a security drone looms in the upper corner.",
+            "dialogue": "Almost there... just one more jump!",
+            "onomatopoeia": "WHOOOSH!"
+        },
+        {
+            "panel_number": 2,
+            "shot_type": "Low-Angle Hero Shot",
+            "characters": "Arjun landing hard on a metal catwalk, his cyber-hand sparking as it hits the surface for balance; teeth grit in determination.",
+            "action": "Landing sequence; sparks flying; eyes narrowed and glowing with blue data-streams.",
+            "background": "Cables and conduits lining the catwalk; steam rising from a nearby vent.",
+            "onomatopoeia": "CLANG!"
+        },
+        {
+            "panel_number": 3,
+            "shot_type": "Close-up",
+            "characters": "The red glowing 'eye' of the corporate security drone, scanning the catwalk; Arjun's reflection visible in the lens.",
+            "action": "The drone's searchlight sweeps across the frame, narrowly missing Arjun who is pressed against a dark alcove.",
+            "background": "Distant neon blur of the city below.",
+            "onomatopoeia": "BZZZZZT"
+        },
+        {
+            "panel_number": 4,
+            "shot_type": "Extreme Close-up",
+            "characters": "Arjun's cyber-hand as he punches a code into a glowing keypad hidden in the wall.",
+            "action": "Final keystroke; the keypad turns greeen.",
+            "background": "Grit and grime on the metallic wall texture.",
+            "dialogue": "Checkmate, you junk pile.",
+            "onomatopoeia": "CLICK"
+        }
+    ],
+    "negative_prompt": "low quality, blurry, distorted features, text (except dialogue bubbles), watermark, mismatched art style across panels"
+}
