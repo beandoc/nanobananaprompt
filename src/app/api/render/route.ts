@@ -11,7 +11,9 @@ function handleSuccessfulImage(base64Image: string, mode: Mode, contentType = 'i
         medical: "renders/medical",
         vector: "renders/vector",
         video: "renders/video",
-        storyboard: "renders/storyboard"
+        storyboard: "renders/storyboard",
+        manga: "renders/manga",
+        comic: "renders/comic"
     };
     const folder = folderMap[mode] || "renders/ad";
     const filename = `render-${Date.now()}.png`;
@@ -62,7 +64,7 @@ export async function POST(req: NextRequest) {
     validateEnv();
     try {
         const body: RenderRequest = await req.json();
-        const { promptData, mode = "ad" } = body;
+        const { promptData, mode = "ad", parentImage } = body;
 
         if (!promptData) {
             return ResponseManager.badRequest("No prompt data provided");
@@ -73,9 +75,9 @@ export async function POST(req: NextRequest) {
 
         let finalPrompt = "";
         if (mode === "ad") {
-            finalPrompt = `${promptData.core_prompt}. ${promptData.lighting}, ${promptData.camera_settings?.lens || ''}. Text: ${promptData.exact_text || ''}. Negative: ${promptData.negative_prompt}`;
+            finalPrompt = `${promptData.core_prompt}. ${promptData.lighting}, ${promptData.camera_settings?.lens || ''}. Text: ${promptData.headline_copy || ''} ${promptData.subline_copy || ''}. Negative: ${promptData.negative_prompt}`;
         } else if (mode === "vector") {
-            finalPrompt = `${promptData.illustration_subject}. Style: ${promptData.vector_style}. Palette: ${promptData.color_palette}.`;
+            finalPrompt = `${promptData.illustration_subject}. Style: ${promptData.style_framework}. Logic: ${promptData.geometric_logic}. Palette: ${promptData.color_profile}.`;
         } else {
             const characterDesc = promptData.consistent_character === "Male-Subject-A" ? "middle-aged Indian male silhouette" :
                 promptData.consistent_character === "Female-Subject-B" ? "middle-aged Indian female silhouette" : "human silhouette";
@@ -87,12 +89,47 @@ export async function POST(req: NextRequest) {
         }
 
         const modelsToTry = [
+            { name: "black-forest-labs/FLUX.2-klein-9B", type: "huggingface", supportsSeed: true },
             { name: "gemini-2.0-flash-exp-image-generation", type: "gemini", supportsSeed: true }
         ];
 
         for (const model of modelsToTry) {
             try {
-                if (apiKey) {
+                if (model.type === "huggingface" && process.env.HUGGINGFACE_API_KEY) {
+                    const isEditing = !!parentImage;
+                    const url = `https://api-inference.huggingface.co/models/${model.name}`;
+                    
+                    const payload = isEditing ? {
+                        inputs: finalPrompt,
+                        image: parentImage.split(",")[1] || parentImage,
+                        parameters: { seed, guidance_scale: 3.5, num_inference_steps: 4 }
+                    } : {
+                        inputs: finalPrompt,
+                        parameters: { seed, guidance_scale: 3.5, num_inference_steps: 4 }
+                    };
+
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: { 
+                            "Authorization": `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+                            "Content-Type": "application/json" 
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const buffer = await blob.arrayBuffer();
+                        const base64Image = arrayBufferToBase64(buffer);
+                        return handleSuccessfulImage(base64Image, mode);
+                    } else {
+                        const errText = await response.text();
+                        console.warn(`HF Model ${model.name} failed: ${errText}`);
+                        // Fall through to next model
+                    }
+                }
+
+                if (model.type !== "huggingface" && apiKey) {
                     const url = model.type === "imagen"
                         ? `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:predict?key=${apiKey}`
                         : `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:generateContent?key=${apiKey}`;

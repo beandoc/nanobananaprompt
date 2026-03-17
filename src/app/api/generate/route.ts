@@ -99,10 +99,10 @@ EXAMPLE 2 (Perfect Vector Icon):
 const JSON_PROMPTING_PHILOSOPHY = `
 JSON PROMPTING PHILOSOPHY:
 1. Structured Input: Eliminate ambiguity by defining attributes separately (subject, action, environment, style).
-2. Detail Precision: Specify textural details, surface properties (reflections, matte), and specific lighting directions/effects.
-3. Model Adherence: Use technical terminology that aligns with AI training data (e.g., 'f/1.8', 'telephoto', 'subtle highlights').
+2. Detail Precision: Specify textural details and surface properties optimized for 9B parameter Rectified Flow Transformers.
+3. Model Adherence: Target sub-second rendering by using technical descriptors (e.g., 'f/1.8', 'anamorphic bokeh') that the model can interpret instantly.
 4. Accuracy > Natural Language: Think in key-value pairs to ensure the AI understands the physical composition of the scene.
-5. Iterative Refinement: Use JSON to easily adjust single parameters (like lighting or camera) without regenerating the entire context.
+5. High-Speed Iteration: Leverage FLUX.2 [klein]'s unified architecture for real-time generative feedback and editing.
 `;
 
 const AD_FEW_SHOT = `
@@ -193,14 +193,15 @@ export async function POST(req: NextRequest) {
             ${MEDICAL_FEW_SHOT.split('EXAMPLE 2')[1].replace('}', '}\n')} (Vector Reference)`;
         } else if (mode === "video") {
             const isPhysical = style.toLowerCase().includes('stop-motion') || style.toLowerCase().includes('claymation') || style.toLowerCase().includes('puppet') || style.toLowerCase().includes('paper-cut');
-            domainInstruction = `You are a Google Veo 3 JSON Blueprint Generator. 
-            CORE REQUIREMENT: All human subjects MUST be of Indian descent (South Asian features, warm skin tones, modern Indian styling).
+            domainInstruction = `You are a Google Veo 3 & FLUX.2 [klein] JSON Blueprint Generator. 
+            CORE PERFORMANCE: You are designing for a 9B parameter rectified flow transformer capable of sub-second rendering.
+            IDENTITY: All human subjects MUST be of Indian descent (South Asian features, warm skin tones, modern Indian styling).
             
             RULES:
             1. Use a consistent format. Never deviate from the layout provided.
             2. Language: Mandatory cinematic, specific, and visually rich language. Avoid generic terms.
             3. Structure: Follow the mandatory flat JSON structure: description, style, camera, lens, lighting, environment, audio, elements, motion, ending, text, keywords.
-            4. Detail: If the user brief is vague, invent specific cinematic details to fill the fields (e.g. specific lenses, lighting types, and environmental physics).
+            4. Detail: Leverage FLUX.2's high-speed inference by providing dense, high-contrast visual cues.
             
             ${isPhysical ? "MEDIUM: 1:12 Miniature world. MACRO: High detail with visible fingerprints and clay textures." : ""}
             
