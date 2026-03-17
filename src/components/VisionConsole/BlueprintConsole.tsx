@@ -31,7 +31,12 @@ export function BlueprintConsole({
                     </div>
                     <div>
                         <h3 className="font-black uppercase tracking-[0.2em] text-[10px] text-slate-400">
-                            {mode === "ad" ? "Art Direction" : mode === "medical" ? "Technical Blueprint" : "Vector Blueprint"}
+                            {mode === "ad" ? "Art Direction" : 
+                             mode === "medical" ? "Technical Blueprint" : 
+                             mode === "video" ? "Pro Video Script" :
+                             mode === "manga" ? "Manga Grid Logic" :
+                             mode === "comic" ? "Sequential Narrative" :
+                             "Vector Blueprint"}
                         </h3>
                         <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Compiler: Gemini 2.5 Pro</p>
                     </div>

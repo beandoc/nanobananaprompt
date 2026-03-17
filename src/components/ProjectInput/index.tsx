@@ -28,21 +28,40 @@ interface ProjectInputProps {
     handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const stylePresets: StylePreset[] = [
-    { label: "Default Training", value: "" },
-    { label: "Claymation Stop-Motion (Video)", value: "Hand-sculpted claymation style, visible fingerprints on clay surfaces, 12fps stop-motion jitter, organic tactile textures, playful lighting" },
-    { label: "Artisanal Puppet Stop-Motion (Video)", value: "High-end puppet stop-motion with intricate physical textures (wool, felt, wood), 12fps jitter, miniature cinematic lighting, shallow depth of field, handcrafted tactile realism" },
-    { label: "Indie-Film Claymation (Video)", value: "Ultra-premium artisanal claymation. CINEMATOGRAPHY: Mixed lighting (teal fluorescent vs warm tungsten), shallow depth-of-field macro shots of tools/hands, and bokeh-rich night scenes. WORLD: Hyper-detailed Indian urban miniature (Devanagari shop signage, rickshaws, rustic interiors). CHARACTERS: Expressive handcrafted models with visible clay fingerprints and authentic fabric textures." },
-    { label: "Paper-Cutout Stop-Motion (Video)", value: "Traditional paper-cutout animation style, visible paper grain and edges, flat layered depth, frame-by-frame mechanical movement, vibrant hand-inked colors" },
-    { label: "Studio Ghibli Cinematic (Video)", value: "Classic Studio Ghibli hand-painted aesthetic, lush watercolor backgrounds, expressive character animation, soft nostalgic lighting, Miyazaki-inspired environmental detail" },
-    { label: "Anamorphic Cinematic (Video)", value: "Anamorphic 2.39:1 widescreen, cinematic lighting, 8K RED Helium look, deep depth of field, subtle lens flare" },
-    { label: "Macro-Probe Pan (Video)", value: "Ultra-macro probe lens movement, 1000fps slow motion, scientific microscopic focus, internal-lit textures" },
-    { label: "Drone-Orbit 4K (Video)", value: "Sweeping 360-degree orbital drone shot, golden hour lighting, stabilized 3-axis gimbal motion" },
-    { label: "Documentary Handheld (Video)", value: "Raw 16mm handheld documentary style, natural grain, organic camera shake, realistic focus pulling" },
-    { label: "Classic NEJM Editorial", value: "New England Journal of Medicine style, 2.5D soft volumetric digital painting, muted clinical colors, integration of technical medical hardware (pumps, filters, catheters), directional flow dynamics with particles, layered anatomical transparency, clean white background, professional scientific textbook aesthetic" },
-    { label: "Professional BioRender Style", value: "BioRender-standard scientific illustration, clean 2.5D vector assets, matte plastic textures, even-ambient-clean lighting, soft pastel clinical palette, professional research poster aesthetic, optimized for complex anatomical pathways and systemic mapping" },
-    { label: "Micro-3D Technical", value: "Macro-3D technical render, internal cross-sections, hyper-detailed textures, laboratory lighting" }
-];
+const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
+    ad: [
+        { label: "High-End Editorial", value: "high-end-editorial" },
+        { label: "Clean Ecom", value: "clean-ecom" },
+        { label: "UGC iPhone Selfie", value: "ugc-iphone-selfie" },
+        { label: "Outdoor/Rugged", value: "Outdoor/Rugged: Earthy tones (forest green, rust, mud brown)" },
+        { label: "Beauty/Wellness", value: "Beauty/Wellness: Soft warm tones (peach, ivory, blush)" }
+    ],
+    video: [
+        { label: "Cinematic Noir (Veo 3 + FLUX.2)", value: "Cinematic Noir, gritty cyberpunk realism, 35mm Anamorphic, Neo-Mumbai aesthetic, rain-slicked surfaces" },
+        { label: "High-Fashion Dior Style (Pro)", value: "High-fashion editorial, clean golden-hour desert landscape, flowing silk fabrics, Vogue aesthetic" },
+        { label: "Cyberpunk Neon Burst (Fast)", value: "Vibrant Cyberpunk, harsh pink/cyan neon rim lighting, motion-blurred high-speed action, metallic textures" },
+        { label: "Handheld Documentary 16mm", value: "Raw 16mm handheld documentary style, natural film grain, organic camera shake, realistic focus pulling" },
+        { label: "Anamorphic 8K CGI (Pro)", value: "Anamorphic 2.39:1 widescreen, global illumination, 8K RED Helium look, deep depth of field" }
+    ],
+    medical: [
+        { label: "Classic NEJM Editorial", value: "New England Journal of Medicine style, 2.5D soft volumetric digital painting, muted clinical colors, directional flow dynamics" },
+        { label: "Professional BioRender Style", value: "BioRender-standard scientific illustration, clean 2.5D vector assets, matte plastic textures" },
+        { label: "Macro-Probe Lens (Scientific)", value: "Ultra-macro probe lens movement, 1000fps slow motion, scientific microscopic focus" }
+    ],
+    vector: [
+        { label: "Isometric 2.5D Bold", value: "Isometric 2.5D, bold minimalist, flat geometric colors, clean outlines" },
+        { label: "Minimalist Brand Asset", value: "Ultra-minimalist brand asset, geometric symmetry, primary color profile, uniform strokes" }
+    ],
+    manga: [
+        { label: "Classic Shonen (Naruto/DBZ)", value: "Classic Shonen, bold action lines, high-contrast cel shading" },
+        { label: "Seinen Noir (Akira/Ghost in Shell)", value: "Seinen Noir, intricate mechanical detail, muted tonal range, atmospheric lighting" }
+    ],
+    comic: [
+        { label: "Golden Age Sequential", value: "Golden Age comic style, vibrant primary colors, heavy ink outlines, ben-day dots" },
+        { label: "Modern Graphic Novel", value: "Modern graphic novel, cinematic framing, painterly digital textures, sophisticated palettes" }
+    ],
+    storyboard: []
+};
 
 const ASSET_TYPES: AssetType[] = ["style", "subject", "structure"];
 
@@ -105,7 +124,7 @@ export function ProjectInput({
                 <StyleSelector
                     selectedStyle={selectedStyle}
                     setSelectedStyle={setSelectedStyle}
-                    stylePresets={stylePresets}
+                    stylePresets={ALL_STYLE_PRESETS[mode]}
                 />
 
                 {assetImage && (

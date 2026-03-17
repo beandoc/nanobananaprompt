@@ -88,6 +88,28 @@ export function Header({ mode, setMode, setShowLibrary, onLogout }: HeaderProps)
                             <Camera className="w-3.5 h-3.5" /> Video
                         </button>
                     </Tooltip>
+                    <Tooltip content="Switch to Manga mode for multi-universe character grids.">
+                        <button
+                            onClick={() => setMode("manga")}
+                            className={cn(
+                                "px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2",
+                                mode === "manga" ? "bg-white text-rose-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
+                            )}
+                        >
+                            <Sparkles className="w-3.5 h-3.5 text-rose-500" /> Manga
+                        </button>
+                    </Tooltip>
+                    <Tooltip content="Switch to Comic Strip mode for sequential storytelling.">
+                        <button
+                            onClick={() => setMode("comic")}
+                            className={cn(
+                                "px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2",
+                                mode === "comic" ? "bg-white text-blue-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
+                            )}
+                        >
+                            <Layers className="w-3.5 h-3.5 text-blue-500" /> Comic
+                        </button>
+                    </Tooltip>
                 </div>
 
                 <div className="flex items-center gap-4">
