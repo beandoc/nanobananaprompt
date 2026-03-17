@@ -9,11 +9,13 @@ import { ProjectInput } from "@/components/ProjectInput";
 const LibraryPanel = dynamic(() => import("@/components/LibraryPanel").then(mod => mod.LibraryPanel), { ssr: false });
 const StoryboardEngine = dynamic(() => import("@/components/StoryboardEngine").then(mod => mod.StoryboardEngine), { ssr: false });
 const BlueprintConsole = dynamic(() => import("@/components/VisionConsole/BlueprintConsole").then(mod => mod.BlueprintConsole), { ssr: false });
+const VisionConsole = dynamic(() => import("@/components/VisionConsole").then(mod => mod.VisionConsole), { ssr: false });
 
 import { useEngineStatus } from "@/hooks/useEngineStatus";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useLibrary } from "@/hooks/useLibrary";
 import { useGenerate } from "@/hooks/useGenerate";
+import { useRender } from "@/hooks/useRender";
 import { useRefine } from "@/hooks/useRefine";
 import { useImageActions } from "@/hooks/useImageActions";
 
@@ -75,12 +77,16 @@ export default function Home() {
 
   const { library, isLoadingLibrary } = useLibrary(showLibrary);
   const { brief, setBrief, isLoading, result, setResult, error, generateBlueprint } = useGenerate();
+  const { isRendering, renderedImage, setRenderedImage, renderError, renderBlueprint } = useRender();
   const { isRefining, refineBrief } = useRefine();
 
   const {
+    isVectorizing,
     handleCopy,
-    copySuccess
-  } = useImageActions(null);
+    copySuccess,
+    vectorizeToSVG,
+    downloadImage
+  } = useImageActions(renderedImage);
 
   // --- Core Handlers (Memoized) ---
   const loadFromLibrary = useCallback((item: LibraryItem) => {
@@ -103,11 +109,23 @@ export default function Home() {
       isRefinement,
       refinement
     });
+    
+    if (res && res.data && !isStoryboard) {
+      renderBlueprint(res.data, mode, assetImage);
+    }
+
     if (!res && !error) {
       setAuthError(true);
     }
     if (res && isRefinement) setRefinement("");
-  }, [generateBlueprint, mode, isStoryboard, selectedStyle, assetImage, assetType, refinement, error]);
+  }, [generateBlueprint, mode, isStoryboard, selectedStyle, assetImage, assetType, refinement, error, renderBlueprint]);
+
+  // --- Manual Render Trigger for Vision Console ---
+  useEffect(() => {
+    (window as any).triggerGlobalRender = () => {
+      if (result?.data) renderBlueprint(result.data, mode, assetImage);
+    };
+  }, [result, mode, assetImage, renderBlueprint]);
 
   const onRefine = useCallback(async () => {
     if (isStoryboard) {
@@ -214,6 +232,23 @@ export default function Home() {
                   refinement={refinement}
                   setRefinement={setRefinement}
                   handleRefine={() => onGenerate(true)}
+                />
+              )}
+
+              {result?.data && !result?.data?.scenes && (
+                <VisionConsole
+                  mode={mode}
+                  result={result}
+                  renderedImage={renderedImage}
+                  isRendering={isRendering}
+                  renderError={renderError}
+                  isEngineReady={isEngineReady}
+                  isVectorizing={isVectorizing}
+                  vectorizeToSVG={vectorizeToSVG}
+                  downloadImage={() => downloadImage(mode)}
+                  setAssetImage={setAssetImage}
+                  externalRenderRef={externalRenderRef}
+                  handleExternalUpload={onExternalUpload}
                 />
               )}
 

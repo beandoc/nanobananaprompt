@@ -83,9 +83,13 @@ export async function POST(req: NextRequest) {
                 promptData.consistent_character === "Female-Subject-B" ? "middle-aged Indian female silhouette" : "human silhouette";
 
             finalPrompt = `CRITICAL: ZERO TEXT POLICY. 
-            - SUBJECT: ${promptData.scientific_subject}. 
-            - CHARACTER: Central single ${characterDesc} with ${promptData.visual_theme}.
-            - ASSET DNA: ${promptData.illustration_style}, high-fidelity 3D matte vector finish.`;
+            - MEDICAL SUBJECT: ${promptData.scientific_subject}. 
+            - ANATOMICAL KEYS: ${promptData.visual_accuracy?.anatomical_keys || ''}.
+            - COMPOSITION: ${promptData.layout_composition || 'central figure'} on ${promptData.visual_theme || 'white background'}.
+            - CHARACTER IDENTITY: ${characterDesc} of Indian descent.
+            - TEXTURES: ${promptData.visual_accuracy?.textures || ''}, ${promptData.visual_accuracy?.tissue_physics || ''}.
+            - JOURNAL STYLE: ${promptData.illustration_style}, standard ${promptData.journal_standard}.
+            - NEGATIVE: ${promptData.negative_prompt || ''}`;
         }
 
         const modelsToTry = [

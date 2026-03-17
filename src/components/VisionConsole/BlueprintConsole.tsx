@@ -38,7 +38,7 @@ export function BlueprintConsole({
                              mode === "comic" ? "Sequential Narrative" :
                              "Vector Blueprint"}
                         </h3>
-                        <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Compiler: Gemini 2.5 Pro</p>
+                        <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Compiler: FLUX.2 Klein + Gemini 2.5</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">

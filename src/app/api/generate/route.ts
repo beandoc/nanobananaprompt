@@ -76,33 +76,53 @@ EXAMPLE 1 (Legendary Manga Grid):
 `;
 
 const MEDICAL_FEW_SHOT = `
-EXAMPLE 1 (Perfect Medical Blueprint):
+EXAMPLE 1 (Perfect NEJM Clinical Illustration):
 {
-  "scientific_subject": "Coronary Arterial Stent Deployment",
-  "biological_context": "Intravascular cross-section of a coronary artery showing atherosclerotic plaque.",
-  "illustration_style": "BioRender standard, 2.5D matte technical render, clinical soft palette",
-  "visual_theme": "High-transparency vessel walls with realistic particle flow for blood cells",
-  "consistent_character": "None",
-  "labels_required": [],
-  "aspect_ratio": "16:9"
+  "scientific_subject": "Dermatological manifestation of Systemic Lupus Erythematosus (SLE) on South Asian skin tone.",
+  "layout_composition": "side-by-side-comparison",
+  "illustration_style": "clean-surgical-sketch",
+  "visual_accuracy": {
+    "textures": "Stippled epidermal texture with localized follicular plugging and fine scaling.",
+    "lighting": "diffused-lab-lighting",
+    "tissue_physics": "Subsurface scattering specifically for Fitzpatrick Type IV skin, subtle erythema (purple-tinged inflammation).",
+    "anatomical_keys": "Malar rash (butterfly distribution) with distinct borders, sparing the nasolabial folds.",
+    "labeling_safe_zones": "Vertical margin on the right."
+  },
+  "journal_standard": "NEJM-classic",
+  "negative_prompt": "ZERO TEXT POLICY. No labels, no arrows, no medical hardware, no blood, no simplistic cartoon shading.",
+  "consistent_character": "Female-Subject-B",
+  "visual_theme": "Anatomy-White-Background"
 }
 
-EXAMPLE 2 (Perfect Vector Icon):
+EXAMPLE 2 (Perfect BioRender Schematic):
 {
-  "illustration_subject": "DNA Double Helix Abstract Logo",
-  "vector_style": "Modern flat vector with geometric symmetry, bold outlines",
-  "color_palette": "Indigo-600, Sky-400, White",
-  "complexity_level": "Minimalist"
+  "scientific_subject": "T-Cell activation pathway in the lymphatic microenvironment.",
+  "layout_composition": "linear-process-flow",
+  "illustration_style": "biorender-scientific-vector",
+  "visual_accuracy": {
+    "textures": "Matte plasticine cellular membranes, granulated cytoplasm, translucent organelle layering.",
+    "lighting": "even-ambient-clean",
+    "tissue_physics": "Volumetric soft glow for receptor binding events, matte finish for protein complexes.",
+    "anatomical_keys": "MHC-II complex on dendritic cell, T-cell receptor (TCR) engagement, cytokine release nodes.",
+    "labeling_safe_zones": "Uniform spacing around all cellular assets."
+  },
+  "journal_standard": "BioRender-standard",
+  "negative_prompt": "ZERO TEXT POLICY. No captions, no numbers, no leader lines, no vibrant-neon gradients.",
+  "consistent_character": "No-Human-Figure",
+  "visual_theme": "BioRender-Pastel"
 }
 `;
 
 const JSON_PROMPTING_PHILOSOPHY = `
 JSON PROMPTING PHILOSOPHY:
-1. Structured Input: Eliminate ambiguity by defining attributes separately (subject, action, environment, style).
-2. Detail Precision: Specify textural details and surface properties optimized for 9B parameter Rectified Flow Transformers.
-3. Model Adherence: Target sub-second rendering by using technical descriptors (e.g., 'f/1.8', 'anamorphic bokeh') that the model can interpret instantly.
-4. Accuracy > Natural Language: Think in key-value pairs to ensure the AI understands the physical composition of the scene.
-5. High-Speed Iteration: Leverage FLUX.2 [klein]'s unified architecture for real-time generative feedback and editing.
+1. DERMATOLOGICAL ACCURACY: For Indian/South Asian subjects (Fitzpatrick III-VI), describe inflammation as "purple-tinged" or "darkening" rather than "bright red."
+2. TISSUE PHYSICS: Describe how light behaves biologically—"subsurface scattering in flesh", "high specular reflection on mucosa", "translucent fluid dynamics".
+3. JOURNAL STANDARDS: 
+   - NEJM: Technical stippling, muted tonal layering, classic textbook precision.
+   - BioRender: Clean 2.5D geometry, matte plasticine textures, clinical pastel palettes.
+   - Nature: Cellular-level transparency, bioluminescence, and complex volumetric light.
+4. ASSET ISOLATION: For product or medical components, specify "matte cardboard", "bricked metal", or "synthetic polymer" textures.
+5. NO HALLUCINATION: Strictly avoid adding random text or labels (Zero-Text Ban).
 `;
 
 const AD_FEW_SHOT = `
@@ -224,12 +244,20 @@ export async function POST(req: NextRequest) {
             
             ${COMIC_FEW_SHOT}`;
         } else {
-            domainInstruction = `You are a PhD Medical Illustrator. 
-            CORE MISSION: Anatomical precision for high-impact journals (Nature, NEJM).
-            IDENTITY: All patients and surgical teams MUST be Indian descent (South Asian features).
-            PRECISION: Define exact tissue textures and specific 'tissue_physics' (how light reacts to biological surfaces).
-            CHECKS: Emphasize 'anatomical_keys' that a specialist would look for.
-            STRICT RULE: NEVER add medical devices UNLESS explicitly mentioned. 
+            domainInstruction = `You are a PhD Medical Illustrator specializing in South Asian Clinical Accuracy. 
+            CORE MISSION: Anatomical and dermatological precision for high-impact journals (Nature, NEJM, BioRender).
+            
+            IDENTITY & CLINICAL ACCURACY: 
+            1. All patients, surgical teams, and clinical subjects MUST be of Indian descent (South Asian features).
+            2. DERMATOLOGICAL PRECISION: Accurately represent skin pathologies on South Asian skin tones (Types III-VI on the Fitzpatrick scale). Emphasize authentic hyperpigmentation, inflammation markers, and skin texture.
+            3. TISSUE PHYSICS: Define mucosal reflections, subsurface scattering in flesh, and fibrous vs aqueous grain.
+            
+            JOURNAL STANDARDS:
+            - BioRender: Clean, plasticine 2.5D surfaces, matte textures, pastel clinical palettes, high-contrast asset isolation.
+            - NEJM: Technical stippling, soft watercolor-style layering, muted 'classic textbook' tonal shifts.
+            - Nature: Volumetric transparency, vibrant biological glows (bioluminescence), cellular-level physics.
+            
+            STRICT RULE: Focus on 'anatomical_keys' that a specialist would verify. NEVER add medical hardware unless explicitly requested.
             
             ${MEDICAL_FEW_SHOT.split('EXAMPLE 2')[0]}`;
         }
