@@ -1,0 +1,162 @@
+{
+  "cardiovascular": {
+    "pericardium": {
+      "layers": ["Fibrous pericardium", "Parietal layer of serous pericardium", "Visceral layer of serous pericardium (Epicardium)", "Pericardial cavity"],
+      "sinuses": ["Transverse pericardial sinus", "Oblique pericardial sinus", "Pericardial reflection"],
+      "view": "Anterior / Post-caval recess",
+      "physics": "Thin translucent membrane, glistening serous surface, complex folding at arterial/venous reflections",
+      "neighboring_structures": ["Diaphragm", "Thymus", "Pleura of lungs", "Aortic arch", "Pulmonary trunk bifurcation"]
+    },
+    "heart_internal": {
+      "structures": ["Right atrium", "Right ventricle", "Left atrium", "Left ventricle", "Aortic valve", "Tricuspid valve", "Mitral (bicuspid) valve", "Interventricular septum", "Pulmonary trunk"],
+      "textures": "Columnar carnous trabeculae, fibrous chordae tendineae, smooth endocardial lining",
+      "physics": "Muscular red-brown tones, high specular on valve leaflets"
+    },
+    "heart_transverse_section": {
+      "structures": ["Right/Left Ventricle cross-section", "Interventricular septum", "Body of sternum", "Oesophagus", "Azygos vein", "Hemi-azygos vein", "Thoracic duct", "Left sympathetic trunk", "Descending thoracic aorta"],
+      "view": "Transverse / Axial at T5-T8",
+      "physics": "High-fidelity sectional layering, vascular lumen clarity"
+    },
+    "coronary_circulation": {
+      "arteries": ["Right coronary artery", "Left coronary artery", "Anterior interventricular artery (LAD)", "Circumflex artery", "Right marginal artery", "Conal artery", "Diagonal artery", "Posterior interventricular artery"],
+      "veins": ["Great cardiac vein", "Middle cardiac vein", "Small cardiac vein", "Coronary sinus"],
+      "landmarks": ["Coronary (atrioventricular) sulcus", "Anterior/Posterior interventricular sulcus", "Cardiac crux", "Acute border", "Obtuse border"],
+      "pathology_keys": ["Atherosclerotic plaque narrowing", "Stent placement", "Microvascular bifurcation"]
+    }
+  },
+  "respiratory": {
+    "lungs_macro": {
+      "features": ["Right lung (3 lobes)", "Left lung (2 lobes)", "Cardiac notch", "Oblique fissures", "Horizontal fissure (right)", "Right/Left main bronchus", "Trachea bifurcation", "Apex of lung"],
+      "layers": ["Cervical parietal pleura (cupula)", "Costal pleura", "Diaphragmatic pleura", "Mediastinal pleura", "Pleural reflection"],
+      "spaces": ["Costodiaphragmatic recess", "Pleural cavity"],
+      "view": "Anterior thoracic cavity / Pleural reflections",
+      "textures": "Spongy, porous texture, mottled pinkish-gray, cartilaginous rings, glistening serous membranes",
+      "neighboring_structures": ["Phrenic nerve", "Vagus nerve", "Pulmonary vessels", "Hilus", "Esophagus (posterior)", "Liver (inferior to diaphragm)"]
+    },
+    "micro_alveolar": {
+      "structures": ["Respiratory bronchioles", "Alveolar ducts", "Alveolar sacs", "Alveoli", "Septum"],
+      "circulation": ["Pulmonary artery (blue)", "Pulmonary vein (red)", "Capillary plexuses", "Alveolar-capillary membrane"],
+      "physics": "Highly delicate membrane transparency, gas exchange interface, 2D/3D mesh of capillaries"
+    },
+    "upper_respiratory_neck": {
+      "structures": ["Nasal cavity", "Pharynx (Naso/Oro/Laryngopharynx)", "Larynx", "Epiglottis", "Esophagus", "Trachea", "Thyroid cartilage", "Cricoid cartilage"],
+      "features": ["Vocal folds", "Vestibular folds", "Hyoid bone", "Soft/Hard palate", "Uvula"],
+      "textures": "Mucosal lining (wet/shimmering), cartilaginous firmness, muscular fibers in pharynx",
+      "view": "Sagittal section / Anterior neck"
+    }
+  },
+  "digestive": {
+    "upper_gastrointestinal": {
+      "structures": ["Oral cavity", "Teeth", "Tongue", "Salivary glands (Parotid, Submandibular, Sublingual)", "Pharynx", "Esophagus", "Stomach"],
+      "functions": ["Mechanical breakdown", "Enzymatic initiation", "Transport", "Acid/Enzymatic digestion"],
+      "textures": "Mucosal rugae in stomach, glistening muscularis, granular salivary gland texture",
+      "physics": "Subsurface scattering of mucosa, high specular on gastric secretions"
+    },
+    "liver_and_biliary_system": {
+      "lobes": ["Right lobe", "Left lobe", "Caudate lobe", "Quadrate lobe"],
+      "ligaments": ["Falciform ligament", "Round ligament (Ligamentum teres)", "Coronary ligaments", "Right/Left triangular ligaments"],
+      "biliary_tree": ["Gallbladder fundus", "Cystic duct", "Right/Left hepatic ducts", "Common hepatic duct", "Common bile duct", "Hepatopancreatic ampulla (of Vater)"],
+      "features": ["Bare area of liver", "Fissure for ligamentum venosum", "Groove for inferior vena cava"],
+      "textures": "Smooth glistening capsule (Glisson's), high-fidelity venous branching, dense parenchymal texture"
+    },
+    "pancreas_and_intestines": {
+      "structures": ["Pancreas (Head, Body, Tail)", "Duodenum (1st-4th parts)", "Jejunum", "Ileum", "Large intestine (Cecum, Ascending/Transverse/Descending/Sigmoid colon)", "Rectum"],
+      "textures": "Lobulated pancreatic texture, villous intestinal lining, haustra of colon, fatty appendices epiploicae",
+      "view": "Anterior abdominal dissection"
+    },
+    "visceral_vasculature": {
+      "veins": ["Hepatic portal vein", "Superior mesenteric vein", "Inferior mesenteric vein", "Splenic vein", "Left/Right gastric veins", "Gastro-epiploic veins", "Colic veins (Right/Middle/Left)", "Ileocolic vein", "Ileal/Jejunal/Sigmoid/Rectal veins", "Left/Right common iliac vein", "External iliac vein", "Inferior epigastric vein"],
+      "arteries": ["Superior mesenteric artery", "Inferior mesenteric artery", "Celiac trunk (branches: Left gastric, Splenic, Common hepatic)", "Left/Right gastric arteries", "Testicular/Ovarian (gonadal) artery", "Common iliac artery", "External iliac artery", "Inferior epigastric artery", "Sigmoid arteries"],
+      "nerves": ["Femoral nerve", "Obturator nerve"],
+      "physics": "Thin-walled distended blue venous structures, high-contrast arterial branching, white glistening cord-like nerves"
+    }
+  },
+  "urogenital": {
+    "kidney_macro_posterior": {
+      "structures": ["Right kidney", "Left kidney (slightly higher)", "Rib 11", "Rib 12", "Erector spinae muscles", "Quadratus lumborum"],
+      "landmarks": ["Costovertebral angle", "T12-L3 vertebral levels"],
+      "view": "Posterior / Retroperitoneal",
+      "textures": "Smooth fibrous capsule, dense muscular background",
+      "physics": "Muted skin tones with deep internal organ silhouette transparency"
+    },
+    "kidney_internal_micro": {
+      "structures": ["Cortex", "Medulla (pyramids)", "Renal papilla", "Minor calyces", "Major calyces", "Renal pelvis", "Renal column", "Renal sinus (fat body)", "Hilus", "Cribriform area (openings of papillary ducts)"],
+      "vasculature": ["Renal artery (anterior/posterior branches)", "Renal vein", "Arcuate artery", "Interlobar arteries", "Afferent/Efferent arterioles", "Peritubular capillaries", "Vasa recta"],
+      "textures": "Granulated cortex, striated medullary pyramids, high-specular renal pelvis lining, fibromuscular hilum",
+      "view": "Sectioned / Coronal plane"
+    },
+    "nephron_and_glomerulus": {
+      "structures": ["Renal corpuscle", "Bowman's capsule (parietal layer)", "Glomerular capillaries", "Juxtaglomerular apparatus", "Proximal convoluted tubule", "Nephron loop (Loop of Henle - thick/thin segments)", "Distal convoluted tubule", "Collecting duct"],
+      "cell_types": ["Macula densa", "Granular juxtaglomerular cells", "Extraglomerular mesangial cells (Lacis cells)", "Podocytes (visceral layer)"],
+      "physics": "Functional flow indicators, ADH-controlled water resorption, countercurrent exchange, selective secretion"
+    },
+    "renal_ultrastructure_em": {
+      "features": ["Podocyte cell body (P)", "Primary/Secondary processes", "Pedicels (Foot processes P1, P2)", "Filtration slits (FS)", "Basal Lamina (BL)", "Fenestrated endothelial cells (E) with Fenestrations (F)", "Mesangial cells"],
+      "microscopy_styles": ["Scanning Electron Microscopy (SEM)", "Transmission Electron Microscopy (TEM)"],
+      "textures": "Nanometer-scale texture, proteinaceous diaphragm, basement membrane density",
+      "view": "Ultrastructure / Cross-section"
+    },
+    "suprarenal_adrenal_glands": {
+      "structures": ["Right suprarenal gland (pyramidal)", "Left suprarenal gland (semilunar)", "Suprarenal hilum"],
+      "vasculature": ["Superior suprarenal arteries", "Middle suprarenal arteries", "Inferior suprarenal artery", "Suprarenal vein"],
+      "layers": ["Perirenal fat", "Fibrous capsule"],
+      "physics": "Yellowish glandular texture, high metabolic vascularity"
+    },
+    "urinary_tract_system": {
+      "structures": ["Urinary bladder", "Ureters", "Urethra", "Striated urethral sphincter", "Fibers of detrusor", "Detrusor apron"],
+      "ligaments": ["Pubovesical ligament (female)", "Puboprostatic/Pubovesical ligament (male)"],
+      "pathology_keys": ["Nephrolithiasis", "Obstruction sites", "Detrusor instability"],
+      "textures": "Translucent muscular ureteral tubes, thick corrugated detrusor muscle wall",
+      "neighboring_structures": ["Pubis", "Prostate", "Seminal gland", "Bulb of penis"]
+    },
+    "male_reproductive_genital": {
+      "structures": ["Testis", "Epididymis (Head, Body, Tail)", "Ductus deferens", "Spermatic cord", "Seminal gland", "Prostate"],
+      "testicular_micro": ["Lobules of testis", "Septa of testis", "Mediastinum of testis", "Tunica albuginea", "Tunica vaginalis", "Efferent ductules"],
+      "vasculature": ["Testicular artery", "Pampiniform plexus", "Artery to ductus deferens", "Centripetal artery", "Capsular artery"],
+      "textures": "Glandular parenchyma, coiled ductal networks, dense fibrous capsule",
+      "view": "Sagittal / Sectioned testis"
+    },
+    "renal_fascia_layers": {
+      "layers": ["Renal capsule", "Perirenal fat", "Renal fascia (Gerota's)", "Pararenal fat", "Transversalis fascia", "Peritoneum"],
+      "neighboring_muscles": ["Psoas major", "Quadratus lumborum", "Transversus abdominis"],
+      "view": "Transverse section / Axial"
+    }
+  },
+  "musculoskeletal": {
+    "ribcage_osteology": {
+      "bones": ["Clavicle", "Manubrium", "Sternum (body)", "Xiphoid process", "Costal cartilage (1-12)", "Ribs (true/false/floating)", "Vertebrae (C7-L2)"],
+      "features": ["Jugular notch", "Sternal angle (Angle of Louis)", "Intercostal spaces"],
+      "textures": "Hard cortical bone finish, translucent/smooth costal cartilage",
+      "physics": "High specular on cartilage, matte bone stippling"
+    },
+    "thoracic_musculature": {
+      "muscles": ["External intercostals", "Internal intercostals", "Innermost intercostals", "Serratus anterior digitations", "Diaphragm"],
+      "neurovascular": ["Intercostal vein", "Intercostal artery", "Intercostal nerve", "Collateral branches", "Endothoracic fascia"],
+      "textures": "Striated muscle fibers, thin glistening fascia layers",
+      "physics": "Muscle red-brown tonal shifts, high specular on fascia reflections"
+    }
+  },
+  "reproductive_pelvis": {
+    "bony_pelvis_dimorphism": {
+      "female_features": ["Transversely oval pelvic inlet", "Flared iliac wings", "Wider subpubic angle", "Wider ischial tuberosities"],
+      "male_features": ["Anteroposteriorly oriented inlet", "Less flared iliac wings", "Narrower subpubic angle (Pubic arch)", "Ischial tuberosities closer together"],
+      "structures": ["Sacroiliac joint", "Sacral promontory", "Linea terminalis", "Pubic symphysis", "Ischial spine", "Coccyx (tip)"],
+      "metrics": ["Diagonal conjugate (~12 cm)", "True conjugate (~10.5 cm)", "Transverse diameter of inlet (~13 cm)", "Oblique diameter (~12.5 cm)"],
+      "view": "Anterior / Inferior / Sagittal section"
+    }
+  },
+  "style_protocols": {
+    "NEJM": {
+      "shading": "Technical stippling for depth, soft watercolor gradients",
+      "borders": "Fine 0.5pt ink-style outlines",
+      "colors": "Muted earth tones, clinical reds and blues",
+      "metadata": "Classic Netter-inspired anatomical realism"
+    },
+    "BioRender": {
+      "shading": "Matte plasticine 2.5D lighting",
+      "borders": "Clean vector paths, uniform stroke",
+      "colors": "Pastel clinical palette, high-contrast assets",
+      "metadata": "Modern modular scientific visualization"
+    }
+  }
+}

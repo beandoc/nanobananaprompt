@@ -3,6 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Groq } from "groq-sdk";
 import { Anthropic } from "@anthropic-ai/sdk";
 import { ResponseManager } from "@/lib/api-response";
+import { atlasService } from "@/lib/atlas-service";
 import { validateEnv } from "@/lib/env";
 
 export const runtime = "edge";
@@ -35,6 +36,10 @@ export async function POST(req: NextRequest) {
             4. COMPOSITION: Always specify a "clean publication-white background" and "professional layout with micro-macro insets."
             
             STYLE CONTEXT: ${style || "Standard NEJM Clinical Figure."}
+            
+            ${atlasService.getAtlasContext(brief)}
+            ${atlasService.getStyleProtocol(style)}
+            
             HARD ZERO-TEXT BAN: End with: "Visual-only asset. No text, symbols, or labels."
             RETURN ONLY THE REFINED PARAGRAPH.`;
         } else if (mode === "video" || mode === "ad") {

@@ -12,6 +12,7 @@ import { storyboardSchema } from "@/lib/schemas/storyboard";
 import { Mode, BlueprintData, GenerateRequest } from "@/types";
 import { ResponseManager } from "@/lib/api-response";
 import { promptService } from "@/lib/prompt-service";
+import { atlasService } from "@/lib/atlas-service";
 import { validateEnv } from "@/lib/env";
 
 export const runtime = "edge";
@@ -260,6 +261,13 @@ export async function POST(req: NextRequest) {
             STRICT RULE: Focus on 'anatomical_keys' that a specialist would verify. NEVER add medical hardware unless explicitly requested.
             
             ${MEDICAL_FEW_SHOT.split('EXAMPLE 2')[0]}`;
+        }
+
+        // --- Atlas Integration ---
+        if (mode === "medical") {
+            const atlasContext = atlasService.getAtlasContext(brief);
+            const styleProtocol = atlasService.getStyleProtocol(style);
+            domainInstruction += atlasContext + styleProtocol;
         }
 
         let systemPrompt = domainInstruction + (isStoryboard ? ` Break down a script into exactly 8 segments of 8 seconds each for a cinematic 64-second production.` : ` ZERO TEXT POLICY.`);
