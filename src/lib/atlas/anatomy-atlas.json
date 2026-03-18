@@ -145,6 +145,137 @@
       "view": "Anterior / Inferior / Sagittal section"
     }
   },
+  "immune_and_lymphatic": {
+    "lymph_node_architecture": {
+      "structures": ["Cortex", "Paracortex", "Medulla", "Germinal centre", "Afferent lymph vessel", "Efferent lymph vessel", "Capsule", "Subcapsular sinus", "Blood vessels", "Trabeculae"],
+      "cell_distribution": {
+        "cortex": ["B cells in primary lymphoid follicles", "Germinal centres (proliferating B cells)"],
+        "paracortex": ["T cells", "Dendritic cells"],
+        "medulla": ["Plasma cells", "Sinuses with macrophages"]
+      },
+      "textures": "Dense lymphoid follicles with pale germinal centres, sinusoidal networks, smooth fibrous capsule",
+      "physics": "Lymphatic flow filters through sinuses, high metabolic activity in follicles during antigen exposure",
+      "view": "Cross-section of a lymph node / Microscopic view"
+    },
+    "immune_cell_catalog": {
+      "innate_cells": ["Neutrophils (multilobed)", "Natural killer (NK) cells", "Monocytes / Macrophages", "Eosinophils (bilobed, red granules)", "Basophils (large blue granules)", "Mast cells (dense granules)"],
+      "adaptive_cells": ["B lymphocytes", "T lymphocytes", "Antigen-presenting cells (APC)"],
+      "morphology": "Varied nuclear shapes (multilobed, kidney-shaped, bilobed), specific cytoplasmic granulation patterns",
+      "physics": "Dynamic amoeboid movement, receptor-mediated antigen recognition"
+    },
+    "antibody_structure": {
+      "components": ["Heavy chains (long)", "Light chains (short)", "Variable region (Fab - antigen binding)", "Constant region (Fc - biological activity)"],
+      "chemical_bonds": ["Disulfide bridges"],
+      "physics": "Y-shaped bifunctional molecule, high-affinity binding sites",
+      "view": "Molecular schematic"
+    },
+    "phagocytosis_and_signaling": {
+      "receptors": ["Fc receptors", "C3b receptors", "Pattern recognition receptors (PAMP-R)", "NOD-like receptors (NLRs)"],
+      "cellular_elements": ["Lysosomes", "Phagocytic vacuole", "Nucleus with NFkB translocation"],
+      "pathways": ["Inflammasome formation (NLRP expression)", "Pro-inflammatory gene expression", "C3b/Antibody opsonization"],
+      "physics": "Signal transduction from membrane to nucleus, enzymatic digestion within lysosomes"
+    },
+    "hypersensitivity_type_1": {
+      "phases": ["Sensitization phase (Allergen → T/B cell activation → IgE production)", "Binding phase (IgE binds to Fc receptors on Mast cells)", "Effector phase (Allergen cross-linking → Degranulation)"],
+      "mediators": ["Histamine", "Tryptase", "Vasoactive peptides"],
+      "cellular_elements": ["Mast cell", "B lymphocyte", "T lymphocyte", "IgE antibody", "IgE receptor"],
+      "physics": "Immediate degranulation, granular release into extracellular space, rapid vascular response",
+      "view": "Sequential process diagram"
+    }
+  },
+  "microbiology_and_infection": {
+    "human_microbiome_flora": {
+      "sites": {
+        "nares_pharynx": ["Staph. aureus", "Coagulase-negative staphylococci", "Haemophilus spp.", "Moraxella catarrhalis", "Neisseria spp.", "Strep. pneumoniae", "Strep. pyogenes"],
+        "oral_cavity": ["Oral streptococci (alpha-haemolytic)", "Actinomyces spp.", "Prevotella spp.", "Fusobacterium spp.", "Candida spp."],
+        "skin_hands": ["Staph. aureus", "Propionibacterium spp.", "Malassezia spp.", "Corynebacterium spp.", "Transient bowel flora"],
+        "digestive_tract": ["Escherichia coli", "Klebsiella spp.", "Enterobacter spp.", "Proteus spp.", "Enterococci (E. faecalis, E. faecium)", "Bacteroides spp.", "Clostridium spp."],
+        "urogenital_vagina": ["Lactobacillus spp.", "Staph. aureus", "Candida spp.", "Strep. agalactiae (Group B)"]
+      },
+      "textures": "Microbial colonies, biofilm-like layering, fungal budding (Candida)",
+      "physics": "Commensal balance vs opportunistic overgrowth",
+      "view": "Site-specific distribution map"
+    },
+    "healthcare_associated_infections": {
+      "infection_sites": {
+        "catheter_related": ["Temporary central venous catheter (MRSA, Candida)", "Cuffed/tunnelled CV catheter (Pseudomonas, Enterococcus)"],
+        "surgical_prosthetic": ["Surgical site infection (Staph. aureus, Strep, Anaerobes)", "Prosthetic joint infection (MRSA, Cutibacterium acnes)"],
+        "drainage_peritonitis": ["External ventricular drain (Pseudomonas)", "Peritoneal dialysis-related peritonitis (Coliforms, Pseudomonas)"]
+      },
+      "identity_standard": "Indian female subject, modern clinical environment (ICU/Ward), showing medical devices and associated localized inflammation (erythematous borders)",
+      "physics": "Biofilm formation on medical plastics, purulent exudate at insertion sites",
+      "view": "Clinical anatomical map"
+    },
+    "clinical_hygiene_protocols": {
+      "procedure": "12-step hand-washing decontamination (Duration: 40-60 sec)",
+      "steps": ["Wet hands with water", "Apply enough soap", "Palm to palm", "Right palm over left dotsum with interlaced fingers", "Palm to palm with fingers interlaced", "Backs of fingers to opposing palms", "Rotational rubbing of thumb", "Rotational rubbing backwards/forwards", "Rinse hands with water", "Dry thoroughly with single-use towel", "Turn off tap using towel", "Hands are clean"],
+      "physics": "Mechanical friction, surfactant action, removal of transient flora",
+      "view": "Procedural flowchart"
+    },
+    "clinical_critical_care": {
+      "monitoring": ["Airway patency", "End-tidal CO2", "SpO2", "Respiratory rate", "Tidal volume", "Heart rate", "Blood pressure", "Peripheral temperature", "Lactate", "Urine output", "Glucose level"],
+      "interventions": ["Endotracheal tube", "Ventilator settings", "Inotrope/Vasopressor support", "Insulin administration", "Renal biochemistry monitoring", "Feeding regimen (Enteral)"],
+      "clinical_markers": ["Oedema", "Stool frequency", "Abdominal tenderness", "Bowel sounds", "Infective markers trend"],
+      "view": "Multifaceted clinical monitoring map / Ghosted anatomy with equipment overlay"
+    }
+  },
+  "oncology_and_toxicities": {
+    "clinical_examination_cancer": {
+      "systemic_observations": ["Cachexia", "Dehydration", "Asymmetry/Lumps", "Fatigue", "Fever"],
+      "head_and_neck_findings": ["Conjunctival pallor", "Icterus", "Horner syndrome", "Cushingoid features", "Uveitis", "Cataracts", "Dysgeusia", "Xerostomia", "Stomatitis", "Osteonecrosis of jaw"],
+      "lymphadenopathy_sites": ["Cervical", "Supraclavicular", "Axillary", "Inguinal"],
+      "thoracic_findings": ["Stridor", "Consolidation", "Pleural effusion", "Pneumonitis", "Fibrosis", "Superior Vena Cava Obstruction (SVCO)", "Atrial fibrillation", "Pericardial effusion", "Cardiomyopathy", "Myocarditis", "Breast asymmetry", "Breast lump", "Skin tethering"],
+      "abdominal_findings": ["Surgical scars", "Umbilical nodule (Sister Mary Joseph)", "Epigastric mass", "Visible peristalsis", "Abdominal distension", "Ascites", "Hepatomegaly", "Splenomegaly", "Renal mass", "Pelvic/Adnexal mass"],
+      "neurological_findings": ["Focal neurological signs", "Sensory deficit", "Spinal cord compression", "Memory deficit", "Personality change", "Peripheral neuropathy", "Encephalopathy", "PRES (Posterior reversible encephalopathy syndrome)"],
+      "skeletal_survey": ["Focal bone tenderness", "Wrist tenderness (Hypertrophic pulmonary osteoarthropathy)", "Arthralgia", "Myalgia"],
+      "peripheral_cutaneous": ["Clubbing (Digital)", "Palmar-plantar erythrodysesthesia", "Signs of smoking", "Calf tenderness (DVT)", "Rash (Maculopapular, Acneiform, DRESS)", "Telangiectasia", "Tattoo point marks", "Alopecia", "Trichomegaly"],
+      "identity_standard": "Indian subject (male or female), showing visible signs of clinical metabolic stress (cachexia), South Asian skin tones with specific toxicity manifestations (hyperpigmentation, inflammation)",
+      "physics": "Subsurface scattering of wasting tissue, dull skin luster in dehydration, specific inflammatory glows at toxicity sites",
+      "view": "Full-body clinical map / Systemic overview"
+    },
+    "treatment_toxicities_mapping": {
+      "cytotoxic_chemotherapy": ["Alopecia", "Nausea/Vomiting", "Diarrhoea", "Stomatitis", "Neutropenia", "Anaemia", "Peripheral neuropathy", "Hand-foot syndrome"],
+      "immunotherapy_irAEs": ["Pneumonitis", "Hepatitis", "Colitis", "Nephritis", "Uveitis", "Hypophysitis", "Adrenalitis", "Myocarditis", "DRESS syndrome"],
+      "targeted_therapy": ["Acneiform rash (EGFR inhibitors)", "Trichomegaly (EGFR inhibitors)", "Hypertension/Thromboembolism (VEGF inhibitors)", "PRES (VEGF inhibitors)", "Palmar-plantar erythrodysesthesia (TKIs)"],
+      "radiotherapy_local": ["Telangiectasia", "Fibrosis", "Strictures", "Sinusoidal obstructive syndrome"],
+      "hormone_therapy": ["Cataracts", "Arthralgia", "Myalgia"]
+    }
+  },
+  "pathology_and_inflammation": {
+    "anaphylaxis_systemic": {
+      "neurological": ["Feeling of impending doom", "Loss of consciousness", "Dizziness"],
+      "head_and_neck": ["Conjunctival injection", "Angioedema of lips and mucous membranes", "Laryngeal obstruction", "Stridor"],
+      "respiratory": ["Wheeze", "Bronchoconstriction", "Tachypnea"],
+      "cardiovascular": ["Hypotension (Shock)", "Cardiac arrhythmias", "Tachycardia", "Weak thready pulse"],
+      "cutaneous": ["Generalized flushing", "Sweating (Diaphoresis)", "Urticaria (Hives)", "Itching of palms/soles/genitalia", "Angioedema"],
+      "gastrointestinal": ["Abdominal pain/cramping", "Diarrhoea", "Nausea/Vomiting"],
+      "triggers": ["Wasp/Insect sting", "Drug reaction", "Food allergen"],
+      "identity_standard": "Indian subject, warm South Asian skin tones, presenting with multi-systemic acute distress markers (facial swelling, urticarial wheals), modern clinical or emergency setting",
+      "physics": "Systemic capillary leak, massive vasodilatory response, metabolic crash",
+      "view": "Full-body systemic map / Disease overlay on ghost silhouette"
+    },
+    "sepsis_pathophysiology": {
+      "macrovascular": ["Heart (myocardial depression)", "Arterioles (systemic vasodilation)", "Organ-specific blood flow redistribution"],
+      "microvascular": ["Capillaries (leakage)", "Venules", "Arteriovenous shunt", "Microemboli (disseminated intravascular coagulation)", "Neutrophil adhesion/emigration"],
+      "cellular": ["Mitochondria (dysfunction/mitophagy)", "Nucleus (stress response)", "Bacteria/Endotoxins", "Neutrophil activation"],
+      "physics": "Impaired oxygen delivery-consumption balance, microcirculatory shunting, mitochondrial hibernation",
+      "view": "Triad of scales: Macro / Micro / Cellular"
+    },
+    "acute_inflammation_systemic": {
+      "clinical_features": ["Fever (Hypothalamic set-point change)", "Tachycardia (Increased heart rate)", "Tachypnea (Increased respiratory rate)", "Synthesis of acute-phase proteins (Liver)", "Glucocorticoid/Catecholamine release (Adrenal)", "Neutrophil mobilization (Bone marrow)"],
+      "symptoms": ["Headache", "Delirium", "Anorexia", "Sweating", "Flushing"],
+      "identity_standard": "Indian male subject, warm South Asian skin tones, authentic features showing fatigue and febrile flushing, modern Indian clinical setting",
+      "physics": "Hyperdynamic circulation, metabolic stress response",
+      "view": "Full-body clinical illustration"
+    },
+    "acute_inflammation_local": {
+      "events": ["Local infection/Bacteria entry", "Tissue damage", "Release of inflammatory mediators/cytokines", "Vasodilation", "Increased vascular permeability", "Leucocyte influx (Neutrophils + Macrophages)", "Phagocytosis"],
+      "cardinal_signs": ["Pain (Dolor)", "Redness (Rubor)", "Swelling (Tumor)", "Heat (Calor)", "Loss of function (Functio laesa)"],
+      "complications": ["Cellulitis", "Ascending lymphangitis", "Enlarged draining lymph nodes"],
+      "textures": "Edematous skin (swollen/tense), erythematous streaks in lymphangitis, purulent zones",
+      "physics": "Fluid extravasation, chemotactic gradient signaling"
+    }
+  },
   "style_protocols": {
     "NEJM": {
       "shading": "Technical stippling for depth, soft watercolor gradients",
