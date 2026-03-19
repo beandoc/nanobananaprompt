@@ -21,6 +21,8 @@ interface ComicEngineProps {
     artStyle?: string;
     letteringStyle?: string;
     layoutType?: string;
+    globalColorGrade?: string;
+    pacingEnergy?: string;
     productionCredits?: string;
     handleCopy: (text: string, id: string) => void;
     copySuccess: string | null;
@@ -34,6 +36,8 @@ export function ComicEngine({
     artStyle,
     letteringStyle,
     layoutType = 'vertical',
+    globalColorGrade,
+    pacingEnergy,
     productionCredits,
     handleCopy,
     copySuccess
@@ -126,7 +130,16 @@ export function ComicEngine({
                                 </div>
                                 <div className="flex justify-between items-center text-[10px] font-bold">
                                     <span className="text-slate-400">Layout</span>
-                                    <span className="text-rose-500 uppercase">{layoutType} Style</span>
+                                    <span className={cn(
+                                        "uppercase px-2 py-0.5 rounded-md",
+                                        pacingEnergy === 'high' ? "bg-rose-100 text-rose-600" : "text-slate-900"
+                                    )}>
+                                        {layoutType} {pacingEnergy === 'high' ? '🔥 High Energy' : ''}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center text-[10px] font-bold">
+                                    <span className="text-slate-400">Color Grade</span>
+                                    <span className="text-indigo-600 truncate max-w-[100px] text-right">{globalColorGrade || 'Standard Print'}</span>
                                 </div>
                             </div>
                         </div>
@@ -218,8 +231,10 @@ export function ComicEngine({
                                     <div className="w-16 h-16 rounded-[2rem] bg-slate-950 flex items-center justify-center text-white text-xl font-black border-4 border-white rotate-6 transition-transform group-hover:rotate-0 shadow-2xl">
                                         {panel.panel_number || idx + 1}
                                     </div>
-                                    <div className="px-4 py-1.5 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-slate-100 text-[9px] font-black uppercase text-slate-400">
+                                    <div className="px-4 py-1.5 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-slate-100 text-[9px] font-black uppercase text-slate-400 flex items-center gap-2">
                                         {panel.shot_type || 'STANDARD VIEW'}
+                                        {panel.lettering_weight === 'Action' && <Zap className="w-3 h-3 text-rose-500 fill-rose-500" />}
+                                        {panel.lettering_weight === 'Whimsy' && <Sparkles className="w-3 h-3 text-indigo-500" />}
                                     </div>
                                 </div>
 

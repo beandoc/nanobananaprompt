@@ -127,6 +127,8 @@ export interface BlueprintData {
     is_model_sheet?: boolean;
     comic_title?: string;
     logline?: string;
+    global_color_grade?: 'Golden Hour Mumbai' | 'Retro 4-Color Print' | 'Nocturnal Neon' | 'Classic Marvel Primary';
+    pacing_energy?: 'high' | 'low';
 
     scenes?: StoryboardScene[];
 
@@ -161,6 +163,7 @@ export interface ComicPanel {
     effect_lines?: string;
     perspective?: 'high-angle' | 'eye-level' | 'low-angle' | 'pov';
     visual_texture?: string;
+    lettering_weight?: 'Action' | 'Whimsy' | 'Regular';
 }
 
 export interface StoryboardScene {

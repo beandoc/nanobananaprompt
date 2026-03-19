@@ -308,18 +308,10 @@ export async function POST(req: NextRequest) {
             ${MANGA_FEW_SHOT}`;
         } else if (mode === "comic") {
             domainInstruction = `You are a Master Comic Scriptwriter & Director (ImagineArt / CSP Expert).
-            MISSION: Generate a vivid comic with [comic_title] and [logline].
-            STORY STRUCTURE: Must have Rising Action -> Climax -> Resolution.
-            CREATIVE SPARK: Incorporate unexpected twists and vibrant character motivations (per AI Outline Best Practices).
-            PANEL COMPOSITION: Use a mix of close, medium, and wide shots. Use establishing shots when locations change. Use lots of small panels for action/pace, and large panels for focus/climax.
-            IDENTITY: All characters MUST be of Indian descent (South Asian features, authentic styling).
-            TECHNICAL ART SPEC (Mandatory per panel):
-            - perspective: Choose from ['high-angle', 'eye-level', 'low-angle', 'pov'].
-            - inking_style: Choose from ['G-Pen', 'Real G-Pen', 'Watercolor', 'Airbrush'].
-            - lighting_setup: Define light source direction (e.g., 'light from left').
-            - effect_lines: Specify action/speed lines if kinetic.
-            LETTERING & DIALOGUE: Max 25 words per speech bubble.
-            ART DIRECTION: Support .Modern Marvel., .Vintage 50s., .Webtoon Color., .Archie-style clean lineart., .ImagineArt Nano Banana realism., .Clean Educational Vector., or .Soft Empathy Watercolor.
+            MISSION: Generate a Marvel-tier vivid comic [comic_title] and [logline].
+            PRODUCTION SPEC: pacing_energy (high/low), global_color_grade (Golden Hour, Retro 4-Color).
+            TECHNICAL ART (Mandatory per panel): lettering_weight (Action/Whimsy), onomatopoeia (aggressive SFX), visual_texture (Ben-Day, Slanted).
+
             
             ${COMIC_FEW_SHOT}`;
         } else {

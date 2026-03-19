@@ -272,6 +272,8 @@ export default function Home() {
                   artStyle={result.data.art_style}
                   letteringStyle={result.data.lettering_style}
                   layoutType={result.data.layout_type}
+                  globalColorGrade={result.data.global_color_grade}
+                  pacingEnergy={result.data.pacing_energy}
                   productionCredits={result.data.production_credits}
                   handleCopy={handleCopy}
                   copySuccess={copySuccess}
