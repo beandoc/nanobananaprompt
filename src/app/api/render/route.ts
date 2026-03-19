@@ -78,12 +78,37 @@ export async function POST(req: NextRequest) {
             finalPrompt = `${promptData.core_prompt}. ${promptData.lighting}, ${promptData.camera_settings?.lens || ''}. Text: ${promptData.headline_copy || ''} ${promptData.subline_copy || ''}. Negative: ${promptData.negative_prompt}`;
         } else if (mode === "vector") {
             finalPrompt = `${promptData.illustration_subject}. Style: ${promptData.style_framework}. Logic: ${promptData.geometric_logic}. Palette: ${promptData.color_profile}.`;
+        } else if (mode === "comic") {
+            const firstPanel = promptData.comic_panels?.[0];
+            finalPrompt = `MODERN GRAPHIC NOVEL PAGE. 
+            TITLE: ${promptData.comic_title || 'Untitled comic'}. 
+            ART STYLE: ${promptData.art_style || 'Cinematic Digital Painterly'}. 
+            GLOBAL GRADE: ${promptData.global_color_grade || 'Standard'}. 
+            IDENTITY: ${promptData.consistent_character || 'Indian male hero'}.
+            PANEL 1 SCENE: ${firstPanel?.characters || ''}. ${firstPanel?.action || ''}. ${firstPanel?.background || ''}. 
+            TECHNICAL: ${firstPanel?.perspective || 'Eye-level'}, ${firstPanel?.inking_style || 'Digital Inked'}. 
+            NEGATIVE: ${promptData.negative_prompt || ''}`;
+        } else if (mode === "manga") {
+            const firstPanel = promptData.panels?.[0];
+            finalPrompt = `MANGA PAGE SPREAD. 
+            SUBJECT: ${promptData.manga_subject || 'Indian manga character'}.
+            PANEL 1 UNIVERSE: ${firstPanel?.universe || 'Classic Manga'}. 
+            ART STYLE: ${firstPanel?.art_style || 'Clean lineart'}. 
+            SCENE: ${firstPanel?.outfit || ''} in ${firstPanel?.environment || ''}. 
+            NEGATIVE: ${promptData.negative_prompt || ''}`;
+        } else if (mode === "storyboard" || (mode === "comic" && !promptData.comic_panels)) {
+            const firstScene = promptData.scenes?.[0];
+            finalPrompt = `CINEMATIC STORYBOARD SKETCH. 
+            SUBJECT: ${promptData.consistent_character || 'Indian subject'}.
+            VISUAL: ${firstScene?.visual_prompt || 'Wide establishing shot'}. 
+            MOTION: ${firstScene?.motion_instruction || ''}. 
+            STYLE: Rough cinematic storyboard, monochromatic with blue ink washes.`;
         } else {
             const characterDesc = promptData.consistent_character === "Male-Subject-A" ? "middle-aged Indian male silhouette" :
                 promptData.consistent_character === "Female-Subject-B" ? "middle-aged Indian female silhouette" : "human silhouette";
 
             finalPrompt = `CRITICAL: ZERO TEXT POLICY. 
-            - MEDICAL SUBJECT: ${promptData.scientific_subject}. 
+            - MEDICAL SUBJECT: ${promptData.scientific_subject || 'Anatomical model'}. 
             - ANATOMICAL KEYS: ${promptData.visual_accuracy?.anatomical_keys || ''}.
             - COMPOSITION: ${promptData.layout_composition || 'central figure'} on ${promptData.visual_theme || 'white background'}.
             - CHARACTER IDENTITY: ${characterDesc} of Indian descent.
