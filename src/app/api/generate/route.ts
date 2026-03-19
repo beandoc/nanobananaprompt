@@ -354,10 +354,11 @@ export async function POST(req: NextRequest) {
             } else {
                 domainInstruction = `You are a Master Comic Scriptwriter & Director (ImagineArt / CSP Expert).
                 MISSION: Generate a Marvel-tier vivid comic [comic_title] and [logline].
+                IDENTITY LOCK: Use 'consistent_character' to define the core visual anchor (e.g. 'Subject A'). All individual panel character descriptions MUST refer back to this anchor to maintain identity locking.
                 PRODUCTION SPEC: pacing_energy (high/low), global_color_grade (Golden Hour, Retro 4-Color).
                 TECHNICAL ART (Mandatory per panel): lettering_weight (Action/Whimsy), onomatopoeia (aggressive SFX), visual_texture (Ben-Day, Slanted).
                 
-                IDENTITY: All characters MUST be of Indian descent (South Asian features).
+                ETHNICITY: All characters MUST be of Indian descent (South Asian features).
                 
                 ${COMIC_FEW_SHOT}`;
             }

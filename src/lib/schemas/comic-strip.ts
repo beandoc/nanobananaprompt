@@ -8,6 +8,10 @@ export const comicStripSchema: Schema = {
             type: SchemaType.STRING,
             description: "A brief summary of the story being told in this strip."
         },
+        consistent_character: {
+            type: SchemaType.STRING,
+            description: "Define the core visual anchor (e.g., 'Character Subject A: Indian male, mid-30s, sharp jawline, messy hair, wearing a worn grey trench coat'). This ensures identity locking across all panels."
+        },
         art_style: {
             type: SchemaType.STRING,
             description: "Consistent visual style (e.g., 'Modern American Indie', 'Classic Marvel 90s', 'Noir Silhouettes')."

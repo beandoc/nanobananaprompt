@@ -284,6 +284,7 @@ export default function Home() {
                   layoutType={result.data.layout_type}
                   globalColorGrade={result.data.global_color_grade}
                   pacingEnergy={result.data.pacing_energy}
+                  consistentCharacter={result.data.consistent_character}
                   productionCredits={result.data.production_credits}
                   handleCopy={handleCopy}
                   copySuccess={copySuccess}
