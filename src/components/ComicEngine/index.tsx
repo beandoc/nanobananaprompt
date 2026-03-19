@@ -46,7 +46,7 @@ export function ComicEngine({
     const [isSettingsOpen, setIsSettingsOpen] = useState(true);
 
     return (
-        <div className="flex gap-8 mb-20 relative font-sans">
+        <div className="flex flex-col xl:flex-row gap-4 xl:gap-8 mb-20 relative font-sans">
             {/* Left Sidebar: Production Control */}
             {isSettingsOpen && (
                 <motion.div 

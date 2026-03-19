@@ -23,6 +23,7 @@ import { useImageActions } from "@/hooks/useImageActions";
 
 import { Mode, AssetType, LibraryItem } from "@/types";
 import { apiClient } from "@/lib/api-client";
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Lock, ShieldAlert, Key, Loader2 } from "lucide-react";
 import { AUTH_CONSTANTS, APP_CONFIG, UI_CONSTANTS } from "@/lib/constants";
@@ -198,8 +199,16 @@ export default function Home() {
 
       <Header mode={mode} setMode={setMode} setShowLibrary={setShowLibrary} onLogout={handleLogout} />
 
-      <div className="max-w-7xl mx-auto px-8 py-12 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+      <div className={cn(
+        "mx-auto px-4 md:px-8 py-12 relative transition-all duration-500",
+        result?.data?.comic_panels || result?.data?.scenes || result?.data?.panels ? "max-w-screen-2xl" : "max-w-7xl"
+      )}>
+        <div className={cn(
+          "grid gap-12 items-start transition-all",
+          result?.data?.comic_panels || result?.data?.scenes || result?.data?.panels 
+            ? "grid-cols-1" 
+            : "grid-cols-1 lg:grid-cols-2"
+        )}>
           <ProjectInput
             mode={mode}
             brief={brief}
@@ -260,6 +269,7 @@ export default function Home() {
                   scenes={result.data.scenes}
                   handleCopy={handleCopy}
                   copySuccess={copySuccess}
+                  isComicStoryboard={mode === 'comic'}
                 />
               )}
 

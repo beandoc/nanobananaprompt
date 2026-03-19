@@ -11,13 +11,15 @@ interface StoryboardEngineProps {
     scenes: StoryboardScene[];
     handleCopy: (text: string, id: string) => void;
     copySuccess: string | null;
+    isComicStoryboard?: boolean;
 }
 
 export function StoryboardEngine({
     totalProjectDuration,
     scenes,
     handleCopy,
-    copySuccess
+    copySuccess,
+    isComicStoryboard = false
 }: StoryboardEngineProps) {
     return (
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6 mb-8">
@@ -50,10 +52,12 @@ export function StoryboardEngine({
                                     {scene.scene_number || idx + 1}
                                 </div>
                                 <div>
-                                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Scene Segment</h3>
+                                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">
+                                        {scene.shot_duration?.toLowerCase().includes('panel') || scene.shot_duration?.toLowerCase().includes('shot') || isComicStoryboard ? "Comic Panel" : "Scene Segment"}
+                                    </h3>
                                     <div className="flex items-center gap-2">
                                         <div className="px-3 py-1 bg-slate-100 rounded-lg text-[10px] font-black text-slate-600 uppercase tracking-widest border border-slate-200 shadow-sm">
-                                            {scene.shot_duration || '5s'}
+                                            {scene.shot_duration || (isComicStoryboard ? 'Standard Panel' : '8s')}
                                         </div>
                                     </div>
                                 </div>

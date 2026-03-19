@@ -246,6 +246,36 @@ EXAMPLE 2 (Dior-Style High Fashion Adaptation):
 }
 `;
 
+const STORYBOARD_FEW_SHOT = `
+EXAMPLE 1 (Cinematic Video Storyboard):
+{
+  "total_project_duration": "64 seconds",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "shot_duration": "8 seconds",
+      "visual_prompt": "Wide establishing shot of a futuristic Neo-Mumbai skyline at dusk.",
+      "narration_vo": "Mumbai. 2099. A city that never sleeps, but always dreams.",
+      "motion_instruction": "Slow drone pull-back"
+    }
+  ]
+}
+
+EXAMPLE 2 (Comic Thumbnail Storyboard):
+{
+  "total_project_duration": "1 Page Strip",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "shot_duration": "Wide Top",
+      "visual_prompt": "Arjun leaping from a rooftop, cape billowing in the wind.",
+      "narration_vo": "CAPTION: High over the city, justice takes flight.",
+      "motion_instruction": "WHIRRRR - Grappling line SFX"
+    }
+  ]
+}
+`;
+
 export async function POST(req: NextRequest) {
     validateEnv();
     try {
@@ -307,13 +337,30 @@ export async function POST(req: NextRequest) {
             
             ${MANGA_FEW_SHOT}`;
         } else if (mode === "comic") {
-            domainInstruction = `You are a Master Comic Scriptwriter & Director (ImagineArt / CSP Expert).
-            MISSION: Generate a Marvel-tier vivid comic [comic_title] and [logline].
-            PRODUCTION SPEC: pacing_energy (high/low), global_color_grade (Golden Hour, Retro 4-Color).
-            TECHNICAL ART (Mandatory per panel): lettering_weight (Action/Whimsy), onomatopoeia (aggressive SFX), visual_texture (Ben-Day, Slanted).
-
-            
-            ${COMIC_FEW_SHOT}`;
+            if (isStoryboard) {
+                domainInstruction = `You are a Comic Thumbnail Artist & Storyboarder.
+                MISSION: Generate a rough SEUENTIAL STORYBOARD (scenes[]) for a comic project.
+                SCENE STRUCTURE:
+                - scene_number: 1, 2, 3...
+                - shot_duration: Replace with "Panel Layout" (e.g. 'Wide Top', 'Tight Square').
+                - visual_prompt: Sketch-level description including blocking and camera angle.
+                - narration_vo: The precise Dialogue or Caption for this panel.
+                - motion_instruction: The Action or Onomatopoeia (SFX) for this panel.
+                
+                IDENTITY: All characters MUST be of Indian descent (South Asian features).
+                
+                ${STORYBOARD_FEW_SHOT}
+            `;
+            } else {
+                domainInstruction = `You are a Master Comic Scriptwriter & Director (ImagineArt / CSP Expert).
+                MISSION: Generate a Marvel-tier vivid comic [comic_title] and [logline].
+                PRODUCTION SPEC: pacing_energy (high/low), global_color_grade (Golden Hour, Retro 4-Color).
+                TECHNICAL ART (Mandatory per panel): lettering_weight (Action/Whimsy), onomatopoeia (aggressive SFX), visual_texture (Ben-Day, Slanted).
+                
+                IDENTITY: All characters MUST be of Indian descent (South Asian features).
+                
+                ${COMIC_FEW_SHOT}`;
+            }
         } else {
             domainInstruction = `You are a PhD Medical Illustrator specializing in South Asian Clinical Accuracy. 
             CORE MISSION: Anatomical and dermatological precision for high-impact journals (Nature, NEJM, BioRender).
