@@ -41,7 +41,15 @@ export const comicStripSchema: Schema = {
                     },
                     dialogue: { 
                         type: SchemaType.STRING, 
-                        description: "Dialogue text to be placed in bubbles." 
+                        description: "Dialogue text to be placed in speech bubbles." 
+                    },
+                    thought_bubble: { 
+                        type: SchemaType.STRING, 
+                        description: "Internal monologue (represented as cloud bubbles in comics)." 
+                    },
+                    narrative_caption: { 
+                        type: SchemaType.STRING, 
+                        description: "Contextual narrative text (usually in a yellow/colored box at top/bottom)." 
                     },
                     onomatopoeia: { 
                         type: SchemaType.STRING, 
@@ -54,6 +62,14 @@ export const comicStripSchema: Schema = {
         negative_prompt: {
             type: SchemaType.STRING,
             description: "Global exclusions to maintain visual clarity and consistency."
+        },
+        layout_type: {
+            type: SchemaType.STRING,
+            description: "The visual arrangement of panels (e.g., 'vertical', 'grid', 'splash')."
+        },
+        production_credits: {
+            type: SchemaType.STRING,
+            description: "Production team names (e.g., Writer: Aryan S., Artist: Meera K., Colorist: Rahul V.)."
         }
     },
     required: ["narrative_arc", "art_style", "lettering_style", "comic_panels", "negative_prompt"]

@@ -121,6 +121,12 @@ export interface BlueprintData {
     narrative_arc?: string;
     comic_panels?: ComicPanel[];
     lettering_style?: string;
+    art_style?: string;
+    layout_type?: 'vertical' | 'grid' | 'splash' | 'manga';
+    production_credits?: string;
+    is_model_sheet?: boolean;
+    comic_title?: string;
+    logline?: string;
 
     scenes?: StoryboardScene[];
 
@@ -135,6 +141,9 @@ export interface MangaPanel {
     art_style: string;
     outfit: string;
     environment: string;
+    angle?: string;
+    expression?: string;
+    pose?: string;
 }
 
 export interface ComicPanel {
@@ -144,7 +153,14 @@ export interface ComicPanel {
     action: string;
     background: string;
     dialogue?: string;
+    thought_bubble?: string;
+    narrative_caption?: string;
     onomatopoeia?: string;
+    inking_style?: 'G-Pen' | 'Real G-Pen' | 'Watercolor' | 'Airbrush';
+    lighting_setup?: string;
+    effect_lines?: string;
+    perspective?: 'high-angle' | 'eye-level' | 'low-angle' | 'pov';
+    visual_texture?: string;
 }
 
 export interface StoryboardScene {

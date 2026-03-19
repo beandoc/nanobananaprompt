@@ -8,6 +8,8 @@ import { ProjectInput } from "@/components/ProjectInput";
 // Lazy load heavy UI sections
 const LibraryPanel = dynamic(() => import("@/components/LibraryPanel").then(mod => mod.LibraryPanel), { ssr: false });
 const StoryboardEngine = dynamic(() => import("@/components/StoryboardEngine").then(mod => mod.StoryboardEngine), { ssr: false });
+const ComicEngine = dynamic(() => import("@/components/ComicEngine").then(mod => mod.ComicEngine), { ssr: false });
+const MangaEngine = dynamic(() => import("@/components/MangaEngine").then(mod => mod.MangaEngine), { ssr: false });
 const BlueprintConsole = dynamic(() => import("@/components/VisionConsole/BlueprintConsole").then(mod => mod.BlueprintConsole), { ssr: false });
 const VisionConsole = dynamic(() => import("@/components/VisionConsole").then(mod => mod.VisionConsole), { ssr: false });
 
@@ -256,6 +258,31 @@ export default function Home() {
                 <StoryboardEngine
                   totalProjectDuration={result.data.total_project_duration || ""}
                   scenes={result.data.scenes}
+                  handleCopy={handleCopy}
+                  copySuccess={copySuccess}
+                />
+              )}
+
+              {result?.data?.comic_panels && (
+                <ComicEngine
+                  comicTitle={result.data.comic_title}
+                  logline={result.data.logline}
+                  narrativeArc={result.data.narrative_arc || ""}
+                  panels={result.data.comic_panels}
+                  artStyle={result.data.art_style}
+                  letteringStyle={result.data.lettering_style}
+                  layoutType={result.data.layout_type}
+                  productionCredits={result.data.production_credits}
+                  handleCopy={handleCopy}
+                  copySuccess={copySuccess}
+                />
+              )}
+
+              {result?.data?.panels && (
+                <MangaEngine
+                  mangaSubject={result.data.manga_subject || ""}
+                  panels={result.data.panels}
+                  isModelSheet={result.data.is_model_sheet}
                   handleCopy={handleCopy}
                   copySuccess={copySuccess}
                 />

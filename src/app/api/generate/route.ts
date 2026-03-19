@@ -50,21 +50,82 @@ EXAMPLE 1 (Narrative Comic Strip):
       "characters": "Grandfather (weathered features, white kurta) looking up; Granddaughter (10 years old, pigtails, bright T-shirt) holding a colorful 'Patang' kite.",
       "action": "Grandfather points to the sky, gesturing towards the wind direction.",
       "background": "The chaotic but beautiful Mumbai skyline at dusk, multiple other kites visible in the distance.",
+      "narrative_caption": "On a breezy Mumbai evening, a tradition is passed down.",
       "dialogue": "Look, Meera! The wind is finally on our side."
     },
     {
       "panel_number": 2,
       "shot_type": "Extreme Close-up",
-      "characters": "Grandfather's wrinkled, calloused hands skillfully tying the 'Manjha' thread to the kite spine.",
-      "action": "Precise knot-tying, thread pulled taut.",
-      "background": "Blurred rooftop floor with a wooden spool (Charkhi).",
-      "onomatopoeia": "SNIP!"
+      "characters": "Granddaughter looking intensely focused, slight sweat on brow.",
+      "action": "She grips the spool tightly, eyes narrowed.",
+      "background": "Blurred rooftop.",
+      "thought_bubble": "I can't let it dip. Not today!",
+      "onomatopoeia": "WHIRRRR"
+    }
+  ],
+  "layout_type": "grid",
+  "production_credits": "Writer: Aryan Srivastava\nArtist: Meera Joshi\nColorist: Rahul Varma",
+  "negative_prompt": "labels, arrows, captions, bad anatomy"
+}
+
+EXAMPLE 2 (Educational Medical Comic):
+{
+  "narrative_arc": "A young patient named Priya learns about her upcoming kidney biopsy from her nephrologist.",
+  "art_style": "Clean vector-style educational comic, bright and approachable",
+  "lettering_style": "Rounded sans-serif bubbles, friendly professional tone",
+  "comic_panels": [
+    {
+      "panel_number": 1,
+      "shot_type": "Medium Shot",
+      "characters": "Dr. Mehta (Indian male, mid-40s, stethoscope) smiling reassuringly; Priya (Indian girl, 12, glasses, striped shirt) looking curious.",
+      "action": "Dr. Mehta shows Priya a pamphlet about kidney health.",
+      "background": "Modern clinical office with anatomical posters.",
+      "narrative_caption": "Priya visits her nephrologist to discuss her care plan.",
+      "dialogue": "Hello Priya, we need to do a kidney biopsy tomorrow to see how your kidneys are doing."
+    },
+    {
+      "panel_number": 2,
+      "shot_type": "Close-up",
+      "characters": "Priya looking slightly nervous, finger to her chin.",
+      "action": "She looks down at the biopsy pamphlet.",
+      "background": "Soft blue clinical background.",
+      "thought_bubble": "A biopsy? That sounds a little bit scary...",
+      "dialogue": "Will it hurt, Dr. Mehta?"
     }
   ]
 }
 `;
 
 const MANGA_FEW_SHOT = `
+EXAMPLE 3 (Archie-Style Teen Comedy):
+{
+  "narrative_arc": "Rohan (Archie-type) and his friends share a funny moment at a Mumbai 'Chaat' stall.",
+  "art_style": "Archie-style clean lineart, flat vibrant colors, expressive facial features",
+  "lettering_style": "Comic-style uppercase sans-serif with bold emphasis",
+  "comic_panels": [
+    {
+      "panel_number": 1,
+      "shot_type": "Medium Shot",
+      "characters": "Rohan (orange-brown messy hair, striped polo shirt, freckles) grinning widely; Ananya (black hair, white blazer, laughing); Kabir (black hair, jacket, smirking).",
+      "action": "Rohan is trying a very spicy pani puri and his face is turning red.",
+      "background": "Vibrant Mumbai street at dusk, blurred crowds.",
+      "narrative_caption": "Friday nights at the local stall are always... adventurous.",
+      "dialogue": "I... I think I just saw the sun inside my mouth!"
+    },
+    {
+      "panel_number": 2,
+      "shot_type": "Extreme Close-up",
+      "characters": "Rohan with steam metaphorically coming out of his ears, eyes bulging.",
+      "action": "Drinking water frantically.",
+      "background": "Orange dot-pattern background (pop-art style).",
+      "onomatopoeia": "GULP! GULP!",
+      "thought_bubble": "Too much chutney! Way too much chutney!"
+    }
+  ],
+  "layout_type": "splash",
+  "production_credits": "Script: Aryan Srivastava | Pencils: Meera Joshi | Colors: Rahul Varma"
+}
+
 EXAMPLE 1 (Legendary Manga Grid):
 {
   "manga_subject": "Young Indian man with sharp features and messy black hair, using provided image as face reference.",
@@ -72,6 +133,16 @@ EXAMPLE 1 (Legendary Manga Grid):
   "panels": [
     { "panel_number": 1, "universe": "One Piece", "art_style": "Eiichiro Oda's bold lines, exaggerated expressions", "outfit": "Straw Hat pirate vest and sash", "environment": "Deck of a wooden ship, blue sea" },
     { "panel_number": 2, "universe": "Dragon Ball Z", "art_style": "Akira Toriyama's angular muscle definition, spiky hair", "outfit": "Orange martial arts gi", "environment": "Rocky wasteland with floating mountains" }
+  ]
+}
+
+EXAMPLE 2 (Character Model Sheet Matrix):
+{
+  "manga_subject": "Young South Asian woman with glasses and a professional blazer.",
+  "is_model_sheet": true,
+  "panels": [
+    { "panel_number": 1, "pose": "Standing Neutral", "angle": "Frontal Full Body", "expression": "Confident Smile", "art_style": "High-fidelity modern anime lineart", "outfit": "Charcoal blazer, white shirt", "environment": "Studio neutral gray" },
+    { "panel_number": 2, "pose": "Pointing Forward", "angle": "3/4 Profile", "expression": "Serious Focus", "art_style": "High-fidelity modern anime lineart", "outfit": "Charcoal blazer, white shirt", "environment": "Studio neutral gray" }
   ]
 }
 `;
@@ -236,12 +307,19 @@ export async function POST(req: NextRequest) {
             
             ${MANGA_FEW_SHOT}`;
         } else if (mode === "comic") {
-            domainInstruction = `You are a Master Comic Scriptwriter & Director.
-            MISSION: Generate a vivid, sequential comic strip blueprint that tells a compelling visual story.
+            domainInstruction = `You are a Master Comic Scriptwriter & Director (ImagineArt / CSP Expert).
+            MISSION: Generate a vivid comic with [comic_title] and [logline].
+            STORY STRUCTURE: Must have Rising Action -> Climax -> Resolution.
+            CREATIVE SPARK: Incorporate unexpected twists and vibrant character motivations (per AI Outline Best Practices).
+            PANEL COMPOSITION: Use a mix of close, medium, and wide shots. Use establishing shots when locations change. Use lots of small panels for action/pace, and large panels for focus/climax.
             IDENTITY: All characters MUST be of Indian descent (South Asian features, authentic styling).
-            CINEMATOGRAPHY: Vary shot types (Close-ups for emotion, Wide for scale, Dutch angles for tension).
-            NARRATIVE: Ensure each panel advances the plot or character development. Use dialog and onomatopoeia to bring the page to life.
-            ART DIRECTION: Define a consistent, premium comic art style for the entire strip.
+            TECHNICAL ART SPEC (Mandatory per panel):
+            - perspective: Choose from ['high-angle', 'eye-level', 'low-angle', 'pov'].
+            - inking_style: Choose from ['G-Pen', 'Real G-Pen', 'Watercolor', 'Airbrush'].
+            - lighting_setup: Define light source direction (e.g., 'light from left').
+            - effect_lines: Specify action/speed lines if kinetic.
+            LETTERING & DIALOGUE: Max 25 words per speech bubble.
+            ART DIRECTION: Support .Modern Marvel., .Vintage 50s., .Webtoon Color., .Archie-style clean lineart., .ImagineArt Nano Banana realism., .Clean Educational Vector., or .Soft Empathy Watercolor.
             
             ${COMIC_FEW_SHOT}`;
         } else {
