@@ -4,6 +4,8 @@ export const comicStripSchema: Schema = {
     description: "Sequential Narrative Comic Strip Blueprint",
     type: SchemaType.OBJECT,
     properties: {
+        comic_title: { type: SchemaType.STRING },
+        logline: { type: SchemaType.STRING },
         narrative_arc: {
             type: SchemaType.STRING,
             description: "A brief summary of the story being told in this strip."
@@ -74,7 +76,37 @@ export const comicStripSchema: Schema = {
         production_credits: {
             type: SchemaType.STRING,
             description: "Production team names (e.g., Writer: Aryan S., Artist: Meera K., Colorist: Rahul V.)."
+        },
+        comic_pages: {
+            type: SchemaType.ARRAY,
+            description: "Multi-page structure for Graphic Novels / E-Books",
+            items: {
+                type: SchemaType.OBJECT,
+                properties: {
+                    page_number: { type: SchemaType.NUMBER },
+                    panels: {
+                        type: SchemaType.ARRAY,
+                        items: {
+                            type: SchemaType.OBJECT,
+                            properties: {
+                                panel_number: { type: SchemaType.NUMBER },
+                                shot_type: { type: SchemaType.STRING },
+                                characters: { type: SchemaType.STRING },
+                                action: { type: SchemaType.STRING },
+                                background: { type: SchemaType.STRING },
+                                dialogue: { type: SchemaType.STRING },
+                                narrative_caption: { type: SchemaType.STRING },
+                                inking_style: { type: SchemaType.STRING },
+                                lighting_setup: { type: SchemaType.STRING },
+                                perspective: { type: SchemaType.STRING }
+                            },
+                            required: ["panel_number", "shot_type", "characters", "action", "background"]
+                        }
+                    }
+                },
+                required: ["page_number", "panels"]
+            }
         }
     },
-    required: ["narrative_arc", "art_style", "lettering_style", "comic_panels", "negative_prompt"]
+    required: ["narrative_arc", "comic_title", "logline", "consistent_character", "art_style", "lettering_style", "comic_panels", "negative_prompt"]
 };

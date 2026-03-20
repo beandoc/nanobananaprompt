@@ -273,12 +273,13 @@ export default function Home() {
                 />
               )}
 
-              {result?.data?.comic_panels && (
+              {(result?.data?.comic_panels || result?.data?.comic_pages) && (
                 <ComicEngine
                   comicTitle={result.data.comic_title}
                   logline={result.data.logline}
                   narrativeArc={result.data.narrative_arc || ""}
                   panels={result.data.comic_panels}
+                  comicPages={result.data.comic_pages}
                   artStyle={result.data.art_style}
                   letteringStyle={result.data.lettering_style}
                   layoutType={result.data.layout_type}
@@ -287,6 +288,7 @@ export default function Home() {
                   consistentCharacter={result.data.consistent_character}
                   productionCredits={result.data.production_credits}
                   handleCopy={handleCopy}
+                  onRender={(panelData) => renderBlueprint(panelData, 'comic', assetImage)}
                   copySuccess={copySuccess}
                 />
               )}

@@ -130,6 +130,7 @@ export interface BlueprintData {
     global_color_grade?: 'Golden Hour Mumbai' | 'Retro 4-Color Print' | 'Nocturnal Neon' | 'Classic Marvel Primary';
     pacing_energy?: 'high' | 'low';
 
+    comic_pages?: ComicPage[];
     scenes?: StoryboardScene[];
 
     // Common
@@ -172,6 +173,11 @@ export interface StoryboardScene {
     visual_prompt: string;
     narration_vo: string;
     motion_instruction?: string;
+}
+
+export interface ComicPage {
+    page_number: number;
+    panels: ComicPanel[];
 }
 
 export interface LibraryItem {

@@ -286,7 +286,7 @@ export async function POST(req: NextRequest) {
             return ResponseManager.badRequest("No brief or image provided");
         }
 
-        const currentSchema = isStoryboard ? storyboardSchema : schemaMap[mode];
+        const currentSchema = (mode === 'comic' && isStoryboard) ? comicStripSchema : (isStoryboard ? storyboardSchema : schemaMap[mode]);
 
         let domainInstruction = JSON_PROMPTING_PHILOSOPHY + "\n";
         if (mode === "ad") {
@@ -338,18 +338,18 @@ export async function POST(req: NextRequest) {
             ${MANGA_FEW_SHOT}`;
         } else if (mode === "comic") {
             if (isStoryboard) {
-                domainInstruction = `You are a Comic Thumbnail Artist & Storyboarder.
-                MISSION: Generate a rough SEUENTIAL STORYBOARD (scenes[]) for a comic project.
+                domainInstruction = `You are a Graphic Novel Scriptwriter & Director.
+                MISSION: Generate a MULTI-PAGE GRAPHIC NOVEL (E-Book) storyboard.
                 SCENE STRUCTURE:
-                - scene_number: 1, 2, 3...
-                - shot_duration: Replace with "Panel Layout" (e.g. 'Wide Top', 'Tight Square').
-                - visual_prompt: Sketch-level description including blocking and camera angle.
-                - narration_vo: The precise Dialogue or Caption for this panel.
-                - motion_instruction: The Action or Onomatopoeia (SFX) for this panel.
+                - Use comic_pages[].
+                - Each page should have 2-5 panels.
+                - For each panel: shot_type, characters, action, background, and dialogue.
                 
-                IDENTITY: All characters MUST be of Indian descent (South Asian features).
+                IDENTITY LOCK: Define a clear 'consistent_character' (Indian descent). This is the absolute anchor for every page.
                 
-                ${STORYBOARD_FEW_SHOT}
+                STYLE: Cinematic, high-impact graphic novel aesthetics.
+                
+                ${COMIC_FEW_SHOT}
             `;
             } else {
                 domainInstruction = `You are a Master Comic Scriptwriter & Director (ImagineArt / CSP Expert).
@@ -388,7 +388,7 @@ export async function POST(req: NextRequest) {
             domainInstruction += atlasContext + styleProtocol;
         }
 
-        let systemPrompt = domainInstruction + (isStoryboard ? ` Break down a script into exactly 8 segments of 8 seconds each for a cinematic 64-second production.` : ` ZERO TEXT POLICY.`);
+        let systemPrompt = domainInstruction + (isStoryboard && mode === 'video' ? ` Break down a script into exactly 8 segments of 8 seconds each for a cinematic 64-second production.` : ` ZERO TEXT POLICY.`);
 
         const userPrompt = parentPrompt
             ? `BASELINE JSON: ${JSON.stringify(parentPrompt)}. MODIFICATION REQUEST: "${brief}"`

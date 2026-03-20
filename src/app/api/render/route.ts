@@ -78,16 +78,27 @@ export async function POST(req: NextRequest) {
             finalPrompt = `${promptData.core_prompt}. ${promptData.lighting}, ${promptData.camera_settings?.lens || ''}. Text: ${promptData.headline_copy || ''} ${promptData.subline_copy || ''}. Negative: ${promptData.negative_prompt}`;
         } else if (mode === "vector") {
             finalPrompt = `${promptData.illustration_subject}. Style: ${promptData.style_framework}. Logic: ${promptData.geometric_logic}. Palette: ${promptData.color_profile}.`;
-        } else if (mode === "comic") {
-            const firstPanel = promptData.comic_panels?.[0];
-            finalPrompt = `MODERN GRAPHIC NOVEL PAGE. 
-            TITLE: ${promptData.comic_title || 'Untitled comic'}. 
-            ART STYLE: ${promptData.art_style || 'Cinematic Digital Painterly'}. 
-            GLOBAL GRADE: ${promptData.global_color_grade || 'Standard'}. 
-            IDENTITY: ${promptData.consistent_character || 'Indian male hero'}.
-            PANEL 1 SCENE: ${firstPanel?.characters || ''}. ${firstPanel?.action || ''}. ${firstPanel?.background || ''}. 
-            TECHNICAL: ${firstPanel?.perspective || 'Eye-level'}, ${firstPanel?.inking_style || 'Digital Inked'}. 
-            NEGATIVE: ${promptData.negative_prompt || ''}`;
+        } else if (mode === "comic" || mode === "storyboard") {
+            const firstPanel = promptData.comic_panels?.[0] || promptData.comic_pages?.[0]?.panels?.[0] || promptData.scenes?.[0] || (promptData as any);
+            
+            // If it has comic_panels or comic_pages, we use the Graphic Novel render style.
+            // If it's pure storyboard mode, we use the sketch style.
+            if (mode === "comic") {
+                finalPrompt = `MODERN GRAPHIC NOVEL PAGE. 
+                TITLE: ${promptData.comic_title || 'Untitled comic'}. 
+                ART STYLE: ${promptData.art_style || 'Cinematic Digital Painterly'}. 
+                GLOBAL GRADE: ${promptData.global_color_grade || 'Standard'}. 
+                IDENTITY: ${promptData.consistent_character || 'Indian male hero'}.
+                SCENE: ${firstPanel?.characters || firstPanel?.visual_prompt || ''}. ${firstPanel?.action || ''}. ${firstPanel?.background || ''}. 
+                TECHNICAL: ${firstPanel?.perspective || 'Eye-level'}, ${firstPanel?.inking_style || 'Digital Inked'}. 
+                NEGATIVE: ${promptData.negative_prompt || ''}`;
+            } else {
+                finalPrompt = `CINEMATIC STORYBOARD SKETCH. 
+                SUBJECT: ${promptData.consistent_character || 'Indian subject'}.
+                VISUAL: ${firstPanel?.visual_prompt || firstPanel?.action || 'Wide establishing shot'}. 
+                MOTION: ${firstPanel?.motion_instruction || ''}. 
+                STYLE: Rough cinematic storyboard, monochromatic with blue ink washes.`;
+            }
         } else if (mode === "manga") {
             const firstPanel = promptData.panels?.[0];
             finalPrompt = `MANGA PAGE SPREAD. 
@@ -96,13 +107,6 @@ export async function POST(req: NextRequest) {
             ART STYLE: ${firstPanel?.art_style || 'Clean lineart'}. 
             SCENE: ${firstPanel?.outfit || ''} in ${firstPanel?.environment || ''}. 
             NEGATIVE: ${promptData.negative_prompt || ''}`;
-        } else if (mode === "storyboard" || (mode === "comic" && !promptData.comic_panels)) {
-            const firstScene = promptData.scenes?.[0];
-            finalPrompt = `CINEMATIC STORYBOARD SKETCH. 
-            SUBJECT: ${promptData.consistent_character || 'Indian subject'}.
-            VISUAL: ${firstScene?.visual_prompt || 'Wide establishing shot'}. 
-            MOTION: ${firstScene?.motion_instruction || ''}. 
-            STYLE: Rough cinematic storyboard, monochromatic with blue ink washes.`;
         } else {
             const characterDesc = promptData.consistent_character === "Male-Subject-A" ? "middle-aged Indian male silhouette" :
                 promptData.consistent_character === "Female-Subject-B" ? "middle-aged Indian female silhouette" : "human silhouette";

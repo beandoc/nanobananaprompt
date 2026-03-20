@@ -18,7 +18,8 @@ export const storyboardSchema: Schema = {
                 },
                 required: ["scene_number", "visual_prompt", "narration_vo"]
             }
-        }
+        },
+        consistent_character: { type: SchemaType.STRING, description: "Detailed physical description of the primary character to maintain consistent identity (South Asian descent)." }
     },
-    required: ["total_project_duration", "scenes"]
+    required: ["total_project_duration", "scenes", "consistent_character"]
 };
