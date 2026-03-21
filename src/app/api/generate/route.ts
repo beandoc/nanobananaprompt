@@ -9,6 +9,7 @@ import { videoIllustrationSchema } from "@/lib/schemas/cinematic-video";
 import { mangaCharacterSchema } from "@/lib/schemas/manga-character";
 import { comicStripSchema } from "@/lib/schemas/comic-strip";
 import { storyboardSchema } from "@/lib/schemas/storyboard";
+import { foodIllustrationSchema } from "@/lib/schemas/food-illustration";
 import { Mode, BlueprintData, GenerateRequest } from "@/types";
 import { ResponseManager } from "@/lib/api-response";
 import { promptService } from "@/lib/prompt-service";
@@ -24,7 +25,8 @@ const schemaMap: Record<Mode, Schema> = {
     video: videoIllustrationSchema,
     storyboard: storyboardSchema,
     manga: mangaCharacterSchema,
-    comic: comicStripSchema
+    comic: comicStripSchema,
+    food: foodIllustrationSchema
 };
 
 const folderMap: Record<Mode, string> = {
@@ -34,7 +36,8 @@ const folderMap: Record<Mode, string> = {
     video: "video_prompts",
     storyboard: "storyboards",
     manga: "manga_prompts",
-    comic: "comic_strips"
+    comic: "comic_strips",
+    food: "food_prompts"
 };
 
 const COMIC_FEW_SHOT = `

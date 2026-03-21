@@ -30,14 +30,37 @@ interface ProjectInputProps {
 
 const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
     ad: [
-        { label: "High-End Editorial", value: "high-end-editorial" },
+        { label: "High-End Editorial", value: "high-end-editorial", previewUrl: "/previews/high-end-editorial.png" },
         { label: "Clean Ecom", value: "clean-ecom" },
         { label: "UGC iPhone Selfie", value: "ugc-iphone-selfie" },
-        { label: "Outdoor/Rugged", value: "Outdoor/Rugged: Earthy tones (forest green, rust, mud brown)" },
-        { label: "Beauty/Wellness", value: "Beauty/Wellness: Soft warm tones (peach, ivory, blush)" },
-        { label: "[PRO] Typographic Window Mask", value: "Senior Editorial Designer: Typographic Mask (The Window Effect). Letters are giant, filling entire frame. Subject visible only through letterforms. High-contrast accent colors." },
-        { label: "[PRO] Digital Collage Chaos", value: "Youth-oriented digital collage: fashion photography merged with graphic design chaos. Torn edges, layered textures, hand-drawn elements, bold color blocking. Anti-polished." },
-        { label: "[PRO] 2000s Paparazzi Tabloid", value: "2000s Paparazzi-style extreme close-up. Harsh on-camera flash, grainy high-ISO, raw candid street-photography feel. 35mm paparazzi lens look." }
+        { label: "[PRO] Integrated Geometric Sandwich", value: "The Sandwich Effect: Multi-layered geometric composition with muted sophisticated palettes (Sage, Slate, Terracotta)." },
+        { label: "[PRO] Typographic Window Mask", value: "The Window Effect: Subject visible only through giant serif typography. Masking logic with high-contrast finish.", previewUrl: "/previews/typographic-mask.png" },
+        { label: "[PRO] Sequential Recipe Infographic", value: "Culinary Blueprint: Central dish Hero, Ingredient nests on left, Semicircular glass step panels.", previewUrl: "/previews/culinary-infographic.jpg" },
+        { label: "[PRO] Isometric X-Ray Teardown", value: "Functional Hardware Teardown: 15% Accent Density (Red-Power, Blue-Data). Translucent cutaway logic.", previewUrl: "/previews/isometric-teardown.png" },
+        { label: "[PRO] AR Mixed-Reality FPV", value: "Gaze-responsive HUD: Peripheral shopping list, floating frosted glass data panels, realistic mixed reality.", previewUrl: "/previews/ar-fpv.png" },
+
+        { label: "[PRO] Architectural Cyanotype", value: "Chalk-on-Blue Blueprint: Engineering load-flow mapping overlaid on real-world environment photography." },
+        { label: "[PRO] Digital Collage Chaos", value: "Controlled Rebellion: Torn edges, layered textures, hand-drawn design elements, 2.5% typographic skew." },
+        { label: "[PRO] Monoline Vector Sticker Sheet", value: "High-End Sticker Set: Thick uniform monoline weight, solid off-white fill, thick white die-cut borders.", previewUrl: "/previews/sticker-sheet.png" },
+        { label: "[PRO] Cinematic Long-Exposure", value: "Temporal Contrast: Sharp subject vs. directional motion-blur crowd streaks. 85mm story-lens finish." },
+
+        { label: "[PRO] Curled Paper Portrait Mosaic", value: "Physical Tiling: 3D paper fragments with curled corners and realistic shadows on concrete background." },
+        { label: "[PRO] Fashion Editorial Triptych", value: "Cinematic Triptych: 3 stacked panels, visual continuity locks, varying lighting signatures." },
+        { label: "[PRO] B&W Technical Blueprint", value: "Engineering Study: Pure ink-on-photo, architectural drafting lines, functional movement arrows." },
+        { label: "[PRO] Mosaic Silhouette Tribute", value: "Dual Exposure Silhouette: Main subject profile acting as a window for micro-scaled lifestyle mosaic grid." },
+        { label: "[PRO] High-Speed Beverage Splash", value: "Kinetic Crown Splash: viscous liquid physics, micro-condensation 'chilled sweat', 1/8000s freeze." },
+        { label: "[PRO] Skincare Ecom Splash", value: "Minimalist Product Splash: Dewy droplets on label, centered top-down flatlay, directional sunlight shadows." },
+        { label: "[PRO] 3D City Map Diorama", value: "Macro-Scale Diorama: Miniature 3D architecture rising from a realistic geographic map surface. PBR materials." },
+        { label: "[PRO] PBR Educational Diorama", value: "Layered Step-Diorama: Stepped base showing ecological/mechanical stages. Faceless stylized figures." },
+        { label: "[PRO] Ink-Flow Narrative Macro", value: "Literary Life: Liquid ink transforming into 3D miniature scenes as it touches the fiber of the paper." },
+        { label: "[PRO] Industrial Aviation Sketchbook", value: "Concept Designer Sheet: High-fidelity hero paint-render on top, rough technical pen sketches below.", previewUrl: "/previews/notebook-doodle.png" },
+        { label: "[PRO] Product Heart Mosaic", value: "Valentine's Brand Momentum: Multiple 3D product items interlocked to form a perfect symmetrical heart shape on a flat vibrant background. Contact shadows and floating brand particles.", previewUrl: "/previews/product-heart-mosaic.jpg" },
+        { label: "[PRO] Colossal Scale Landmark", value: "Monumental scale advertising: A giant-sized [PRODUCT] towering over a real-world landscape (Arctic, Desert, City). Tiny human figures included for extreme scale contrast. Photorealistic." },
+        { label: "[PRO] 3D Voxel Deconstruction", value: "Material Transformation: A [SUBJECT] partially deconstructing/pixelating into clean geometric 3D voxels and cubes. Clean studio backdrop." },
+        { label: "[PRO] Levitating Island Diorama", value: "3D Geographic Diorama: A floating island shaped like the map of [REGION] levitating in the clouds with miniature landmarks and realistic topology." },
+        { label: "[PRO] Fourth-Wall Frame Pour", value: "Surreal Advertising: A subject within a golden picture frame pouring a liquid or reaching an object out of the frame into the real-world studio space." },
+        { label: "[PRO] Cybernetic Laser Gaze", value: "Experimental Portraiture: Single horizontal neon red laser beam slicing across the subject's eye. High-contrast noir lighting. Futuristic." },
+        { label: "[PRO] Miniature Brand Storefront", value: "Macro-Isometric Retail: A high-detail miniature 3D architectural model of a [BRAND] store on a solid color baseplate. PBR Toy-aesthetic." }
     ],
     video: [
         { label: "Cinematic Noir (Veo 3 + FLUX.2)", value: "Cinematic Noir, gritty cyberpunk realism, 35mm Anamorphic, Neo-Mumbai aesthetic, rain-slicked surfaces" },
@@ -45,8 +68,9 @@ const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
         { label: "Cyberpunk Neon Burst (Fast)", value: "Vibrant Cyberpunk, harsh pink/cyan neon rim lighting, motion-blurred high-speed action, metallic textures" },
         { label: "Handheld Documentary 16mm", value: "Raw 16mm handheld documentary style, natural film grain, organic camera shake, realistic focus pulling" },
         { label: "Anamorphic 8K CGI (Pro)", value: "Anamorphic 2.39:1 widescreen, global illumination, 8K RED Helium look, deep depth of field" },
-        { label: "[PRO] Cinematic Wellness (Sauna)", value: "Ultra-luxury traditional sauna portrait. Volumetric steam, dewy skin texture, dewy ivory complexion, warm diffused ambient lighting (3200K)." }
+        { label: "[PRO] Cinematic Wellness (Sauna)", value: "Ultra-luxury traditional sauna portrait. Volumetric steam, dewy skin texture, dewy ivory complexion, warm diffused ambient lighting (3200K).", previewUrl: "/previews/sauna-wellness.jpg" }
     ],
+
     medical: [
         { label: "Classic NEJM Editorial", value: "New England Journal of Medicine style, 2.5D soft volumetric digital painting, muted clinical colors, directional flow dynamics" },
         { label: "Professional BioRender Style", value: "BioRender-standard scientific illustration, clean 2.5D vector assets, matte plastic textures" },
@@ -56,7 +80,7 @@ const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
     vector: [
         { label: "Isometric 2.5D Bold", value: "Isometric 2.5D, bold minimalist, flat geometric colors, clean outlines" },
         { label: "Minimalist Brand Asset", value: "Ultra-minimalist brand asset, geometric symmetry, primary color profile, uniform strokes" },
-        { label: "[PRO] Trend Sticker Sheet", value: "High-end sticker sheet set. Modern monoline vector line art. Uniform thick line weight, solid off-white fill, thick white die-cut borders." }
+        { label: "[PRO] Monoline Sticker Sheet", value: "High-end sticker sheet set. Modern monoline vector line art. Uniform thick line weight, solid off-white fill, thick white die-cut borders." }
     ],
     manga: [
         { label: "Classic Shonen (Naruto/DBZ)", value: "Classic Shonen, bold action lines, high-contrast cel shading" },
@@ -70,6 +94,9 @@ const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
     ],
     storyboard: [
         { label: "[PRO] 3x3 Mockup Grid", value: "High-end designer storyboard presentation. 3x3 grid (9 equal panels). Focus on form, composition, and visual rhythm. Hero shot, close-ups, levitation, and geometric isometric angles." }
+    ],
+    food: [
+        { label: "Explosive Splash", value: "High-speed liquid splash crown, levitating ingredients, micro-condensation 'chilled sweat', 1/8000s freeze.", previewUrl: "/previews/food-explosive-splash.png" }
     ]
 };
 

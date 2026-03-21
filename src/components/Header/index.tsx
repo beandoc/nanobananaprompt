@@ -44,7 +44,7 @@ export function Header({ mode, setMode, setShowLibrary, onLogout }: HeaderProps)
                 </div>
 
                 <div className="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded-[1.25rem] shadow-inner">
-                    <Tooltip content="Switch to DTC Creative mode for skincare and brand ads.">
+                    <Tooltip content="Switch to Image Mode for professional product photography, editorial art, and high-end advertising.">
                         <button
                             onClick={() => setMode("ad")}
                             className={cn(
@@ -52,7 +52,7 @@ export function Header({ mode, setMode, setShowLibrary, onLogout }: HeaderProps)
                                 mode === "ad" ? "bg-white text-indigo-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                             )}
                         >
-                            <Zap className="w-3.5 h-3.5" /> DTC Creative
+                            <Zap className="w-3.5 h-3.5" /> Image Mode
                         </button>
                     </Tooltip>
                     <Tooltip content="Switch to Medical mode for anatomical and clinical illustrations.">
@@ -108,6 +108,17 @@ export function Header({ mode, setMode, setShowLibrary, onLogout }: HeaderProps)
                             )}
                         >
                             <Layers className="w-3.5 h-3.5 text-blue-500" /> Comic
+                        </button>
+                    </Tooltip>
+                    <Tooltip content="Switch to Food mode for culinary infographics.">
+                        <button
+                            onClick={() => setMode("food")}
+                            className={cn(
+                                "px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2",
+                                mode === "food" ? "bg-white text-amber-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
+                            )}
+                        >
+                            <Zap className="w-3.5 h-3.5 text-amber-500" /> Food
                         </button>
                     </Tooltip>
                 </div>

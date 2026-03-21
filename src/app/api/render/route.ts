@@ -13,7 +13,8 @@ function handleSuccessfulImage(base64Image: string, mode: Mode, contentType = 'i
         video: "renders/video",
         storyboard: "renders/storyboard",
         manga: "renders/manga",
-        comic: "renders/comic"
+        comic: "renders/comic",
+        food: "renders/food"
     };
     const folder = folderMap[mode] || "renders/ad";
     const filename = `render-${Date.now()}.png`;

@@ -1,9 +1,10 @@
-export type Mode = 'ad' | 'medical' | 'vector' | 'video' | 'storyboard' | 'manga' | 'comic';
+export type Mode = 'ad' | 'medical' | 'vector' | 'video' | 'storyboard' | 'manga' | 'comic' | 'food';
 export type AssetType = 'style' | 'subject' | 'structure';
 
 export interface StylePreset {
     label: string;
     value: string;
+    previewUrl?: string;
 }
 
 export interface CameraSettings {

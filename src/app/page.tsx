@@ -95,7 +95,11 @@ export default function Home() {
   const loadFromLibrary = useCallback((item: LibraryItem) => {
     setResult({
       data: item.content,
-      folder: item.type === 'ad' ? 'prompts' : 'medical_prompts',
+      folder: item.type === 'ad' ? 'prompts' : 
+              item.type === 'medical' ? 'medical_prompts' : 
+              item.type === 'vector' ? 'vector_prompts' :
+              item.type === 'video' ? 'video_prompts' :
+              item.type === 'food' ? 'food_prompts' : 'prompts',
       promptFile: item.name
     });
     setMode(item.type);
