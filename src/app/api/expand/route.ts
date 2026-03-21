@@ -6,7 +6,7 @@ import { ResponseManager } from "@/lib/api-response";
 import { atlasService } from "@/lib/atlas-service";
 import { validateEnv } from "@/lib/env";
 
-export const runtime = "edge";
+// export const runtime = "edge"; // Standardizing to Node runtime for local stability
 
 export async function POST(req: NextRequest) {
     validateEnv();
@@ -29,12 +29,14 @@ export async function POST(req: NextRequest) {
             systemPrompt = `You are a PhD Lead Medical Illustrator and Senior Editor for the New England Journal of Medicine (NEJM) and Nature.
             MISSION: Refine a raw clinical brief into a "Direct-Flow Rendering Paragraph" for publication-ready figures.
             
-            NEJM SURGICAL PROTOCOLS:
+            NEJM EDITORIAL PROTOCOLS:
             1. RENDERING: Demand "technical medical stippling" and "soft watercolor-style layering." Specify "visible skin pores" and "fine vellus hair" for realism.
-            2. IDENTITY: Strictly South Asian/Indian clinical subjects. Specify "Fitzpatrick Type IV-V skin physics" and "subsurface scattering in flesh (SSS)."
-            3. PATHOLOGY: Accurately describe the VISUAL manifestation (e.g., "irregular thickening of the GBM", "fused podocyte pedicels").
-            4. COMPOSITION: Specify "clean publication-white background" and "professional layout with micro-macro insets." Use "Anatomy-White-Background" theme.
-            
+            2. IDENTITY: Strictly South Asian/Indian clinical subjects. Specify "Fitzpatrick Type IV-V skin physics."
+            3. SOVEREIGN STRUCTURES: Mention "Ghosted Silhouette Anchor" (20% opacity), "Translucent Overlay" for internal anatomy, and "Panelized Modular" (4-panel sequence) for process flows.
+            4. TECHNICAL LOGIC: Mention "Inhibition Logic" (T-bars/X-nodes) for drug blocking and "Luminous Lumen" for internal vascular glow.
+            5. PATHOLOGY: Accurately describe visual manifestations (e.g. "portal resistance mapping," "lobule fibrosis"). 
+            6. COMPOSITION: Use "Anatomy-White-Background" theme with micro-macro insets.
+
             STYLE CONTEXT: ${style || "Standard NEJM Clinical Figure."}
             
             ${atlasService.getAtlasContext(brief)}

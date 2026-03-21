@@ -18,6 +18,13 @@ const getHeaders = () => {
 };
 
 async function handleResponse<T>(resp: Response): Promise<T> {
+    const contentType = resp.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+        const text = await resp.text();
+        console.error("Non-JSON response received:", text.substring(0, 100));
+        throw new Error(`API returned ${resp.status} ${resp.statusText}. Expected JSON but got ${contentType || 'plain text'}.`);
+    }
+
     const body: ApiResponse<T> = await resp.json();
     if (!resp.ok || !body.success) {
         throw new Error(body.error || `Request failed with status ${resp.status}`);
@@ -55,7 +62,7 @@ export const apiClient = {
     },
 
     async refinePrompt(body: RefineRequest): Promise<{ refinedPrompt: string }> {
-        const resp = await fetch("/api/refine", {
+        const resp = await fetch("/api/expand", {
             method: "POST",
             headers: getHeaders(),
             body: JSON.stringify(body)

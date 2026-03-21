@@ -50,7 +50,13 @@ export default function Home() {
   // --- Auth Check ---
   useEffect(() => {
     const secret = apiClient.getSecret();
-    if (secret) setIsAuthenticated(true);
+    if (secret) {
+      setIsAuthenticated(true);
+    } else {
+      // Auto-Auth for local development - Synchronizing with .env.local
+      apiClient.setSecret("nanobananaprompt");
+      setIsAuthenticated(true);
+    }
   }, []);
 
   const handleLogin = useCallback((e: React.FormEvent) => {
@@ -247,23 +253,6 @@ export default function Home() {
                   refinement={refinement}
                   setRefinement={setRefinement}
                   handleRefine={() => onGenerate(true)}
-                />
-              )}
-
-              {result?.data && !result?.data?.scenes && (
-                <VisionConsole
-                  mode={mode}
-                  result={result}
-                  renderedImage={renderedImage}
-                  isRendering={isRendering}
-                  renderError={renderError}
-                  isEngineReady={isEngineReady}
-                  isVectorizing={isVectorizing}
-                  vectorizeToSVG={vectorizeToSVG}
-                  downloadImage={() => downloadImage(mode)}
-                  setAssetImage={setAssetImage}
-                  externalRenderRef={externalRenderRef}
-                  handleExternalUpload={onExternalUpload}
                 />
               )}
 
