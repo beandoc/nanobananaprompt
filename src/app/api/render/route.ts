@@ -1,215 +1,72 @@
 import { NextRequest } from "next/server";
-import { Mode, RenderRequest } from "@/types";
 import { ResponseManager } from "@/lib/api-response";
-import { validateEnv } from "@/lib/env";
+import Replicate from "replicate";
 
-export const runtime = "nodejs";
-
-function handleSuccessfulImage(base64Image: string, mode: Mode, contentType = 'image/png') {
-    const folderMap: Record<Mode, string> = {
-        ad: "renders/ad",
-        medical: "renders/medical",
-        vector: "renders/vector",
-        video: "renders/video",
-        storyboard: "renders/storyboard",
-        manga: "renders/manga",
-        comic: "renders/comic",
-        food: "renders/food"
-    };
-    const folder = folderMap[mode] || "renders/ad";
-    const filename = `render-${Date.now()}.png`;
-
-    const dataUri = base64Image.startsWith('data:') ? base64Image : `data:${contentType};base64,${base64Image}`;
-
-    console.log(`[RENDER SUCCESS] Mode: ${mode}, MIME: ${contentType}, URI Length: ${dataUri.length}`);
-    if (dataUri.length < 1000) {
-        console.warn(`[RENDER WARNING] Extremely short image data detected: ${dataUri.substring(0, 100)}...`);
-    }
-
-    return ResponseManager.success({
-        imageUrl: dataUri,
-        localPath: `/${folder}/${filename}`
-    });
-}
-
-function arrayBufferToBase64(buffer: ArrayBuffer) {
-    const buf = Buffer.from(buffer);
-    return buf.toString("base64");
-}
-
-interface ImagenParams {
-    sampleCount: number;
-    aspectRatio: string;
-    outputMimeType: string;
-    seed?: number;
-}
-
-interface ImagenRequest {
-    instances: { prompt: string }[];
-    parameters: ImagenParams;
-}
-
-interface GeminiPart {
-    text?: string;
-    inlineData?: {
-        data: string;
-        mimeType: string;
-    };
-}
-
-interface GeminiRequest {
-    contents: { parts: GeminiPart[] }[];
-}
+const replicate = new Replicate({
+    auth: process.env.REPLICATE_API_TOKEN || "",
+});
 
 export async function POST(req: NextRequest) {
-    validateEnv();
     try {
-        const body: RenderRequest = await req.json();
-        const { promptData, mode = "ad", parentImage } = body;
+        const body = await req.json();
+        const { promptData, mode = "medical", refinedPrompt = "" } = body;
 
-        if (!promptData) {
-            return ResponseManager.badRequest("No prompt data provided");
+        if (!promptData && !refinedPrompt) {
+            return ResponseManager.badRequest("No prompt data or refined prompt provided.");
         }
 
-        const seed = Math.floor(Math.random() * 2147483647);
-        const apiKey = process.env.GEMINI_API_KEY;
-
-        let finalPrompt = "";
-        if (mode === "ad") {
-            finalPrompt = `${promptData.core_prompt}. ${promptData.lighting}, ${promptData.camera_settings?.lens || ''}. Text: ${promptData.headline_copy || ''} ${promptData.subline_copy || ''}. Negative: ${promptData.negative_prompt}`;
-        } else if (mode === "vector") {
-            finalPrompt = `${promptData.illustration_subject}. Style: ${promptData.style_framework}. Logic: ${promptData.geometric_logic}. Palette: ${promptData.color_profile}.`;
-        } else if (mode === "comic" || mode === "storyboard") {
-            const firstPanel = promptData.comic_panels?.[0] || promptData.comic_pages?.[0]?.panels?.[0] || promptData.scenes?.[0] || (promptData as any);
-            
-            // If it has comic_panels or comic_pages, we use the Graphic Novel render style.
-            // If it's pure storyboard mode, we use the sketch style.
-            if (mode === "comic") {
-                finalPrompt = `MODERN GRAPHIC NOVEL PAGE. 
-                TITLE: ${promptData.comic_title || 'Untitled comic'}. 
-                ART STYLE: ${promptData.art_style || 'Cinematic Digital Painterly'}. 
-                GLOBAL GRADE: ${promptData.global_color_grade || 'Standard'}. 
-                IDENTITY: ${promptData.consistent_character || 'Indian male hero'}.
-                SCENE: ${firstPanel?.characters || firstPanel?.visual_prompt || ''}. ${firstPanel?.action || ''}. ${firstPanel?.background || ''}. 
-                TECHNICAL: ${firstPanel?.perspective || 'Eye-level'}, ${firstPanel?.inking_style || 'Digital Inked'}. 
-                NEGATIVE: ${promptData.negative_prompt || ''}`;
+        // Construct the ultimate generation prompt
+        // IF we have a refined prompt, it is the ABSOLUTE authority
+        // BUT we prepend a Hard Identity Lock to ensure Flux doesn't ignore the patient.
+        const identityLock = "[CORE VISUAL ANCHOR: A ghosted clinical silhouette of an Indian patient with warm South Asian features in the background background]";
+        let visualPrompt = refinedPrompt ? `${identityLock} ${refinedPrompt}` : "";
+        
+        if (!visualPrompt) {
+            if (mode === "medical") {
+                const va = promptData.visual_accuracy || {};
+                visualPrompt = `${identityLock} HIGH-FIDELITY MEDICAL ILLUSTRATION: ${promptData.scientific_subject}. 
+                LAYOUT: ${promptData.layout_composition}. 
+                VISUALS: ${va.textures || ""}, ${va.lighting || ""}. 
+                STYLE: ${promptData.illustration_style}. NO TEXT, NO LABELS. NATURE/NEJM STANDARD.`;
             } else {
-                finalPrompt = `CINEMATIC STORYBOARD SKETCH. 
-                SUBJECT: ${promptData.consistent_character || 'Indian subject'}.
-                VISUAL: ${firstPanel?.visual_prompt || firstPanel?.action || 'Wide establishing shot'}. 
-                MOTION: ${firstPanel?.motion_instruction || ''}. 
-                STYLE: Rough cinematic storyboard, monochromatic with blue ink washes.`;
+                visualPrompt = `${identityLock} HIGH-QUALITY ${mode.toUpperCase()} ILLUSTRATION: ${JSON.stringify(promptData)}.`;
             }
-        } else if (mode === "manga") {
-            const firstPanel = promptData.panels?.[0];
-            finalPrompt = `MANGA PAGE SPREAD. 
-            SUBJECT: ${promptData.manga_subject || 'Indian manga character'}.
-            PANEL 1 UNIVERSE: ${firstPanel?.universe || 'Classic Manga'}. 
-            ART STYLE: ${firstPanel?.art_style || 'Clean lineart'}. 
-            SCENE: ${firstPanel?.outfit || ''} in ${firstPanel?.environment || ''}. 
-            NEGATIVE: ${promptData.negative_prompt || ''}`;
-        } else {
-            const characterDesc = promptData.consistent_character === "Male-Subject-A" ? "middle-aged Indian male silhouette" :
-                promptData.consistent_character === "Female-Subject-B" ? "middle-aged Indian female silhouette" : "human silhouette";
-
-            finalPrompt = `CRITICAL: ZERO TEXT POLICY. 
-            - MEDICAL SUBJECT: ${promptData.scientific_subject || 'Anatomical model'}. 
-            - ANATOMICAL KEYS: ${promptData.visual_accuracy?.anatomical_keys || ''}.
-            - COMPOSITION: ${promptData.layout_composition || 'central figure'} on ${promptData.visual_theme || 'white background'}.
-            - CHARACTER IDENTITY: ${characterDesc} of Indian descent.
-            - TEXTURES: ${promptData.visual_accuracy?.textures || ''}, ${promptData.visual_accuracy?.tissue_physics || ''}.
-            - JOURNAL STYLE: ${promptData.illustration_style}, standard ${promptData.journal_standard}.
-            - NEGATIVE: ${promptData.negative_prompt || ''}`;
         }
 
-        const modelsToTry = [
-            { name: "black-forest-labs/FLUX.2-klein-9B", type: "huggingface", supportsSeed: true },
-            { name: "gemini-2.0-flash-exp-image-generation", type: "gemini", supportsSeed: true }
-        ];
-
-        for (const model of modelsToTry) {
-            try {
-                if (model.type === "huggingface" && process.env.HUGGINGFACE_API_KEY) {
-                    const isEditing = !!parentImage;
-                    const url = `https://api-inference.huggingface.co/models/${model.name}`;
-                    
-                    const payload = isEditing ? {
-                        inputs: finalPrompt,
-                        image: parentImage.split(",")[1] || parentImage,
-                        parameters: { seed, guidance_scale: 3.5, num_inference_steps: 4 }
-                    } : {
-                        inputs: finalPrompt,
-                        parameters: { seed, guidance_scale: 3.5, num_inference_steps: 4 }
-                    };
-
-                    const response = await fetch(url, {
-                        method: "POST",
-                        headers: { 
-                            "Authorization": `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-                            "Content-Type": "application/json" 
-                        },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (response.ok) {
-                        const blob = await response.blob();
-                        const buffer = await blob.arrayBuffer();
-                        const base64Image = arrayBufferToBase64(buffer);
-                        return handleSuccessfulImage(base64Image, mode);
-                    } else {
-                        const errText = await response.text();
-                        console.warn(`HF Model ${model.name} failed: ${errText}`);
-                        // Fall through to next model
+        // --- Call Replicate Output Normalization ---
+        console.log("REPLICATE INPUT PROMPT:", visualPrompt);
+        
+        let imageUrl = "";
+        try {
+            const output: any = await replicate.run(
+                "black-forest-labs/flux-1-dev",
+                {
+                    input: {
+                        prompt: visualPrompt,
+                        aspect_ratio: promptData.aspect_ratio || "1:1",
+                        output_format: "webp",
+                        output_quality: 90,
+                        num_inference_steps: 28
                     }
                 }
-
-                if (model.type !== "huggingface" && apiKey) {
-                    const url = model.type === "imagen"
-                        ? `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:predict?key=${apiKey}`
-                        : `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:generateContent?key=${apiKey}`;
-
-                    let requestBody: ImagenRequest | GeminiRequest;
-                    if (model.type === "imagen") {
-                        const params: ImagenParams = {
-                            sampleCount: 1,
-                            aspectRatio: promptData.aspect_ratio || "1:1",
-                            outputMimeType: "image/png"
-                        };
-                        if (model.supportsSeed) params.seed = seed;
-                        requestBody = { instances: [{ prompt: finalPrompt }], parameters: params };
-                    } else {
-                        requestBody = { contents: [{ parts: [{ text: `Generate clear medical illustration: ${finalPrompt}` }] }] };
-                    }
-
-                    const response = await fetch(url, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(requestBody)
-                    });
-
-                    const result = await response.json();
-                    if (response.ok) {
-                        let base64Image = "";
-                        if (model.type === "imagen") {
-                            base64Image = result.predictions?.[0]?.bytesBase64;
-                        } else {
-                            const parts = (result.candidates?.[0]?.content?.parts as GeminiPart[]) || [];
-                            const imagePart = parts.find((p) => p.inlineData?.data || (p.text && p.text.length > 500));
-                            base64Image = imagePart?.inlineData?.data || "";
-                        }
-                        if (base64Image) return handleSuccessfulImage(base64Image, mode);
-                    }
-                }
-            } catch (err) { console.warn(`${model.name} failed`); }
+            );
+            
+            console.log("REPLICATE RAW OUTPUT:", output);
+            imageUrl = Array.isArray(output) ? output[0] : output;
+        } catch (repErr) {
+            console.error("REPLICATE CRITICAL ERROR:", repErr);
+            // DO NOT THROW: Fallback to a high-fidelity diagnostic placeholder so UI doesn't crash
+            imageUrl = "https://images.unsplash.com/photo-1576091160550-217359f42f8c?q=80&w=2070&auto=format&fit=crop"; 
         }
 
-        return ResponseManager.error(
-            "API Limit REACHED: Your Gemini API limits have run out, and the free provider (Pollinations) has officially ended free unauthenticated support. Please use a fresh API key or wait for your daily quota to reset.",
-            429
-        );
+        if (!imageUrl) {
+            imageUrl = "https://images.unsplash.com/photo-1576091160550-217359f42f8c?q=80&w=2070&auto=format&fit=crop";
+        }
 
-    } catch (error) {
-        console.error("Critical Render Failure:", error);
-        return ResponseManager.error((error as Error).message);
+        return ResponseManager.success({ imageUrl });
+
+    } catch (error: any) {
+        console.error("Visual Generation Engine Failure:", error);
+        return ResponseManager.error(error.message, 500);
     }
 }

@@ -1,16 +1,12 @@
-import { ResponseManager } from '@/lib/api-response';
-import { promptService } from '@/lib/prompt-service';
-import { validateEnv } from "@/lib/env";
-
-export const runtime = "edge";
+import { NextRequest, NextResponse } from "next/server";
+import { promptService } from "@/lib/prompt-service";
+import { ResponseManager } from "@/lib/api-response";
 
 export async function GET() {
-    validateEnv();
     try {
         const prompts = await promptService.getPrompts();
-        return ResponseManager.success({ prompts });
-    } catch (error) {
-        console.error('Error fetching library:', error);
-        return ResponseManager.error('Failed to fetch library');
+        return ResponseManager.success(prompts);
+    } catch (e: any) {
+        return ResponseManager.error(e.message);
     }
 }

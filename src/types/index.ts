@@ -192,12 +192,14 @@ export interface GenerationResult {
     data: BlueprintData;
     promptFile: string;
     folder: string;
+    refinedPrompt?: string;
 }
 
 export interface RenderRequest {
     promptData: BlueprintData;
     mode: Mode;
     parentImage: string | null;
+    refinedPrompt?: string;
 }
 
 export interface GenerateRequest {
@@ -205,9 +207,9 @@ export interface GenerateRequest {
     mode: Mode;
     isStoryboard: boolean;
     style: string;
-    image: string | null;
+    image?: string | null;
     previousImage?: string | null;
-    assetInstruction: AssetType;
+    assetInstruction?: AssetType;
     parentPrompt?: BlueprintData | null;
 }
 

@@ -9,19 +9,17 @@ export function useRender() {
     const [renderedImage, setRenderedImage] = useState<string | null>(null);
     const [renderError, setRenderError] = useState<string | null>(null);
 
-    const renderBlueprint = useCallback(async (promptData: BlueprintData, mode: Mode, parentImage: string | null) => {
+    const renderBlueprint = useCallback(async (promptData: BlueprintData, mode: Mode, parentImage: string | null, refinedPrompt: string = "") => {
         if (!promptData) return null;
 
         setIsRendering(true);
         setRenderError(null);
 
-        const request: RenderRequest = { promptData, mode, parentImage };
+        const request: RenderRequest = { promptData, mode, parentImage, refinedPrompt };
 
         try {
             const data = await apiClient.renderImage(request);
 
-            // Reverting to direct base64 for better compatibility with next/image in dev 
-            // while minimizing state overhead elsewhere.
             if (data && data.imageUrl) {
                 setRenderedImage(data.imageUrl);
                 return data.imageUrl;

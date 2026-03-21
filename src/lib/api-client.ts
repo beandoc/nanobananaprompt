@@ -62,10 +62,10 @@ export const apiClient = {
     },
 
     async refinePrompt(body: RefineRequest): Promise<{ refinedPrompt: string }> {
-        const resp = await fetch("/api/expand", {
+        const resp = await fetch("/api/generate", {
             method: "POST",
             headers: getHeaders(),
-            body: JSON.stringify(body)
+            body: JSON.stringify({ ...body, isExpansionRequest: true })
         });
         return handleResponse<{ refinedPrompt: string }>(resp);
     },

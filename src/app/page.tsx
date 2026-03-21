@@ -112,37 +112,44 @@ export default function Home() {
     setShowLibrary(false);
   }, [setResult]);
 
-  const onGenerate = useCallback(async (isRefinement = false) => {
-    const res = await generateBlueprint({
-      mode,
-      isStoryboard,
-      selectedStyle,
-      assetImage,
-      assetType,
-      isRefinement,
-      refinement
-    });
-    
-    if (res && res.data && !isStoryboard) {
-      renderBlueprint(res.data, mode, assetImage);
-    }
+  const onGenerate = useCallback(async () => {
+    if (!brief) return;
 
-    if (!res && !error) {
-      setAuthError(true);
+    try {
+      const res = await apiClient.generateBlueprint({
+        mode,
+        brief,
+        isStoryboard,
+        style: selectedStyle
+      });
+
+      // Update the text box with the refined paragraph automatically
+      if (res.refinedPrompt) {
+        setBrief(res.refinedPrompt);
+      }
+
+      setResult({
+        data: res.data,
+        promptFile: res.promptFile,
+        folder: res.folder,
+        refinedPrompt: res.refinedPrompt
+      });
+      
+    } catch (err: any) {
+      console.error("Single-Shot Generation Error:", err);
     }
-    if (res && isRefinement) setRefinement("");
-  }, [generateBlueprint, mode, isStoryboard, selectedStyle, assetImage, assetType, refinement, error, renderBlueprint]);
+  }, [brief, mode, isStoryboard, selectedStyle, setBrief, setResult]);
 
   // --- Manual Render Trigger for Vision Console ---
   useEffect(() => {
     (window as any).triggerGlobalRender = () => {
-      if (result?.data) renderBlueprint(result.data, mode, assetImage);
+      if (result?.data) renderBlueprint(result.data, mode, assetImage, result.refinedPrompt);
     };
   }, [result, mode, assetImage, renderBlueprint]);
 
   const onRefine = useCallback(async () => {
     if (isStoryboard) {
-      onGenerate(false);
+      onGenerate();
       return;
     }
     const refined = await refineBrief(brief, mode, isStoryboard, selectedStyle, assetImage);
@@ -232,8 +239,8 @@ export default function Home() {
             selectedStyle={selectedStyle}
             setSelectedStyle={setSelectedStyle}
             isLoading={isLoading || isRefining}
-            handleGenerate={() => onGenerate(false)}
-            refinePrompt={onRefine}
+            handleGenerate={onGenerate}
+            refinePrompt={onGenerate}
             fileInputRef={fileInputRef}
             handleFileUpload={handleFileUpload}
           />
@@ -252,7 +259,7 @@ export default function Home() {
                   isLoading={isLoading}
                   refinement={refinement}
                   setRefinement={setRefinement}
-                  handleRefine={() => onGenerate(true)}
+                  handleRefine={onGenerate}
                 />
               )}
 
@@ -281,7 +288,7 @@ export default function Home() {
                   consistentCharacter={result.data.consistent_character}
                   productionCredits={result.data.production_credits}
                   handleCopy={handleCopy}
-                  onRender={(panelData) => renderBlueprint(panelData, 'comic', assetImage)}
+                  onRender={(panelData) => renderBlueprint(panelData, 'comic', assetImage, result?.refinedPrompt)}
                   copySuccess={copySuccess}
                 />
               )}
