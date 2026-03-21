@@ -186,6 +186,26 @@ EXAMPLE 2 (Perfect BioRender Schematic):
   "consistent_character": "No-Human-Figure",
   "visual_theme": "BioRender-Pastel"
 }
+
+EXAMPLE 3 (High-Impact Nephrology Infographic):
+{
+  "scientific_subject": "Renal Pathophysiology: Multi-panel diagram showing Whole Kidney macro-view, Cortex/Medulla tissue section, and Glomerular Filtration detail.",
+  "layout_composition": "micro-macro-inset",
+  "illustration_style": "biorender-mechanism-action",
+  "visual_accuracy": {
+    "textures": "Smooth semi-translucent renal tubules, detailed podocyte foot processes, delicate glomerular basement membrane.",
+    "lighting": "even-ambient-clean",
+    "tissue_physics": "Soft subsurface scattering for organ tissue, high specularity on bloodstream capillaries.",
+    "anatomical_keys": "Cortex, Medulla, Glomerulus closeup, Efferent arteriole, Proximal convoluted tubule.",
+    "labeling_safe_zones": "Clearance for signal pathway arrows and pharmacological tags."
+  },
+  "pharmacological_tags": ["RAAS inhibitor", "SGLT2 inhibitor", "GLP-1RA", "Non-steroidal MRA"],
+  "pathway_markers": true,
+  "journal_standard": "BioRender-standard",
+  "negative_prompt": "No low-resolution, no inaccurate anatomy, no blood-horror, no vibrant-neon, no grids.",
+  "consistent_character": "No-Human-Figure",
+  "visual_theme": "Systemic-Pathogenesis"
+}
 `;
 
 const JSON_PROMPTING_PHILOSOPHY = `
@@ -380,8 +400,21 @@ export async function POST(req: NextRequest) {
             
             JOURNAL STANDARDS:
             - BioRender: Clean, plasticine 2.5D surfaces, matte textures, pastel clinical palettes, high-contrast asset isolation.
-            - NEJM: Technical stippling, soft watercolor-style layering, muted 'classic textbook' tonal shifts.
+            - NEJM: Technical stippling, soft watercolor-style layering, muted 'classic textbook' tonal shifts. Use 'Ghosted Silhouette Anchor' for truncal anatomy.
             - Nature: Volumetric transparency, vibrant biological glows (bioluminescence), cellular-level physics.
+            
+            NEJM EDITORIAL PROTOCOLS:
+            1. GHOSTED SILHOUETTE: Use a translucent Indian human silhouette (20% opacity) as the base anchor. 
+            2. TRANSLUCENT OVERLAY: Render internal anatomy visible through skin with technical stippling.
+            3. INHIBITION LOGIC: Use 'T-bars' and 'X' nodes to illustrate pharmacodynamic blocking.
+            4. 2.5D DEPTH: Apply micro-contact shadows and "Halogen Halos" to activated immune cells.
+            5. LUMINOUS LUMEN/MATRIX: Internal soft-glow light for heart chambers and organelle interiors (Matrix/Cristae).
+            6. MULTI-MODAL BLEND: Integrate 2.5D assets with 2D charts, EKG strips, or 3D technical protein ribbons.
+            7. MOLECULAR BLUEPRINT: Muted color-coding for DNA/Proteins (Teal, Mauve, Peach).
+            8. MORPHOLOGICAL ODYSSEY: Illustrate state-changes (Platelet activation) and intracellular flows (ER -> Golgi -> Surface).
+            9. GHOSTED APPARATUS: Medical machinery (MRI, Robots) at 10-15% opacity.
+            10. THE ID BUBBLE: High-contrast circular inset for identification within a complex field.
+            11. PANELIZED MODULAR: Construct 4-grid "Infographic Stories" with unified titles.
             
             STRICT RULE: Focus on 'anatomical_keys' that a specialist would verify. NEVER add medical hardware unless explicitly requested.
             

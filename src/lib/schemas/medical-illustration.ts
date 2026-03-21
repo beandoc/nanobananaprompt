@@ -37,13 +37,22 @@ export const medicalIllustrationSchema: Schema = {
         },
         negative_prompt: {
             type: SchemaType.STRING,
-            description: "MANDATORY EXCLUSIONS (always include ALL of these): 'ABSOLUTELY NO TEXT of any kind - no labels, no captions, no titles, no words, no letters, no numbers. No arrows, no leader-lines, no annotations, no callout boxes with text. No medical devices, implants, pacemakers, stents, catheters, or surgical hardware UNLESS explicitly requested in the scientific_subject. No cartoonish rendering, no low-resolution, no inaccurate anatomy, no blood-horror (unless surgical context), no vibrant-neon, no grids, no excessive-gradients'."
+            description: "MANDATORY EXCLUSIONS. If mode is 'journal-standard', include: 'ABSOLUTELY NO TEXT, labels, or arrows'. If mode is 'infographic', include: 'No low-resolution, no inaccurate anatomy, no blood-horror, no vibrant-neon, no grids'."
         },
         consistent_character: {
             type: SchemaType.STRING,
             format: "enum",
             enum: ["Male-Subject-A", "Female-Subject-B", "No-Human-Figure"],
             description: "Locks the physical characteristics of the human figure for textbook-wide consistency."
+        },
+        pharmacological_tags: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING },
+            description: "Pill-shaped label tags for medications or signals (e.g., 'RAAS inhibitor', 'SGLT2 inhibitor')."
+        },
+        pathway_markers: {
+            type: SchemaType.BOOLEAN,
+            description: "Whether to include functional arrows and signal flow markers."
         },
         visual_theme: {
             type: SchemaType.STRING,
