@@ -187,14 +187,14 @@ EXAMPLE 2 (Perfect BioRender Schematic):
 
 const JSON_PROMPTING_PHILOSOPHY = `
 JSON PROMPTING PHILOSOPHY:
-1. DERMATOLOGICAL ACCURACY: For Indian/South Asian subjects (Fitzpatrick III-VI), describe inflammation as "purple-tinged" or "darkening" rather than "bright red."
-2. TISSUE PHYSICS: Describe how light behaves biologically—"subsurface scattering in flesh", "high specular reflection on mucosa", "translucent fluid dynamics".
-3. JOURNAL STANDARDS: 
-   - NEJM: Technical stippling, muted tonal layering, classic textbook precision.
-   - BioRender: Clean 2.5D geometry, matte plasticine textures, clinical pastel palettes.
-   - Nature: Cellular-level transparency, bioluminescence, and complex volumetric light.
-4. ASSET ISOLATION: For product or medical components, specify "matte cardboard", "bricked metal", or "synthetic polymer" textures.
-5. NO HALLUCINATION: Strictly avoid adding random text or labels (Zero-Text Ban).
+1. PRODUCTION-GRADE PHASING: Structure prompts in phases (Phase 1: Composition/Geometry, Phase 2: Materiality/Lighting, Phase 3: Brand/Finish).
+2. DERMATOLOGICAL ACCURACY: For Indian/South Asian subjects (Fitzpatrick III-VI), describe inflammation as "purple-tinged" or "darkening" rather than "bright red."
+3. TISSUE PHYSICS: Describe biological light behavior: "subsurface scattering in flesh", "fine vellus hair", "high-specularity mucosal reflection".
+4. HARDWARE FIDELITY: Use specific hardware cues: "iPhone 16 Pro Max rear camera" for UGC or "Hasselblad 100mm Macro" for product hero shots.
+5. MATERIAL ACCURACY: Describe textures exhaustively: "terry cloth loops", "Western Red Cedar grain", "matte cardboard", "high-gloss label condensation".
+6. IDENTITY LOCK: All human subjects MUST be of Indian descent (South Asian features, warm skin tones, authentic Indian styling).
+7. COMPOSITIONAL RHYTHM: Use "Visual Rhythm" for grids and "The Sandwich Effect" to interweave subjects with graphic elements.
+8. ZERO TEXT BEYOND BLUEPRINT: Avoid random text hallucinations. Only include exact text specified in the schema.
 `;
 
 const AD_FEW_SHOT = `
@@ -290,13 +290,17 @@ export async function POST(req: NextRequest) {
 
         let domainInstruction = JSON_PROMPTING_PHILOSOPHY + "\n";
         if (mode === "ad") {
-            domainInstruction += `You are an Elite Performance Creative Director. CORE MISSION: Transform mundane briefs into scroll-stopping ad creatives. 
-            RULES: 
-            1. PRODUCT IS THE HERO: Product must be the sharpest, most lit element. Entire product must be in frame. 
-            2. RELATABLE MODELS: Use Indian everyday people (mid-30s/40s). No influencers, no jewelry, no styled hair. 
-            3. FACE DE-EMPHASIS: Model's face MUST be partially cropped at top or looking down at product. 
-            4. PAIN-POINT COPY: Headline must be a direct question or bold statement naming a frustration (e.g. 'STILL FREEZING?'). NO duplicate words. 
-            5. COMPOSITION: Product/Subject on Right, Copy on Left (40% width). Background simple and blurry.
+            domainInstruction += `You are an Elite Performance Creative Director and Production Art Director. 
+            CORE MISSION: Transform raw briefs into scroll-stopping, high-production-value ad creatives.
+
+            PRODUCTION PROTOCOL:
+            1. THE SANDWICH EFFECT: Interweave the subject with graphic elements. Some parts hidden behind blocks, others overlapping to create 3D depth.
+            2. PRODUCT IS THE HERO: Product must be the sharpest, most lit element. Exhaustive material description (e.g., "high-gloss label," "matte bottle finish").
+            3. ADVANCED LIGHTING: Use "rim-lit anatomical," "moody rim lighting," or "soft-box studio lighting" to accentuate rich textures.
+            4. IDENTITY LOCK: Use Indian everyday people (South Asian heritage). Natural styling, no heavy influencer glam.
+            5. DYNAMIC SUBJECT LOGIC: Use "Visual Rhythm" in compositions. High-end social media lifestyle aesthetic meets commercial polish.
+            6. SOPHISTICATED MUTED PALETTES: Use desaturated "dusty" versions of brand colors (e.g., sage green vs mint, slate blue vs royal blue).
+            
             STYLE PALETTES:
             - Outdoor/Rugged: Earthy tones (forest green, rust, mud brown).
             - Beauty/Wellness: Soft warm tones (peach, ivory, blush).

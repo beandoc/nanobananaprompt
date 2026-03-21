@@ -30,10 +30,10 @@ export async function POST(req: NextRequest) {
             MISSION: Refine a raw clinical brief into a "Direct-Flow Rendering Paragraph" for publication-ready figures.
             
             NEJM SURGICAL PROTOCOLS:
-            1. RENDERING: Demand "technical medical stippling" and "soft watercolor-style layering." Avoid glossy surfaces; use "matte biological finishes."
-            2. IDENTITY: Strictly South Asian/Indian clinical subjects. Specify "Fitzpatrick Type IV-V skin physics."
+            1. RENDERING: Demand "technical medical stippling" and "soft watercolor-style layering." Specify "visible skin pores" and "fine vellus hair" for realism.
+            2. IDENTITY: Strictly South Asian/Indian clinical subjects. Specify "Fitzpatrick Type IV-V skin physics" and "subsurface scattering in flesh (SSS)."
             3. PATHOLOGY: Accurately describe the VISUAL manifestation (e.g., "irregular thickening of the GBM", "fused podocyte pedicels").
-            4. COMPOSITION: Always specify a "clean publication-white background" and "professional layout with micro-macro insets."
+            4. COMPOSITION: Specify "clean publication-white background" and "professional layout with micro-macro insets." Use "Anatomy-White-Background" theme.
             
             STYLE CONTEXT: ${style || "Standard NEJM Clinical Figure."}
             
@@ -44,12 +44,13 @@ export async function POST(req: NextRequest) {
             RETURN ONLY THE REFINED PARAGRAPH.`;
         } else if (mode === "video" || mode === "ad") {
             systemPrompt = `You are a World-Class Creative Director and Cinematographer.
-            MISSION: Refine this brief into a cinematic "Direct-Flow Rendering Paragraph" optimized for FLUX.2 Klein and Google Veo 3.
+            MISSION: Refine this brief into a cinematic "Production Blueprint Paragraph" optimized for FLUX.2 Klein and Google Veo 3.
             
-            CORE PROTOCOLS:
-            1. IDENTITY: All human subjects MUST be Indian descent (modern urban styling, warm South Asian skin tones).
-            2. PHYSICS: High-contrast Chiaroscuro lighting, volumetric smoke/fog, and "rain-slicked" or "dust-shrouded" textures.
-            3. CAMERA: Specify lens (Anamorphic, Macro) and path (Slow-dolly, Dutch angle).
+            PRODUCTION PROTOCOLS:
+            1. PHASING: Segment the prompt—Phase 1: Composition (e.g. "The Sandwich Effect," "Visual Rhythm"), Phase 2: Materiality (e.g. "terry cloth loops," "matte Western Red Cedar"), Phase 3: Hardware (e.g. "iPhone 16 Pro Max rear camera," "85mm f/1.8").
+            2. IDENTITY: All human subjects MUST be Indian descent (modern urban styling, warm South Asian skin tones).
+            3. PHYSICS: High-contrast Chiaroscuro lighting, volumetric smoke/fog, and "rain-slicked" or "dust-shrouded" textures.
+            4. LIGHTING: Specify "rim-lit anatomical," "moody rim lighting," or "soft-box studio lighting."
             
             STYLE CONTEXT: ${style || "Cinematic Noir 8K."}
             IDENTITY LOCK: ${isPhysical ? "Characters must be handcrafted models with visible clay fingerprints and authentic clothing textures. LIGHTING: Mixed-source cinematography. ENVIRONMENT: 1:12 scale miniature world with Devanagari signage." : ""}

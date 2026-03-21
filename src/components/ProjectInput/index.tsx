@@ -34,33 +34,43 @@ const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
         { label: "Clean Ecom", value: "clean-ecom" },
         { label: "UGC iPhone Selfie", value: "ugc-iphone-selfie" },
         { label: "Outdoor/Rugged", value: "Outdoor/Rugged: Earthy tones (forest green, rust, mud brown)" },
-        { label: "Beauty/Wellness", value: "Beauty/Wellness: Soft warm tones (peach, ivory, blush)" }
+        { label: "Beauty/Wellness", value: "Beauty/Wellness: Soft warm tones (peach, ivory, blush)" },
+        { label: "[PRO] Typographic Window Mask", value: "Senior Editorial Designer: Typographic Mask (The Window Effect). Letters are giant, filling entire frame. Subject visible only through letterforms. High-contrast accent colors." },
+        { label: "[PRO] Digital Collage Chaos", value: "Youth-oriented digital collage: fashion photography merged with graphic design chaos. Torn edges, layered textures, hand-drawn elements, bold color blocking. Anti-polished." },
+        { label: "[PRO] 2000s Paparazzi Tabloid", value: "2000s Paparazzi-style extreme close-up. Harsh on-camera flash, grainy high-ISO, raw candid street-photography feel. 35mm paparazzi lens look." }
     ],
     video: [
         { label: "Cinematic Noir (Veo 3 + FLUX.2)", value: "Cinematic Noir, gritty cyberpunk realism, 35mm Anamorphic, Neo-Mumbai aesthetic, rain-slicked surfaces" },
         { label: "High-Fashion Dior Style (Pro)", value: "High-fashion editorial, clean golden-hour desert landscape, flowing silk fabrics, Vogue aesthetic" },
         { label: "Cyberpunk Neon Burst (Fast)", value: "Vibrant Cyberpunk, harsh pink/cyan neon rim lighting, motion-blurred high-speed action, metallic textures" },
         { label: "Handheld Documentary 16mm", value: "Raw 16mm handheld documentary style, natural film grain, organic camera shake, realistic focus pulling" },
-        { label: "Anamorphic 8K CGI (Pro)", value: "Anamorphic 2.39:1 widescreen, global illumination, 8K RED Helium look, deep depth of field" }
+        { label: "Anamorphic 8K CGI (Pro)", value: "Anamorphic 2.39:1 widescreen, global illumination, 8K RED Helium look, deep depth of field" },
+        { label: "[PRO] Cinematic Wellness (Sauna)", value: "Ultra-luxury traditional sauna portrait. Volumetric steam, dewy skin texture, dewy ivory complexion, warm diffused ambient lighting (3200K)." }
     ],
     medical: [
         { label: "Classic NEJM Editorial", value: "New England Journal of Medicine style, 2.5D soft volumetric digital painting, muted clinical colors, directional flow dynamics" },
         { label: "Professional BioRender Style", value: "BioRender-standard scientific illustration, clean 2.5D vector assets, matte plastic textures" },
-        { label: "Macro-Probe Lens (Scientific)", value: "Ultra-macro probe lens movement, 1000fps slow motion, scientific microscopic focus" }
+        { label: "Macro-Probe Lens (Scientific)", value: "Ultra-macro probe lens movement, 1000fps slow motion, scientific microscopic focus" },
+        { label: "[PRO] Isometric Technical Tear-down", value: "Exploded product infographic: isometric 3D perspective showing internal mechanics, micro screws, and components suspended in perfect alignment." }
     ],
     vector: [
         { label: "Isometric 2.5D Bold", value: "Isometric 2.5D, bold minimalist, flat geometric colors, clean outlines" },
-        { label: "Minimalist Brand Asset", value: "Ultra-minimalist brand asset, geometric symmetry, primary color profile, uniform strokes" }
+        { label: "Minimalist Brand Asset", value: "Ultra-minimalist brand asset, geometric symmetry, primary color profile, uniform strokes" },
+        { label: "[PRO] Trend Sticker Sheet", value: "High-end sticker sheet set. Modern monoline vector line art. Uniform thick line weight, solid off-white fill, thick white die-cut borders." }
     ],
     manga: [
         { label: "Classic Shonen (Naruto/DBZ)", value: "Classic Shonen, bold action lines, high-contrast cel shading" },
-        { label: "Seinen Noir (Akira/Ghost in Shell)", value: "Seinen Noir, intricate mechanical detail, muted tonal range, atmospheric lighting" }
+        { label: "Seinen Noir (Akira/Ghost in Shell)", value: "Seinen Noir, intricate mechanical detail, muted tonal range, atmospheric lighting" },
+        { label: "[PRO] Character Model Sheet", value: "Official character model sheet matrix: Frontal, 1/3, and profile poses. High-fidelity modern anime lineart. Uniform lighting and studio neutral gray environment." }
     ],
     comic: [
         { label: "Golden Age Sequential", value: "Golden Age comic style, vibrant primary colors, heavy ink outlines, ben-day dots" },
-        { label: "Modern Graphic Novel", value: "Modern graphic novel, cinematic framing, painterly digital textures, sophisticated palettes" }
+        { label: "Modern Graphic Novel", value: "Modern graphic novel, cinematic framing, painterly digital textures, sophisticated palettes" },
+        { label: "[PRO] Dual Exposure Grid", value: "Complex dual exposure photo-grid composite. Silhouette acting as a vessel for action-shot photo mosaic grid. Halftone dots and mixed-media textures." }
     ],
-    storyboard: []
+    storyboard: [
+        { label: "[PRO] 3x3 Mockup Grid", value: "High-end designer storyboard presentation. 3x3 grid (9 equal panels). Focus on form, composition, and visual rhythm. Hero shot, close-ups, levitation, and geometric isometric angles." }
+    ]
 };
 
 const ASSET_TYPES: AssetType[] = ["style", "subject", "structure"];
