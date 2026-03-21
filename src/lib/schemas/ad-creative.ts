@@ -6,13 +6,13 @@ export const adCreativeSchema: Schema = {
     properties: {
         core_prompt: {
             type: SchemaType.STRING,
-            description: "CRITICAL: The product must be the VISUAL HERO. Model (Indian descent) must have face de-emphasized (cropped or looking down). Background must be simple and clean. The product must be the sharpest element. Describe the scene's emotional resolution of a pain point."
+            description: "CRITICAL: The product must be the VISUAL HERO. Model (Indian descent) must have an expression matching the brief (e.g. smile, closed eyes). If no expression is given, de-emphasize face (cropped or looking down). Background must be simple and clean. The product must be the sharpest element. Describe the scene's emotional resolution of a pain point."
         },
         lighting: {
             type: SchemaType.STRING,
             description: "Natural lighting preferred (Golden hour, diffused daylight). Product must catch light directly.",
             format: "enum",
-            enum: ["soft-natural-daylight", "golden-hour", "studio-softbox", "harsh-direct-flash", "moody-rim-lighting"]
+            enum: ["soft-natural-daylight", "golden-hour", "studio-softbox", "harsh-direct-flash", "moody-rim-lighting", "microscopic-focused", "bioluminescence"]
         },
         camera_settings: {
             type: SchemaType.OBJECT,
@@ -20,7 +20,7 @@ export const adCreativeSchema: Schema = {
             properties: {
                 lens: { type: SchemaType.STRING, format: "enum", enum: ["14mm-ultrawide", "35mm-documentary", "50mm-standard", "85mm-portrait", "100mm-macro"] },
                 shot_type: { type: SchemaType.STRING, format: "enum", enum: ["extreme-close-up", "medium-shot", "full-body", "overhead-flatlay"] },
-                aesthetic: { type: SchemaType.STRING, format: "enum", enum: ["ugc-iphone-selfie", "high-end-editorial", "raw-polaroid", "clean-ecom"] }
+                aesthetic: { type: SchemaType.STRING, format: "enum", enum: ["ugc-iphone-selfie", "high-end-editorial", "raw-polaroid", "clean-ecom", "3d-medical-render", "histology-stained"] }
             },
             required: ["lens", "shot_type", "aesthetic"]
         },

@@ -24,20 +24,30 @@ const schemaMap: any = {
     food: foodIllustrationSchema
 };
 
+const creativeProtocols: any = {
+    ugc: `\nUGC CREATIVE PROTOCOL:\n- Aesthetic: Raw, candid, shot on mobile device.\n- Lighting: Natural, imperfect, multi-directional ambient light.\n- Texture: Pores visible, slight motion blur, authentic fabric folds.\n- Composition: Uncentered, dynamic, 'in-the-moment' framing.\n`,
+    editorial: `\nHIGH-END EDITORIAL PROTOCOL:\n- Aesthetic: Vogue/Harper's Bazaar style, extremely polished.\n- Lighting: Cinematic moody-rim or softbox beauty lighting.\n- Texture: Skin retouching (subtle), high-gloss surfaces, liquid flow physics.\n- Composition: Perfect rule of thirds, architectural depth.\n`,
+    ecom: `\nCLEAN E-COMMERCE PROTOCOL:\n- Aesthetic: Minimalist, Apple/Dyson style, distraction-free.\n- Lighting: Bright-diffused daylight, sharp shadow definition on product.\n- Texture: Precise material rendering (matte/glass), crisp edges.\n- Composition: Centered or 60/40 hero product placement.\n`
+};
+
 const agentConfigs: any = {
     ad: {
         expansionRole: "Elite Art Director and Prompt Engineer for a high-end DTC creative agency",
         expansionRules: [
             "MISSION: Refine a raw brief into a high-converting 'Visual Ad Concept'.",
             "IDENTITY: IF human characters are featured, they MUST be of Indian descent (South Asian features, modern urban Indian styling). Do not add humans to product-only or inanimate scenes unless requested.",
+            "SENSORY DETAIL: Exhaustively describe facial expressions (e.g., 'eyes closed in bliss', 'bright warm smile'), skin textures (pores, sheen, moisture), and secondary action points (e.g., 'condensation on glass', 'water droplets on skin').",
             "REALISM: For UGC shots, enforce photographic realism ('shot on iPhone', 'candid', 'natural skin texture').",
-            "PRODUCT: Describe material properties exhaustively (e.g., 'matte cardboard', 'high-gloss label', 'condensation').",
-            "STRICT BAN: NO TEXT, labels, or bracket notation in the description paragraph."
+            "PRODUCT: Describe material properties exhaustively (e.g., 'matte cardboard', 'high-gloss label', 'rich dark wood grains').",
+            "CAMERA LOGIC: If the brief mentions small details (like condensation or toes), suggest a corresponding shot type (e.g., 'extreme-close-up' for condensation, 'full-body' for bare feet).",
+            "STRICT BAN: NO TEXT characters, labels, or bracket notation in the description paragraph."
         ],
         jsonRole: "High-Performance DTC Ad Director",
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a high-impact JSON Ad Blueprint.
-        STYLE AUTHORITY: Follow a ${style} aesthetic.
-        IDENTITY STANDARD: IF humans are present, they MUST be Indian (South Asian).
+        STYLE AUTHORITY: Follow a ${style} aesthetic. Use the local creative protocols for UGC, Editorial, or Ecom if applicable.
+        PROMPT DISTILLATION: In the "core_prompt" field, do NOT copy the long expansion. Instead, distill it into a 40-60 word HIGH-CONVERSION visual hook. Start with the HERO (Product or Human) and end with the ATMOSPHERE.
+        IDENTITY STANDARD: IF humans are present, they MUST be Indian (South Asian). Capture their facial expression exactly from the expansion.
+        CAMERA PRECISION: Match the shot_type and lens to the specific details described in the refined brief (e.g., use 100mm for macro details).
         COPYWRITING: Create punchy, emotional headlines that address user pain points.`,
         // No subjectField overwrite for ad - core_prompt is a detailed generated description
     },
@@ -138,6 +148,16 @@ const agentConfigs: any = {
     }
 };
 
+const getProtocol = (mode: string, style: string) => {
+    const lStyle = style.toLowerCase();
+    if (mode === 'ad' || mode === 'food') {
+        if (lStyle.includes('ugc')) return creativeProtocols.ugc;
+        if (lStyle.includes('editorial')) return creativeProtocols.editorial;
+        if (lStyle.includes('ecom')) return creativeProtocols.ecom;
+    }
+    return atlasService.getStyleProtocol(style);
+};
+
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
@@ -152,8 +172,8 @@ export async function POST(req: NextRequest) {
         // --- PHASE 1: AUTOMATIC TECHNICAL EXPANSION ---
         let expansionSystemPrompt = `You are a ${config.expansionRole}.
         ${config.expansionRules.join('\n        ')}
-        STYLE PROTOCOL: ${atlasService.getStyleProtocol(normalizedStyle)}
-        HARD ZERO-TEXT BAN: Terminate with: "No text, no labels, no characters."`;
+        STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
+        HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
 
         let refinedText = "";
         let refinementError: Error | null = null;
