@@ -24,17 +24,13 @@ export const adCreativeSchema: Schema = {
             },
             required: ["lens", "shot_type", "aesthetic"]
         },
-        headline_copy: {
+        exact_text: {
             type: SchemaType.STRING,
-            description: "A 3-6 word PAIN-POINT headline (direct question or bold statement). ALL CAPS. Must address frustration (e.g., 'TIRED OF LOOKING INVISIBLE?'). No duplicate words. No internal bracket notation."
-        },
-        subline_copy: {
-            type: SchemaType.STRING,
-            description: "Urgency/Value line (e.g., 'Ends Tonight · Shop Now'). Title Case. Must be 35-40% size of headline. Use centered dot (·) separator."
+            description: "CRITICAL: The exact typographic string to be rendered. Must be a punchy, emotional headline (3-7 words). ALL CAPS. No duplicate words. No internal bracket notation."
         },
         negative_prompt: {
             type: SchemaType.STRING,
-            description: "Exclude: 'jewelry, styled hair, heavy makeup, influencer look, studio backgrounds, metadata, bracket notation, duplicate text, blurry product, cropped product edges'."
+            description: "DENSE NEGATIVE STACK: jewelry, styled hair, heavy makeup, influencer look, studio backgrounds, blurry edges, plastic textures, watermark, signature, cropped product."
         },
         aspect_ratio: {
             type: SchemaType.STRING,
@@ -42,5 +38,5 @@ export const adCreativeSchema: Schema = {
             enum: ["1:1", "4:5", "9:16", "16:9"]
         }
     },
-    required: ["core_prompt", "lighting", "camera_settings", "headline_copy", "subline_copy", "negative_prompt", "aspect_ratio"]
+    required: ["core_prompt", "lighting", "camera_settings", "exact_text", "negative_prompt", "aspect_ratio"]
 };

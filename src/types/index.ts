@@ -5,6 +5,7 @@ export interface StylePreset {
     label: string;
     value: string;
     previewUrl?: string;
+    description?: string;
 }
 
 export interface CameraSettings {

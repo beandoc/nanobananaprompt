@@ -33,21 +33,30 @@ export function StyleSelector({ selectedStyle, setSelectedStyle, stylePresets }:
                 const displayUrl = activePreset?.previewUrl || `https://placehold.co/600x400/e2e8f0/475569?text=${encodeURIComponent(activePreset?.label || 'Style Preview')}`;
                 
                 return (
-                    <div className="mt-4 rounded-xl md:rounded-2xl overflow-hidden border border-slate-200 shadow-sm relative h-32 md:h-48 bg-slate-900 flex items-center justify-center group">
-                        <img
-                            src={displayUrl}
-                            alt={activePreset?.label || "Style Reference"}
-                            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-                            onError={(e) => {
-                                (e.target as HTMLImageElement).src = `https://placehold.co/600x400/e2e8f0/475569?text=${encodeURIComponent(activePreset?.label || 'Preview Unavailable')}`;
-                            }}
-                        />
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-                            <p className="text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-between">
-                                <span>Reference Visual</span>
-                                {!activePreset?.previewUrl && <span className="opacity-60 lowercase">Placeholder</span>}
-                            </p>
+                    <div className="mt-4 space-y-4">
+                        <div className="rounded-xl md:rounded-2xl overflow-hidden border border-slate-200 shadow-sm relative h-32 md:h-48 bg-slate-900 flex items-center justify-center group">
+                            <img
+                                src={displayUrl}
+                                alt={activePreset?.label || "Style Reference"}
+                                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = `https://placehold.co/600x400/e2e8f0/475569?text=${encodeURIComponent(activePreset?.label || 'Preview Unavailable')}`;
+                                }}
+                            />
+                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                                <p className="text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-between">
+                                    <span>Reference Visual</span>
+                                    {!activePreset?.previewUrl && <span className="opacity-60 lowercase">Placeholder</span>}
+                                </p>
+                            </div>
                         </div>
+                        {activePreset?.description && (
+                            <div className="px-1">
+                                <p className="text-[11px] font-medium text-slate-500 leading-relaxed italic">
+                                    {activePreset.description}
+                                </p>
+                            </div>
+                        )}
                     </div>
                 );
             })()}

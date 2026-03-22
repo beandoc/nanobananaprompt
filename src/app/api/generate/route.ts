@@ -35,21 +35,19 @@ const agentConfigs: any = {
         expansionRole: "Elite Art Director and Prompt Engineer for a high-end DTC creative agency",
         expansionRules: [
             "MISSION: Refine a raw brief into a high-converting 'Visual Ad Concept'.",
-            "IDENTITY: IF human characters are featured, they MUST be of Indian descent (South Asian features, modern urban Indian styling). Do not add humans to product-only or inanimate scenes unless requested.",
-            "SENSORY DETAIL: Exhaustively describe facial expressions (e.g., 'eyes closed in bliss', 'bright warm smile'), skin textures (pores, sheen, moisture), and secondary action points (e.g., 'condensation on glass', 'water droplets on skin').",
-            "REALISM: For UGC shots, enforce photographic realism ('shot on iPhone', 'candid', 'natural skin texture').",
-            "PRODUCT: Describe material properties exhaustively (e.g., 'matte cardboard', 'high-gloss label', 'rich dark wood grains').",
-            "CAMERA LOGIC: If the brief mentions small details (like condensation or toes), suggest a corresponding shot type (e.g., 'extreme-close-up' for condensation, 'full-body' for bare feet).",
-            "STRICT BAN: NO TEXT characters, labels, or bracket notation in the description paragraph."
+            "IDENTITY: IF human characters are featured, they MUST be of Indian descent (South Asian features, modern urban Indian styling, warm olive skin tones). Do not add humans to product-only scenes unless requested.",
+            "SENSORY DETAIL: Exhaustively describe material properties: 'viscous liquid', 'matte cardboard with soft-touch finish', 'brushed anodized aluminum', 'condensation beads with micro-refractions', 'toasted grain texture'.",
+            "REALISM: Enforce photographic realism ('shot on iPhone 15 Pro' for UGC, '85mm/100mm macro' for Editorial). Capture facial expressions with nuanced emotional keywords (e.g., 'eyes squinted in genuine laughter', 'serene focus').",
+            "STRICT BAN: NO conversational fillers, NO text/labels/names in the description paragraph, NO bracket notation.",
+            "MATERIAL ATLAS: Differentiate between glossy, matte, satin, and textured surfaces to help the renderer achieve PBR (Physically Based Rendering) realism."
         ],
         jsonRole: "High-Performance DTC Ad Director",
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a high-impact JSON Ad Blueprint.
-        STYLE AUTHORITY: Follow a ${style} aesthetic. Use the local creative protocols for UGC, Editorial, or Ecom if applicable.
-        PROMPT DISTILLATION: In the "core_prompt" field, do NOT copy the long expansion. Instead, distill it into a 40-60 word HIGH-CONVERSION visual hook. Start with the HERO (Product or Human) and end with the ATMOSPHERE.
-        IDENTITY STANDARD: IF humans are present, they MUST be Indian (South Asian). Capture their facial expression exactly from the expansion.
-        CAMERA PRECISION: Match the shot_type and lens to the specific details described in the refined brief (e.g., use 100mm for macro details).
-        COPYWRITING: Create punchy, emotional headlines that address user pain points.`,
-        // No subjectField overwrite for ad - core_prompt is a detailed generated description
+        STYLE AUTHORITY: Follow a ${style} aesthetic. Use the local creative protocols.
+        PROMPT DISTILLATION: In the "core_prompt" field, distill the refined brief into a 50-word HIGH-CONVERSION visual hook. Start with the HERO and end with the ATMOSPHERE. 
+        SENSORY LOCK: Ensure at least 3 material texture descriptors (e.g., 'glistening', 'etched', 'velvety') are included in the core_prompt.
+        TYPOGRAPHY: Use the "exact_text" field for any copy. Keep it punchy and emotional.
+        IDENTITY STANDARD: South Asian features only.`,
     },
     medical: {
         expansionRole: "Principal Medical Illustrator focused on TECHNICAL VISUALS",
@@ -112,16 +110,18 @@ const agentConfigs: any = {
         // No subjectField overwrite - manga_subject is detailed
     },
     food: {
-        expansionRole: "Industrial Food & Beverage Infographic Artist",
+        expansionRole: "Industrial Food & Beverage Infographic Artist and Culinary Visual Lead",
         expansionRules: [
             "MISSION: Refine a raw brief into a 'Culinary Macro Analysis'.",
-            "TEXTURES: Describe food textures (viscous, glistening, fibrous) with high precision.",
+            "TEXTURES: Focus on viscous, glistening, fibrous, and flaky textures. Specifically describe 'thermal vapor' (steam) or 'condensation beads' (chilled).",
+            "PRODUCT FINISH: Describe glaze levels (e.g., 'high-gloss balsamicreduction', 'matte flour dusting').",
             "IDENTITY: IF any human is present (chef/user), they MUST be of Indian descent.",
             "STRICT BAN: NO TEXT or labels."
         ],
         jsonRole: "Culinary Visual Director",
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a Scientific Culinary JSON Blueprint.
-        JOURNAL STANDARD: ${style}-Editorial.`,
+        JOURNAL STANDARD: ${style}-Editorial.
+        MATERIAL LOCK: Prioritize 'glistening' and 'texture-rich' descriptors in the scientific_subject.`,
         subjectField: "scientific_subject",
         styleField: "journal_standard",
         styleSuffix: "Editorial"
@@ -163,7 +163,7 @@ const getProtocol = (mode: string, style: string) => {
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { mode = "medical", brief = "", style = "NEJM", isStoryboard = false } = body;
+        const { mode = "medical", brief = "", style = "NEJM", isStoryboard = false, image = null, assetInstruction = "style" } = body;
         const normalizedStyle = style && style !== "" && style !== "-" ? style : (mode === 'medical' ? "NEJM" : "Modern");
 
         if (!brief) return ResponseManager.badRequest("No brief provided");
@@ -178,6 +178,7 @@ export async function POST(req: NextRequest) {
         ${config.expansionRules.join('\n        ')}
         ${atlasContext ? `\nMEDICAL REFERENCE DATA (PRIORITIZE THESE SPECIFIC VISUAL RULES):\n${atlasContext}` : ""}
         STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
+        ${image ? `ASSET PROTOCOL: Detect the ${assetInstruction} (shape/color/style) of the provided image and maintain its core DNA in the refinement.` : ""}
         HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
 
         let refinedText = "";
@@ -189,7 +190,17 @@ export async function POST(req: NextRequest) {
             for (const m of ["gemini-1.5-flash", "gemini-2.0-flash"]) {
                 try {
                     const model = genAI.getGenerativeModel({ model: m });
-                    const result = await model.generateContent([expansionSystemPrompt, `REFINE THIS BRIEF: ${brief}`]);
+                    const userParts: any[] = [`REFINE THIS BRIEF: ${brief}`];
+                    
+                    if (image) {
+                        const base64Data = image.split(',')[1];
+                        const mimeType = image.split(';')[0].split(':')[1];
+                        userParts.push({
+                            inlineData: { data: base64Data, mimeType: mimeType }
+                        });
+                    }
+
+                    const result = await model.generateContent([expansionSystemPrompt, ...userParts]);
                     refinedText = result.response.text().trim();
                     if (refinedText) break;
                 } catch (err) { refinementError = err as Error; }
@@ -235,7 +246,17 @@ export async function POST(req: NextRequest) {
                         model: m, 
                         generationConfig: { responseMimeType: "application/json", responseSchema: currentSchema }
                     });
-                    const result = await model.generateContent([systemInstruction, `JSON BLUEPRINT FOR: ${finalBriefForJson}`]);
+                    const userParts: any[] = [`JSON BLUEPRINT FOR: ${finalBriefForJson}`];
+                    
+                    if (image) {
+                        const base64Data = image.split(',')[1];
+                        const mimeType = image.split(';')[0].split(':')[1];
+                        userParts.push({
+                            inlineData: { data: base64Data, mimeType: mimeType }
+                        });
+                    }
+
+                    const result = await model.generateContent([systemInstruction, ...userParts]);
                     adData = JSON.parse(result.response.text());
                     if (adData) break;
                 } catch (err) { generationError = err as Error; }
