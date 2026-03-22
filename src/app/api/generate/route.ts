@@ -36,10 +36,10 @@ const agentConfigs: any = {
         expansionRules: [
             "MISSION: Refine a raw brief into a high-converting 'Visual Ad Concept'.",
             "IDENTITY: IF human characters are featured, they MUST be of Indian descent (South Asian features, modern urban Indian styling, warm olive skin tones). Do not add humans to product-only scenes unless requested.",
-            "SENSORY DETAIL: Exhaustively describe material properties: 'viscous liquid', 'matte cardboard with soft-touch finish', 'brushed anodized aluminum', 'condensation beads with micro-refractions', 'toasted grain texture'.",
+            "SENSORY DETAIL EXAMPLES: Your descriptions MUST be exhaustive. Use texture keywords appropriate to the subject (e.g., 'viscous liquid', 'matte cardboard', 'brushed aluminum', 'glistening moisture'). DO NOT use these specific examples if they do not fit the actual subject.",
             "REALISM: Enforce photographic realism ('shot on iPhone 15 Pro' for UGC, '85mm/100mm macro' for Editorial). Capture facial expressions with nuanced emotional keywords (e.g., 'eyes squinted in genuine laughter', 'serene focus').",
             "STRICT BAN: NO conversational fillers, NO text/labels/names in the description paragraph, NO bracket notation.",
-            "MATERIAL ATLAS: Differentiate between glossy, matte, satin, and textured surfaces to help the renderer achieve PBR (Physically Based Rendering) realism."
+            "MATERIAL ATLAS Rule: Differentiate between glossy, matte, satin, and textured surfaces. If the subject is an fruit, focus on skin texture, stem detail, and waxy sheen. If it is hardware, focus on metallic grains and reflections."
         ],
         jsonRole: "High-Performance DTC Ad Director",
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a high-impact JSON Ad Blueprint.
@@ -178,7 +178,7 @@ export async function POST(req: NextRequest) {
         ${config.expansionRules.join('\n        ')}
         ${atlasContext ? `\nMEDICAL REFERENCE DATA (PRIORITIZE THESE SPECIFIC VISUAL RULES):\n${atlasContext}` : ""}
         STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
-        ${image ? `ASSET PROTOCOL: Detect the ${assetInstruction} (shape/color/style) of the provided image and maintain its core DNA in the refinement.` : ""}
+        ${image ? `VISUAL DNA HOOK: You have been provided an image asset. Your #1 priority is to identify the main ${assetInstruction} (shape/subject/color) in that image and use it as the foundation for the prompt. DO NOT replace it with wooden assets or generic products.` : ""}
         HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
 
         let refinedText = "";
@@ -240,7 +240,7 @@ export async function POST(req: NextRequest) {
         // --- 1. TRY GEMINI ELITE SUITE ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            for (const m of ["gemini-1.5-flash", "gemini-2.0-flash"]) {
+            for (const m of ["gemini-1.5-pro-latest", "gemini-1.5-flash", "gemini-2.0-flash"]) {
                 try {
                     const model = genAI.getGenerativeModel({ 
                         model: m, 
