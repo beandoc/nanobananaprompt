@@ -187,7 +187,7 @@ export async function POST(req: NextRequest) {
         // --- 1. TRY GEMINI ELITE FIRST (FOR PRECISION - 1,500 REQ/DAY STABILITY) ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            for (const m of ["gemini-1.5-flash", "gemini-2.0-flash"]) {
+            for (const m of ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]) {
                 try {
                     const model = genAI.getGenerativeModel({ model: m });
                     const userParts: any[] = [`REFINE THIS BRIEF: ${brief}`];
@@ -240,7 +240,7 @@ export async function POST(req: NextRequest) {
         // --- 1. TRY GEMINI ELITE SUITE ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            for (const m of ["gemini-2.0-flash", "gemini-flash-latest", "gemini-2.5-flash"]) {
+            for (const m of ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]) {
                 try {
                     const model = genAI.getGenerativeModel({ 
                         model: m, 
