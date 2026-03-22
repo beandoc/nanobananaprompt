@@ -183,14 +183,17 @@ export async function POST(req: NextRequest) {
         let refinedText = "";
         let refinementError: Error | null = null;
 
-        // --- 1. TRY GEMINI ELITE FIRST (FOR PRECISION) ---
+        // --- 1. TRY GEMINI ELITE FIRST (FOR PRECISION - 1,500 REQ/DAY STABILITY) ---
         if (process.env.GEMINI_API_KEY) {
-            try {
-                const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-                const result = await model.generateContent([expansionSystemPrompt, `REFINE THIS BRIEF: ${brief}`]);
-                refinedText = result.response.text().trim();
-            } catch (err) { refinementError = err as Error; }
+            const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+            for (const m of ["gemini-1.5-flash", "gemini-2.0-flash"]) {
+                try {
+                    const model = genAI.getGenerativeModel({ model: m });
+                    const result = await model.generateContent([expansionSystemPrompt, `REFINE THIS BRIEF: ${brief}`]);
+                    refinedText = result.response.text().trim();
+                    if (refinedText) break;
+                } catch (err) { refinementError = err as Error; }
+            }
         }
 
         // --- 2. FALLBACK TO GROQ (ONLY IF GEMINI QUOTA IS EMPTY) ---
@@ -226,7 +229,7 @@ export async function POST(req: NextRequest) {
         // --- 1. TRY GEMINI ELITE SUITE ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            for (const m of ["gemini-2.0-flash", "gemini-1.5-flash"]) {
+            for (const m of ["gemini-1.5-flash", "gemini-2.0-flash"]) {
                 try {
                     const model = genAI.getGenerativeModel({ 
                         model: m, 
