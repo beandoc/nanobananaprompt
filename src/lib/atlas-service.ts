@@ -116,5 +116,4 @@ export const atlasService = {
         }
         return "";
     }
-    }
 };
