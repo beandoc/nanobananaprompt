@@ -1,4 +1,6 @@
 import atlasData from "./atlas/anatomy-atlas.json";
+import glossaryData from "./atlas/medical-ai-glossary.json";
+
 
 export const atlasService = {
     getAtlasContext(brief: string): string {
@@ -6,7 +8,7 @@ export const atlasService = {
         let context = "\nANATOMY ATLAS REFERENCE (STRICT ADHERENCE REQUIRED):\n";
         let found = false;
 
-        // Flatten search
+        // 1. Search Anatomy Atlas
         const categories = Object.keys(atlasData).filter(k => k !== "style_protocols");
         
         for (const cat of categories) {
@@ -59,8 +61,6 @@ export const atlasService = {
                     }
                     if (data.procedure) context += `  * CLINICAL PROCEDURE: ${data.procedure}\n`;
                     if (data.steps) context += `  * PROCEDURAL STEPS: ${data.steps.join(" → ")}\n`;
-                    if (data.procedure) context += `  * CLINICAL PROCEDURE: ${data.procedure}\n`;
-                    if (data.steps) context += `  * PROCEDURAL STEPS: ${data.steps.join(" → ")}\n`;
                     if (data.systemic_observations) context += `  * SYSTEMIC OBSERVATIONS: ${data.systemic_observations.join(", ")}\n`;
                     if (data.head_and_neck_findings) context += `  * HEAD/NECK FINDINGS: ${data.head_and_neck_findings.join(", ")}\n`;
                     if (data.lymphadenopathy_sites) context += `  * LYMPHADENOPATHY SITES: ${data.lymphadenopathy_sites.join(", ")}\n`;
@@ -96,6 +96,26 @@ export const atlasService = {
                     if (data.textures) context += `  * TARGET TEXTURES: ${data.textures}\n`;
                     if (data.physics) context += `  * TISSUE PHYSICS: ${data.physics}\n`;
                     if (data.neighboring_structures) context += `  * NEIGHBORING ASSETS: ${data.neighboring_structures.join(", ")}\n`;
+                    context += "\n";
+                }
+            }
+        }
+
+        // 2. Search Medical AI Glossary (Key Skin Disorders & Lesions)
+        const glossaryCategories = Object.keys(glossaryData);
+        for (const cat of glossaryCategories) {
+            const structures = (glossaryData as any)[cat];
+            for (const [key, data] of Object.entries(structures as any)) {
+                if (lowerBrief.includes(key.toLowerCase().replace('_', ' ')) || key.toLowerCase().split('_').some(word => lowerBrief.includes(word))) {
+                    found = true;
+                    const d = data as any;
+                    context += `- [GLOSSARY] ${key.toUpperCase()}:\n`;
+                    if (d.appearance) context += `  * KEY APPEARANCE: ${d.appearance}\n`;
+                    if (d.lesion_type) context += `  * LESION TYPE: ${d.lesion_type}\n`;
+                    if (d.color_palette) context += `  * COLOR PALETTE: ${d.color_palette.join(", ")}\n`;
+                    if (d.textures) context += `  * SPECIFIC TEXTURES: ${d.textures.join(", ")}\n`;
+                    if (d.distribution) context += `  * COMMON DISTRIBUTION: ${d.distribution}\n`;
+                    if (d.clinical_notes) context += `  * CLINICAL NOTES: ${d.clinical_notes}\n`;
                     context += "\n";
                 }
             }

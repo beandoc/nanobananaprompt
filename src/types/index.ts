@@ -193,6 +193,7 @@ export interface GenerationResult {
     promptFile: string;
     folder: string;
     refinedPrompt?: string;
+    activeProvider?: string;
 }
 
 export interface RenderRequest {

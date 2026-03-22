@@ -55,9 +55,11 @@ const agentConfigs: any = {
         expansionRole: "Principal Medical Illustrator focused on TECHNICAL VISUALS",
         expansionRules: [
             "MISSION: Refine a raw brief into a technical 'Visual Rendering Paragraph'.",
+            "DIAGNOSTIC VERIFICATION: You MUST start your response with a '[VERIFICATION]' block. Inside, list 3 pathognomonic (unique) visual markers from the GLOSSARY/ATLAS provided in this prompt that are required for this diagnosis. Ensure these markers are the centerpieces of your refined brief.",
             "IDENTITY: IF human clinical subjects are featured, they MUST be South Asian (warm skin tones, contemporary Indian styling).",
             "ACCURACY: Prioritize anatomical accuracy over artistic flair.",
             "TEXTURES: Differentiate between fibrous, aqueous, and granulated textures.",
+            "GLOSSARY PRIORITY: If MEDICAL REFERENCE DATA is provided in this prompt, you MUST prioritize its unique 'Visual Rules', 'Textures', and 'Color Palettes' over your general training data to ensure diagnostic-grade consistency.",
             "NO TEXT OR LABELS: Describe shapes, textures, and luminous effects. Do NOT name structures."
         ],
         jsonRole: "Elite Medical Art Director",
@@ -170,8 +172,11 @@ export async function POST(req: NextRequest) {
         const config = agentConfigs[mode] || agentConfigs.medical;
 
         // --- PHASE 1: AUTOMATIC TECHNICAL EXPANSION ---
+        const atlasContext = mode === 'medical' ? atlasService.getAtlasContext(brief) : "";
+        
         let expansionSystemPrompt = `You are a ${config.expansionRole}.
         ${config.expansionRules.join('\n        ')}
+        ${atlasContext ? `\nMEDICAL REFERENCE DATA (PRIORITIZE THESE SPECIFIC VISUAL RULES):\n${atlasContext}` : ""}
         STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
         HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
 
@@ -271,11 +276,16 @@ export async function POST(req: NextRequest) {
         const filename = `gen-${Date.now()}.json`;
         await promptService.savePrompt({ name: filename, type: mode, content: adData });
 
+        const phase1Provider = refinedText && !refinementError ? "Gemini" : "Groq";
+        const phase2Provider = adData && !generationError ? "Gemini" : "Groq";
+        const activeProvider = (phase1Provider === "Gemini" && phase2Provider === "Gemini") ? "Gemini-Elite" : `Fallback-Active (${phase1Provider}/${phase2Provider})`;
+
         return ResponseManager.success({
             data: adData,
             refinedPrompt: finalBriefForJson,
             promptFile: filename,
-            folder: mode + "_prompts"
+            folder: mode + "_prompts",
+            activeProvider
         });
 
     } catch (error: any) {

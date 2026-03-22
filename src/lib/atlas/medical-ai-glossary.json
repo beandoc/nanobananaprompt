@@ -1,0 +1,570 @@
+{
+  "skin_disorders": {
+    "papulopustular_acne": {
+      "appearance": "Multiple erythematous inflammatory papules and pustules on an oily skin base. Pustules appear as Small, pus-filled caps on an inflamed red base.",
+      "lesion_type": "Inflammatory papules and pustules",
+      "color_palette": ["Vibrant red", "Inflammatory pink", "Yellow-white pustular centers"],
+      "textures": ["Glistening inflammatory sheen", "Dome-shaped elevations", "Liquefied center (pustules)"],
+      "distribution": "Face, particularly cheeks and jawline, often extending to the neck.",
+      "clinical_notes": "Early stages show significant erythema; can transition to nodulocystic forms if left untreated."
+    },
+    "nodulocystic_acne": {
+      "appearance": "Large, deep-seated, painful inflammatory nodules and cysts. These are larger than standard papules and often feel indurated or firm to the touch.",
+      "lesion_type": "Depth-focused nodules and abscesses",
+      "color_palette": ["Deep purplish-red", "Dark crimson", "Bruised undertones"],
+      "textures": ["Shiny, stretched skin surface", "Firm indurated mass", "Occasional fluctuant zones"],
+      "distribution": "Jawline, neck, and back.",
+      "clinical_notes": "Represents a severe, scarring stage of acne where inflammatory papules coalesce into deeper structures."
+    },
+    "erythematous_rosacea": {
+      "appearance": "Persistent central facial erythema (redness). Often starts as episodic 'flushing and blushing' triggered by heat, stress, or alcohol.",
+      "lesion_type": "Diffuse erythema and telangiectasia",
+      "color_palette": ["Rosy pink", "Bright flushing red", "Crimson for telangiectasia"],
+      "textures": ["Diffuse vascular blush", "Multiple tiny telangiectatic vessels", "Hypervascular surface"],
+      "distribution": "Central face: nose, cheeks, forehead, and chin.",
+      "clinical_notes": "Stage I rosacea. Distinguished from acne by the absence of comedones and the presence of prominent telangiectasia."
+    },
+    "hidradenitis_suppurativa": {
+      "appearance": "Deep, painful inflammatory abscesses, paired black comedones, and fibrotic scarring. Chronic inflammatory condition affecting follicular units in intertriginous areas.",
+      "lesion_type": "Paired comedones, deep abscesses, and sinus tracts",
+      "color_palette": ["Dark inflammatory red", "Hyperpigmented tan/brown scarring", "Black for comedones"],
+      "textures": ["Fibrotic linear scarring", "Pitted/punctate comedone openings", "Indurated and swollen masses"],
+      "distribution": "Axilla (underarms), groin, and inframammary folds.",
+      "clinical_notes": "Characteristic finding is the presence of 'paired' black comedones alongside deep-seated painful nodules."
+    },
+    "allergic_contact_dermatitis": {
+      "appearance": "Well-demarcated erythematous plaques, often with vesiculation (weeping), crusting, and scaling. Sharp borders following the site of allergen contact.",
+      "lesion_type": "Erythematous plaques, vesicles, and crusting",
+      "color_palette": ["Bright inflammatory red", "Honey-colored crusting", "Yellow-white scaling"],
+      "textures": ["Moist weeping surface", "Rough scurfy scaling", "Honey-like serous crusts"],
+      "distribution": "Local to site of allergen contact (e.g., dorsal hands, wrist, face).",
+      "clinical_notes": "Characterized by the 'linear' or 'geometric' distribution that mirrors the shape of the external irritant/allergen."
+    },
+    "lichen_simplex_chronicus": {
+      "appearance": "Thickened, leathery plaque with exaggerated skin markings (lichenification). Result of chronic scratching or rubbing.",
+      "lesion_type": "Lichenified plaque",
+      "color_palette": ["Hyperpigmented brown/tan", "Dusky muted red", "Pale gray/white scale"],
+      "textures": ["Exaggerated skin lines (grid-like)", "Leathery/thickened epidermis", "Rough dry surface"],
+      "distribution": "Posterior neck (nuchal), occipital scalp, ankles, and forearms.",
+      "clinical_notes": "The primary hallmark is the 'grid-like' exaggeration of normal skin markings due to chronic mechanical trauma."
+    },
+    "psoriasis_vulgaris": {
+      "appearance": "Well-defined salmon-pink plaques covered with thick, loosely adherent silvery-white lamellar scales.",
+      "lesion_type": "Salmon-pink plaques and guttate papules",
+      "color_palette": ["Salmon-pink", "Silvery-white", "Bright red (Auspitz base)"],
+      "textures": ["Micaceous (silvery) sheen", "Lamellar (plate-like) scaling", "Dry plateau elevations"],
+      "distribution": "Scalp (occiput/hairline), extensor surface of elbows/knees, lumbosacral cleft, umbilicus, nails, palms, and soles.",
+      "clinical_notes": "Distinctive 'salmon-pink' color and 'silvery' scale differentiate this from the honey-colored crusts of dermatitis."
+    },
+    "epidermolytic_hyperkeratosis": {
+      "appearance": "Thick, waxy, yellow-brown hyperkeratosis with a 'mountain range' or ridged appearance. Characterized by blistering that leads to the shedding of large keratin sheets and underlying erosions.",
+      "lesion_type": "Verrucous (wart-like) hyperkeratosis and bullae",
+      "color_palette": ["Waxy yellow", "Brownish-tan", "Bright red (erosion base)"],
+      "textures": ["Mountain range-like ridges", "Peeling keratin sheets", "Raw/moist denuded skin"],
+      "distribution": "Dorsum of hands and feet, lower abdomen/groin, and extensor joints (knees, elbows).",
+      "clinical_notes": "The 'mountain range' ridge pattern is highly characteristic and results from extreme keratin thickening over inflammatory bases."
+    },
+    "acanthosis_nigricans": {
+      "appearance": "Velvety, dark-brown to gray-black thickening of the skin with prominent skin folds and feathered edges. Characterized by a marked accentuation of natural skin lines (ridges).",
+      "lesion_type": "Hyperpigmented velvety plaque with ridge accentuation",
+      "color_palette": ["Dark brown", "Charcoal gray", "Gray-black", "Muted tan edges"],
+      "textures": ["Velvety (texture-rich)", "Marked accentuation of skin lines (furrows)", "Prominent skin folds (rugosity)", "Feathered edges"],
+      "distribution": "Axillae (armpits), neck (back/sides), groin, and dorsal joints (knuckles, dorsal foot).",
+      "clinical_notes": "Key visual marker is the **'velvety' texture** and the **accentuated furrows** within the skin lines, which differentiate it from simple hyperpigmentation."
+    },
+    "bullous_pemphigoid": {
+      "appearance": "Generalized eruption of large, tense blisters (bullae) developing on confluent urticarial (hive-like) plaques.",
+      "lesion_type": "Tense bullae and urticarial plaques",
+      "color_palette": ["Inflammatory pink", "Serous clear/yellow fluid-filled bullae", "Bright red plaque base"],
+      "textures": ["Tense/bloated blister surface", "Glistening fluid-filled domes", "Raised edematous plaques"],
+      "distribution": "Generalized (trunk, limbs, and flexural areas).",
+      "clinical_notes": "Blisters are specifically 'tense' rather than 'flaccid', meaning they do not rupture easily and maintain a rounded dome shape."
+    },
+    "dermatitis_herpetiformis": {
+      "appearance": "Generalized highly pruritic eruption of grouped (herpetiform) papules and small vesicles on an erythematous base, often heavily excoriated.",
+      "lesion_type": "Grouped vesicles and crusted erosions",
+      "color_palette": ["Inflammatory red", "Dark scabbed crusts", "Mottled hypo/hyperpigmentation"],
+      "textures": ["Herpetiform (clustered) grouping", "Scratched/excoriated surfaces", "Pigmentary mottling"],
+      "distribution": "Sacral and gluteal area (butterfly pattern), knees, elbows, and scapular regions.",
+      "clinical_notes": "The hallmark is the 'symmetrical' and 'grouped' distribution, often presenting with more excoriations than intact vesicles due to intense itching."
+    },
+    "pyoderma_gangrenosum": {
+      "appearance": "Rapidly enlarging hemorrhagic nonfollicular pustule surrounded by a prominent erythematous to violaceous halo. Highly painful.",
+      "lesion_type": "Hemorrhagic pustule and necrotic ulcer",
+      "color_palette": ["Violaceous (purple) halo", "Hemorrhagic dark center", "Active inflammatory red"],
+      "textures": ["Necrotic moist center", "Soft undermined borders", "Infiltrated halo"],
+      "distribution": "Principally the lower limbs (shins), but can occur at trauma sites (pathergy).",
+      "clinical_notes": "Key visual marker is the 'violaceous' border, which indicates deep tissue destruction and rapid expansion."
+    },
+    "erythema_nodosum": {
+      "appearance": "Indurated, very tender, ill-defined inflammatory nodules appearing as red, warm elevations on the skin.",
+      "lesion_type": "Deep-seated inflammatory nodules (panniculitis)",
+      "color_palette": ["Ill-defined red", "Pinkish-red", "Bruising-like purples (resolving)"],
+      "textures": ["Indurated (firm) mass", "Smooth swollen surface", "Lack of surface scale"],
+      "distribution": "Symmetrical pretibial region (shins).",
+      "clinical_notes": "Presented as 'deep-seated' nodules where the inflammation is in the subcutaneous fat rather than the surface epidermis."
+    },
+    "fixed_drug_eruption": {
+      "appearance": "Sharply demarcated, dusky violaceous-red plaques that recur at the exact same location upon re-exposure to a drug. In generalized forms, plaques become confluent and may develop bullae.",
+      "lesion_type": "Sharply demarcated violaceous plaques and bullae",
+      "color_palette": ["Dusky violaceous", "Slate-gray (post-inflammatory)", "Crimson-red (active)"],
+      "textures": ["Confluent smooth surface", "Targetoid (bull's eye) shadowing", "Subepidermal blistering"],
+      "distribution": "Can occur anywhere, but commonly affects limbs, glans penis, and trunk.",
+      "clinical_notes": "A hallmark is 'residual hyperpigmentation'—the slate-gray color left behind between attacks. 'Generalized' forms (GFDE) can mimic SJS/TEN if bullous."
+    },
+    "hemangioma_of_infancy": {
+      "appearance": "Bright red to deep purple, soft, raised, lobulated vascular mass. Often referred to as a 'strawberry hemangioma' due to its textured surface.",
+      "lesion_type": "Lobulated vascular plaque/tumor",
+      "color_palette": ["Strawberry red", "Deep crimson", "Purplish-violaceous"],
+      "textures": ["Lobulated (strawberry-like)", "Soft fleshy surface", "High vascularity sheen"],
+      "distribution": "Face (often unilateral/segmental), scalp, and trunk.",
+      "clinical_notes": "Key visual marker is the 'lobulated' strawberry-like texture. In early involution, the center might show slightly paler or purplish areas."
+    },
+    "cherry_angioma": {
+      "appearance": "Small (1-5mm), bright red to deep purple, raised papular vascular lesions that increase in number with age.",
+      "lesion_type": "Papular vascular spot",
+      "color_palette": ["Ruby red", "Deep violaceous", "Dark crimson"],
+      "textures": ["Smooth dome-shaped surface", "Localized vascular sheen", "Lack of surface scaling"],
+      "distribution": "Principally the trunk and proximal limbs.",
+      "clinical_notes": "A hallmark of 'senile' skin maturation. Unlike hemangiomas, these are much smaller and maintain a smooth, non-lobulated dome shape."
+    },
+    "epidermoid_cyst": {
+      "appearance": "Firm, rounded, skin-colored dermal nodule, often featuring a central pitted opening (punctum).",
+      "lesion_type": "Dermal nodule with punctum",
+      "color_palette": ["Natural skin tone", "Subtle inflammatory pink", "Dark gray/black punctum"],
+      "textures": ["Firm rounded elevation", "Smooth overlying epidermis", "Central pitted opening"],
+      "distribution": "Face, neck, back, and scalp.",
+      "clinical_notes": "The presence of a 'punctum' (opening) is the definitive visual marker for an epidermoid cyst in medical rendering."
+    },
+    "seborrheic_keratosis": {
+      "appearance": "Slightly raised, 'stuck-on' plaque with a warty or greasy surface. Color ranges from tan to black.",
+      "lesion_type": "Verrucous 'stuck-on' plaque",
+      "color_palette": ["Tan", "Dark brown", "Charcoal black"],
+      "textures": ["Warty/verrucous surface", "'Stuck-on' appearance", "Greasy/keratotic feel"],
+      "distribution": "Trunk, face (common on temples/zygomatic), and scalp.",
+      "clinical_notes": "Referred to as having a 'stuck-on' appearance because it looks like it was dropped onto the skin rather than growing from within."
+    },
+    "hypertrophic_scar": {
+      "appearance": "Broad, raised, firm fibrous plaque developing at the site of injury (surgery, acne, trauma). Often shows a shiny, taut surface with visible telangiectasia.",
+      "lesion_type": "Hypertrophic fibrous plaque",
+      "color_palette": ["Pinkish-red", "Skin-colored", "Violaceous (active)"],
+      "textures": ["Shiny atrophic epidermis", "Firm fibrous mass", "Taut/stretched surface", "Surface telangiectasia"],
+      "distribution": "Sites of trauma, surgical incisions, and the chest/back (post-acne).",
+      "clinical_notes": "Characterized by its 'shiny' surface and the fact that it remains within the boundaries of the original injury, unlike keloids which expand beyond it."
+    },
+    "keloid": {
+      "appearance": "Firm, exuberant fibrous growth that extends beyond the original wound boundaries. Often presents with sausage- or claw-like extensions.",
+      "lesion_type": "Hypertrophic flamboyant fibrous tumor",
+      "color_palette": ["Pinkish-red", "Violaceous", "Hyperpigmented brown/black"],
+      "textures": ["Claw-like extensions", "Bulbous sausage-shaped mounds", "Shiny taut surface"],
+      "distribution": "Earlobes, chest, back, and shoulders.",
+      "clinical_notes": "Distinguished from hypertrophic scars by its 'claw-like' growth into previously healthy, uninjured tissue."
+    },
+    "skin_tag": {
+      "appearance": "Small, soft, skin-colored or tan pedunculated papules attached to the skin by a thin stalk.",
+      "lesion_type": "Soft pedunculated papule",
+      "color_palette": ["Natural skin tone", "Tan", "Brownish"],
+      "textures": ["Soft/fleshy feel", "Stalk-like attachment (peduncle)", "Occasionally wrinkled surface"],
+      "distribution": "Neck, axillae, groin, and eyelids.",
+      "clinical_notes": "Commonly seen in areas of friction or alongside acanthosis nigricans. Often referred to as 'acrochordon'."
+    },
+    "photoallergic_dermatitis": {
+      "appearance": "Eczematous dermatitis occurring strictly in sun-exposed areas, with characteristic sparing of shaded regions.",
+      "lesion_type": "Eczematous plaque with shaded-zone sparing",
+      "color_palette": ["Sun-drenched inflammatory red", "Post-erythema peeling"],
+      "textures": ["Edematous (swollen) skin", "Rough surface scaling", "Sharp demarcation from spared skin"],
+      "distribution": "Face, V-neck area, and dorsal hands. Spares eyelids (behind glasses), sub-nasal, and sub-mental areas.",
+      "clinical_notes": "The 'sparing' of areas protected by shadows (e.g., behind the ear or under the chin) is the definitive diagnostic visual rule."
+    },
+    "porphyria_cutanea_tarda": {
+      "appearance": "Fragile skin on sun-exposed surfaces presenting with subepidermal bullae, atrophic depigmented scars, and milia.",
+      "lesion_type": "Fragile bullae and atrophic scars",
+      "color_palette": ["Depigmented white for scars", "Serous yellow for bullae", "Tan/weathered skin background"],
+      "textures": ["Atrophic (paper-thin) skin", "Fragile tense bullae", "Milia (small white-pitted inclusions)"],
+      "distribution": "Dorsum of hands (classic), face, and sun-exposed areas.",
+      "clinical_notes": "Characterized by 'extreme skin fragility' where minor trauma causes bullae and erosions on weathered, sun-damaged skin."
+    },
+    "bowen_disease": {
+      "appearance": "Sharply defined red to orange plaque with irregular outlines and flaky, psoriasiform scale. Representing Squamous Cell Carcinoma in situ.",
+      "lesion_type": "Erythematous scaling plaque",
+      "color_palette": ["Red-orange", "Yellowish-tan scale", "Inflammatory pink"],
+      "textures": ["Psoriasiform (flaky) scaling", "Irregular 'geographic' borders", "Flat but rough surface"],
+      "distribution": "Sun-exposed areas (face, neck, hands) and the back.",
+      "clinical_notes": "Visually mimics psoriasis but is distinguished by its 'irregular outlines' and lack of response to typical steroids."
+    },
+    "invasive_squamous_cell_carcinoma": {
+      "appearance": "Firm, red nodule or ulcerated mass, often arising within a pre-existing lesion like Bowen disease or Actinic Keratosis.",
+      "lesion_type": "Ulcerated nodule or fleshy mass",
+      "color_palette": ["Dark meaty red", "Crusty black/brown", "Violaceous borders"],
+      "textures": ["Fleshy nodular growth", "Firm indurated base", "Central crusting/ulceration"],
+      "distribution": "Head, neck, dorsal hands, and any site of chronic sun damage.",
+      "clinical_notes": "The development of a 'raised nodule' within a flat scaling plaque is the primary visual indicator of invasive progression from Bowen's."
+    },
+    "superficial_basal_cell_carcinoma": {
+      "appearance": "Irregular thin red plaque with a subtle but characteristic 'pearly rolled border' and central fine telangiectasia.",
+      "lesion_type": "Erythematous plaque with pearly borders",
+      "color_palette": ["Pearly pink", "Inflammatory red", "Bright crimson telangiectasia"],
+      "textures": ["Pearly/waxy borders", "Finely threaded vessels", "Centrally thin/atrophic plaque"],
+      "distribution": "Trunk and limbs (common) and face.",
+      "clinical_notes": "Visually distinguished from eczema by the presence of 'rolled' waxy borders that catch the light under magnification."
+    },
+    "nodular_basal_cell_carcinoma": {
+      "appearance": "Translucent, waxy, or pearly nodule with prominent rolled borders and central telangiectasia. Often progresses to form a central ulcer ('rodent ulcer').",
+      "lesion_type": "Pearly translucent nodule",
+      "color_palette": ["Waxy pink-translucent", "Red/black central crust", "Shiny pearl-white rim"],
+      "textures": ["Waxy translucency", "Prominent rolled edge", "Central crater/crust"],
+      "distribution": "Head, neck, and upper face (sun-exposed areas).",
+      "clinical_notes": "The most common form of skin cancer. The 'waxy translucency' where the lesion looks almost like a bead or pearl is the definitive visual rule."
+    },
+    "vitiligo": {
+      "appearance": "Chalk-white depigmented macules and patches with sharp margination and convex borders.",
+      "lesion_type": "Depigmented macules and patches",
+      "color_palette": ["Chalk-white", "Milky-white", "Sharply contrasting with normal skin"],
+      "textures": ["Smooth normal skin texture", "Sharp border transition", "Convex border patterns"],
+      "distribution": "Face (periorbital, perioral), hands, wrists, axilla, knees, feet, and anogenital region. Often includes 'poliosis' (white hair patches).",
+      "clinical_notes": "Characterized by the 'complete loss' of melanin, resulting in a stark, white contrast. Margins are 'convex', seemingly pushing into the pigmented skin."
+    },
+    "melasma": {
+      "appearance": "Well-demarcated, tan-to-brown hyperpigmented macules and patches in a symmetrical 'mask-like' distribution.",
+      "lesion_type": "Hyperpigmented macules and patches",
+      "color_palette": ["Tan", "Muddy brown", "Hyperpigmented bronze"],
+      "textures": ["Smooth surface texture", "Mottled pigment application", "Blurred but distinct borders"],
+      "distribution": "Cheeks (malar), forehead, bridge of nose, and upper lip (centrofacial).",
+      "clinical_notes": "Commonly referred to as the 'mask of pregnancy'. Unlike acanthosis nigricans, the texture remains smooth and not velvety."
+    },
+    "postinflammatory_hyperpigmentation": {
+      "appearance": "Confluent macules and patches of darkened skin that follow an inflammatory insult. Often presents with a characteristic 'ashy' or grayish-brown tone in darker skin phototypes.",
+      "lesion_type": "Ashy hyperpigmented macules",
+      "color_palette": ["Ashy grayish-brown", "Purplish-brown", "Deep charcoal"],
+      "textures": ["Smooth surface texture", "Confluent map-like patches", "Background of resolved inflammation"],
+      "distribution": "Generalized—any site of previous inflammation (e.g., back, face, limbs).",
+      "clinical_notes": "In Indian/South Asian skin (types IV-VI), this often takes on a unique 'ashy' dermatosis-like appearance which is a critical visual marker for the engine."
+    },
+    "acute_urticaria": {
+      "appearance": "Raised, edematous wheals (hives) that often exhibit central pallor and bright erythematous borders. Lesions may coalesce into large, geographic plaques.",
+      "lesion_type": "Edematous wheals and plaques",
+      "color_palette": ["Bright erythematous red", "Pale/white center (central pallor)", "Pinkish-inflamed"],
+      "textures": ["Raised edematous (swollen) surface", "Smooth surface texture", "Evanescent (fading and reappearing)"],
+      "distribution": "Generalized—trunk and limbs are most common.",
+      "clinical_notes": "The defining visual rule for 'Hives' in the generator is the **central pallor** within a bright red ring, which mimics the targetoid look of an acute wheal."
+    },
+    "angioedema": {
+      "appearance": "Deep, diffuse, well-demarcated swelling of the dermis and subcutaneous tissues. Often affects the eyelids and lips.",
+      "lesion_type": "Deep dermal edema",
+      "color_palette": ["Skin-colored to subtle pink", "Tense glistening surface"],
+      "textures": ["Diffuse, non-pitting swelling", "Smooth taut skin", "Loss of normal skin folds"],
+      "distribution": "Face (periorbital and perioral), tongue, and extremities.",
+      "clinical_notes": "Unlike superficial urticaria, angioedema is a 'deep' swelling that can obscure facial features, making the skin look significantly 'bloated' or taut."
+    },
+    "urticarial_dermographism": {
+      "appearance": "Linear wheals appearing along the site of physical trauma or scratching. Often referred to as 'skin writing'.",
+      "lesion_type": "Physical urticarial wheals",
+      "color_palette": ["Inflammatory pink", "Bright red borders"],
+      "textures": ["Linear raised elevations", "Precise geometric/linear patterns", "Smooth swollen crests"],
+      "distribution": "Any site of skin friction or scratch (often the back).",
+      "clinical_notes": "The hallmark is the 'linear' nature of the wheal, mirroring the exact path of a preceding scratch or pressure point."
+    },
+    "erythema_multiforme": {
+      "appearance": "Symmetrical eruption of 'target' or 'iris' lesions, typically consisting of three concentric color zones. Often affects the palms, soles, and face.",
+      "lesion_type": "Targetoid concentric papules",
+      "color_palette": ["Dusky/dark purple center", "Pale edematous ring", "Bright erythematous outer ring"],
+      "textures": ["Concentric circular zones", "Central vesicle or crust", "Smooth but raised elevations"],
+      "distribution": "Face (cheeks and lips), distal limbs (palms and soles).",
+      "clinical_notes": "The definitively 'targetoid' morphology with three distinct colored rings is the primary visual rule for medical illustration."
+    },
+    "lichen_planus": {
+      "appearance": "Flat-topped, shiny, violaceous (purple) polygonal papules and plaques. Characterized by 'Wickham striae'—a fine white reticulated pattern on the surface.",
+      "lesion_type": "Violaceous polygonal papules",
+      "color_palette": ["Violaceous (purple)", "Muted lavender", "White (Wickham striae)"],
+      "textures": ["Shiny/glossy surface", "Flat-topped elevation", "Polygonal (angular) outlines", "Reticulated white lines"],
+      "distribution": "Flexor surfaces of wrists and ankles, lower back, and oral mucosa.",
+      "clinical_notes": "Key diagnostic markers are the 'Violaceous' color and 'Wickham striae' (the fine white mesh on the purple surface)."
+    },
+    "behcet_disease": {
+      "appearance": "Highly painful, 'punched-out' aphthous ulcers with a necrotic yellowish-white base and a prominent erythematous rim.",
+      "lesion_type": "Punched-out mucosal ulcers",
+      "color_palette": ["Yellowish-white necrotic base", "Bright erythematous rim", "Mucosal pink"],
+      "textures": ["Punched-out (well-defined) edges", "Fibrinous/necrotic floor", "Moist mucosal surface"],
+      "distribution": "Oral mucosa (buccal, tongue, lips) and anogenital region.",
+      "clinical_notes": "Characterized by the 'deeply excavated' look rather than a superficial erosion. The 'punched-out' border is the key visual rule."
+    },
+    "dermatomyositis_heliotrope": {
+      "appearance": "Characteristic 'heliotrope' (reddish-purple) erythema of the upper eyelids, often accompanied by periorbital edema.",
+      "lesion_type": "Violaceous periorbital erythema",
+      "color_palette": ["Heliotrope (reddish-purple)", "Violaceous-blue", "Edematous pink"],
+      "textures": ["Diffuse eyelid swelling (edema)", "Smooth but inflamed surface", "Confluence of color on upper lid"],
+      "distribution": "Upper eyelids (predominant) and periorbital area.",
+      "clinical_notes": "The term 'Heliotrope' refers specifically to the unique purple color of the eyelid rash, which is a hallmark of this systemic condition."
+    },
+    "systemic_lupus_erythematosus_malar": {
+      "appearance": "Bright red, sharply defined erythema with slight edema across the cheeks and bridge of the nose in a 'butterfly pattern'. Characteristically spares the nasolabial folds.",
+      "lesion_type": "Butterfly-pattern erythematous plaque",
+      "color_palette": ["Bright inflammatory red", "Rosy-pink", "Sun-sensitive erythema"],
+      "textures": ["Slight edema (puffed cheeks)", "Smooth but sharply defined edges", "Minimal surface scaling"],
+      "distribution": "Cheeks (malar) and bridge of nose. Does NOT involve the nasolabial folds.",
+      "clinical_notes": "The most critical visual instruction is the **sparing of the nasolabial folds**, which differentiates the malar rash from other types of facial redness (like seborrheic dermatitis)."
+    },
+    "systemic_lupus_erythematosus_hands": {
+      "appearance": "Red-to-violaceous papules and plaques on the dorsal hands and fingers, characteristically sparing the skin overlying the joints. Palmar involvement shows erythema mostly on the fingertips.",
+      "lesion_type": "Inter-articular violaceous plaques",
+      "color_palette": ["Violaceous-red", "Dusky pink", "Fingertip-focused erythema"],
+      "textures": ["Smooth surface texture", "Well-demarcated edges", "Non-scaling surface"],
+      "distribution": "Dorsum of fingers/hands (inter-articular spaces) and palmar fingertips.",
+      "clinical_notes": "A definitive diagnostic rule for the engine: **Spares the knuckle joints**. If the knuckles are involved, it is likely Dermatomyositis (Gottron papules) instead."
+    },
+    "chronic_cutaneous_lupus_erythematosus": {
+      "appearance": "Resolving discoid plaques characterized by central atrophy (thinning), scarring, and a dark hyperpigmented border. Often seen on the face and scalp.",
+      "lesion_type": "Atrophic hyperpigmented discoid plaques",
+      "color_palette": ["Dark brown-to-charcoal borders", "Grayish-tan centers", "Occasional depigmented zones"],
+      "textures": ["Atrophic (paper-thin) central skin", "Firm scarred edges", "Follicular plugging"],
+      "distribution": "Face (malar, forehead), ears, and scalp.",
+      "clinical_notes": "The visual rule is the 'burned-out' look of the lesion—a thin, paper-like center surrounded by an active or hyperpigmented ring."
+    },
+    "raynaud_phenomenon": {
+      "appearance": "Sharply demarcated tricolor change of the digits (usually fingers) triggered by cold or stress. Transitions from white (pallor) to blue (cyanosis) to red (rubor).",
+      "lesion_type": "Vascular vasospastic episode",
+      "color_palette": ["Ischemic white", "Cyanotic blue", "Reperfusion red"],
+      "textures": ["Smooth waxy surface during pallor", "Cold-exposed skin sheen", "Sharp demarcation lines"],
+      "distribution": "Distal digits (fingers and toes).",
+      "clinical_notes": "The three-phase color change is the definitive visual rule. In systemic disease (like Scleroderma), it may lead to 'digital pitting scars' or 'acral gangrene' (black necrotic tips)."
+    },
+    "sclerodactyly_scleroderma": {
+      "appearance": "Tightening and thickening of the skin of the fingers, leading to a 'waxy' bound-down appearance with loss of normal skin folds. Fingers often appear tapered ('Madonna fingers').",
+      "lesion_type": "Indurated bound-down skin",
+      "color_palette": ["Waxy pale pink", "Glistening ivory", "Violaceous (in active Raynaud)"],
+      "textures": ["Taut bound-down surface", "Absence of knuckle folds", "Tapered 'Madonna finger' tips", "Digital pitting scars"],
+      "distribution": "Hands and fingers (distal to proximal progression).",
+      "clinical_notes": "The key visual marker is the **loss of the normal skin creases** over the joints because the skin is physically 'bound down' to the underlying structures."
+    },
+    "scleroderma_facies": {
+      "appearance": "Mask-like facial expression with stretched, shiny skin and loss of normal facial lines. Significant thinning of the lips and reduced mouth opening (microstomia).",
+      "lesion_type": "Facial sclerosis and lip atrophy",
+      "color_palette": ["Whitish glistening patches", "Taut waxy pink", "Muted lip color"],
+      "textures": ["Shiny/stretched epidermis", "Loss of forehead and peri-orbital creases", "Hardened/indurated feel"],
+      "distribution": "Face, particularly perioral (mouth) and forehead.",
+      "clinical_notes": "The combination of **microstomia** (small mouth) and the inability to form wrinkles leads to a 'younger' but mask-like appearance. A hallmark is the 'radial furrowing' around the mouth."
+    },
+    "morphea": {
+      "appearance": "Irregular indurated (hard) plaques characterized by an ivory-colored center and a violaceous or brownish border.",
+      "lesion_type": "Localized scleroderma plaque",
+      "color_palette": ["Ivory white center", "Violaceous ring (active)", "Brownish border (resolving)"],
+      "textures": ["Hardened indurated mass", "Glistening sclerotic center", "Smooth surface"],
+      "distribution": "Trunk (flanks, abdomen) and limbs.",
+      "clinical_notes": "Unlike systemic scleroderma, morphea is localized. The 'ivory-colored' sclerotic center is the defining visual rule."
+    },
+    "hypersensitivity_vasculitis_purpura": {
+      "appearance": "Eruption of multiple, bright red to violaceous, non-blanching palpable papules (palpable purpura), often progressing to hemorrhagic bullae or necrosis.",
+      "lesion_type": "Palpable purpura",
+      "color_palette": ["Bright erythematous red", "Deep violaceous", "Black necrotic centers"],
+      "textures": ["Palpable (raised) spots", "Non-blanching (blood stays when pressed)", "Necrotic moist center (advanced)"],
+      "distribution": "Lower extremities (shins/ankles) due to hydrostatic pressure.",
+      "clinical_notes": "The definitively 'palpable' nature (unlike flat petechiae) and the **non-blanching** rule are the critical visual markers for vasculitis."
+    },
+    "keratoderma_blennorrhagicum": {
+      "appearance": "Waxy, yellowish-brown hyperkeratotic papules and plaques with a 'scalloped' or 'relief-map' appearance. Often associated with reactive arthritis.",
+      "lesion_type": "Waxy hyperkeratotic papules",
+      "color_palette": ["Waxy yellow-brown", "Deep tan", "Inflammatory red borders"],
+      "textures": ["Scalloped/relief-like thickening", "Hard crusting", "Central erosion", "Plateau elevations"],
+      "distribution": "Soles of the feet (plantar), palms, and occasionally the glans penis.",
+      "clinical_notes": "The unique 'relief-map' texture on the soles is the defining visual rule. It mimics psoriasis but is significantly more 'waxy' and thickened (keratotic)."
+    },
+    "sarcoidosis_lupus_pernio": {
+      "appearance": "Violaceous, soft, 'doughy' infiltrations on the cheeks and nose. The nose often appears grossly enlarged and bulbous.",
+      "lesion_type": "Violaceous doughy infiltrates",
+      "color_palette": ["Violaceous (purple-red)", "Dusky crimson", "Muted lavender"],
+      "textures": ["Doughy/soft tissue consistency", "Grossly enlarged/swollen nasal bridge", "Smooth but infiltrative surface"],
+      "distribution": "Nose (predominant), cheeks, lips, and earlobes.",
+      "clinical_notes": "The definitively 'bulbous' and purple nose is the hallmark indicator for the generator. It should not look like simple frostbite but rather a deep, puffy infiltration of the tissue."
+    },
+    "diabetic_bulla": {
+      "appearance": "Large, tense, clear-fluid-filled bulla (blister) occurring spontaneously on the lower legs. Characteristically lacks an erythematous (red) base.",
+      "lesion_type": "Spontaneous large bulla",
+      "color_palette": ["Clear-to-straw colored fluid", "Pale pink/normal-colored base", "Glistening surface"],
+      "textures": ["Tense blister wall", "Stretched glistening epidermis", "Fluid-filled (fluctuant) mass"],
+      "distribution": "Lower legs (pretibial), feet, and dorsum of hands.",
+      "clinical_notes": "The defining visual rule is the **lack of inflammation** surrounding the blister, which distinguishes it from bullous diseases like pemphigoid."
+    },
+    "diabetic_neuropathic_ulcer": {
+      "appearance": "Deep, 'punched-out' ulcer on a pressure point of the sole, characteristically surrounded by a thick, yellowish ring of callus (hyperkeratosis).",
+      "lesion_type": "Hyperkeratotic neuropathic ulcer",
+      "color_palette": ["Red granulated center", "Yellowish-white callus", "Pale surrounding skin"],
+      "textures": ["Thick, hard hyperkeratotic ring", "Moist excavated center", "Rough calloused edges"],
+      "distribution": "Soles of the feet (pressure points such as metatarsal heads or heels).",
+      "clinical_notes": "The presence of the **thick yellowish callus ring** (Mal Perforant) is the critical visual marker. It indicates chronic pressure and lack of sensation (neuropathy)."
+    },
+    "diabetic_dermopathy": {
+      "appearance": "Multiple, small, circinate (round) brownish-to-pinkish depressed macules and scars on the anterior shins.",
+      "lesion_type": "Pretibial atrophic macules",
+      "color_palette": ["Dusky brown", "Faded pink", "Tan-gray scars"],
+      "textures": ["Depressed/indented surface", "Atrophic (thin) skin texture", "Smooth surface"],
+      "distribution": "Anterior legs (pretibial area/shins).",
+      "clinical_notes": "Commonly known as 'shin spots'. The defining visual rule is the **depressed circular indentation** which makes the skin look slightly 'pitted' or scarred."
+    },
+    "necrobiosis_lipoidica_diabeticorum": {
+      "appearance": "Large, symmetrical plaques on the shins with a characteristic yellowish, waxy, atrophic center and a reddish-brown raised border.",
+      "lesion_type": "Yellowish atrophic plaques",
+      "color_palette": ["Yellow-to-ivory center", "Reddish-brown border", "Violaceous rim", "Bright red telangiectasia"],
+      "textures": ["Waxy/glazed central surface", "Atrophic (paper-thin) epidermis", "Visible fine blood vessels (telangiectasia)", "Raised firm border"],
+      "distribution": "Anterior shins (pretibial region).",
+      "clinical_notes": "The **yellowish waxy center** with visible 'spider-web' blood vessels (telangiectasia) is the pathognomonic marker for the generator."
+    },
+    "myxedema_hypothyroidism": {
+      "appearance": "Dull, expressionless, and puffy facial appearance with coarse, dry skin and a sallow complexion. Characterized by thinning of the lateral eyebrows.",
+      "lesion_type": "Diffuse facial puffiness (non-pitting edema)",
+      "color_palette": ["Pale/sallow yellow", "Ivory pink", "Muted skin tones"],
+      "textures": ["Coarse dry skin", "Exaggerated facial creases", "Doughy/firm puffiness", "Non-pitting surface"],
+      "distribution": "Face (periorbital, cheeks) and lateral 1/3 of eyebrows.",
+      "clinical_notes": "The **thinning of the lateral third of the eyebrows** (Queen Anne's sign) and the **periorbital puffiness** are the two highest-priority visual markers for the generator."
+    },
+    "addison_disease_pigmentation": {
+      "appearance": "Diffuse, tan-to-brown hyperpigmentation (bronzing) of the skin, most prominent in sun-exposed areas and pressure points. Characteristically involves palmar creases and oral mucosa.",
+      "lesion_type": "Diffuse hyperpigmentation",
+      "color_palette": ["Deep bronze", "Muddied brown", "Blue-black (mucosal spots)"],
+      "textures": ["Smooth surface texture", "Accentuated in skin folds/creases", "Uniform but deepened tone"],
+      "distribution": "Generalized, with specific focus on **palmar creases**, knuckles, elbows, and tongue/gingiva.",
+      "clinical_notes": "The high-priority visual rule is the **darkening of the palmar creases** and the presence of **blue-black spots on the tongue**, which distinguishes systemic bronze from a simple sun tan."
+    },
+    "xanthelasma": {
+      "appearance": "Soft, creamy-to-orange-yellow plaques and papules. Typically symmetrical.",
+      "lesion_type": "Deposition of yellow lipids",
+      "color_palette": ["Creamy yellow", "Pale orange", "Ivory-tan"],
+      "textures": ["Soft/velvety surface", "Slightly elevated plaques", "Sharply defined borders"],
+      "distribution": "Eyelids, specifically the **medial canthus** (inner corner of the upper and lower lids).",
+      "clinical_notes": "These are highly characteristic 'lipid deposits'. The key is the placement near the inner eye corners and the unique 'creamy' yellowish-orange color."
+    },
+    "acute_gouty_arthritis": {
+      "appearance": "Intensely inflamed, bright red, and swollen joint (often the big toe or finger joints). The skin over the joint appears shiny, stretched, and extremely tender.",
+      "lesion_type": "Acute inflammatory monoarthritis",
+      "color_palette": ["Bright inflammatory red", "Dusky crimson", "Shiny stretched pink"],
+      "textures": ["Shiny/glistening surface", "Tense edematous swelling", "Smooth taut skin"],
+      "distribution": "Metatarsophalangeal joint (big toe), distal interphalangeal joints, and ankles.",
+      "clinical_notes": "The visual rule is the **'angry' shiny redness** over a single joint. It should look significantly MORE inflamed and 'stretched' than a standard bruise or infection."
+    },
+    "gouty_tophi": {
+      "appearance": "Firm, yellowish-white nodules under the skin caused by uric acid crystal deposition. Often visible through thin skin.",
+      "lesion_type": "Crystalline deposition nodules",
+      "color_palette": ["Yellowish-white", "Ivory", "Chalky white"],
+      "textures": ["Firm/hard nodular texture", "Subcutaneous (under the skin) mass", "Smooth to slightly irregular surface"],
+      "distribution": "Helix of the ear (hallmark), elbows, and around joints (fingers, toes).",
+      "clinical_notes": "The **yellowish-white 'chalky' appearance** through the skin is the definitive visual marker for tophi, distinguishing it from soft tissue cysts."
+    },
+    "tuberous_sclerosis_ash_leaf": {
+      "appearance": "Hypopigmented macules shaped like a leaf (lanceolate), with one rounded end and one pointed end. Most visible on the trunk and limbs.",
+      "lesion_type": "Oval/lanceolate hypopigmented macule",
+      "color_palette": ["Off-white", "Pale cream", "Hypomelanotic pink"],
+      "textures": ["Smooth surface texture", "Flat (non-palpable) macule", "Slightly blurred borders"],
+      "distribution": "Trunk and lower extremities.",
+      "clinical_notes": "The **'ash-leaf' (lanceolate) shape** is the pathognomonic marker. The generator must ensure one end of the oval is significantly sharper/more pointed than the other."
+    },
+    "neurofibromatosis_nf1": {
+      "appearance": "Multiple light-brown 'coffee-with-milk' (café-au-lait) macules and numerous soft, fleshy, skin-colored papules and nodules (neurofibromas).",
+      "lesion_type": "Hyperpigmented macules and soft nodules",
+      "color_palette": ["Light tan (café-au-lait)", "Pale pink/tan (neurofibromas)", "Skin-colored"],
+      "textures": ["Fleshy/soft nodular texture", "Flat smooth macules", "Occasional baggy/plexiform masses"],
+      "distribution": "Trunk (predominant), limbs, and axilla (Crowe sign).",
+      "clinical_notes": "The definitive rule for the engine is the combination of **flat 'café-au-lait' patches** and **raised 'button-hole' nodules** (neurofibromas) on a single subject."
+    },
+    "atheroembolism_blue_toe": {
+      "appearance": "Mottled, violaceous, vascular pattern on the toes and forefoot, often referred to as 'blue toe syndrome'. Presents with livedo reticularis and cyanotic patches.",
+      "lesion_type": "Ischemic mottled discoloration",
+      "color_palette": ["Violaceous-purple", "Cyanotic blue", "Mottled red-blue"],
+      "textures": ["Livedo reticularis (net-like pattern)", "Smooth cold skin surface", "Sharply demarcated color zones"],
+      "distribution": "Distal digits (toes), heels, and forefoot.",
+      "clinical_notes": "The primary visual marker is the **mottled, net-like livedo reticularis** on a blue-tinted toe, indicating distal embolization."
+    },
+    "buerger_disease_gangrene": {
+      "appearance": "Dry, black, shriveled necrotic tissue (dry gangrene) on the distal digits. Exquisitely painful with a sharp transition to inflamed skin.",
+      "lesion_type": "Acral infarctive necrosis",
+      "color_palette": ["Coal black", "Shriveled charcoal", "Deep inflammatory red (at the margin)"],
+      "textures": ["Dry shriveled surface", "Leathery hard texture", "Taut inflamed skin at the border"],
+      "distribution": "Distal fingers and toes.",
+      "clinical_notes": "The defining visual rule is the **'mummified' black look** of the digit tip, which must contrast sharply with the painful, red, viable skin proximally."
+    },
+    "varicose_veins": {
+      "appearance": "Dilated, tortuous, and sinuous blue-green veins bulging beneath the skin surface. Often accompanied by finer 'starburst' telangiectasias (spider veins).",
+      "lesion_type": "Venous ectasia",
+      "color_palette": ["Deep blue-green", "Muted violet", "Erythematous starbursts"],
+      "textures": ["Convoluted/bulging surface", "Tubular irregular masses", "Translucent skin over vessels"],
+      "distribution": "Lower extremities (thighs, calves, behind knees).",
+      "clinical_notes": "The **'sinuous' and bulging** nature of the veins is the primary visual marker. The engine should avoid straight lines; these must look like 'meandering' rivers under the skin."
+    },
+    "livedoid_vasculitis_atrophie_blanche": {
+      "appearance": "Ivory-white, star-shaped atrophic scars (atrophie blanche) surrounded by hyperpigmentation and telangiectasia. May present with small painful ulcers.",
+      "lesion_type": "Atrophic porcelain-white scars",
+      "color_palette": ["Ivory white", "Porcelain cream", "Dusky brown hyperpigmentation", "Net-like red (livedo)"],
+      "textures": ["Star-shaped sunken scars", "Livedo reticularis (net-like) background", "Crusted ulcerations"],
+      "distribution": "Lower legs and ankles.",
+      "clinical_notes": "The **'ivory-white porcelain' color** of the star-shaped scars is the pathognomonic marker. These scars look like 'sunken islands' of white in a sea of red/brown skin."
+    },
+    "pressure_ulcer_stage_3": {
+      "appearance": "Deep, crater-like (crateriform) ulcer with full-thickness skin loss. The base typically shows red granulated tissue or yellowish slough.",
+      "lesion_type": "Crateriform ulceration",
+      "color_palette": ["Deep red (granulation)", "Yellowish-white slough", "Muted tan border"],
+      "textures": ["Excavated center", "Granular (bumpy) red base", "Thickened rolled edges"],
+      "distribution": "Pressure points (heels, sacrum, metatarsal heads).",
+      "clinical_notes": "The **'crater-like' depth** is the distinguishing visual rule. It must appear as a deep hole in the tissue, not a superficial scrape."
+    },
+    "calciphylaxis": {
+      "appearance": "Jagged, black, necrotic ulcerations within areas of mottled erythema (livedo). The surrounding skin is 'plate-like' and extremely hard (indurated).",
+      "lesion_type": "Ischemic necrotic plaques",
+      "color_palette": ["Charcoal black", "Violaceous red", "Mottled ivory-pink"],
+      "textures": ["Jagged/irregular necrosis", "Plate-like hard surface (induration)", "Stretched shiny margins"],
+      "distribution": "Lower extremities, abdomen, and thighs (areas with high subcutaneous fat).",
+      "clinical_notes": "The **jagged, irregular edges of the black necrosis** combined with a 'plate-like' hardness of the surrounding skin is the defining visual indicator."
+    },
+    "nephrogenic_fibrosing_dermopathy": {
+      "appearance": "Thickened, leathery, 'bound down' skin with a brawny discoloration. Characterized by an uneven, orange-peel (peau d'orange) surface texture.",
+      "lesion_type": "Indurated fibrotic plaques",
+      "color_palette": ["Brawny brown", "Tan-yellow", "Woody gray"],
+      "textures": ["Peau d'orange (orange-peel) texture", "Leathery induration", "Bound-down (fixed) surface"],
+      "distribution": "Limbs (arms and legs), often sparing the face.",
+      "clinical_notes": "The **'orange-peel' (pitted) texture** on a brawny, thickened leg is the critical visual marker for the generator to simulate Nephrogenic Systemic Fibrosis (NSF)."
+    },
+    "periorbital_edema": {
+      "appearance": "Severe, fluid-filled swelling of the upper and lower eyelids. The skin appears pale, translucent, and intensely stretched.",
+      "lesion_type": "Diffuse subcutaneous eyelid edema",
+      "color_palette": ["Pale ivory", "Translucent pink", "Sallow cream"],
+      "textures": ["Stretched/shiny skin surface", "Glistening/glossy appearance", "Doughy consistency", "Obliteration of eyelid creases"],
+      "distribution": "Periorbital region (bilateral or unilateral eyelids).",
+      "clinical_notes": "The **'stretched shiny' and translucent** look of the eyelids is the definitive visual rule. It must look like the skin is barely containing the fluid pressure."
+    },
+    "infective_endocarditis_vegetations": {
+      "appearance": "Irregular, yellowish or tan, friable growths (vegetations) attached to heart valve leaflets. The valves often appear eroded or frayed.",
+      "lesion_type": "Valvular vegetative growths",
+      "color_palette": ["Pale yellow", "Tan", "Muted pink (inflamed tissue)", "Ivory gray"],
+      "textures": ["Friable/crumbly nodules", "Cauliflower-like irregular surface", "Frayed/eroded edges", "Soft/gummy consistency"],
+      "distribution": "Heart valves (Mitral, Aortic, Tricuspid).",
+      "clinical_notes": "The **'friable cauliflower' texture** is the hallmark of infective vegetations in 3D medical renders. They must look irregular and crumbly, unlike the smooth nodules of healthy tissue."
+    },
+    "jaundice_scleral_icterus": {
+      "appearance": "Diffuse yellowish staining of the skin and the sclera (whites of the eyes). Characterized by a bright yellow to saffron-like hue.",
+      "lesion_type": "Diffuse pigmentary staining",
+      "color_palette": ["Bright yellow", "Saffron", "Mustard", "Muted greenish-yellow"],
+      "textures": ["Smooth surface color shift", "Glistening yellow sclera", "Uniform pigment saturation"],
+      "distribution": "Sclera (eyeballs), generalized skin, and under the tongue.",
+      "clinical_notes": "The **yellowing of the sclera** (Scleral Icterus) is the highest-priority visual marker, as it distinguishes clinical jaundice from carotenemia (which spares the eyes)."
+    },
+    "coronary_stenting_ptca": {
+      "appearance": "Expansion of a narrowed coronary artery using a metallic mesh scaffold (stent) and a balloon. Shows the compression of yellowish-orange atherosclerotic plaque.",
+      "lesion_type": "Intravascular metallic scaffold",
+      "color_palette": ["Arterial red", "Yellowish-orange (plaque)", "Metallic silver/chrome (stent)", "Translucent blue (balloon)"],
+      "textures": ["Metallic lattice/mesh texture", "Granular/glistening fatty plaque", "Glossy vessel wall", "Stretched balloon surface"],
+      "distribution": "Coronary arteries of the heart.",
+      "clinical_notes": "The **silver metallic mesh lattice** is the definitive visual rule for the generator. It must show a transition from a 'narrowed' vessel with plaque to a 'dilated' vessel supported by the mesh."
+    },
+    "tuberculosis_pulmonary_microscopy": {
+      "appearance": "Focal grey/white pulmonary consolidations (Ghon complexes) in lung lobes, alongside microscopic rod-shaped bacilli (M. tuberculosis).",
+      "lesion_type": "Granulomatous consolidation / Bacterial bacilli",
+      "color_palette": ["Cloudy grey", "Ivory white", "Muted pink (inflamed lung)", "Blue-gray (bacilli)"],
+      "textures": ["Dense fibrous consolidation", "Granular bacterial clusters", "Smooth rod-like bacilli", "Porous lung texture"],
+      "distribution": "Upper lobes of lungs (reactivation) or lower lobes (primary); bacilli scattered or in dense clusters.",
+      "clinical_notes": "The **rod-shaped (slightly curved) bacilli** in a magnified circular inset are the hallmark for infectious disease illustrations. Pulmonary lesions should look like cloudy white focal clusters."
+    },
+    "cardiovascular_pathologies_advanced": {
+      "AAA": "Localized dilation/bulge of the abdominal aorta above the bifurcation.",
+      "MR_acute": "Retrograde jet of blood from the left ventricle back into the left atrium during systole.",
+      "Atheroma": "Intravascular yellowish lipid core surrounded by a fibrous cap, narrowing the arterial lumen.",
+      "visual_rules": "Mitral Regurgitation MUST show a directional flow arrow or a distinct blood jet moving backward. Atheroma must show the three tunica layers (Adventitia, Media, Intima) with the yellow plaque invading the Intima/Media space."
+    }
+  }
+}

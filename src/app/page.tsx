@@ -132,7 +132,8 @@ export default function Home() {
         data: res.data,
         promptFile: res.promptFile,
         folder: res.folder,
-        refinedPrompt: res.refinedPrompt
+        refinedPrompt: res.refinedPrompt,
+        activeProvider: res.activeProvider
       });
       
     } catch (err: any) {
@@ -260,6 +261,7 @@ export default function Home() {
                   refinement={refinement}
                   setRefinement={setRefinement}
                   handleRefine={onGenerate}
+                  activeProvider={result.activeProvider}
                 />
               )}
 

@@ -12,6 +12,7 @@ interface BlueprintConsoleProps {
     refinement: string;
     setRefinement: (val: string) => void;
     handleRefine: () => void;
+    activeProvider?: string;
 }
 
 export function BlueprintConsole({
@@ -20,7 +21,8 @@ export function BlueprintConsole({
     isLoading,
     refinement,
     setRefinement,
-    handleRefine
+    handleRefine,
+    activeProvider = "Gemini-Elite"
 }: BlueprintConsoleProps) {
     return (
         <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative overflow-hidden group/console">
@@ -38,7 +40,7 @@ export function BlueprintConsole({
                              mode === "comic" ? "Sequential Narrative" :
                              "Vector Blueprint"}
                         </h3>
-                        <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Compiler: FLUX.2 Klein + Gemini 2.5</p>
+                        <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Compiler: {activeProvider} + FLUX.2</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -46,7 +48,7 @@ export function BlueprintConsole({
                         <button
                             onClick={() => {
                                 navigator.clipboard.writeText(JSON.stringify(data, null, 2));
-                                alert("Technical JSON copied to clipboard.");
+                                window.open("https://gemini.google.com/app", "_blank");
                             }}
                             className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-500 hover:border-indigo-100 transition-all shadow-sm"
                         >

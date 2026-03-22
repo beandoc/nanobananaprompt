@@ -21,7 +21,8 @@
       "arteries": ["Right coronary artery", "Left coronary artery", "Anterior interventricular artery (LAD)", "Circumflex artery", "Right marginal artery", "Conal artery", "Diagonal artery", "Posterior interventricular artery"],
       "veins": ["Great cardiac vein", "Middle cardiac vein", "Small cardiac vein", "Coronary sinus"],
       "landmarks": ["Coronary (atrioventricular) sulcus", "Anterior/Posterior interventricular sulcus", "Cardiac crux", "Acute border", "Obtuse border"],
-      "pathology_keys": ["Atherosclerotic plaque narrowing", "Stent placement", "Microvascular bifurcation"]
+      "pathology_keys": ["Atherosclerotic plaque narrowing", "Stent placement", "Microvascular bifurcation", "Angioplasty balloon inflation physics", "Arterial tunics layering"],
+      "visual_rules": "Angioplasty involves a central translucent balloon expanding to compress yellowish plaque against the glossy arterial wall. Arteries must show three distinct layers: Adventitia (outer fibrous), Media (middle muscular), and Intima (inner smooth endothelial)."
     }
   },
   "respiratory": {
@@ -34,9 +35,11 @@
       "neighboring_structures": ["Phrenic nerve", "Vagus nerve", "Pulmonary vessels", "Hilus", "Esophagus (posterior)", "Liver (inferior to diaphragm)"]
     },
     "micro_alveolar": {
-      "structures": ["Respiratory bronchioles", "Alveolar ducts", "Alveolar sacs", "Alveoli", "Septum"],
+      "structures": ["Respiratory bronchioles", "Alveolar ducts", "Alveolar sacs", "Alveoli", "Septum", "Alveolar pore"],
+      "cell_types": ["Type I pneumocyte (flat/squamous)", "Type II pneumocyte (cuboidal/rounded/surfactant-producing)", "Lung matrix fibroblast", "Secondary crest myofibroblast", "Pericyte", "Capillary endothelial cell"],
       "circulation": ["Pulmonary artery (blue)", "Pulmonary vein (red)", "Capillary plexuses", "Alveolar-capillary membrane"],
-      "physics": "Highly delicate membrane transparency, gas exchange interface, 2D/3D mesh of capillaries"
+      "physics": "Highly delicate membrane transparency, gas exchange interface, 2D/3D mesh of capillaries, surfactant-lined inner surface",
+      "visual_rules": "Type II cells appear larger and rounded/blue-ish, nestled in the alveolar corners; Type I cells are thin and line the walls."
     },
     "upper_respiratory_neck": {
       "structures": ["Nasal cavity", "Pharynx (Naso/Oro/Laryngopharynx)", "Larynx", "Epiglottis", "Esophagus", "Trachea", "Thyroid cartilage", "Cricoid cartilage"],
@@ -86,9 +89,12 @@
       "view": "Sectioned / Coronal plane"
     },
     "nephron_and_glomerulus": {
-      "structures": ["Renal corpuscle", "Bowman's capsule (parietal layer)", "Glomerular capillaries", "Juxtaglomerular apparatus", "Proximal convoluted tubule", "Nephron loop (Loop of Henle - thick/thin segments)", "Distal convoluted tubule", "Collecting duct"],
-      "cell_types": ["Macula densa", "Granular juxtaglomerular cells", "Extraglomerular mesangial cells (Lacis cells)", "Podocytes (visceral layer)"],
-      "physics": "Functional flow indicators, ADH-controlled water resorption, countercurrent exchange, selective secretion"
+      "structures": ["Renal corpuscle", "Bowman's capsule (parietal layer)", "Glomerular capillaries", "Juxtaglomerular apparatus", "Proximal tubule (Segments S1, S2, S3)", "Nephron loop (Loop of Henle - descending/ascending thin limbs)", "Thick ascending limb", "Distal convoluted tubule", "Connecting tubule", "Collecting duct (Cortical, Outer medullary, Inner medullary)"],
+      "microvasculature": ["Peritubular capillary plexus (wrapping around tubules)", "Vasa recta network (parallel to Loop of Henle)", "Juxtaglomerular vessels"],
+      "cell_types": ["Macula densa epithelial cell", "Granular juxtaglomerular cells", "Extraglomerular mesangial cells (Lacis cells)", "Podocytes (visceral epithelial layer)", "Parietal epithelial cell", "Epithelial cell of proximal tubule", "Glomerular capillary endothelial cell", "Glomerular mesangial cell"],
+      "vasculature": ["Afferent arteriole", "Efferent arteriole", "Vascular pole", "Urinary pole"],
+      "physics": "Functional flow indicators, ADH-controlled water resorption, countercurrent exchange, selective secretion, high-fidelity filtration barrier, microvascular wrapping",
+      "visual_rules": "The Nephron should be shown wrapped in a dense red/blue capillary plexus. Capillaries should appear thin and intertwined with the tubule structures."
     },
     "renal_ultrastructure_em": {
       "features": ["Podocyte cell body (P)", "Primary/Secondary processes", "Pedicels (Foot processes P1, P2)", "Filtration slits (FS)", "Basal Lamina (BL)", "Fenestrated endothelial cells (E) with Fenestrations (F)", "Mesangial cells"],
