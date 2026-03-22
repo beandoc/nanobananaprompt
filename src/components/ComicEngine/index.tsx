@@ -207,15 +207,15 @@ export function ComicEngine({
     };
 
     return (
-        <div className="flex flex-col xl:flex-row gap-4 xl:gap-8 mb-20 relative font-sans">
-            {/* Left Sidebar: Production Control */}
+        <div className="flex flex-col xl:flex-row gap-4 xl:gap-8 mb-10 md:mb-20 relative font-sans">
+            {/* Left Sidebar: Production Control - Hidden on Mobile, can be toggled if needed */}
             {isSettingsOpen && (
                 <motion.div 
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="w-80 shrink-0 hidden xl:flex flex-col gap-6 sticky top-24 h-[calc(100vh-8rem)]"
+                    className="w-full xl:w-80 shrink-0 flex flex-col gap-6 xl:sticky xl:top-24 xl:h-[calc(100vh-8rem)]"
                 >
-                    <div className="bg-white border-4 border-slate-900 rounded-[2.5rem] p-8 shadow-xl flex flex-col gap-8 overflow-y-auto">
+                    <div className="bg-white border-2 md:border-4 border-slate-900 rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 shadow-xl flex flex-col gap-6 md:gap-8 overflow-y-auto">
                         <div className="flex items-center justify-between">
                             <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-900">Production Hub</h3>
                             <button onClick={() => setIsSettingsOpen(false)} className="text-slate-300 hover:text-rose-500 transition-colors">
@@ -225,24 +225,24 @@ export function ComicEngine({
 
                         <div className="space-y-4">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">View Perspective</label>
-                            <div className="grid grid-cols-2 gap-2 bg-slate-50 p-1.5 rounded-2xl border-2 border-slate-100">
+                            <div className="grid grid-cols-2 gap-2 bg-slate-50 p-1 md:p-1.5 rounded-xl md:rounded-2xl border-2 border-slate-100">
                                 <button 
                                     onClick={() => setViewMode('scroll')}
                                     className={cn(
-                                        "px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all gap-2 flex items-center justify-center",
+                                        "px-3 md:px-4 py-2 md:py-2.5 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all gap-2 flex items-center justify-center",
                                         viewMode === 'scroll' ? "bg-black text-white shadow-lg" : "text-slate-400 hover:text-slate-600"
                                     )}
                                 >
-                                    <AlignLeft className="w-3.5 h-3.5" /> Strip
+                                    <AlignLeft className="w-3 md:w-3.5 h-3 md:h-3.5" /> Strip
                                 </button>
                                 <button 
                                     onClick={() => setViewMode('pages')}
                                     className={cn(
-                                        "px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all gap-2 flex items-center justify-center",
+                                        "px-3 md:px-4 py-2 md:py-2.5 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all gap-2 flex items-center justify-center",
                                         viewMode === 'pages' ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200" : "text-slate-400 hover:text-slate-600"
                                     )}
                                 >
-                                    <Layers2 className="w-3.5 h-3.5" /> Pages
+                                    <Layers2 className="w-3 md:w-3.5 h-3 md:h-3.5" /> Pages
                                 </button>
                             </div>
                         </div>
@@ -251,7 +251,7 @@ export function ComicEngine({
                          <div className="space-y-4">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Art Engine Algorithm</label>
                             <div className="grid grid-cols-1 gap-2">
-                                <button className="w-full px-5 py-3 rounded-xl bg-black text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-between group">
+                                <button className="w-full px-4 md:px-5 py-3 rounded-xl bg-black text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-between group">
                                     Nano Banana 2.0
                                     <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
                                 </button>
@@ -261,18 +261,10 @@ export function ComicEngine({
                         {/* Creative Spark / Randomize */}
                         <div className="space-y-4">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Creative Spark</label>
-                            <button className="w-full h-20 rounded-[1.5rem] bg-slate-100 text-slate-400 flex flex-col items-center justify-center gap-2 hover:bg-slate-200 transition-all border-2 border-slate-200 border-dashed">
-                                <Dices className="w-6 h-6" />
-                                <span className="text-[9px] font-black uppercase tracking-widest">Randomize Story</span>
+                            <button className="w-full h-16 md:h-20 rounded-2xl md:rounded-[1.5rem] bg-slate-100 text-slate-400 flex flex-col items-center justify-center gap-1 md:gap-2 hover:bg-slate-200 transition-all border-2 border-slate-200 border-dashed">
+                                <Dices className="w-5 md:w-6 h-5 md:h-6" />
+                                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest">Randomize Story</span>
                             </button>
-                        </div>
-
-                        <div className="space-y-4 mt-auto">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Asset Presets</label>
-                            <div className="grid grid-cols-2 gap-2">
-                                <div className="px-3 py-2 bg-indigo-50 border border-indigo-100 rounded-lg text-[9px] font-black text-indigo-400 uppercase text-center">Inked</div>
-                                <div className="px-3 py-2 bg-rose-50 border border-rose-100 rounded-lg text-[9px] font-black text-rose-400 uppercase text-center">Full Color</div>
-                            </div>
                         </div>
                     </div>
                 </motion.div>
@@ -282,43 +274,43 @@ export function ComicEngine({
             <motion.div 
                 initial={{ opacity: 0, y: 20 }} 
                 animate={{ opacity: 1, y: 0 }} 
-                className="flex-1 space-y-12 px-2"
+                className="flex-1 space-y-8 md:space-y-12 px-1 md:px-2"
             >
                 {/* Global Narrative Unit - MASTER TITLE CARD */}
-                <div className="bg-slate-950 rounded-[3.5rem] p-16 relative overflow-hidden shadow-2xl border-b-[12px] border-indigo-600">
+                <div className="bg-slate-950 rounded-[2rem] md:rounded-[3.5rem] p-8 md:p-16 relative overflow-hidden shadow-2xl border-b-[8px] md:border-b-[12px] border-indigo-600">
                     {!isSettingsOpen && (
-                        <button onClick={() => setIsSettingsOpen(true)} className="absolute top-8 left-8 p-3 rounded-full bg-white/10 text-white/40 hover:text-white transition-colors z-20">
-                            <Settings2 className="w-5 h-5" />
+                        <button onClick={() => setIsSettingsOpen(true)} className="absolute top-4 md:top-8 left-4 md:left-8 p-2.5 md:p-3 rounded-full bg-white/10 text-white/40 hover:text-white transition-colors z-20">
+                            <Settings2 className="w-4 h-4 md:w-5 md:h-5" />
                         </button>
                     )}
-                    <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-indigo-500/20 blur-[150px] -mr-[20rem] -mt-[20rem]" />
-                    <div className="relative z-10 flex flex-col gap-10">
-                        <div className="space-y-4">
-                             <div className="flex items-center gap-4 text-[11px] font-black text-indigo-400 uppercase tracking-[0.6em]">
-                                <Type className="w-5 h-5" /> Official Graphic Novel
+                    <div className="absolute top-0 right-0 w-[20rem] md:w-[40rem] h-[20rem] md:h-[40rem] bg-indigo-500/20 blur-[100px] md:blur-[150px] -mr-[10rem] md:-mr-[20rem] -mt-[10rem] md:-mt-[20rem]" />
+                    <div className="relative z-10 flex flex-col gap-6 md:gap-10">
+                        <div className="space-y-3 md:space-y-4">
+                             <div className="flex items-center gap-3 md:gap-4 text-[9px] md:text-[11px] font-black text-indigo-400 uppercase tracking-[0.4em] md:tracking-[0.6em]">
+                                <Type className="w-4 md:w-5 h-4 md:h-5" /> Official Graphic Novel
                             </div>
-                            <h1 className="text-6xl font-black text-white leading-[0.9] selection:bg-indigo-500 tracking-tighter uppercase italic">
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[0.9] selection:bg-indigo-500 tracking-tighter uppercase italic break-words">
                                 {comicTitle || "Untitled Creation"}
                             </h1>
                         </div>
 
-                        <div className="flex flex-col md:flex-row gap-16 items-start">
-                            <div className="flex-1 space-y-8">
-                                <div className="space-y-4">
-                                    <div className="flex items-center gap-4 text-[11px] font-black text-rose-400 uppercase tracking-[0.5em]">
-                                        <Quote className="w-5 h-5" /> Logline
+                        <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-start">
+                            <div className="flex-1 space-y-6 md:space-y-8">
+                                <div className="space-y-3 md:space-y-4">
+                                    <div className="flex items-center gap-3 md:gap-4 text-[9px] md:text-[11px] font-black text-rose-400 uppercase tracking-[0.3em] md:tracking-[0.5em]">
+                                        <Quote className="w-4 md:w-5 h-4 md:h-5" /> Logline
                                     </div>
-                                    <p className="text-xl font-bold text-slate-300 leading-relaxed max-w-2xl italic">
+                                    <p className="text-lg md:text-xl font-bold text-slate-300 leading-relaxed max-w-2xl italic">
                                         "{logline || narrativeArc}"
                                     </p>
                                 </div>
 
                                 {consistentCharacter && (
-                                    <div className="bg-indigo-500/10 border-2 border-indigo-500/20 p-6 rounded-[2rem] flex flex-col gap-3 relative group overflow-hidden">
-                                        <div className="flex items-center gap-3 text-[10px] font-black text-indigo-400 uppercase tracking-widest">
-                                            <Target className="w-4 h-4 animate-pulse" /> Identity Locked
+                                    <div className="bg-indigo-500/10 border-2 border-indigo-500/20 p-5 md:p-6 rounded-2xl md:rounded-[2rem] flex flex-col gap-2 md:gap-3 relative group overflow-hidden">
+                                        <div className="flex items-center gap-2 md:gap-3 text-[9px] md:text-[10px] font-black text-indigo-400 uppercase tracking-widest">
+                                            <Target className="w-3.5 md:w-4 h-3.5 md:h-4 animate-pulse" /> Identity Locked
                                         </div>
-                                        <p className="text-sm font-bold text-white leading-relaxed opacity-90">
+                                        <p className="text-xs md:text-sm font-bold text-white leading-relaxed opacity-90">
                                             {consistentCharacter}
                                         </p>
                                     </div>
@@ -326,9 +318,9 @@ export function ComicEngine({
                             </div>
                             
                             {productionCredits && (
-                                <div className="w-full md:w-80 bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/10 shrink-0 space-y-6">
-                                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-white/5 pb-4">Production Ledger</div>
-                                    <pre className="text-xs font-black text-indigo-200 font-mono leading-relaxed opacity-80 whitespace-pre-wrap">
+                                <div className="w-full md:w-80 bg-white/5 backdrop-blur-xl rounded-2xl md:rounded-[2.5rem] p-6 md:p-8 border border-white/10 shrink-0 space-y-4 md:space-y-6">
+                                    <div className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-white/5 pb-3 md:pb-4">Production Ledger</div>
+                                    <pre className="text-[10px] md:text-xs font-black text-indigo-200 font-mono leading-relaxed opacity-80 whitespace-pre-wrap">
                                         {productionCredits}
                                     </pre>
                                 </div>
@@ -339,17 +331,17 @@ export function ComicEngine({
 
                 {/* Content Stream */}
                 {viewMode === 'pages' && comicPages.length > 0 ? (
-                    <div className="space-y-24">
+                    <div className="space-y-16 md:space-y-24">
                         {comicPages.map((page, pIdx) => (
-                            <div key={pIdx} className="space-y-12">
-                                <div className="flex items-center gap-6 px-4">
+                            <div key={pIdx} className="space-y-8 md:space-y-12">
+                                <div className="flex items-center gap-4 md:gap-6 px-2 md:px-4">
                                     <div className="h-px bg-slate-200 flex-1" />
-                                    <div className="px-6 py-2 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.4em]">
+                                    <div className="px-4 md:px-6 py-1.5 md:py-2 bg-slate-900 text-white rounded-xl md:rounded-2xl text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.4em]">
                                         Page {page.page_number || pIdx + 1}
                                     </div>
                                     <div className="h-px bg-slate-200 flex-1" />
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                                     {page.panels.map((p, idx) => renderPanel(p, idx + (pIdx * 10), true))}
                                 </div>
                             </div>
@@ -357,7 +349,7 @@ export function ComicEngine({
                     </div>
                 ) : (
                     <div className={cn(
-                        "grid gap-16",
+                        "grid gap-8 md:gap-16",
                         layoutType === 'grid' ? "md:grid-cols-2" : "grid-cols-1"
                     )}>
                         {(panels.length > 0 ? panels : (comicPages[0]?.panels || [])).map((panel, idx) => renderPanel(panel, idx))}

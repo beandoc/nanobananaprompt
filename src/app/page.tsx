@@ -170,17 +170,17 @@ export default function Home() {
 
   if (!isAuthenticated) {
     return (
-      <main className="min-h-screen bg-slate-950 flex items-center justify-center p-6 font-sans">
+      <main className="min-h-screen bg-slate-950 flex items-center justify-center p-4 md:p-6 font-sans">
         <div className="fixed inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'linear-gradient(#4f46e5 1px, transparent 1px), linear-gradient(90deg, #4f46e5 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-12 relative z-10 shadow-2xl overflow-hidden">
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl md:rounded-[2.5rem] p-8 md:p-12 relative z-10 shadow-2xl overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-[50px] -mr-16 -mt-16" />
-          <div className="flex flex-col items-center text-center space-y-8">
-            <div className="w-20 h-20 bg-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-indigo-500/40">
-              <Lock className="w-10 h-10 text-white" />
+          <div className="flex flex-col items-center text-center space-y-6 md:space-y-8">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-indigo-600 rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl shadow-indigo-500/40">
+              <Lock className="w-8 h-8 md:w-10 md:h-10 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-black text-white uppercase tracking-[0.2em] mb-2 leading-none">Security Access</h1>
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{APP_CONFIG.NAME} {APP_CONFIG.SUBTITLE} v{APP_CONFIG.VERSION}</p>
+              <h1 className="text-xl md:text-2xl font-black text-white uppercase tracking-[0.2em] mb-2 leading-none italic">Security Access</h1>
+              <p className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest">{APP_CONFIG.NAME} {APP_CONFIG.SUBTITLE} v{APP_CONFIG.VERSION}</p>
             </div>
             <form onSubmit={handleLogin} className="w-full space-y-4">
               <div className="relative group">
@@ -189,15 +189,15 @@ export default function Home() {
                   value={authInput}
                   onChange={(e) => setAuthInput(e.target.value)}
                   placeholder="Enter Admin Secret..."
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white text-center font-bold placeholder:text-slate-600 outline-none focus:border-indigo-500/50 transition-all shadow-inner"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-5 md:px-6 py-3.5 md:py-4 text-white text-center font-bold placeholder:text-slate-600 outline-none focus:border-indigo-500/50 transition-all shadow-inner text-sm md:text-base"
                 />
-                <Key className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
+                <Key className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 w-3.5 md:w-4 h-3.5 md:h-4 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
               </div>
-              <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl py-4 font-black uppercase tracking-[0.2em] text-[11px] transition-all active:scale-95 shadow-xl shadow-indigo-500/20">Authorize Access</button>
+              <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl md:rounded-2xl py-3.5 md:py-4 font-black uppercase tracking-[0.2em] text-[10px] md:text-[11px] transition-all active:scale-95 shadow-xl shadow-indigo-500/20">Authorize Access</button>
             </form>
-            <div className="flex items-center gap-2 px-4 py-2 bg-rose-500/5 border border-rose-500/20 rounded-xl">
-              <ShieldAlert className="w-3.5 h-3.5 text-rose-500" />
-              <span className="text-[9px] font-black text-rose-400 uppercase tracking-widest leading-none">Protection Layer: Active</span>
+            <div className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-rose-500/5 border border-rose-500/20 rounded-lg md:rounded-xl">
+              <ShieldAlert className="w-3 md:w-3.5 h-3 md:h-3.5 text-rose-500" />
+              <span className="text-[8px] md:text-[9px] font-black text-rose-400 uppercase tracking-widest leading-none">Protection Layer: Active</span>
             </div>
           </div>
         </motion.div>
