@@ -222,7 +222,7 @@ export function ProjectInput({
                         <Tooltip content="Refine your raw ideas into a professional BioRender-standard prompt.">
                             <button type="button" onClick={() => refinePrompt()} disabled={isLoading} className="px-6 py-4 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:border-indigo-200 transition-all active:scale-95 disabled:opacity-50">
                                 {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-amber-500" />}
-                                Expand Vision
+                                {" Refine text prompt"}
                             </button>
                         </Tooltip>
                         <Tooltip content="Analyze brief and generate a new technical JSON blueprint.">
@@ -237,7 +237,7 @@ export function ProjectInput({
                             >
                                 <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
                                 {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
-                                {isLoading ? "Constructing..." : "Initiate Sovereign Build"}
+                                {isLoading ? "Constructing..." : " Generate JSON"}
                             </button>
                         </Tooltip>
                     </div>
