@@ -240,7 +240,7 @@ export async function POST(req: NextRequest) {
         // --- 1. TRY GEMINI ELITE SUITE ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            for (const m of ["gemini-1.5-pro-latest", "gemini-1.5-flash", "gemini-2.0-flash"]) {
+            for (const m of ["gemini-2.0-flash", "gemini-flash-latest", "gemini-2.5-flash"]) {
                 try {
                     const model = genAI.getGenerativeModel({ 
                         model: m, 
