@@ -300,9 +300,9 @@ export async function POST(req: NextRequest) {
         const filename = `gen-${Date.now()}.json`;
         await promptService.savePrompt({ name: filename, type: mode, content: adData });
 
-        const phase1Provider = refinedText && !refinementError ? "Gemini" : "Groq";
-        const phase2Provider = adData && !generationError ? "Gemini" : "Groq";
-        const activeProvider = (phase1Provider === "Gemini" && phase2Provider === "Gemini") ? "Gemini-Elite" : `Fallback-Active (${phase1Provider}/${phase2Provider})`;
+        const phase1Provider = refinedText && !refinementError ? "Gemini-2.5-Flash" : "Groq-Llama-3";
+        const phase2Provider = adData && !generationError ? "Gemini-2.5-Flash" : "Groq-Llama-3";
+        const activeProvider = (phase1Provider.includes("Gemini") && phase2Provider.includes("Gemini")) ? "Gemini-2.5-Elite" : `Fallback-Active (${phase1Provider}/${phase2Provider})`;
 
         console.log(`[ENGINE] Model Resolution: ${activeProvider}`);
         if (refinementError || generationError) {
