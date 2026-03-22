@@ -114,8 +114,8 @@ const agentConfigs: any = {
         expansionRules: [
             "MISSION: Refine a raw brief into a 'Culinary Macro Analysis'.",
             "TEXTURES: Focus on viscous, glistening, fibrous, and flaky textures. Specifically describe 'thermal vapor' (steam) or 'condensation beads' (chilled).",
-            "PRODUCT FINISH: Describe glaze levels (e.g., 'high-gloss balsamicreduction', 'matte flour dusting').",
-            "IDENTITY: IF any human is present (chef/user), they MUST be of Indian descent.",
+            "PRODUCT FINISH: Describe glaze levels (e.g., 'high-gloss balsamic-reduction', 'matte flour dusting').",
+            "IDENTITY: IF any human is present (chef/user), they MUST be of Indian descent. DO NOT ethnic-ize the food itself unless explicitly requested in the brief (e.g. an 'apple' remains an 'apple', not a 'samosa').",
             "STRICT BAN: NO TEXT or labels."
         ],
         jsonRole: "Culinary Visual Director",
@@ -287,9 +287,9 @@ export async function POST(req: NextRequest) {
         const scrubSubject = (s: string) => s.replace(/^(create|generate|show|make|build|give me|render|draw|an)\s+(an|a|the|image of|illustration of|diagram of|blueprint of|map for)\s+/gi, "").trim();
         const finalSubject = scrubSubject(brief);
         
-        // Mode-Aware Injection
+        // Mode-Aware Injection (Only perform if field is empty/missing to avoid wiping AI detection)
         if (adData) {
-            if (config.subjectField && adData[config.subjectField] !== undefined) {
+            if (config.subjectField && (!adData[config.subjectField] || adData[config.subjectField].toLowerCase().includes("subject") || adData[config.subjectField].trim().length < 5)) {
                 adData[config.subjectField] = finalSubject;
             }
             if (config.styleField && adData[config.styleField] !== undefined) {
