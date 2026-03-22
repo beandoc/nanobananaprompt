@@ -71,7 +71,12 @@
       "veins": ["Hepatic portal vein", "Superior mesenteric vein", "Inferior mesenteric vein", "Splenic vein", "Left/Right gastric veins", "Gastro-epiploic veins", "Colic veins (Right/Middle/Left)", "Ileocolic vein", "Ileal/Jejunal/Sigmoid/Rectal veins", "Left/Right common iliac vein", "External iliac vein", "Inferior epigastric vein"],
       "arteries": ["Superior mesenteric artery", "Inferior mesenteric artery", "Celiac trunk (branches: Left gastric, Splenic, Common hepatic)", "Left/Right gastric arteries", "Testicular/Ovarian (gonadal) artery", "Common iliac artery", "External iliac artery", "Inferior epigastric artery", "Sigmoid arteries"],
       "nerves": ["Femoral nerve", "Obturator nerve"],
-      "physics": "Thin-walled distended blue venous structures, high-contrast arterial branching, white glistening cord-like nerves"
+      "physics": "Thin-walled distended blue venous structures, high-contrast arterial branching, white glistening cord-like nerves",
+      "capillary_logic": {
+        "structure": "Leaf-shaped capillary bed network",
+        "physics": "Transition from high-pressure red oxygenated blood to low-pressure blue deoxygenated blood within a web-like interconnected mesh.",
+        "distribution": "Interstitium and organ-specific beds (like the pulmonary/renal plexuses)."
+      }
     }
   },
   "urogenital": {

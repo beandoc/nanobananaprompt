@@ -280,6 +280,11 @@ export async function POST(req: NextRequest) {
         const phase2Provider = adData && !generationError ? "Gemini" : "Groq";
         const activeProvider = (phase1Provider === "Gemini" && phase2Provider === "Gemini") ? "Gemini-Elite" : `Fallback-Active (${phase1Provider}/${phase2Provider})`;
 
+        console.log(`[ENGINE] Model Resolution: ${activeProvider}`);
+        if (refinementError || generationError) {
+            console.warn(`[ENGINE] WARNING: Quota or API Error occurred. Falling back to secondary core.`, { refinementError: refinementError?.message, generationError: generationError?.message });
+        }
+
         return ResponseManager.success({
             data: adData,
             refinedPrompt: finalBriefForJson,

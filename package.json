@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
-    "validate-env": "npx tsx -e 'import { validateEnv } from \"./src/lib/env\"; validateEnv()'"
+    "validate-env": "npx tsx -e 'import { validateEnv } from \"./src/lib/env\"; validateEnv()'",
+    "dev-download": "npx tsx scripts/download-library.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

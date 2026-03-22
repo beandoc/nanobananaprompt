@@ -564,7 +564,9 @@
       "AAA": "Localized dilation/bulge of the abdominal aorta above the bifurcation.",
       "MR_acute": "Retrograde jet of blood from the left ventricle back into the left atrium during systole.",
       "Atheroma": "Intravascular yellowish lipid core surrounded by a fibrous cap, narrowing the arterial lumen.",
-      "visual_rules": "Mitral Regurgitation MUST show a directional flow arrow or a distinct blood jet moving backward. Atheroma must show the three tunica layers (Adventitia, Media, Intima) with the yellow plaque invading the Intima/Media space."
+      "Atherothrombosis": "Rupture of an atheroma's fibrous cap leading to the formation of a red thrombus (clotted blood cells/platelets) that acutely occludes the vessel.",
+      "Infective_Endocarditis": "Presence of friable, greenish-white, cauliflower-like vegetations on the heart valves (especially mitral/aortic).",
+      "visual_rules": "Mitral Regurgitation MUST show a directional flow arrow. Atherothrombosis must show the yellowish plaque being topped by a jagged, dark-red thrombus layer. Endocarditis must show 'vegetations' as irregular, porous growths on the valve leaflets."
     }
   }
 }
