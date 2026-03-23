@@ -2,7 +2,31 @@
 > nanobananaprompt@0.1.0 build
 > next build
 
+▲ Next.js 16.2.1 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
 
 > Build error occurred
-TypeError: (0 , _loadcustomroutes.default) is not a function
+Error: Turbopack build failed with 1 errors:
+./src/app/globals.css
+Error evaluating Node.js code
+TypeError: Class extends value #<Object> is not a constructor or null
+    [at Object.<anonymous> (/Users/sachinsrivastava/Library/CloudStorage/GoogleDrive-sachinsrivastava.id@gmail.com/My Drive/nanobananaprompt/node_modules/tapable/lib/AsyncParallelBailHook.js:10:48)]
+    [at Module._compile (node:internal/modules/cjs/loader:1521:14)]
+    [at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)]
+    [at Module.load (node:internal/modules/cjs/loader:1266:32)]
+    [at Module._load (node:internal/modules/cjs/loader:1091:12)]
+    [at Module.require (node:internal/modules/cjs/loader:1289:19)]
+    [at require (node:internal/modules/helpers:182:18)]
+    [at Object.<anonymous> (/Users/sachinsrivastava/Library/CloudStorage/GoogleDrive-sachinsrivastava.id@gmail.com/My Drive/nanobananaprompt/node_modules/tapable/lib/index.js:7:40)]
+    [at Module._compile (node:internal/modules/cjs/loader:1521:14)]
+    [at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)]
+
+Import trace:
+  Client Component Browser:
+    ./src/app/globals.css [Client Component Browser]
+    ./src/app/layout.tsx [Server Component]
+
+
     at ignore-listed frames

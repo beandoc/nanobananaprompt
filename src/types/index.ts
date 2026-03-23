@@ -100,7 +100,7 @@ export interface BlueprintData {
 
     // Medical Master fields
     scientific_subject?: string;
-    illustration_style?: {
+    illustration_style?: string | {
         primary: string;
         rendering: string;
         palette: {
@@ -117,6 +117,8 @@ export interface BlueprintData {
         depth_order: string[];
         zoom_focus: string;
     };
+    layout_composition?: string | MedicalLayout;
+    hierarchy?: MedicalHierarchy;
     biological_systems?: {
         tissue: {
             structures: string[];
@@ -157,7 +159,11 @@ export interface BlueprintData {
     };
     render_layers?: string[];
     journal_standard?: string;
+    consistent_character?: string;
+    visual_theme?: string;
     negative_prompt?: string;
+    visual_accuracy?: VisualAccuracy;
+
 
 
 
