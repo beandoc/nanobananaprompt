@@ -98,15 +98,67 @@ export interface BlueprintData {
     subline_copy?: string;
     aspect_ratio?: string;
 
-    // Medical fields
+    // Medical Master fields
     scientific_subject?: string;
-    layout_composition?: string | MedicalLayout;
-    hierarchy?: MedicalHierarchy;
-    illustration_style?: string;
-    visual_accuracy?: VisualAccuracy;
+    illustration_style?: {
+        primary: string;
+        rendering: string;
+        palette: {
+            tissue: string;
+            cellular: string;
+            molecular: string;
+            signaling: string;
+        };
+    };
+    layout?: {
+        type: string;
+        orientation: string;
+        overlay_mode: string;
+        depth_order: string[];
+        zoom_focus: string;
+    };
+    biological_systems?: {
+        tissue: {
+            structures: string[];
+            pathology_manifestation: string;
+            spatial_logic: string;
+        };
+        cellular: {
+            resident_cells: string[];
+            infiltrating_cells: string[];
+            cellular_activity: string[];
+        };
+        molecular: {
+            complexes_used: string[];
+            deposition_rules: string;
+            concentration_gradients: string[];
+        };
+    };
+    signaling_pathways?: {
+        pathway_name: string;
+        sequence_of_events: string[];
+        feedback_logic: string;
+        pathological_outcome: string;
+    }[];
+    annotation_system?: {
+        hierarchy: {
+            major: string[];
+            minor: string[];
+        };
+        label_style: string;
+    };
+    visual_constraints?: {
+        spatial_accuracy: string;
+        arrows: {
+            enabled: boolean;
+            logic_types: string[];
+        };
+        labels: boolean;
+    };
+    render_layers?: string[];
     journal_standard?: string;
-    consistent_character?: string;
-    visual_theme?: string;
+    negative_prompt?: string;
+
 
 
     // Vector fields
@@ -168,7 +220,6 @@ export interface BlueprintData {
     scenes?: StoryboardScene[];
 
     // Common
-    negative_prompt?: string;
     keywords?: string[];
 }
 

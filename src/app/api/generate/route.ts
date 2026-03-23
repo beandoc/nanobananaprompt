@@ -52,21 +52,21 @@ const agentConfigs: any = {
     medical: {
         expansionRole: "Principal Medical Illustrator focused on TECHNICAL VISUALS",
         expansionRules: [
-            "MISSION: Refine a raw brief into a technical 'Visual Rendering Paragraph' for High-Impact Journals (NEJM, Nature).",
-            "DIAGNOSTIC VERIFICATION: You MUST start your response with a '[VERIFICATION]' block. Inside, list 3 pathognomonic (unique) visual markers from the GLOSSARY/ATLAS provided in this prompt that are required for this diagnosis.",
-            "HIERARCHICAL REASONING: Your output MUST encode 4 layers of visualization: MACRO (torso context), ORGAN (primary organ pathology), MICRO (cellular/histological), and MOLECULAR (signaling/pathways). Explicitly describe the spatial transitions (e.g., 'macro-silhouette with radial zoom panels for each scale').",
-            "FUNCTIONAL CROSSTALK: In multi-organ scenarios (e.g. Cardio-Renal), you MUST describe the bidirectional physiological linkage (hemodynamics, RAAS cascade, FGF23-Klotho axis) using visual metaphors like 'directional signaling flow'.",
-            "IDENTITY: IF human clinical subjects are featured, they MUST be South Asian (warm skin tones, contemporary Indian styling).",
-            "ACCURACY: Prioritize anatomical accuracy over artistic flair. Differentiate between fibrous, aqueous, and granulated textures.",
-            "GLOSSARY PRIORITY: If MEDICAL REFERENCE DATA is provided, you MUST prioritize its unique 'Visual Rules' over general training to ensure diagnostic-grade consistency.",
-            "STRICT BAN: NO conversational fillers. NO text characters or labels in the core description."
+            "MISSION: Refine a raw brief into a technical 'Disease Mapping Blueprint' for Master-Level Journals (Nature, NEJM).",
+            "DIAGNOSTIC VERIFICATION: List 3 pathognomonic visual markers required for this diagnosis.",
+            "MASTER HIERARCHY: Your output MUST separate Tissue, Cellular, and Molecular actors into distinct nodes. Tissue (histology), Cellular (resident vs. infiltrating), Molecular (complexes/gradients).",
+            "SIGNALING LOOPS: Encode molecular events as functional sequences with feedback logic (triggers, events, outcomes).",
+            "SPATIAL RECONCILIATION: Explicitly enforce spatial accuracy (e.g. subendothelial vs subepithelial). If user asks for arrows/labels, you MUST enable them in the constraints.",
+            "ANNOTATION TIERING: Map labels into Major and Minor hierarchies to ensure visual clarity.",
+            "IDENTITY: South Asian (Indian) clinical subjects always.",
+            "ACCURACY: Prioritize mechanism over aesthetic. Differentiate between fibrous, aqueous, and granulated textures."
         ],
-        jsonRole: "Elite Medical Art Director",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a Hierarchical Scientific JSON Blueprint.
-        STRUCTURAL COMPLIANCE: You MUST populate the 'hierarchy' field with distinct 'macro', 'organ', 'micro', and 'molecular' layers. Do not deliver a flat list.
-        LAYOUT ENCODING: Accurately encode layout requirements (e.g., 'radial-infographic', 'quad-panel-grid') into the 'layout_composition' field including panels and directionality.
-        CONSTRAINT RECONCILIATION: Arrows are allowed ONLY for functional pathways (e.g. molecular flow). Ensure 'negative_prompt' does not ban arrows if molecular signals or crosstalk is present.
-        IDENTITY STANDARD: IF humans are present, they MUST be Indian (South Asian).`,
+        jsonRole: "Master Medical Art Director",
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a Master-Grade Hierarchical JSON.
+        COMPLIANCE: You MUST use the 'biological_systems' and 'signaling_pathways' nodes.
+        STATE MACHINE: Map signaling as triggered sequences.
+        CONSTRAINT HARROWING: Ensure 'visual_constraints' match user requirements (e.g. enable arrows if pathway is complex).
+        IDENTITY: Indian character standard for human figures.`,
         subjectField: "scientific_subject",
         styleField: "journal_standard",
         styleSuffix: "classic"

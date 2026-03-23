@@ -1,7 +1,7 @@
 import { Schema, SchemaType } from "@google/generative-ai";
 
 export const medicalIllustrationSchema: Schema = {
-    description: "UHF (Ultra-High-Fidelity) Medical Illustration Schema - Nature/NEJM Gold Standard",
+    description: "MASTER-GRADE Medical Illustration Schema - Nature/NEJM Disease Mapping Standard",
     type: SchemaType.OBJECT,
     properties: {
         scientific_subject: { type: SchemaType.STRING },
@@ -9,64 +9,99 @@ export const medicalIllustrationSchema: Schema = {
             type: SchemaType.OBJECT,
             properties: {
                 primary: { type: SchemaType.STRING },
-                palette: { type: SchemaType.STRING, description: "Detailed color mapping for major compartments/fluids." },
-                rendering: { type: SchemaType.STRING }
+                rendering: { type: SchemaType.STRING },
+                palette: { 
+                    type: SchemaType.OBJECT, 
+                    properties: {
+                        tissue: { type: SchemaType.STRING },
+                        cellular: { type: SchemaType.STRING },
+                        molecular: { type: SchemaType.STRING },
+                        signaling: { type: SchemaType.STRING }
+                    }
+                }
             }
         },
         layout: {
             type: SchemaType.OBJECT,
             properties: {
                 type: { type: SchemaType.STRING },
-                panels: { type: SchemaType.NUMBER },
-                zoom_logic: { type: SchemaType.STRING, description: "Target and magnification for inset panels." },
-                sequence: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING }, description: "Logical flow sequence for hardware or pathways." }
+                orientation: { type: SchemaType.STRING },
+                overlay_mode: { type: SchemaType.STRING },
+                depth_order: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+                zoom_focus: { type: SchemaType.STRING }
             }
         },
-        hierarchy: {
+        biological_systems: {
             type: SchemaType.OBJECT,
             properties: {
-                macro: { type: SchemaType.STRING },
-                organ: { type: SchemaType.ARRAY, items: { type: SchemaType.OBJECT, properties: { name: { type: SchemaType.STRING }, pathology: { type: SchemaType.STRING } } } },
-                micro: { type: SchemaType.OBJECT, properties: { tissue: { type: SchemaType.STRING }, cellular: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } } } },
-                molecular: { 
-                    type: SchemaType.ARRAY, 
-                    items: { 
-                        type: SchemaType.OBJECT, 
-                        properties: { 
-                            name: { type: SchemaType.STRING }, 
-                            representation: { type: SchemaType.STRING }, 
-                            behavior: { type: SchemaType.STRING, description: "Direction, efficiency, and role." } 
-                        } 
-                    } 
+                tissue: {
+                    type: SchemaType.OBJECT,
+                    properties: {
+                        structures: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+                        pathology_manifestation: { type: SchemaType.STRING },
+                        spatial_logic: { type: SchemaType.STRING }
+                    }
+                },
+                cellular: {
+                    type: SchemaType.OBJECT,
+                    properties: {
+                        resident_cells: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+                        infiltrating_cells: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+                        cellular_activity: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } }
+                    }
+                },
+                molecular: {
+                    type: SchemaType.OBJECT,
+                    properties: {
+                        complexes_used: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+                        deposition_rules: { type: SchemaType.STRING },
+                        concentration_gradients: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } }
+                    }
                 }
             }
         },
-        flow_dynamics: {
-            type: SchemaType.OBJECT,
-            properties: {
-                compartments: { type: SchemaType.STRING },
-                mechanisms: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING }, description: "Diffusion, Convection, Active Transport parameters." },
-                solute_vectors: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } }
+        signaling_pathways: {
+            type: SchemaType.ARRAY,
+            items: {
+                type: SchemaType.OBJECT,
+                properties: {
+                    pathway_name: { type: SchemaType.STRING },
+                    sequence_of_events: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+                    feedback_logic: { type: SchemaType.STRING },
+                    pathological_outcome: { type: SchemaType.STRING }
+                }
             }
         },
-        hemodynamics: {
+        annotation_system: {
             type: SchemaType.OBJECT,
             properties: {
-                pressure_map: { type: SchemaType.STRING, description: "Arterial/Venous/Transmembrane pressure definitions." },
-                driving_forces: { type: SchemaType.STRING }
+                hierarchy: {
+                    type: SchemaType.OBJECT,
+                    properties: {
+                        major: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+                        minor: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } }
+                    }
+                },
+                label_style: { type: SchemaType.STRING }
             }
         },
         visual_constraints: {
             type: SchemaType.OBJECT,
             properties: {
-                arrows: { type: SchemaType.BOOLEAN },
-                labels: { type: SchemaType.BOOLEAN },
-                safe_zones: { type: SchemaType.BOOLEAN }
+                spatial_accuracy: { type: SchemaType.STRING },
+                arrows: { 
+                    type: SchemaType.OBJECT,
+                    properties: {
+                        enabled: { type: SchemaType.BOOLEAN },
+                        logic_types: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } }
+                    }
+                },
+                labels: { type: SchemaType.BOOLEAN }
             }
         },
         render_layers: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
         journal_standard: { type: SchemaType.STRING },
         negative_prompt: { type: SchemaType.STRING }
     },
-    required: ["scientific_subject", "illustration_style", "layout", "hierarchy", "flow_dynamics", "render_layers", "journal_standard", "negative_prompt"]
+    required: ["scientific_subject", "illustration_style", "layout", "biological_systems", "signaling_pathways", "render_layers", "journal_standard", "negative_prompt"]
 };
