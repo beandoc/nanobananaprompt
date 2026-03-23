@@ -18,9 +18,39 @@ export interface VisualAccuracy {
     textures: string;
     lighting: string;
     tissue_physics?: string;
+    crosstalk_integration?: string;
     anatomical_keys?: string;
     labeling_safe_zones?: string;
 }
+
+export interface MedicalHierarchy {
+    macro?: {
+        anatomy: string;
+        identity_standard: string;
+    };
+    organ?: {
+        name: string;
+        pathology: string;
+        visual_markers: string[];
+    }[];
+    micro?: {
+        tissue_type: string;
+        cellular_structures: string[];
+        texture_logic: string;
+    };
+    molecular?: {
+        signal_name: string;
+        representation: string;
+        directional_flow: string;
+    }[];
+}
+
+export interface MedicalLayout {
+    type: string;
+    panels?: number;
+    directionality?: string;
+}
+
 
 export interface ProVideoShot {
     composition: string;
@@ -70,12 +100,14 @@ export interface BlueprintData {
 
     // Medical fields
     scientific_subject?: string;
-    layout_composition?: string;
+    layout_composition?: string | MedicalLayout;
+    hierarchy?: MedicalHierarchy;
     illustration_style?: string;
     visual_accuracy?: VisualAccuracy;
     journal_standard?: string;
     consistent_character?: string;
     visual_theme?: string;
+
 
     // Vector fields
     illustration_subject?: string;
