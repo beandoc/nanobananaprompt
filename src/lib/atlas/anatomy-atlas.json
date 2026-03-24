@@ -12,48 +12,356 @@
       "textures": "Columnar carnous trabeculae, fibrous chordae tendineae, smooth endocardial lining",
       "physics": "Muscular red-brown tones, high specular on valve leaflets"
     },
-    "heart_transverse_section": {
-      "structures": ["Right/Left Ventricle cross-section", "Interventricular septum", "Body of sternum", "Oesophagus", "Azygos vein", "Hemi-azygos vein", "Thoracic duct", "Left sympathetic trunk", "Descending thoracic aorta"],
-      "view": "Transverse / Axial at T5-T8",
-      "physics": "High-fidelity sectional layering, vascular lumen clarity"
+    "heart_external_features": {
+      "shape": "Trapezoidal/Pyramidal with apex directed anteriorly/left, base posteriorly",
+      "borders": ["Superior border (LA/RA, arch of aorta)", "Right border (RA between SVC/IVC)", "Left border (LV, left auricle)", "Inferior/Diaphragmatic border (primarily RV)"],
+      "surfaces": ["Anterior (sternocostal) surface (RV)", "Diaphragmatic surface (LV, RV)", "Left pulmonary surface (LV)", "Right pulmonary surface (RA)"],
+      "sulci": ["Coronary sulcus (separates atria/ventricles)", "Anterior/Posterior interventricular sulci (separate RV/LV)"],
+      "physics": "Myocardial texture, epicardial fat on sulci, glistening serous pericardial reflection",
+      "view": "Anterior / Postero-inferior"
     },
     "coronary_circulation": {
-      "arteries": ["Right coronary artery", "Left coronary artery", "Anterior interventricular artery (LAD)", "Circumflex artery", "Right marginal artery", "Conal artery", "Diagonal artery", "Posterior interventricular artery"],
-      "veins": ["Great cardiac vein", "Middle cardiac vein", "Small cardiac vein", "Coronary sinus"],
-      "landmarks": ["Coronary (atrioventricular) sulcus", "Anterior/Posterior interventricular sulcus", "Cardiac crux", "Acute border", "Obtuse border"],
-      "pathology_keys": ["Atherosclerotic plaque narrowing", "Stent placement", "Microvascular bifurcation", "Angioplasty balloon inflation physics", "Arterial tunics layering"],
-      "visual_rules": "Angioplasty involves a central translucent balloon expanding to compress yellowish plaque against the glossy arterial wall. Arteries must show three distinct layers: Adventitia (outer fibrous), Media (middle muscular), and Intima (inner smooth endothelial)."
+      "arteries": {
+        "right_coronary_artery_RCA": ["SA nodal branch (60% population)", "Right marginal branch", "AV nodal branch (80% population)", "Posterior interventricular (IV) branch (at crux)"],
+        "left_coronary_artery_LCA": ["Left anterior descending (LAD/Anterior IV)", "Circumflex branch", "Left marginal artery", "Septal branches"],
+        "anastomoses": ["LAD hooks around apex to meet Posterior IV branch"]
+      },
+      "veins": ["Coronary sinus", "Great cardiac vein (LAD/Circumflex)", "Middle cardiac vein (Posterior IV)", "Small cardiac vein (RCA marginal)", "Anterior cardiac veins (directly to RA)"],
+      "landmarks": ["Cardiac crux (intersection of coronary and posterior IV sulci)", "Crux of heart", "Sinu-atrial nodal branch origin"],
+      "physics": "Branching pattern determines cardiac dominance; most people are Right dominant (RCA gives Posterior IV artery). Arterial tunics: Adventitia, Media, Intima.",
+      "visual_rules": "Coronary arteries are embedded in epicardial fat within sulci. LAD must be shown as the 'widowmaker' in anterior view."
+    },
+    "systemic_and_pulmonary_circulation": {
+      "pulmonary_circuit": {
+        "arterial": ["Pulmonary trunk", "Right/Left pulmonary arteries", "Right PA passes UNDER arch of aorta", "Lobular/Segmental arteries", "Arteries paired with bronchial tree path"],
+        "venous": ["Superior/Inferior pulmonary veins (Right/Left), 4 total", "Carry oxygenated blood to Left Atrium", "Right superior PV receives Middle lobe vein", "Veins are intersegmental"]
+      },
+      "systemic_circuit": ["Left Ventricle", "Aorta (Ascending, Arch, Descending)", "Systemic arteries", "Systemic capillary beds", "Systemic veins", "Superior/Inferior Vena Cava", "Right Atrium"],
+      "cardiac_cycle": {
+        "diastole": "Ventricular relaxation, filling (80% passive, 20% atrial contraction), closure of aortic/pulmonary valves, opening of tricuspid/mitral valves",
+        "systole": "Ventricular contraction, ejection, closure of tricuspid/mitral valves, opening of aortic/pulmonary valves"
+      },
+      "physics": "Continuous loop with pumps in series, parallel delivery mapping, high-pressure arterial vs low-pressure venous.",
+      "visual_rules": "Pulmonary arteries must be blue (deoxygenated) and pulmonary veins red (oxygenated). Systemic circulation operates in parallel to organs."
+    },
+    "axillary_artery_and_branches": {
+      "course": "Continuation of subclavian artery at outer border of 1st rib; becomes brachial artery at lower border of teres major.",
+      "first_part": ["Superior thoracic artery"],
+      "second_part": ["Thoraco-acromial artery (4 branches: Acromial, Deltoid, Pectoral, Clavicular)", "Lateral thoracic artery"],
+      "third_part": ["Subscapular artery (Circumflex scapular, Thoracodorsal)", "Anterior circumflex humeral artery", "Posterior circumflex humeral artery"],
+      "neighboring_structures": ["Brachial plexus cords", "Axillary vein (medial)", "Pectoralis minor (covers second part)"],
+      "physics": "Arterial pulsatility, collateral flow around scapula if ligated",
+      "visual_rules": "Posterior circumflex humeral artery must be shown passing through the quadrangular space with the axillary nerve."
+    },
+    "periarticular_arterial_anastomoses_elbow": {
+      "superior_vessels": ["Brachial artery", "Profunda brachii artery (Middle collateral, Radial collateral)", "Superior ulnar collateral artery", "Inferior ulnar collateral artery"],
+      "inferior_vessels": ["Radial recurrent artery", "Anterior ulnar recurrent artery", "Posterior ulnar recurrent artery", "Recurrent interosseous artery"],
+      "anastomotic_logic": "Collateral circulation allows blood to reach the forearm even when the elbow is flexed.",
+      "view": "Anterior / Medial / Lateral elbow"
+    },
+    "forearm_and_hand_arterial_circuits": {
+      "radial_artery": ["Radial recurrent", "Palmar carpal branch", "Superficial palmar branch", "Dorsal carpal branch", "Arterial snuffbox course", "Deep palmar arch"],
+      "ulnar_artery": ["Anterior/Posterior ulnar recurrent", "Common interosseous (Anterior/Posterior)", "Palmar/Dorsal carpal branches", "Superficial palmar arch"],
+      "hand_arches": ["Superficial palmar arch (primary ulnar)", "Deep palmar arch (primary radial)", "Dorsal carpal arch", "Common and proper palmar digital arteries"],
+      "physics": "Dual supply via arches ensures distal perfusion; pinch-test collateral check (Allen Test logic)",
+      "view": "Palmar / Dorsal / Sectional hand"
+    },
+    "venous_canals_arm_and_forearm": {
+      "superficial_veins": ["Cephalic vein (Lateral)", "Basilic vein (Medial)", "Median cubital vein (Communication in fossa)", "Median vein of forearm"],
+      "deep_veins": ["Venae comitantes of brachial artery", "Axillary vein"],
+      "physics": "Low-pressure flow, visible valves in larger veins, superficial accessibility for venepuncture",
+      "visual_rules": "Median cubital vein should be shown crossing the bicipital aponeurosis, which separates it from the underlying brachial artery."
+    },
+    "deep_venous_drainage_upper_limb": {
+      "venae_comitantes": ["Radial veins", "Ulnar veins", "Anterior/Posterior interosseous veins", "Brachial veins"],
+      "venous_arches": ["Superficial palmar venous arch", "Deep palmar venous arch"],
+      "drainage_logic": "Deep veins run in pairs alongside corresponding arteries, receiving muscular tributaries.",
+      "view": "Anterior / Deep forearm"
+    },
+    "cardiac_conduction_system": {
+      "nodes": {
+        "sino_atrial_SA_node": ["Pacemaker", "Location: Junction of SVC and RA, superior end of sulcus terminalis", "Deep to epicardium", "Supplied by SA nodal artery (usually RCA branch)"],
+        "atrio_ventricular_AV_node": ["Location: Postero-inferior part of interatrial septum", "Near opening of coronary sinus"]
+      },
+      "pathways": ["AV Bundle (Bundle of His)", "Right Bundle Branch", "Left Bundle Branch", "Subendocardial branches (Purkinje fibers)"],
+      "structures": ["Septomarginal trabecula (Moderator band - carries right bundle to anterior papillary muscle)"],
+      "physics": "Myogenic initiation at SA node (~70 bpm), nodal delay at AV node, rapid conduction through Purkinje network",
+      "visual_rules": "Conducting tissue should be shown as a glowing or distinct yellow-colored pathway within the myocardium."
+    },
+    "cardiovascular_pathology_and_interventions": {
+      "atherosclerosis_stages": ["Pre-clinical: Normal artery", "Early: Fatty streak (intimal lipid accumulation)", "Mid: Fibrous plaque (smooth muscle proliferation, collagen cap)", "Advanced: Complicated plaque (calcification, hemorrhage, ulceration, thrombosis)"],
+      "interventions": {
+        "angioplasty": ["Percutaneous transluminal coronary angioplasty (PTCA)", "Catheter with inflatable balloon", "Flattening of plaque against vessel wall", "Stent placement (lattice-like scaffold)"],
+        "bypass_surgery": ["CABG (Coronary Artery Bypass Graft)", "Vein grafts (Great saphenous from leg)", "Arterial grafts (IMA/ITA)", "Bypass around obstruction points"]
+      },
+      "physics": "Lumen narrowing (stenosis) increases shear stress; balloon inflation requires high-fidelity mechanical expansion mapping."
+    },
+    "aortic_arch_and_great_vessels": {
+      "branches": ["Brachiocephalic trunk (splits into R subclavian and R common carotid)", "Left common carotid artery", "Left subclavian artery"],
+      "neighboring_nerves": ["Right Vagus (passes ANTERIOR to R subclavian)", "Right Recurrent Laryngeal (hooks UNDER R subclavian)", "Left Vagus (passes ANTERIOR to Aortic Arch)", "Left Recurrent Laryngeal (hooks UNDER Aortic Arch/Ligamentum arteriosum)"],
+      "variations": ["Common arch pattern (65% of population)"],
+      "view": "Anterior / Detailed superior mediastinum"
+    },
+    "systemic_veins_ivc": {
+      "tributaries": ["Hepatic veins (Right, Intermediate, Left)", "Inferior phrenic veins", "Right suprarenal vein (to IVC)", "Left suprarenal vein (to Left Renal Vein)", "Right/Left renal veins (Left is longer, crosses aorta)", "Right gonadal vein (to IVC)", "Left gonadal vein (to Left Renal Vein)", "Lumbar veins (1st-5th)", "Common iliac veins"],
+      "connections": ["Ascending lumbar veins (connect to Azygos/Hemiazygos system)", "Median sacral vein (to L common iliac)"],
+      "asymmetry": "IVC is to the RIGHT of midline; Left vessels (renal, suprarenal, gonadal) must travel further to reach it or drain into the Left Renal Vein.",
+      "physics": "Thin-walled, low-pressure, large-diameter blue structures; valvular presence in iliacs but mostly absent in IVC main trunk.",
+      "view": "Anterior / Retroperitoneal"
+    },
+    "lower_limb_venous_system": {
+      "superficial_veins": {
+        "great_saphenous": "Medial side of foot/leg/thigh; drains to femoral vein at saphenous opening",
+        "small_saphenous": "Lateral side of foot, posterior leg; drains to popliteal vein",
+        "dorsal_venous_arch": "Source of saphenous veins on foot"
+      },
+      "deep_veins": ["Venae comitantes (accompanying arteries)", "Popliteal vein", "Femoral vein", "Profunda femoris vein"],
+      "valves": "Essential bicuspid valves for anti-gravity return; spacing every 2-5 cm",
+      "physics": "Dark blue deoxygenated aesthetic, volumetric distension in superficial vessels, high-contrast valves",
+      "view": "Ananteromedial / Posterior / Medial"
+    },
+    "head_and_neck_venous_drainage": {
+      "superficial_venous_mapping": {
+        "EJV_formation": ["Superficial temporal + Maxillary -> Retromandibular", "Posterior division of Retromandibular + Posterior auricular -> External Jugular (EJV)"],
+        "IJV_source": "Continuation of Sigmoid sinus at jugular foramen; descends in carotid sheath; joins subclavian to form Brachiocephalic vein at T1 level.",
+        "asymmetry_and_valves": "Valves located at termination of EJV and IJV to prevent reflux from brachiocephalic veins."
+      },
+      "venous_anastomoses_clinical": {
+        "danger_triangle_of_face": "Angular/Ophthalmic veins -> Cavernous Sinus connection; risk of intracranial infection (thrombosis)",
+        "facial_IJV_link": "Anterior division of retromandibular + Facial vein -> Internal Jugular (IJV)"
+      },
+      "physics": "Retrograde flow permitted in valve-less facial veins; EJV crosses SCM obliquely; IJV is deep to SCM.",
+      "view": "Lateral / Anterior / Carotid sheath section"
+    },
+    "neck_regions_and_clinical_triangles": {
+      "anterior_triangle_subdivisions": ["Submental (unpaired)", "Submandibular (Glandular)", "Carotid (Vascular: bifurcation location)", "Muscular (Infrahyoid muscle location)"],
+      "lateral_posterior_triangle_subdivisions": ["Occipital", "Omoclavicular (Supraclavicular: Subclavian access)"],
+      "sedillots_triangle": "Between sternal/clavicular heads of SCM and clavicle; key landmark for IJV puncture.",
+      "landmarks": ["Laryngeal prominence (C4-C5)", "Hyoid bone (C3)", "Jugular notch", "Sternal/Clavicular heads of SCM", "Platysma"],
+      "clinical_access": {
+        "subclavian_puncture": "Index finger in jugular notch; needle inserted inferior to clavicle; vein is ANTERIOR to anterior scalene muscle.",
+        "IJV_puncture": "Apex of Sedillot's triangle; lateral to carotid pulse; aimed toward ipsilateral nipple.",
+        "carotid_pulse": "Carotid triangle; anterior to SCM at C4 level."
+      },
+      "physics": "Muscular tensioning shifts with head rotation; fascia layers (Investing, Pretracheal, Prevertebral) create potential spaces.",
+      "view": "Lateral / Anterior / Surface topography map"
+    },
+    "cardiac_auscultation_surface_anatomy": {
+      "areas": {
+        "aortic_area": "2nd Right Intercostal Space (RIC) at sternal border",
+        "pulmonary_area": "2nd Left Intercostal Space (LIC) at sternal border",
+        "tricuspid_area": "5th Left Intercostal Space (LIC) at sternal border",
+        "mitral_area": "5th Left Intercostal Space (LIC) at Midclavicular line (Apex location)",
+        "erb_point_secondary_pulmonic": "3rd Left Intercostal Space (LIC)"
+      },
+      "surface_border_mapping": {
+        "superior_border": "Line connecting inferior border of 2nd LIC to superior border of 3rd RIC",
+        "right_border": "3rd to 6th right costal cartilages",
+        "left_border": "2nd LIC to 5th LIC at MCL (Apex)",
+        "inferior_border": "6th RIC through xiphisternal joint to 5th LIC at MCL"
+      },
+      "physics": "Sound projection follows blood flow downstream from valves; auscultation points are not necessarily directly over the valves.",
+      "view": "Anterior thoracic / Clinical landmarks"
+    },
+    "cerebral_arterial_circle_of_willis": {
+      "anterior_circulation": ["Internal Carotid Artery (ICA)", "Ophthalmic artery (from ICA)", "Middle cerebral artery (MCA)", "Anterior cerebral artery (ACA)", "Anterior communicating artery"],
+      "posterior_circulation": ["Vertebral arteries", "Basilar artery", "Superior cerebellar", "Anterior/Posterior inferior cerebellar (AICA/PICA)", "Posterior cerebral artery (PCA)", "Posterior communicating artery"],
+      "physics": "Hexagonal redundancy (Collateral flow), high-fidelity arterial branching, clear vessel distinction at base of brain",
+      "visual_rules": "Posterior communicating artery must be shown connecting the ICA to the PCA to complete the circle."
+    },
+    "carotid_vascular_pathology": {
+      "bifurcation_atherosclerosis": {
+        "location": "Common Carotid bifurcation (Superior border of thyroid cartilage)",
+        "pathology": ["Atheromatous plaque", "Fibrin-platelet thrombus", "Turbulent flow markers at carotid sinus"],
+        "complication": "Detached embolus (Transient Ischemic Attack/Stroke risk)"
+      },
+      "physics": "High-shear stress at bifurcation points, erratic flow vectors around plaque, lumen narrowing mapping."
     }
+  },
+  "neuroanatomy_and_csf_dynamics": {
+    "meninges_and_dural_infoldings": {
+      "layers": ["Dura mater (Periosteal/Meningeal layers)", "Arachnoid mater", "Pia mater"],
+      "spaces": ["Subarachnoid space (Contains CSF and cerebral vessels)", "Subdural space (Pathological)", "Epidural space (Pathological)"],
+      "infoldings": ["Falx cerebri (separates cerebral hemispheres)", "Tentorium cerebelli (separates occipital lobes/cerebellum)", "Falx cerebelli", "Diaphragma sellae (covers pituitary)"]
+    },
+    "ventricular_system_and_csf_flow": {
+      "chambers": ["Lateral ventricles (2)", "3rd ventricle", "4th ventricle"],
+      "pathways": ["Interventricular foramen (Monro)", "Cerebral aqueduct (Sylvius)", "Median aperture (Magendie)", "Lateral apertures (Luschka)"],
+      "structures": ["Choroid plexus (CSF production source)", "Arachnoid granulations (Reabsorption into dural sinuses)", "Subarachnoid cisterns (Cisterna magna, Chiasmatic, Interpeduncular)"],
+      "physics": "Pulsatile CSF flow, crystal-clear fluid transparency, high-contrast ependymal lining",
+      "visual_rules": "Flow vectors must show CSF moving from lateral ventricles down to the 4th ventricle and out into the subarachnoid space."
+    },
+    "special_sensory_orbit_and_fundus": {
+      "protection_and_lacrimation": {
+        "eyelid_struct": ["Superior/Inferior tarsi (tarsal plates)", "Medial/Lateral palpebral ligaments", "Superior/Inferior orbital septa"],
+        "lacrimal_apparatus": ["Lacrimal gland (Superolateral orbit)", "Lacrimal canaliculi -> Lacrimal sac -> Nasolacrimal duct (Inferomedial)"]
+      },
+      "eyeball_internal_fundus": {
+        "features": ["Optic disc (Blind spot, source of vessels)", "Macula lutea (Fovea centralis: max acuity)", "Retinal venules (wider) vs. arterioles (narrower)"],
+        "accommodation": {
+          "distant_vision": "Ciliary muscle relaxed, Zonular fibers TENSIONED, Lens thin",
+          "near_vision": "Ciliary muscle CONTRACTS (Parasympathetic), Zonular fibers relax, Lens thickens (spherical)"
+        }
+      },
+      "physics": "Refractive lens transparency, retinal vessel branching (non-anastomosing), aqueous/vitreous humor clarity",
+      "view": "Anterior (Orbit) / Median section / Ophthalmoscopic view"
+    },
+    "cranial_nerve_exit_and_functional_mapping": {
+      "cn_i_olfactory": "Cribriform plate (Ethmoid); Smell",
+      "cn_ii_optic": "Optic canal; Vision",
+      "cn_iii_oculomotor": "Superior orbital fissure; Eye movement, pupil constriction",
+      "cn_iv_trochlear": "Superior orbital fissure; superior oblique muscle",
+      "cn_v_trigeminal": {
+        "v1_ophthalmic": "Superior orbital fissure; Sensory to forehead/eye",
+        "v2_maxillary": "Foramen rotundum; Sensory to face/upper teeth",
+        "v3_mandibular": "Foramen ovale; Muscles of mastication, sensory to lower teeth/jaw"
+      },
+      "cn_vi_abducent": "Superior orbital fissure; lateral rectus muscle",
+      "cn_vii_facial": "Internal acoustic meatus -> stylomastoid foramen; facial expression",
+      "cn_viii_vestibulocochlear": "Internal acoustic meatus; balance/hearing",
+      "cn_ix_glossopharyngeal": "Jugular foramen; taste, swallowing",
+      "cn_x_vagus": "Jugular foramen; parasympathetics to viscera",
+      "cn_xi_accessory": "Jugular foramen; SCM/Trapezius muscles",
+      "cn_xii_hypoglossal": "Hypoglossal canal; tongue movement",
+      "visual_rules": "All nerves must be shown exiting corresponding foramina in the cranial base view."
+    },
+    "ear_and_auditory_mechanics": {
+      "external_ear": ["Auricle (Pinna: Helix, Tragus, Concha)", "External acoustic meatus (Ear canal)", "Tympanic membrane (Eardrum)"],
+      "middle_ear_ossicles": {
+        "bones": ["Malleus (Hammer)", "Incus (Anvil)", "Stapes (Stirrup)"],
+        "tubes": "Pharyngotympanic (Eustachian) tube (connects to nasopharynx)",
+        "physics": "Mechanical vibration conduction, pressure equalization via tube"
+      },
+      "internal_ear_labyrinth": ["Cochlea (hearing)", "Semicircular canals (balance)", "Vestibulocochlear nerve (CN VIII)"],
+      "pathology_intervention": {
+        "cochlear_implant": ["Microphone/Speech processor", "External coil", "Internal coil (implanted)", "Stimulator wire threading into cochlea", "Active electrode"]
+      },
+      "physics": "Bone-conduction stippling, fluid-filled membranous labyrinth, high-contrast nerve pathways",
+      "view": "Anterior / Coronal section / Detailed internal ear"
+    },
+    "cranial_nerve_superficial_origins": {
+      "midbrain": ["CN III: Interpeduncular fossa", "CN IV: Posterior aspect (loops anteriorly)"],
+      "pons": ["CN V: Lateral aspect"],
+      "pontomedullary_junction": ["CN VI: Medial", "CN VII: Intermediate", "CN VIII: Lateral"],
+      "medulla": ["CN IX, X, XI: Lateral to Olive", "CN XII: Medial to Olive (Pyramidal-Olivary groove)"],
+      "jugular_foramen_contents": ["CN IX, X, XI", "Internal Jugular Vein (origin)", "ICA is anterior in carotid canal"],
+      "view": "Infeior (Ventral) brainstem / Cranial base"
+    },
+    "cerebral_architecture": {
+      "hemispheres": ["Frontal lobe (Motor)", "Parietal lobe (Sensory)", "Occipital lobe (Vision)", "Temporal lobe (Hearing/Memory)"],
+      "sulci_and_gyri": ["Central sulcus", "Lateral sulcus (Sylvian fissure)", "Precentral gyrus (Motor)", "Postcentral gyrus (Sensory)"],
+      "white_matter_tracts": ["Corpus callosum (Commisural fibers)", "Internal capsule (Projection fibers)"],
+      "brainstem": ["Midbrain", "Pons", "Medulla oblongata"],
+      "cerebellum": ["Vermis", "Hemispheres", "Arbor vitae (branching white matter structure)"]
+    },
+    "view": "Median sagittal / Lateral / Superior / Transverse section"
+  },
+  "upper_respiratory_and_digestive_crossover": {
+    "pharynx_divisions": ["Nasopharynx (Posterior to nose, above soft palate)", "Oropharynx (Posterior to mouth, from soft palate to epiglottis)", "Laryngopharynx (Postero-lateral to larynx)"],
+    "nasal_cavity_features": ["Frontal/Sphenoidal sinuses", "Superior/Middle/Inferior nasal concha (Turbinates)", "Choanae"],
+    "oral_cavity_floor_and_tongue": {
+      "tongue": ["Apex", "Body", "Root", "Frenulum (anchors to floor)", "Deep lingual vein", "Sublingual caruncula (opening of submandibular duct)"],
+      "palate": ["Hard palate (Ant 2/3: bony)", "Soft palate (Post 1/3: muscular)", "Uvula", "Palatoglossal arch", "Palatopharyngeal arch"],
+      "tonsils": ["Pharyngeal (Adenoid)", "Palatine (in tonsillar sinus)", "Lingual"]
+    },
+    "laryngeal_neurovascular_and_lymphatics": {
+      "innervation": {
+        "superior_laryngeal_nerve": ["Internal branch (Sensory above vocal folds; pierces thyrohyoid membrane)", "External branch (Motor to cricothyroid)"],
+        "recurrent_laryngeal_nerve": "Motor to all other intrinsic muscles; sensory below vocal folds; loops under aortic arch (Left) or subclavian (Right)"
+      },
+      "vessels": ["Superior laryngeal artery (from Superior Thyroid)", "Inferior laryngeal artery (from Inferior Thyroid)"],
+      "lymphatics": ["Superior deep cervical nodes", "Inferior deep cervical nodes", "Pretracheal/Paratracheal nodes"],
+      "physics": "High-fidelity nerve branching, mucosal sheen, lymphatic node stippling",
+      "view": "Posterior / Lateral / Deep dissection neck"
+    },
+    "airway_food_crossing": "Airway is Anterior (Trachea); Food pathway is Posterior (Esophagus). Epiglottis acts as a valve.",
+    "vasculature_palate": "Greater/Lesser palatine arteries (from Maxillary); drains to Pterygoid venous plexus.",
+    "physics": "Mucosal sheen, muscular peristalsis initialization, high-fidelity tongue stippling, wet specular reflections",
+    "view": "Median sagittal / Open mouth anterior / Superior (palate)"
   },
   "respiratory": {
     "lungs_macro": {
-      "features": ["Right lung (3 lobes)", "Left lung (2 lobes)", "Cardiac notch", "Oblique fissures", "Horizontal fissure (right)", "Right/Left main bronchus", "Trachea bifurcation", "Apex of lung"],
-      "layers": ["Cervical parietal pleura (cupula)", "Costal pleura", "Diaphragmatic pleura", "Mediastinal pleura", "Pleural reflection"],
-      "spaces": ["Costodiaphragmatic recess", "Pleural cavity"],
-      "view": "Anterior thoracic cavity / Pleural reflections",
+      "features": ["Right lung (3 lobes: Superior, Middle, Inferior; Oblique/Horizontal fissures)", "Left lung (2 lobes: Superior, Inferior; Oblique fissure)", "Cardiac notch", "Lingula (left superior lobe)", "Apex of lung in neck", "Base on diaphragm"],
+      "hilum_contents": ["Main bronchus (posterior)", "Pulmonary artery (superior/anterior)", "Pulmonary veins (inferior/anterior)", "Bronchial vessels", "Nerves", "Lymphatics"],
+      "neighboring_nerves": ["Phrenic nerve (passes ANTERIOR to root)", "Vagus nerve (passes POSTERIOR to root)", "Left recurrent laryngeal nerve (loops under arch of aorta)"],
       "textures": "Spongy, porous texture, mottled pinkish-gray, cartilaginous rings, glistening serous membranes",
-      "neighboring_structures": ["Phrenic nerve", "Vagus nerve", "Pulmonary vessels", "Hilus", "Esophagus (posterior)", "Liver (inferior to diaphragm)"]
+      "view": "Anterior / Lateral / In situ"
+    },
+    "pleural_spaces_and_reflects": {
+      "layers": {
+        "visceral_pleura": ["Covers lung surface", "Into fissures"],
+        "parietal_pleura": ["Cervical (Cupula)", "Costal part", "Diaphragmatic part", "Mediastinal part", "Suprapleural membrane (Sibson fascia)"]
+      },
+      "surface_projections": {
+        "pleural_reflections": ["Midclavicular line (8th rib)", "Midaxillary line (10th rib)", "Paravertebral line (12th rib)"],
+        "lung_outline": ["Midclavicular line (6th rib)", "Midaxillary line (8th rib)", "Paravertebral line (10th rib)"],
+        "apical_standard": "Pleura/Apex extends above clavicle into supraclavicular fossa (C7 level)"
+      },
+      "reflections": ["Left sternal reflection (deviates for heart)", "Right sternal reflection", "Costal line of reflection", "Costodiaphragmatic recess", "Costomediastinal recess"],
+      "clinical_landmarks": ["Bare area of pericardium (accessible puncture site)", "Costodiaphragmatic recess (liquid collection site)", "Costovertebral angle"],
+      "physics": "Kidney-shaped thoracic cavity in cross-section due to protruding vertebral bodies; contains 2 pulmonary cavities and 1 mediastinum.",
+      "view": "Anterior / Posterior surface mapping / Transverse CT"
     },
     "micro_alveolar": {
       "structures": ["Respiratory bronchioles", "Alveolar ducts", "Alveolar sacs", "Alveoli", "Septum", "Alveolar pore"],
       "cell_types": ["Type I pneumocyte (flat/squamous)", "Type II pneumocyte (cuboidal/rounded/surfactant-producing)", "Lung matrix fibroblast", "Secondary crest myofibroblast", "Pericyte", "Capillary endothelial cell"],
       "circulation": ["Pulmonary artery (blue)", "Pulmonary vein (red)", "Capillary plexuses", "Alveolar-capillary membrane"],
+      "vascular_pairing": "Pulmonary arteries branch in unison with bronchi (paired); Pulmonary veins are intersegmental/between segments.",
       "physics": "Highly delicate membrane transparency, gas exchange interface, 2D/3D mesh of capillaries, surfactant-lined inner surface",
       "visual_rules": "Type II cells appear larger and rounded/blue-ish, nestled in the alveolar corners; Type I cells are thin and line the walls."
     },
-    "upper_respiratory_neck": {
-      "structures": ["Nasal cavity", "Pharynx (Naso/Oro/Laryngopharynx)", "Larynx", "Epiglottis", "Esophagus", "Trachea", "Thyroid cartilage", "Cricoid cartilage"],
-      "features": ["Vocal folds", "Vestibular folds", "Hyoid bone", "Soft/Hard palate", "Uvula"],
-      "textures": "Mucosal lining (wet/shimmering), cartilaginous firmness, muscular fibers in pharynx",
-      "view": "Sagittal section / Anterior neck"
+    "bronchial_tree_hierarchy": {
+      "conducting_zone": ["Trachea", "Carina (T4-T5 level)", "Right/Left Main (primary) bronchi", "Lobar (secondary) bronchi", "Segmental (tertiary) bronchi", "Conducting bronchioles", "Terminal bronchioles"],
+      "respiratory_zone": ["Respiratory bronchioles", "Alveolar ducts", "Alveolar sacs", "Alveoli"],
+      "physics": "Progressive decrease in cartilage, increase in smooth muscle distal to bronchi.",
+      "view": "3D Airways / CT mapping"
     }
   },
   "digestive": {
     "upper_gastrointestinal": {
       "structures": ["Oral cavity", "Teeth", "Tongue", "Salivary glands (Parotid, Submandibular, Sublingual)", "Pharynx", "Esophagus", "Stomach"],
+      "esophagus_constrictions": ["Cervical (Cricopharyngeus at C6)", "Thoracic (Broncho-aortic at T4/T5)", "Diaphragmatic (Esophageal hiatus at T10)"],
       "functions": ["Mechanical breakdown", "Enzymatic initiation", "Transport", "Acid/Enzymatic digestion"],
       "textures": "Mucosal rugae in stomach, glistening muscularis, granular salivary gland texture",
-      "physics": "Subsurface scattering of mucosa, high specular on gastric secretions"
+      "physics": "Subsurface scattering of mucosa, high specular on gastric secretions, peristaltic wave propagation mapping"
+    },
+    "esophagus_details": {
+      "histology": ["External longitudinal muscle", "Internal circular muscle", "Mucosa (plicated)", "Lumen"],
+      "ligaments": ["Phrenico-esophageal ligament (superior/inferior limbs)", "Esophagogastric junction (Z-line)"],
+      "landmarks": ["Cardial notch", "Cardial orifice of stomach"],
+      "view": "Left lateral / Transverse section / Coronal section"
+    },
+    "abdominal_viscera_peritoneum": {
+      "layers": ["Parietal peritoneum (lines wall)", "Visceral peritoneum (covers organs)", "Peritoneal cavity (potential space)"],
+      "formations": {
+        "omenta": ["Greater omentum (gastrocolic ligament + gastrosplenic + gastrophrenic)", "Lesser omentum (hepatogastric + hepatoduodenal ligaments)"],
+        "mesenteries": ["The Mesentery (jejunum/ileum)", "Transverse mesocolon", "Sigmoid mesocolon"],
+        "ligaments": ["Falciform (liver to wall)", "Coronary (liver to diaphragm)", "Hepatoduodenal (contains portal triad)"]
+      },
+      "compartments": ["Supracolic (above transverse colon)", "Infracolic (below transverse colon)", "Omental bursa (Lesser sac behind stomach)", "Omental (Epiploic) foramen of Winslow"],
+      "physics": "Serous fluid lubrication, fat storage in greater omentum (the 'policeman' of the abdomen).",
+      "view": "Anterior / Median sagittal"
+    },
+    "abdominal_vasculature_unpaired": {
+      "celiac_trunk_foregut": ["Left gastric artery", "Splenic artery", "Common hepatic artery (Gastroduodenal, Proper hepatic)"],
+      "superior_mesenteric_SMA_midgut": ["Inferior pancreaticoduodenal", "Jejunal/Ileal branches", "Ileocolic", "Right colic", "Middle colic"],
+      "inferior_mesenteric_IMA_hindgut": ["Left colic", "Sigmoid arteries", "Superior rectal artery"],
+      "venous_portal_system": ["Hepatic portal vein (Splenic + SMV)", "Inferior mesenteric vein joins splenic", "Portal-systemic anastomoses: Esophago-gastric, Paraumbilical, Rectal"],
+      "physics": "Arterial supply corresponds to embryological gut divisions; Portal system drains majority of GI tract to liver for processing.",
+      "visual_rules": "SMA must be shown passing anterior to the 3rd part of the duodenum and posterior to the pancreas neck."
+    },
+    "inguinal_canal_anatomy": {
+      "boundaries": {
+        "anterior": "External oblique aponeurosis",
+        "posterior": "Transversalis fascia, reinforced medially by Inguinal falx (Conjoint tendon)",
+        "roof": "Arching fibers of internal oblique and transversus abdominis",
+        "floor": "Inguinal ligament (incurved edge of external oblique aponeurosis), Iliopubic tract"
+      },
+      "rings": ["Deep inguinal ring (in transversalis fascia)", "Superficial inguinal ring (in external oblique aponeurosis)"],
+      "contents": ["Spermatic cord (male)", "Round ligament (female)", "Ilio-inguinal nerve"],
+      "spermatic_cord_layers": ["External spermatic fascia (external oblique deriv.)", "Cremasteric muscle/fascia (internal oblique deriv.)", "Internal spermatic fascia (transversalis fascia deriv.)"],
+      "physics": "Oblique pathway (~4cm) through abdominal wall to resist herniation; canal pressure increases during coughing/straining.",
+      "view": "Anterior / Schematic sagittal"
     },
     "liver_and_biliary_system": {
       "lobes": ["Right lobe", "Left lobe", "Caudate lobe", "Quadrate lobe"],
@@ -63,9 +371,25 @@
       "textures": "Smooth glistening capsule (Glisson's), high-fidelity venous branching, dense parenchymal texture"
     },
     "pancreas_and_intestines": {
-      "structures": ["Pancreas (Head, Body, Tail)", "Duodenum (1st-4th parts)", "Jejunum", "Ileum", "Large intestine (Cecum, Ascending/Transverse/Descending/Sigmoid colon)", "Rectum"],
+      "pancreas": ["Head (with Uncinate process)", "Neck", "Body", "Tail (in contact with spleen)"],
+      "duodenum": {
+        "1st_superior": "Intraperitoneal, Duodenal cap, L1 level",
+        "2nd_descending": "Retroperitoneal, Descends along R side of L2-L3, contains Major/Minor papillae",
+        "3rd_horizontal": "Crossed by SMA/SMV, anterior to IVC/Aorta",
+        "4th_ascending": "Duodenojejunal flexure (L2 level), Suspended by Ligament of Treitz"
+      },
+      "spleen": {
+        "surfaces": ["Diaphragmatic (convex)", "Visceral (concave, with Hilum)"],
+        "ligaments": ["Gastrosplenic", "Splenorenal"],
+        "contacts": ["Stomach", "Left kidney", "Pancreas tail", "Left colic flexure"]
+      },
+      "large_intestine_clinical": {
+        "structures": ["Cecum", "Ascending/Transverse/Descending/Sigmoid colon", "Rectum", "Anal canal"],
+        "pathology": "Diverticulosis (multiple outpouchings in sigmoid colon wall)",
+        "procedure": "Colonoscopy (flexible fiberoptic tube insertion, visualization of mucosa/haustra)"
+      },
       "textures": "Lobulated pancreatic texture, villous intestinal lining, haustra of colon, fatty appendices epiploicae",
-      "view": "Anterior abdominal dissection"
+      "view": "Anterior abdominal dissection / Endoscopic clinical view"
     },
     "visceral_vasculature": {
       "veins": ["Hepatic portal vein", "Superior mesenteric vein", "Inferior mesenteric vein", "Splenic vein", "Left/Right gastric veins", "Gastro-epiploic veins", "Colic veins (Right/Middle/Left)", "Ileocolic vein", "Ileal/Jejunal/Sigmoid/Rectal veins", "Left/Right common iliac vein", "External iliac vein", "Inferior epigastric vein"],
@@ -77,15 +401,31 @@
         "physics": "Transition from high-pressure red oxygenated blood to low-pressure blue deoxygenated blood within a web-like interconnected mesh.",
         "distribution": "Interstitium and organ-specific beds (like the pulmonary/renal plexuses)."
       }
+    },
+    "abdominal_visceral_innervation": {
+      "segmental_mapping_sympathetic": {
+        "foregut_stomach_liver_gb": "T6-T9",
+        "midgut_small_intestine_asc_colon": "T8-T10",
+        "appendix": "T10",
+        "hindgut_desc_sigmoid_colon": "T12-L1/L2",
+        "rectum": "S2-S4"
+      },
+      "visceral_afferent_pain": {
+        "liver_gb_stomach": "T6-T9",
+        "kidney_ureter": "T10-L1",
+        "referred_pain_logic": "Visceral pain signals traveling alongside sympathetic fibers to specific spinal cord segments; manifests as referred pain in dermatomes."
+      }
     }
   },
   "urogenital": {
     "kidney_macro_posterior": {
-      "structures": ["Right kidney", "Left kidney (slightly higher)", "Rib 11", "Rib 12", "Erector spinae muscles", "Quadratus lumborum"],
-      "landmarks": ["Costovertebral angle", "T12-L3 vertebral levels"],
+      "structures": ["Right kidney", "Left kidney (slightly higher)", "Rib 11", "Rib 12", "Erector spinae muscles", "Quadratus lumborum", "Psoas major"],
+      "landmarks": ["Costovertebral angle", "T12-L3 vertebral levels", "Transpyloric plane (thru L1 hilum)", "Iliac crest (1 finger below R kidney)"],
+      "displacement": "Moves 2-3 cm vertically during deep breathing/diaphragm descent",
+      "dimensions": "Length: ~10cm, Width: ~5cm, Thickness: ~5.5cm",
       "view": "Posterior / Retroperitoneal",
       "textures": "Smooth fibrous capsule, dense muscular background",
-      "physics": "Muted skin tones with deep internal organ silhouette transparency"
+      "physics": "Muted skin tones with deep internal organ silhouette transparency, respiration-driven vertical oscillation"
     },
     "kidney_internal_micro": {
       "structures": ["Cortex", "Medulla (pyramids)", "Renal papilla", "Minor calyces", "Major calyces", "Renal pelvis", "Renal column", "Renal sinus (fat body)", "Hilus", "Cribriform area (openings of papillary ducts)"],
@@ -108,24 +448,73 @@
       "view": "Ultrastructure / Cross-section"
     },
     "suprarenal_adrenal_glands": {
-      "structures": ["Right suprarenal gland (pyramidal)", "Left suprarenal gland (semilunar)", "Suprarenal hilum"],
-      "vasculature": ["Superior suprarenal arteries", "Middle suprarenal arteries", "Inferior suprarenal artery", "Suprarenal vein"],
-      "layers": ["Perirenal fat", "Fibrous capsule"],
-      "physics": "Yellowish glandular texture, high metabolic vascularity"
+      "morphology": {
+        "right_gland": "Pyramidal shape, sits atop kidney pole",
+        "left_gland": "Semilunar/Crescent shape, extends down medial border"
+      },
+      "vasculature": {
+        "arteries": ["Superior suprarenal (from Inf. Phrenic)", "Middle suprarenal (from Abdominal Aorta)", "Inferior suprarenal (from Renal Artery)"],
+        "veins": ["Right suprarenal vein (to IVC)", "Left suprarenal vein (to Left Renal Vein)"]
+      },
+      "histology": ["Capsule", "Cortex (Outer)", "Medulla (Inner)"],
+      "physics": "Yellowish glandular texture, extremely high metabolic vascularity, endocrine-driven hierarchical branching"
+    },
+    "renal_anomalies_and_calculi": {
+      "congenital_anomalies": {
+        "horseshoe_kidney": "Inferior poles fused, U-shaped, trapped under IMA at L3-L5",
+        "ectopic_pelvic_kidney": "In embryonic pelvic position, anterior to sacrum",
+        "retrocaval_ureter": "Ureter loops posterior to the IVC",
+        "duplication": ["Bifid renal pelvis", "Bifid ureter", "Unilateral duplicated ureter"]
+      },
+      "calculi_mapping_urolithiasis": {
+        "types": ["Minor/Major calyx stone", "Renal pelvis stone", "Staghorn stone (fills pelvis/calyces)", "Ureteric stone"],
+        "pain_referral": "Loin-to-groin (T11-L2), genitofemoral nerve projection",
+        "clinical_view": {
+          "procedure": "Nephroscopy (instrument insertion through small incision)",
+          "imaging": "Anteroposterior pyelogram"
+        }
+      },
+      "physics": "Crystalline mineral density, obstructive pressure flow, referred dermatomal pain mapping"
     },
     "urinary_tract_system": {
-      "structures": ["Urinary bladder", "Ureters", "Urethra", "Striated urethral sphincter", "Fibers of detrusor", "Detrusor apron"],
-      "ligaments": ["Pubovesical ligament (female)", "Puboprostatic/Pubovesical ligament (male)"],
-      "pathology_keys": ["Nephrolithiasis", "Obstruction sites", "Detrusor instability"],
+      "ureteric_constrictions": ["Ureteropelvic junction", "Crossing iliac vessels/pelvic brim", "Traversing bladder wall"],
+      "urinary_bladder": {
+        "morphology": "Apex, Body, Fundus, Neck, Detrusor muscle",
+        "spaces": ["Retropubic space (of Retzius)", "Rectovesical pouch (male)", "Vesico-uterine pouch (female)"],
+        "ligaments": ["Median umbilical ligament", "Pubovesical (female)", "Puboprostatic (male)"],
+        "physics": "Expandable volume; superior position when distended increases rupture risk from abdominal injury."
+      },
+      "urethra_male": ["Prostatic", "Intermediate (membranous)", "Spongy (penile)"],
+      "pathology_keys": ["Nephrolithiasis", "Vesical rupture", "Detrusor instability"],
       "textures": "Translucent muscular ureteral tubes, thick corrugated detrusor muscle wall",
-      "neighboring_structures": ["Pubis", "Prostate", "Seminal gland", "Bulb of penis"]
+      "view": "Sagittal / Coronal / Posterior"
     },
     "male_reproductive_genital": {
-      "structures": ["Testis", "Epididymis (Head, Body, Tail)", "Ductus deferens", "Spermatic cord", "Seminal gland", "Prostate"],
+      "structures": ["Testis", "Epididymis (Head, Body, Tail)", "Ductus deferens (with Ampulla)", "Seminal gland", "Ejaculatory duct (Seminal duct + Ductus deferens)", "Prostate (Isthmus, Lobes)", "Bulbo-urethral gland"],
       "testicular_micro": ["Lobules of testis", "Septa of testis", "Mediastinum of testis", "Tunica albuginea", "Tunica vaginalis", "Efferent ductules"],
-      "vasculature": ["Testicular artery", "Pampiniform plexus", "Artery to ductus deferens", "Centripetal artery", "Capsular artery"],
-      "textures": "Glandular parenchyma, coiled ductal networks, dense fibrous capsule",
-      "view": "Sagittal / Sectioned testis"
+      "vasculature": ["Testicular artery", "Pampiniform plexus", "Artery to ductus deferens", "Superior/Inferior vesical arteries", "Prostatic venous plexus"],
+      "textures": "Glandular parenchyma, coiled ductal networks, dense fibrous capsule, erectile tissue hydraulics",
+      "view": "Sagittal / Posterior / Sectioned testis"
+    },
+    "female_reproductive_genital": {
+      "uterus": {
+        "parts": ["Fundus", "Body", "Isthmus", "Cervix (Supravaginal, Vaginal)"],
+        "cavity": ["Internal os", "Cervical canal", "External os"],
+        "layers": ["Perimetrium", "Myometrium", "Endometrium"]
+      },
+      "uterine_tubes_oviducts": {
+        "segments": ["Infundibulum (with Fimbriae)", "Ampulla (widest, usual fertilization site)", "Isthmus", "Uterine part"],
+        "ectopic_sites": ["Ampullar (most common)", "Isthmic", "Fimbrial", "Interstitial", "Abdominal", "Ovarian", "Cervical"]
+      },
+      "ovaries": ["Follicular mesothelium", "Ovarian ligament", "Suspensory ligament (contains ovarian vessels)"],
+      "ligaments_and_mesenteries": {
+        "broad_ligament": ["Mesometrium (uterus)", "Mesovarium (ovary)", "Mesosalpinx (tube)"],
+        "other": ["Round ligament of uterus", "Transverse cervical (cardinal) ligament", "Uterosacral ligament"]
+      },
+      "vestibule": ["Clitoris", "Vaginal orifice", "External urethral orifice", "Labia majora/minora"],
+      "embryonic_remnants": ["Epoophoron", "Vesicular appendage", "Gartner duct (remnant of mesonephric duct)"],
+      "physics": "Cyclical mucosal changes, distensible muscular walls, ligamentous support tensioning",
+      "view": "Coronal / Sagittal / Posterior"
     },
     "renal_fascia_layers": {
       "layers": ["Renal capsule", "Perirenal fat", "Renal fascia (Gerota's)", "Pararenal fat", "Transversalis fascia", "Peritoneum"],
@@ -133,18 +522,313 @@
       "view": "Transverse section / Axial"
     }
   },
+  "integumentary": {
+    "skin_layers_and_specialized_structures": {
+      "layers": ["Epidermis (superficial keratinized epithelium)", "Dermis (deep connective tissue)", "Subcutaneous tissue (superficial fascia)", "Deep fascia", "Skeletal muscle"],
+      "epidermal_features": ["Basal (regenerating) layer", "Pigmented layer (melanocytes)", "Avascular nature"],
+      "dermal_features": ["Vascular capillary beds (superficial dermis)", "Lymphatic capillary beds", "Afferent nerve endings", "Small arterioles", "Collagen and elastin fibers", "Arrector muscle of hair", "Sebaceous gland", "Hair follicle", "Sweat gland"],
+      "subcutaneous_features": ["Fat lobules", "Cutaneous nerves", "Lymphatic vessels", "Superficial blood vessels", "Skin ligaments (retinaculum cutis)"],
+      "physics": "Subsurface scattering for South Asian skin tones, high specular on sweat secretions, matte fibrous dermis, translucent fatty tissue",
+      "visual_rules": "The Epidermis must be shown as avascular; all vessels and nerve terminals are located in the dermis or subcutaneous layers. Skin ligaments must appear as fibrous bands anchoring the dermis to the deep fascia."
+    }
+  },
   "musculoskeletal": {
+    "axial_and_appendicular_skeleton": {
+      "axial": ["Cranium (skull)", "Hyoid bone", "Cervical vertebrae", "Ribs", "Sternum", "Vertebrae", "Sacrum"],
+      "appendicular": ["Clavicle", "Scapula", "Humerus", "Radius", "Ulna", "Carpal bones", "Metacarpals", "Phalanges", "Hip bones", "Femur", "Patella", "Tibia", "Fibula", "Tarsal bones"],
+      "femur_mechanics": {
+        "head": "Fovea for ligament",
+        "neck_angles": "Adult: 126°, Old age: 120°, Child: 135° (Angle of inclination)",
+        "features": ["Greater/Lesser trochanters", "Intertrochanteric line/crest", "Linea aspera (shaft)", "Lateral/Medial condyles/epicondyles"]
+      },
+      "key_landmarks": ["Greater tubercle of humerus", "Greater sciatic notch", "Greater trochanter of femur", "Ischial tuberosity", "Medial/Lateral malleolus", "Obturator foramen", "Soleal line of tibia", "Tibial tuberosity"],
+      "view": "Anterior / Posterior / Postero-lateral / Superior (torsion angle)",
+      "physics": "Aged ivory bone texture, hard cortical stippling, clear marrow cavity in sectioned views"
+    },
+    "cranial_and_facial_architecture": {
+      "neurocranium_bones": ["Frontal", "Parietal (2)", "Temporal (2)", "Occipital", "Sphenoid", "Ethmoid"],
+      "viscerocranium_bones": ["Maxilla (2)", "Mandible", "Zygomatic (2)", "Nasal (2)", "Lacrimal (2)", "Vomer", "Palatine (2)", "Inferior nasal concha (2)"],
+      "mandible_features": {
+        "body": "Base, Alveolar part (teeth sockets), Mental foramen/protuberance",
+        "ramus": ["Condyloid process (Head, Neck)", "Coronoid process", "Angle of mandible", "Mandibular foramen"]
+      },
+      "sutures_and_junctions": ["Coronal", "Sagittal", "Lambdoid", "Squamous", "Pterion (H-shaped junction of frontal/parietal/sphenoid/temporal)"],
+      "pathology_fractures": ["Linear (most common)", "Depressed (bone pushed inward)", "Comminuted (shattered into fragments)", "Basilar (base involvement: foramen magnum, occipital condyles)"],
+      "external_cranial_base": {
+        "foramina": ["Foramen magnum", "Jugular foramen", "Carotid canal", "Foramen lacerum", "Foramen ovale", "Foramen spinosum"],
+        "landmarks": ["Hard palate (Maxilla + Palatine)", "Choanae", "Occipital condyles", "Mastoid process", "Styloid process", "Incisive fossa"]
+      },
+      "muscles_of_expression_and_expression_mapping": {
+        "muscles": ["Occipitofrontalis (Frontal/Occipital bellies)", "Orbicularis oculi (Orbital/Palpebral parts)", "Orbicularis oris", "Buccinator", "Zygomaticus major/minor", "Risorius", "Levator labii superioris", "Depressor anguli oris", "Mentalis", "Platysma"],
+        "cn_vii_branches": ["Temporal", "Zygomatic", "Buccal", "Marginal mandibular", "Cervical"],
+        "action_visuals": ["Forehead wrinkles: Frontal belly", "Eye closure: Palpebral part", "Wink/Squeeze: Orbital part", "Smile: Zygomaticus major", "Whistle/Blow: Buccinator/Oris", "Pout: Mentalis"]
+      },
+      "surface_mapping_regions": {
+        "cranial": ["Frontal", "Parietal", "Occipital", "Temporal", "Auricular", "Mastoid"],
+        "facial": ["Orbital", "Infra-orbital", "Nasal", "Zygomatic", "Buccal", "Parotid", "Oral", "Mental"]
+      },
+      "physics": "Bone density stippling, jagged suture interlocking, thin bone at pterion (clinical risk for MMA hemorrhage); facial muscles are superficial and lack deep fascia.",
+      "view": "Lateral / Anterior / Inferior (base) / Superior"
+    },
+    "lower_limb_regional_and_fascial_mapping": {
+      "regions": ["Gluteal", "Femoral (thigh)", "Knee", "Leg (crural)", "Ankle (talocrural)", "Foot (tarsus, metatarsus, phalanges)"],
+      "gluteal_region": {
+        "superficial_layer": ["Gluteus maximus (extensor)", "Gluteus medius", "Gluteus minimus (abductors)", "Tensor fasciae latae"],
+        "deep_layer_lateral_rotators": ["Piriformis", "Obturator internus", "Superior/Inferior gemelli", "Quadratus femoris"],
+        "sciatic_nerve_rel": "Enters gluteal region through greater sciatic foramen, usually inferior to piriformis."
+      },
+      "thigh_musculature": {
+        "anterior_flexors_extensors": ["Iliopsoas", "Sartorius", "Quadriceps femoris (Rectus femoris, Vastus lateralis/medialis/intermedius)"],
+        "medial_adductors": ["Adductor longus", "Adductor brevis", "Adductor magnus", "Gracilis", "Pectineus", "Obturator externus"],
+        "posterior_hamstrings": ["Biceps femoris (long/short heads)", "Semitendinosus", "Semimembranosus"]
+      },
+      "popliteal_fossa": {
+        "boundaries": ["Biceps femoris", "Semimembranosus", "Gastrocnemius heads"],
+        "contents": ["Sciatic nerve bifurcation (Tibial and Common Fibular nerves)", "Popliteal artery", "Popliteal vein", "Genicular anastomosis"],
+        "visual_rules": "Tibial nerve is most superficial, Popliteal artery is deepest. Dissection from medial side avoids tibial motor branches."
+      },
+      "leg_compartments": {
+        "anterior_extensors": ["Tibialis anterior (TA)", "Extensor digitorum longus (EDL)", "Extensor hallucis longus (EHL)", "Fibularis tertius"],
+        "lateral_evertors": ["Fibularis longus", "Fibularis brevis"],
+        "posterior_flexors": ["Gastrocnemius", "Soleus", "Plantaris", "Popliteus", "Tibialis posterior", "FDL", "FHL"],
+        "innervation": "Deep Fibular (Anterior), Superficial Fibular (Lateral), Tibial (Posterior)"
+      },
+      "foot_plantar_layers": {
+        "layer_1": ["Abductor hallucis", "Flexor digitorum brevis", "Abductor digiti minimi"],
+        "layer_2": ["Quadratus plantae", "Lumbricals"],
+        "layer_3": ["Flexor hallucis brevis", "Adductor hallucis", "Flexor digiti minimi brevis"],
+        "layer_4": ["Plantar/Dorsal Interossei"]
+      },
+      "vasculature_distal": {
+        "dorsal": "Anterior Tibial -> Dorsalis Pedis (lateral to EHL tendon)",
+        "plantar": "Posterior Tibial -> Medial/Lateral Plantar arteries -> Deep Plantar Arch"
+      },
+      "fascia": {
+        "superficial": "Loose connective tissue, contains fat, Great/Small saphenous veins, cutaneous nerves",
+        "deep": ["Fascia lata (thigh)", "Iliotibial tract (lateral)", "Superior/Inferior extensor retinacula (ankle)"]
+      },
+      "physics": "Tight compartmental pressure zones, glistening fascial sheaths, high-fidelity muscular definition",
+      "view": "Anterior / Posterior / Lateral / Transverse section"
+    },
+    "knee_joint_integrity": {
+      "ligaments": {
+        "cruciates": ["ACL (prevents anterior tibial slide)", "PCL (prevents posterior tibial slide)"],
+        "collaterals": ["MCL (attached to medial meniscus)", "LCL (cord-like, separate from lateral meniscus)"]
+      },
+      "menisci": ["Medial Meniscus (C-shaped, fixed)", "Lateral Meniscus (Circular, mobile)"],
+      "bursae": ["Suprapatellar", "Prepatellar", "Infrapatellar"],
+      "physics": "Glistening white fibrocartilage, crossing cruciate geometry, 'bow-tie' meniscus in MRI coronal plane",
+      "view": "Superior (tibia) / Posterior / Coronal section / MRI correlation"
+    },
+    "kinesiology_and_gait": {
+      "gait_cycle_phases": {
+        "stance_phase_60_percent": ["Heel strike (Initial contact)", "Loading response (Foot flat)", "Midstance", "Terminal stance (Heel off)", "Preswing (Toe off)"],
+        "swing_phase_40_percent": ["Initial swing", "Midswing", "Terminal swing"]
+      },
+      "dynamic_muscle_activation": {
+        "heel_strike": "Gluteus maximus, Tibialis anterior",
+        "loading_response": "Quadriceps femoris",
+        "mid_to_terminal_stance": "Triceps surae (push-off)",
+        "swing": "Iliopsoas, Rectus femoris (initial), Hamstrings (terminal deceleration)"
+      },
+      "physics": "Weight-bearing line (gravity) shifting, double vs. single support logic, multi-joint coordination",
+      "view": "Lateral / Sequential animation mapping"
+    },
+    "abdominopelvic_cavity_architecture": {
+      "cavity_divisions": ["Thoracic cavity (Superior)", "Abdominal cavity (Intermediate)", "Pelvic cavity (Inferior)", "Thoracic diaphragm (Separates thoracic/abdominal)", "Pelvic diaphragm (Floor)"],
+      "surface_mapping_quadrants": {
+        "Median plane": "Vertical (Xiphoid to symphysis)",
+        "Transumbilical plane": "Horizontal (thru L3-L4 disc/Umbilicus)",
+        "quadrants": ["RUQ (Liver, GB, R Kidney)", "LUQ (Stomach, Spleen, L Kidney, Pancreas body)", "RLQ (Cecum, Appendix, R ovary)", "LLQ (Sigmoid colon, L ovary)"]
+      },
+      "surface_mapping_9_regions": {
+        "Vertical planes": ["Right midclavicular plane", "Left midclavicular plane"],
+        "Horizontal planes": ["Subcostal plane (L3)", "Transtubercular plane (L5 tubercle of iliac crest)", "Transpyloric plane (L1)"],
+        "regions": {
+          "superior": ["Right Hypochondrium", "Epigastric", "Left Hypochondrium"],
+          "middle": ["Right Flank (Lateral)", "Umbilical", "Left Flank (Lateral)"],
+          "inferior": ["Right Inguinal (Groin)", "Pubic (Hypogastric)", "Left Inguinal (Groin)"]
+        }
+      },
+      "viscera_in_situ_orientation": {
+        "diaphragm_domes": "Right dome (4th ICS) higher than Left dome (5th ICS) due to Liver size.",
+        "landmarks": ["Jugular line", "Semilunar lines", "Iliac tubercle", "Interspinous plane (thru ASIS)", "Anterior Superior Iliac Spine (ASIS)"]
+      },
+      "physics": "Intra-abdominal pressure mapping; muscular floor and roof permit expulsion dynamics (Valsalva reflex).",
+      "view": "Anterior / Detailed regional map"
+    },
+    "pelvic_architecture": {
+      "pelvic_girdle_bones": {
+        "hip_bones": ["Ilium (Ala, Body, Iliac crest, ASIS, AIIS)", "Ischium (Body, Spine, Tuberosity, Ramus)", "Pubis (Body, Superior/Inferior rami, Symphysis)"],
+        "sacro_vertebral": ["Sacrum (Ala, Promontory)", "Coccyx", "Lumbosacral joint (L5-S1)"]
+      },
+      "pelvic_cavity_divisions": {
+        "greater_false_pelvis": "Superior to pelvic brim (abdominal viscera protection)",
+        "lesser_true_pelvis": "Between pelvic inlet (brim) and outlet; contains pelvic organs",
+        "pelvic_brim_inlet": "Line connecting sacral promontory, arcuate line of ilium, and pectineal line of pubis"
+      },
+      "pelvic_floor_and_walls": {
+        "pelvic_diaphragm": ["Levator ani (Puborectalis, Pubococcygeus, Iliococcygeus)", "Coccygeus"],
+        "obturator": ["Obturator internus muscle", "Obturator membrane", "Obturator foramen"],
+        "piriformis": "Exits through greater sciatic notch"
+      },
+      "joints_and_ligaments": ["Sacro-iliac (SI) joint (auricular surfaces)", "Sacro-tuberous ligament", "Sacro-spinous ligament", "Inguinal ligament"],
+      "physics": "Stress distribution through SI joints to femurs; pelvic floor acts as a dynamic tensioned hammock.",
+      "view": "Anterior / Medial (open book) / Coronal / Sagittal"
+    },
+    "synovial_joint_classifications": {
+      "types": {
+        "plane": ["Acromioclavicular joint", "Usually uniaxial", "Permit gliding/sliding"],
+        "hinge": ["Elbow joint", "Uniaxial", "Permit flexion/extension"],
+        "pivot": ["Atlanto-axial joint", "Uniaxial", "Permit rotation (rounded process in bony/ligamentous socket)"],
+        "condyloid": ["Metacarpophalangeal joint", "Biaxial", "Permit flexion/extension, abduction/adduction, circumduction"],
+        "saddle": ["Carpometacarpal joint (thumb)", "Biaxial", "Saddle-shaped articulating surfaces"],
+        "ball_and_socket": ["Hip joint", "Multiaxial", "Rounded head fitting into concavity"]
+      },
+      "structures": ["Articular cartilage (light blue)", "Synovial membrane", "Joint capsule", "Synovial fluid", "Acetabular labrum (hip)", "Fibrous capsule"],
+      "physics": "Low-friction glistening cartilage surfaces, viscous fluid transparency, blue articular cartilage glow"
+    },
     "ribcage_osteology": {
-      "bones": ["Clavicle", "Manubrium", "Sternum (body)", "Xiphoid process", "Costal cartilage (1-12)", "Ribs (true/false/floating)", "Vertebrae (C7-L2)"],
-      "features": ["Jugular notch", "Sternal angle (Angle of Louis)", "Intercostal spaces"],
+      "bones": {
+        "sternum": ["Manubrium", "Body (Gladiolus)", "Xiphoid process"],
+        "ribs": ["True ribs (1-7: Vertebrosternal)", "False ribs (8-10: Vertebrochondral)", "Floating ribs (11-12: Vertebral)", "Costal cartilage"],
+        "thoracic_vertebrae": ["T1-T12", "Intervertebral (IV) discs"]
+      },
+      "features": ["Jugular notch", "Clavicular notch", "Sternal angle (Angle of Louis at T4-T5 level)", "Infrasternal (subcostal) angle", "Intercostal spaces (1st-11th)", "Costal margin"],
+      "landmarks": ["Synchondrosis of 1st rib", "Sternoclavicular joint", "Interchondral joints"],
       "textures": "Hard cortical bone finish, translucent/smooth costal cartilage",
-      "physics": "High specular on cartilage, matte bone stippling"
+      "physics": "Resilient osteocartilaginous cage protects thoracic and upper abdominal organs; limited anterior mobility vs greater lateral/posterior stability.",
+      "view": "Anterior / Posterior / Lateral"
     },
     "thoracic_musculature": {
       "muscles": ["External intercostals", "Internal intercostals", "Innermost intercostals", "Serratus anterior digitations", "Diaphragm"],
       "neurovascular": ["Intercostal vein", "Intercostal artery", "Intercostal nerve", "Collateral branches", "Endothoracic fascia"],
       "textures": "Striated muscle fibers, thin glistening fascia layers",
-      "physics": "Muscle red-brown tonal shifts, high specular on fascia reflections"
+      "physics": "Muscle red-brown tonal shifts, high specular on fascia reflections",
+      "identity_standard": "South Asian muscular morphology, modern clinical lighting"
+    },
+    "skeletal_muscle_architecture": {
+      "shapes": {
+        "circular": ["Orbicularis oculi", "Orbicularis oris"],
+        "fusiform": ["Biceps brachii"],
+        "flat_parallel_with_aponeurosis": ["External oblique"],
+        "bipennate": ["Rectus femoris"],
+        "unipennate": ["Extensor digitorum longus"],
+        "digastric": ["Omohyoid", "Occipitofrontalis"],
+        "multipennate": ["Deltoid"],
+        "convergent": ["Pectoralis major"],
+        "quadrate": ["Rectus abdominis (with tendinous intersections)"],
+        "thin_parallel": ["Sartorius"]
+      },
+      "physics": "Fiber arrangement dictates contraction force and range of motion; pennate muscles generate higher force, parallel muscles permit greater shortening.",
+      "visual_rules": "Muscle fibers must clearly follow the architectural direction (e.g., feather-like for pennate, fan-like for convergent)."
+    },
+    "superficial_muscular_system": {
+      "anterior_muscles": ["Frontal belly of occipitofrontalis", "Orbicularis oculi/oris", "Sternocleidomastoid", "Pectoralis major", "Biceps brachii", "Serratus anterior", "Rectus abdominis", "External oblique", "Brachioradialis", "Flexor retinaculum", "Iliopsoas", "Pectineus", "Adductor longus", "Sartorius", "Rectus femoris", "Vastus lateralis/medialis", "Tibialis anterior", "Extensor digitorum/hallucis longus", "Extensor retinaculum"],
+      "posterior_muscles": ["Occipital belly of occipitofrontalis", "Trapezius", "Deltoid", "Infraspinatus", "Teres minor/major", "Triceps brachii", "Latissimus dorsi", "Thoracolumbar fascia", "Gluteus maximus", "Gracilis", "Biceps femoris", "Semitendinosus", "Semimembranosus", "Gastrocnemius", "Soleus", "Calcaneal tendon"],
+      "identity_standard": "South Asian muscular morphology, anatomically precise biomechanical posture",
+      "anatomy_mapping": "Global superficial map for locomotion and posture."
+    },
+    "muscle_ultrastructure_and_motor_unit": {
+      "motor_unit_components": ["Motor neuron cell body (in spinal cord)", "Motor neuron axon", "Motor end plates (neuromuscular junctions)", "Innervated muscle fibers"],
+      "connective_tissue_hierarchy": ["Epimysium (investing fascia around whole muscle)", "Perimysium (surrounds fascicles)", "Endomysium (surrounds individual muscle fibers)"],
+      "contractile_elements": ["Sarcolemma (cell membrane)", "Myofibril", "Sarcomere (functional unit)", "Actin (thin filaments)", "Myosin (thick filaments)"],
+      "physics": "Sliding filament theory (Actin/Myosin interdigitation), discrete unit recruitment for graded force, visible striations from sarcomere alignment",
+      "visual_rules": "Motor end plates should appear as synaptic terminals branching onto the sarcolemma. Connective tissue layers must be distinct and transparent/white to contrast the red muscle fibers."
+    },
+    "vertebral_column": {
+      "regions": ["Cervical (7): Atlas C1, Axis C2 with Dens", "Thoracic (12)", "Lumbar (5)", "Sacrum (5 fused segments)", "Coccyx (4 fused segments)"],
+      "vertebral_structure": ["Vertebral body", "Vertebral arch (Pedicle, Lamina)", "Spinous process", "Transverse process", "Vertebral canal / foramen", "Intervertebral foramina", "Intervertebral (IV) discs"],
+      "landmarks": ["Lumbosacral angle", "Spinous processes overlapping inferior vertebra (Thoracic)"],
+      "physics": "Load-bearing S-curve, shock absorption via IV discs, protection of spinal cord."
+    },
+    "upper_limb_osteology_and_biomechanics": {
+      "clavicle": ["Sternal end", "Acromial end", "Superior border"],
+      "scapula": ["Acromion", "Coracoid process", "Spine/Crest of root", "Superior/Inferior angle", "Medial/Lateral border", "Suprascapular notch", "Supraspinous/Infraspinous/Subscapular fossa"],
+      "humerus": ["Head", "Anatomical/Surgical neck", "Greater/Lesser tubercle", "Intertubercular sulcus (bicipital groove)", "Deltoid tuberosity", "Radial groove", "Medial/Lateral supra-epicondylar ridge", "Medial/Lateral epicondyle", "Coronoid/Radial/Olecranon fossa", "Capitulum", "Trochlea"],
+      "radius": ["Head", "Neck", "Radial tuberosity", "Anterior/Posterior oblique line", "Styloid process", "Dorsal tubercle"],
+      "ulna": ["Olecranon", "Coronoid process", "Ulnar tuberosity", "Head", "Styloid process", "Posterior border"],
+      "hand": ["Carpal bones (Scaphoid/Trapezium tubercles, Pisiform, Hook of hamate)", "Metacarpals (Base, Shaft, Head)", "Phalanges (Proximal, Middle, Distal)"],
+      "biomechanics_clavicle_fracture": {
+        "mechanism": "Medial fragment pulled SUPERIORLY by sternocleidomastoid. Lateral fragment pulled INFERIORLY by gravity and MEDIALLY by pectoralis major (causing overriding).",
+        "vulnerable_structures": "Brachial plexus trunks, Subclavian vessels, Coracoclavicular ligament."
+      },
+      "physics": "Rotational freedom at the shoulder, complex hinge/pivot at the elbow, precise multiaxial hinging in digits."
+    },
+    "anterior_axio_appendicular_muscles": {
+      "pectoralis_major": ["Clavicular head", "Sternocostal head", "Abdominal part", "Attaches to lateral lip of intertubercular sulcus"],
+      "pectoralis_minor": ["Anchors to coracoid process of scapula", "Attaches to Ribs 3-5"],
+      "subclavius": ["Anchors under clavicle to 1st rib"],
+      "serratus_anterior": ["Attaches along lateral ribcage (Ribs 1-9) to medial border of scapula (anterior side)"],
+      "physics": "Moves the pectoral girdle and upper limb. Pectoralis major is a prime mover for adduction and medial rotation."
+    },
+    "scapulohumeral_muscles_and_rotator_cuff": {
+      "deltoid": ["Clavicular (anterior) part", "Acromial (middle) part", "Spinal (posterior) part", "Inserts at deltoid tuberosity"],
+      "rotator_cuff_muscles": ["Supraspinatus", "Infraspinatus", "Teres minor", "Subscapularis"],
+      "other_scapulohumeral": ["Teres major"],
+      "ligaments_and_capsules": ["Glenohumeral joint capsule", "Transverse humeral ligament"],
+      "physics": "Rotator cuff muscles fuse with the joint capsule to form a musculotendinous cuff, stabilizing the humeral head within the shallow glenoid cavity."
+    },
+    "axilla_anatomy_and_boundaries": {
+      "boundaries": {
+        "apex": "Cervico-axillary canal (Clavicle, 1st rib, Scapula superior edge)",
+        "anterior_wall": "Pectoralis major & minor",
+        "posterior_wall": "Scapula, Subscapularis, Teres major, Latissimus dorsi",
+        "medial_wall": "Serratus anterior, 4th Rib",
+        "lateral_wall": "Intertubercular sulcus of humerus",
+        "base": "Axillary fascia & skin"
+      },
+      "contents": ["Axillary artery and vein", "Brachial plexus cords/branches", "Axillary fat", "Axillary lymph nodes"],
+      "physics": "Pyramidal distribution center for neurovascular structures passing to the upper limb."
+    },
+    "muscles_of_the_arm_compartments": {
+      "anterior_flexor_compartment": {
+        "muscles": ["Biceps brachii (Long head: supraglenoid tubercle; Short head: coracoid process)", "Brachialis", "Coracobrachialis"],
+        "nerve_supply": "Musculocutaneous nerve",
+        "action": "Flexion of arm and forearm, Supination (Biceps)"
+      },
+      "posterior_extensor_compartment": {
+        "muscles": ["Triceps brachii (Long head: infraglenoid tubercle; Lateral/Medial head: humerus)", "Anconeus"],
+        "nerve_supply": "Radial nerve",
+        "action": "Extension of forearm"
+      },
+      "physics": "Intermuscular septa divide the arm into functional compartments.",
+      "visual_rules": "The long head of triceps must be shown separating the quadrangular and triangular spaces."
+    },
+    "cubital_fossa_anatomy": {
+      "boundaries": {
+        "superior": "Imaginary line connecting epicondyles",
+        "medial": "Pronator teres",
+        "lateral": "Brachioradialis",
+        "floor": "Brachialis and Supinator muscles",
+        "roof": "Deep fascia, Bicipital aponeurosis, skin"
+      },
+      "contents": ["Biceps brachii tendon", "Brachial artery (bifurcating into Radial and Ulnar)", "Median nerve", "Deep branch of radial nerve", "Tributaries to Median cubital vein"],
+      "clinical_landmarks": ["Medial epicondyle", "Lateral epicondyle", "Bicipital aponeurosis"],
+      "physics": "Transition zone from arm to forearm; neurovascular structures are protected by the bicipital aponeurosis.",
+      "view": "Anterior elbow / Superficial to deep"
+    },
+    "forearm_musculature_compartments": {
+      "anterior_flexor_pronator_compartment": {
+        "superficial_layer": ["Pronator teres", "Flexor carpi radialis", "Palmaris longus", "Flexor carpi ulnaris"],
+        "intermediate_layer": ["Flexor digitorum superficialis"],
+        "deep_layer": ["Flexor digitorum profundus", "Flexor pollicis longus", "Pronator quadratus"],
+        "nerves": ["Median nerve (primary)", "Ulnar nerve (FCU + medial FDP)"]
+      },
+      "posterior_extensor_supinator_compartment": {
+        "superficial_layer": ["Brachioradialis", "Extensor carpi radialis longus (ECRL)", "Extensor carpi radialis brevis (ECRB)", "Extensor digitorum", "Extensor digiti minimi", "Extensor carpi ulnaris (ECU)"],
+        "deep_layer": ["Supinator", "Abductor pollicis longus (APL)", "Extensor pollicis brevis (EPB)", "Extensor pollicis longus (EPL)", "Extensor indicis"],
+        "nerve": "Deep branch of radial nerve (Posterior interosseous nerve)",
+        "outcropping_muscles": ["APL", "EPB", "EPL"]
+      },
+      "physics": "Compartments separated by radius, ulna, and interosseous membrane; cross-sectional circularity vs flattened distal profile",
+      "visual_rules": "The common extensor tendon originates from the lateral epicondyle. The outcropping muscles of the thumb must be shown crossing over the radial extensors."
+    },
+    "fascia_of_the_upper_limb_and_hand": {
+      "fascial_layers": ["Brachial fascia", "Medial intermuscular septum", "Antebrachial fascia", "Extensor retinaculum", "Flexor retinaculum (Transverse carpal ligament)"],
+      "hand_fascia": ["Palmar aponeurosis", "Thenar fascia", "Hypothenar fascia", "Fibrous digital sheaths"],
+      "physics": "Fascial thickening forms pulleys (retinacula) to prevent tendon bowstringing.",
+      "visual_rules": "Bicipital aponeurosis must be shown as a thin fibrous slip crossing the cubital fossa."
     }
   },
   "reproductive_pelvis": {
@@ -157,6 +841,19 @@
     }
   },
   "immune_and_lymphatic": {
+    "lymphatic_drainage_pattern": {
+      "drainage_ducts": ["Right lymphatic duct (drains upper right quadrant to right venous angle)", "Thoracic duct (drains remainder of body into left venous angle)"],
+      "superficial_nodes": ["Superficial cervical", "Cubital (supratrochlear)", "Superficial inguinal", "Superficial popliteal"],
+      "deep_nodes": ["Deep cervical", "Central/posterior/anterior axillary", "Posterior mediastinal", "Lumbar (caval/aortic)", "Iliac", "Deep inguinal", "Deep popliteal"],
+      "vessels": ["Superficial lymphatic vessels", "Deep lymphatic vessels"],
+      "physics": "Unidirectional flow driven by valves and surrounding muscle pumps, converging from capillaries to lymphatic venous angles."
+    },
+    "axillary_lymph_node_hierarchy": {
+      "primary_groups": ["Pectoral (anterior) nodes", "Subscapular (posterior) nodes", "Humeral (lateral) nodes"],
+      "secondary_groups": ["Central lymph nodes", "Apical lymph nodes"],
+      "terminal_pathway": ["Supraclavicular nodes", "Subclavian lymphatic trunk", "Right lymphatic duct (right) / Thoracic duct (left)", "Venous angle"],
+      "drainage_logic": "Breast tissue drains predominantly to pectoral nodes. Upper limb drains to humeral and central nodes. Flow converges centrally then apically before entering venous circulation."
+    },
     "lymph_node_architecture": {
       "structures": ["Cortex", "Paracortex", "Medulla", "Germinal centre", "Afferent lymph vessel", "Efferent lymph vessel", "Capsule", "Subcapsular sinus", "Blood vessels", "Trabeculae"],
       "cell_distribution": {
@@ -287,18 +984,88 @@
       "physics": "Fluid extravasation, chemotactic gradient signaling"
     }
   },
+  "spatial_and_orientational_standards": {
+    "anatomical_planes": {
+      "median_plane": "Vertical plane dividing body into equal right/left halves.",
+      "sagittal_planes": "Vertical planes parallel to the median plane.",
+      "frontal_coronal_planes": "Vertical planes dividing body into anterior (ventral) and posterior (dorsal).",
+      "transverse_axial_planes": "Horizontal planes dividing body into superior (cranial) and inferior (caudal)."
+    },
+    "directional_vectors": {
+      "longitudinal_axis": ["Superior/Cranial", "Inferior/Caudal"],
+      "sagittal_axis": ["Anterior/Ventral", "Posterior/Dorsal"],
+      "transverse_axis": ["Medial", "Lateral"],
+      "extremity_markers": ["Proximal", "Distal", "Palmar/Plantar (ventral hands/feet)", "Dorsal"]
+    },
+    "depth_hierarchy": ["Superficial", "Intermediate", "Deep"]
+  },
+  "neurological_system": {
+    "central_and_peripheral_organization": {
+      "cns": ["Brain", "Spinal cord (Cervical/Lumbar enlargements)", "Nucleus", "Tract"],
+      "pns": ["Cranial nerves (12 pairs)", "Spinal nerves (31 pairs: Cervical, Thoracic, Lumbar, Sacral, Coccygeal)", "Cranial/Spinal ganglia"],
+      "physics": "Integration and coordination of neural signals centrally, transmission peripherally."
+    },
+    "somatic_and_visceral_innervation": {
+      "spinal_cord_cross_section": ["Posterior horn of gray matter", "Lateral horn of gray matter", "Anterior horn of gray matter"],
+      "somatic_pathway": ["General sensory fiber (to posterior horn)", "Somatic motor fiber (from anterior horn to skeletal muscle)"],
+      "visceral_sympathetic_pathway": ["Presynaptic fiber (from lateral horn to sympathetic ganglion)", "Postsynaptic fiber (to target organ)", "White/Gray ramus communicans"],
+      "visceral_parasympathetic_pathway": ["Vagus nerve (CN X)", "Intrinsic ganglion (parasympathetic)"],
+      "physics": "Somatic permits voluntary/reflexive movement; Visceral controls involuntary functions. Distinct gray matter horns for different pathways."
+    },
+    "neuron_typology": {
+      "multipolar_motor_neuron": ["Dendrites", "Cell body", "Nucleus", "Axon", "Nucleus of Schwann cell", "Nodes of myelin sheath", "Collateral branch", "Peripheral/Central axon terminals"],
+      "pseudounipolar_sensory_neuron": ["Receptor organ", "Peripheral process (axon)", "Cell body (in spinal ganglion)", "Central process (axon)"],
+      "physics": "Direction of conduction flows from dendrites/receptors to axon terminals. Myelin sheath insulates for rapid saltatory conduction."
+    },
+    "neurological_cortex": {
+      "layers": ["I: Molecular", "II: External Granular", "III: External Pyramidal", "IV: Internal Granular", "V: Internal Pyramidal", "VI: Multiform"],
+      "cell_types": ["Pyramidal cells", "Stellate cells", "Cells of Martinotti", "Microglia", "Protoplasmic astrocytes"],
+      "physics": "Columnar neuro-architecture, neurovascular coupling, synaptic density scaling",
+      "spatial_anchoring": "Cortical-surface-to-white-matter-junction"
+    },
+    "spinal_cord_and_meninges": {
+      "meningeal_layers": ["Dural sac (Dura mater)", "Arachnoid mater", "Pia mater (implicit on cord)"],
+      "spaces": ["Subarachnoid space", "Lumbar cistern"],
+      "cord_structures": ["Spinal cord", "Conus medullaris", "Cauda equina (in lumbar cistern)", "Filum terminale internum", "Filum terminale externum"],
+      "nerves": ["Spinal sensory ganglia in dural sleeves", "Nerves T10-Co1"],
+      "physics": "Suspension in CSF, flexibility inside vertebral canal, termination of solid cord at L1-L2 transitioning to cauda equina."
+    },
+    "radial_nerve_branching_and_course": {
+      "pathway": "Passes anterior to lateral epicondyle between brachialis and brachioradialis; divides in cubital fossa.",
+      "superficial_branch": "Sensory branch running under cover of brachioradialis to dorsum of hand.",
+      "deep_branch": "Motor branch penetrating the Supinator muscle to become the Posterior Interosseous Nerve (PIN).",
+      "physics": "PIN lies between superficial and deep extensor layers, running with the posterior interosseous artery."
+    }
+  },
+  "advanced_vascular_tunics": {
+    "arterial_layers": ["Tunica Intima (Endothelium)", "Internal Elastic Lamina", "Tunica Media (Smooth Muscle)", "External Elastic Lamina", "Tunica Adventitia"],
+    "physics": "Elastic recoil, pulsatile flow propagation, luminal shear stress",
+    "visual_rules": "Adventitia must contain vasa vasorum in large vessels; media must show concentric smooth muscle layers."
+  },
   "style_protocols": {
     "NEJM": {
-      "shading": "Technical stippling for depth, soft watercolor gradients",
+      "shading": "Technical stippling, soft watercolor transitions",
       "borders": "Fine 0.5pt ink-style outlines",
-      "colors": "Muted earth tones, clinical reds and blues",
-      "metadata": "Classic Netter-inspired anatomical realism"
+      "colors": "Muted clinical palette (NEJM-Unified)",
+      "metadata": "Netter-style anatomical realism"
+    },
+    "NATURE": {
+      "shading": "3D photorealistic lighting, high ambient occlusion",
+      "borders": "Hidden or extremely fine vector paths",
+      "colors": "Vibrant but scientifically accurate (high contrast)",
+      "metadata": "Modern high-impact research standard"
+    },
+    "LANCET": {
+      "shading": "Clean 2D schematic with subtle shadows",
+      "borders": "Clear black outlines for diagrammatic clarity",
+      "colors": "Primary clinical colors (Red/Blue/Yellow focus)",
+      "metadata": "Clinical clarity over photorealism"
     },
     "BioRender": {
       "shading": "Matte plasticine 2.5D lighting",
-      "borders": "Clean vector paths, uniform stroke",
-      "colors": "Pastel clinical palette, high-contrast assets",
-      "metadata": "Modern modular scientific visualization"
+      "borders": "Uniform vector stroke (BioRender-Core)",
+      "colors": "Pastel clinical palette",
+      "metadata": "Modular asset-based assembly"
     }
   }
 }

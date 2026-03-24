@@ -6,6 +6,7 @@
       "color_palette": ["Vibrant red", "Inflammatory pink", "Yellow-white pustular centers"],
       "textures": ["Glistening inflammatory sheen", "Dome-shaped elevations", "Liquefied center (pustules)"],
       "distribution": "Face, particularly cheeks and jawline, often extending to the neck.",
+      "pathognomonic_markers": ["Erythematous papules", "Pustular centers", "Oily base"],
       "clinical_notes": "Early stages show significant erythema; can transition to nodulocystic forms if left untreated."
     },
     "nodulocystic_acne": {
@@ -14,6 +15,7 @@
       "color_palette": ["Deep purplish-red", "Dark crimson", "Bruised undertones"],
       "textures": ["Shiny, stretched skin surface", "Firm indurated mass", "Occasional fluctuant zones"],
       "distribution": "Jawline, neck, and back.",
+      "pathognomonic_markers": ["Deep-seated nodules", "Indurated abscesses", "Coalescent inflammation"],
       "clinical_notes": "Represents a severe, scarring stage of acne where inflammatory papules coalesce into deeper structures."
     },
     "erythematous_rosacea": {
@@ -22,6 +24,7 @@
       "color_palette": ["Rosy pink", "Bright flushing red", "Crimson for telangiectasia"],
       "textures": ["Diffuse vascular blush", "Multiple tiny telangiectatic vessels", "Hypervascular surface"],
       "distribution": "Central face: nose, cheeks, forehead, and chin.",
+      "pathognomonic_markers": ["Persistent central erythema", "Visible telangiectasia", "Absence of comedones"],
       "clinical_notes": "Stage I rosacea. Distinguished from acne by the absence of comedones and the presence of prominent telangiectasia."
     },
     "hidradenitis_suppurativa": {
@@ -567,6 +570,22 @@
       "Atherothrombosis": "Rupture of an atheroma's fibrous cap leading to the formation of a red thrombus (clotted blood cells/platelets) that acutely occludes the vessel.",
       "Infective_Endocarditis": "Presence of friable, greenish-white, cauliflower-like vegetations on the heart valves (especially mitral/aortic).",
       "visual_rules": "Mitral Regurgitation MUST show a directional flow arrow. Atherothrombosis must show the yellowish plaque being topped by a jagged, dark-red thrombus layer. Endocarditis must show 'vegetations' as irregular, porous growths on the valve leaflets."
+    }
+  },
+  "musculoskeletal_pathologies": {
+    "osteoarthritis": {
+      "appearance": "Narrowed joint space, subchondral sclerosis (whitening of bone), and osteophyte (bone spur) formation. Articular cartilage appears thinned and frayed.",
+      "color_palette": ["Ivory (bone)", "Ghostly blue (thin cartilage)", "Opaque white (sclerosis)"],
+      "textures": ["Polished/eburnated bone", "Pointed/hook-like osteophytes", "Pitted cartilage"],
+      "pathognomonic_markers": ["Narrowing of joint space", "Subchondral sclerosis", "Osteophyte formation"],
+      "clinical_notes": "Characterized by 'asymmetrical' joint involvement and the absence of systemic inflammatory signs unlike RA."
+    },
+    "rheumatoid_arthritis": {
+      "appearance": "Symmetrical joint swelling, synovial pannus (thickened inflamed tissue), and marginal bone erosions. Ulnar deviation of fingers in chronic cases.",
+      "color_palette": ["Vibrant inflammatory red", "Dull gray (pannus)", "Porous brown (erosions)"],
+      "textures": ["Spongy/edematous synovium", "Irregular 'moth-eaten' bone edges", "Fibrous adhesions"],
+      "pathognomonic_markers": ["Symmetrical joint swelling", "Marginal bone erosions", "Synovial pannus formation"],
+      "clinical_notes": "A systemic autoimmune disease. Pannus is the aggressive fibrovascular tissue that destroys the joint."
     }
   }
 }
