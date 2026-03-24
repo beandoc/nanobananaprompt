@@ -188,10 +188,11 @@ export async function POST(req: NextRequest) {
         let refinedText = "";
         let refinementError: Error | null = null;
 
-        // --- 1. TRY GEMINI ELITE FIRST (FOR PRECISION - 1,500 REQ/DAY STABILITY) ---
+        // --- 1. TRY GEMINI ELITE FIRST (PRIORITIZE 1.5-FLASH FOR SPEED/STABILITY) ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            for (const m of ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]) {
+            // Optimized model stack: 1.5-flash is significantly faster for schema-heavy tasks
+            for (const m of ["gemini-1.5-flash", "gemini-2.0-flash"]) {
                 try {
                     const model = genAI.getGenerativeModel({ model: m });
                     const userParts: any[] = [`REFINE THIS BRIEF: ${brief}`];
@@ -241,10 +242,11 @@ export async function POST(req: NextRequest) {
         let adData: any = null;
         let generationError: Error | null = null;
 
-        // --- 1. TRY GEMINI ELITE SUITE ---
+        // --- 1. TRY GEMINI ELITE SUITE (PRIORITIZE 1.5-FLASH FOR JSON) ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            for (const m of ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]) {
+            // 1.5-flash provides the fastest JSON response for structured outputs
+            for (const m of ["gemini-1.5-flash", "gemini-2.0-flash"]) {
                 try {
                     const model = genAI.getGenerativeModel({ 
                         model: m, 
@@ -304,11 +306,11 @@ export async function POST(req: NextRequest) {
         const filename = `gen-${Date.now()}.json`;
         await promptService.savePrompt({ name: filename, type: mode, content: adData });
 
-        const phase1Provider = refinedText && !refinementError ? "Gemini-2.5-Flash" : "Groq-Llama-3";
-        const phase2Provider = adData && !generationError ? "Gemini-2.5-Flash" : "Groq-Llama-3";
-        const activeProvider = (phase1Provider.includes("Gemini") && phase2Provider.includes("Gemini")) ? "Gemini-2.5-Elite" : `Fallback-Active (${phase1Provider}/${phase2Provider})`;
+        const phase1Provider = refinedText && !refinementError ? "Gemini-1.5-Flash" : "Groq-Llama-3";
+        const phase2Provider = adData && !generationError ? "Gemini-1.5-Flash" : "Groq-Llama-3";
+        const activeProvider = (phase1Provider.includes("Gemini") && phase2Provider.includes("Gemini")) ? "Gemini-System-Elite (Fast-Tracked)" : `Fallback-Active (${phase1Provider}/${phase2Provider})`;
 
-        console.log(`[ENGINE] Model Resolution: ${activeProvider}`);
+        console.log(`[ENGINE] Latency Optimization: Done | Provider: ${activeProvider}`);
         if (refinementError || generationError) {
             console.warn(`[ENGINE] WARNING: Quota or API Error occurred. Falling back to secondary core.`, { refinementError: refinementError?.message, generationError: generationError?.message });
         }
