@@ -1,0 +1,66 @@
+{
+  "engine_name": "Nephrology Sovereign Engine",
+  "version": "1.0.0",
+  "base_identity": "South_Asian_Clinical_Standard",
+  "renal_architecture": {
+    "macro_anatomy": ["Renal_cortex", "Renal_medulla", "Renal_pelvis", "Ureter"],
+    "micro_anatomy_nephron": ["Glomerulus", "Proximal_convoluted_tubule", "Loop_of_Henle", "Distal_convoluted_tubule", "Collecting_duct"]
+  },
+  "renal_replacement_therapy": {
+    "hemodialysis_extracorporeal_circuit": {
+      "vascular_access_modalities": [
+        {
+          "type": "Arteriovenous_Fistula_or_Graft",
+          "anatomical_site": "Upper_extremity_arm",
+          "withdrawal": "Arterialized_vein_blood_outflow",
+          "return": "Venous_inflow_post_dialyzer"
+        },
+        {
+          "type": "Central_Venous_Catheter_CVC",
+          "anatomical_site": "Jugular_or_Subclavian_vein_chest",
+          "withdrawal": "Catheter_arterial_lumen_red",
+          "return": "Catheter_venous_lumen_blue"
+        }
+      ],
+      "circuit_hardware_components": [
+        { "name": "Arterial_Pressure_Monitor", "function": "Measure_withdrawal_pressure_pre_pump" },
+        { "name": "Blood_Pump", "function": "Generate_forward_flow_driving_pressure" },
+        { "name": "Anti-coagulant_Injector_Port", "function": "Heparin_infusion_pre_dialyzer_to_prevent_circuit_thrombosis" },
+        { "name": "Pre-Dialyzer_Pressure_Monitor", "function": "Measure_resistance_across_membrane" },
+        { "name": "Dialyzer_Filter", "function": "Semipermeable_capillary_fibers_for_solute_and_fluid_exchange" },
+        { "name": "Air_Trap_and_Detector", "function": "Prevent_venous_air_embolism_post_dialyzer" },
+        { "name": "Venous_Pressure_Monitor", "function": "Measure_return_pressure_resistance" }
+      ],
+      "physical_flow_vectors": [
+        {
+          "segment": "Arterial_Withdrawal_Line",
+          "origin": "Patient_Vascular_Access",
+          "destination": "Blood_Pump",
+          "driver": "Negative_hydrostatic_pressure_from_pump",
+          "magnitude": "Continuous_high_volume_draw"
+        },
+        {
+          "segment": "Pre_Dialyzer_Line",
+          "origin": "Blood_Pump",
+          "destination": "Dialyzer_Blood_Compartment",
+          "driver": "Positive_hydrostatic_pressure_from_pump",
+          "magnitude": "Pulsatile_forward_jet"
+        },
+        {
+          "segment": "Dialyzer_Counter_Current_Exchange",
+          "blood_flow_vector": "Top_to_Bottom_through_capillary_fibers",
+          "dialysate_flow_vector": "Bottom_to_Top_outside_capillary_fibers",
+          "driver": "Diffusion_concentration_gradient_and_Ultrafiltration_transmembrane_pressure"
+        },
+        {
+          "segment": "Venous_Return_Line",
+          "origin": "Dialyzer_Blood_Exit",
+          "destination": "Patient_Vascular_Access",
+          "through": ["Air_Trap"],
+          "driver": "Residual_circuit_pressure",
+          "magnitude": "Continuous_smooth_return_flow"
+        }
+      ]
+    }
+  }
+}

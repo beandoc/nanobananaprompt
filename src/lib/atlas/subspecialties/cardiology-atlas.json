@@ -1,0 +1,193 @@
+{
+  "engine_name": "Cardiology Sovereign Engine",
+  "version": "1.0.0",
+  "base_identity": "South_Asian_Clinical_Standard",
+  "cardiovascular_architecture": {
+    "myocardial_layers": [
+      {
+        "layer": "Epicardium",
+        "features": ["Visceral_pericardium", "Adipose_tissue", "Coronary_vessels_surface"]
+      },
+      {
+        "layer": "Myocardium",
+        "features": ["Striated_cardiac_muscle_fibers", "Spiral_fiber_orientation", "Intercalated_discs"]
+      },
+      {
+        "layer": "Endocardium",
+        "features": ["Endothelial_lining", "Subendocardial_Purkinje_fibers", "Trabeculae_carneae"]
+      }
+    ],
+    "coronary_circulation": {
+      "left_coronary_artery_LCA": ["Left_Anterior_Descending_LAD", "Circumflex_Artery_Cx", "Left_Marginal_Artery"],
+      "right_coronary_artery_RCA": ["Right_Marginal_Artery", "Posterior_Descending_Artery_PDA", "SA_Nodal_Artery"],
+      "venous_drainage": ["Great_Cardiac_Vein", "Middle_Cardiac_Vein", "Small_Cardiac_Vein", "Coronary_Sinus"],
+      "physics": {
+        "perfusion": "Diastolic_dominant_flow",
+        "vessel_morphology": "Epicardial_surface_tracking_with_intramyocardial_penetrating_branches"
+      }
+    },
+    "cardiac_valves": {
+      "atrioventricular": [
+        { "name": "Mitral_Bicuspid", "components": ["Anterior_leaflet", "Posterior_leaflet", "Chordae_tendineae", "Papillary_muscles"] },
+        { "name": "Tricuspid", "components": ["Anterior_leaflet", "Posterior_leaflet", "Septal_leaflet", "Chordae_tendineae", "Papillary_muscles"] }
+      ],
+      "semilunar": [
+        { "name": "Aortic", "components": ["Left_coronary_cusp", "Right_coronary_cusp", "Non-coronary_cusp", "Sinuses_of_Valsalva"] },
+        { "name": "Pulmonary", "components": ["Anterior_cusp", "Right_cusp", "Left_cusp"] }
+      ],
+      "physics": {
+        "coaptation": "High_fidelity_leaflet_sealing_zone",
+        "stress": "Maximal_systolic_stress_on_AV_valves, maximal_diastolic_stress_on_semilunar_valves"
+      }
+    },
+    "electrophysiology_and_conduction": {
+      "pacemaker_nodes": ["Sinoatrial_SA_Node", "Atrioventricular_AV_Node"],
+      "conduction_pathways": ["Internodal_tracts", "Bundle_of_His", "Right_Bundle_Branch_RBB", "Left_Bundle_Branch_LBB", "Purkinje_Fibers"],
+      "cellular_action_potential": [
+        { "phase": "0", "ion_flux": "Rapid_Na_influx", "state": "Depolarization" },
+        { "phase": "1", "ion_flux": "Transient_K_efflux", "state": "Early_repolarization" },
+        { "phase": "2", "ion_flux": "Ca_influx_and_K_efflux_balance", "state": "Plateau" },
+        { "phase": "3", "ion_flux": "Rapid_K_efflux", "state": "Late_repolarization" },
+        { "phase": "4", "ion_flux": "Na_K_pump_activity", "state": "Resting_membrane_potential" }
+      ],
+      "electrocardiogram_waveform": {
+        "waves": [
+          { "name": "P_wave", "physiology": "Atrial_depolarization" },
+          { "name": "QRS_complex", "physiology": "Ventricular_depolarization_and_atrial_repolarization", "components": ["Q_wave", "R_wave", "S_wave"] },
+          { "name": "T_wave", "physiology": "Ventricular_repolarization" }
+        ],
+        "intervals_and_segments": [
+          { "name": "PR_interval", "definition": "Start_of_P_to_start_of_QRS", "physiology": "AV_node_conduction_delay" },
+          { "name": "PR_segment", "definition": "End_of_P_to_start_of_QRS" },
+          { "name": "ST_segment", "definition": "End_of_QRS_to_start_of_T", "physiology": "Ventricular_plateau_phase" },
+          { "name": "QT_interval", "definition": "Start_of_QRS_to_end_of_T", "physiology": "Total_ventricular_electrical_systole" }
+        ]
+      }
+    },
+    "hemodynamic_vectors": {
+      "systemic_circuit": {
+        "origin": "Left_Ventricle",
+        "destination": "Aorta_to_Systemic_Capillaries",
+        "driver": "High_pressure_systolic_contraction",
+        "magnitude": "120_mmHg_peak"
+      },
+      "pulmonary_circuit": {
+        "origin": "Right_Ventricle",
+        "destination": "Pulmonary_Trunk_to_Alveolar_Capillaries",
+        "driver": "Low_pressure_systolic_contraction",
+        "magnitude": "25_mmHg_peak"
+      },
+      "pathological_flows": [
+        {
+          "type": "Stenotic_Jet",
+          "origin": "Narrowed_Valve_Orifice",
+          "destination": "Post_stenotic_chamber_or_vessel",
+          "driver": "Pressure_gradient",
+          "magnitude": "High_velocity_turbulent_flow",
+          "visual_rule": "Post_stenotic_dilation_and_vortex_shedding"
+        },
+        {
+          "type": "Regurgitant_Jet",
+          "origin": "Incompetent_Valve",
+          "destination": "Proximal_chamber",
+          "driver": "Retrograde_pressure_gradient",
+          "magnitude": "Broad_turbulent_plume",
+          "visual_rule": "Retrograde_flow_vectors_disturbing_normal_atrial_or_ventricular_filling"
+        }
+      ]
+    },
+    "lipid_and_lipoprotein_metabolism": {
+      "hepatic_and_intestinal_axis": {
+        "intestine": ["Dietary_cholesterol_absorption", "Bile_acid_reabsorption"],
+        "hepatocyte_synthesis": "Acetyl-CoA -> HMG-CoA -> Cholesterol -> Cholesterol_esters (via HMG-CoA reductase)",
+        "vldl_assembly": "Cholesterol_esters + Triglycerides + Apo_B100 (via MTTP) -> VLDL_secretion",
+        "ldl_receptor_recycling": "LDL_binds_LDLR_and_Apo_B100 -> Endosome -> Golgi_lysosome_processing; PCSK9_degrades_LDLR"
+      },
+      "pharmacological_targets": [
+        { "drug": "Statins", "target": "HMG-CoA_reductase", "effect": "Inhibit_hepatic_cholesterol_synthesis" },
+        { "drug": "Ezetimibe", "target": "NPC1L1", "effect": "Inhibit_intestinal_dietary_cholesterol_absorption" },
+        { "drug": "Resins", "target": "Bile_acids", "effect": "Prevent_enterohepatic_recirculation" },
+        { "drug": "PCSK9_Inhibitors (Evolocumab/Alirocumab)", "target": "PCSK9_protein", "effect": "Prevent_LDLR_degradation_increase_hepatic_LDL_uptake" },
+        { "drug": "Mipomersen", "target": "Apo_B100_synthesis", "effect": "Inhibit_VLDL_production" },
+        { "drug": "Lomitapide", "target": "MTTP", "effect": "Inhibit_VLDL_assembly" }
+      ],
+      "plasma_lipoprotein_mechanics": {
+        "pathways": [
+          "Chylomicron (Intestine) -> Chylomicron_remnant (Liver)",
+          "VLDL (Liver) -> IDL -> LDL -> Hepatocyte_reuptake_or_tissue_deposition"
+        ],
+        "lipoprotein_lipase_LPL_regulation": {
+          "promoters": ["Apolipoprotein_A-V", "GPIHBP1"],
+          "inhibitors": ["Apolipoprotein_C-III", "ANGPTL3", "ANGPTL4"]
+        },
+        "atherogenic_risk_profile": {
+          "VLDL_cholesterol": "50%_explained_risk (direct_macrophage_uptake)",
+          "IDL_and_LDL_cholesterol": "29%_explained_risk (uptake_after_modification/oxidation)",
+          "Triglycerides": "0%_direct_risk"
+        }
+      },
+      "reverse_cholesterol_transport_hdl": {
+        "efflux_mechanisms": [
+          "ABCA1_transporter_moves_cholesterol_to_lipid_poor_ApoA-I_forming_PreBeta_HDL_VS",
+          "ABCG1_transporter_and_SR_B1_move_cholesterol_to_mature_Alpha_HDL"
+        ],
+        "sources": {
+          "liver_and_intestine": "Primary_sources_of_ApoA-I_and_nascent_HDL",
+          "macrophages_and_peripheral_tissues": "Cholesterol_pool_efflux_targets"
+        },
+        "plasma_maturation": "PreBeta_HDL -> Alpha_HDL_S_M_L_with_Cholesterol_Ester_Core"
+      }
+    },
+    "atherosclerotic_pathophysiology": {
+      "systemic_origins": {
+        "risk_inputs": ["Hypertension", "Psychosocial_Stress", "Diet", "Obesity", "Sedentary_Behavior", "Diabetes", "Genetic_CHIP"],
+        "intermediate_phenotypes": ["Intima_Media_Thickness", "Vascular_Stiffness", "Subclinical_Atherosclerosis", "Pathological_Cardiac_Remodeling"],
+        "immune_activation": "Systemic_inflammation_activating_Inflammasomes_and_adaptive_immune_cells"
+      },
+      "immunological_vectors": {
+        "pro_atherogenic": [
+          { "cell_type": "CD8_CTL", "secretion": "Cell_death_factors", "effect": "Increase_plaque_inflammation_and_necrosis" },
+          { "cell_type": "Th1_Cells", "secretion": "IFN-gamma_and_TNF", "effect": "Accelerate_lesion_growth" }
+        ],
+        "anti_atherogenic": [
+          { "cell_type": "Th2_Cells", "secretion": "IL-4", "effect": "Plaque_stabilization_or_reduction" },
+          { "cell_type": "T-Regulatory_Cells", "secretion": "TGF-beta_and_IL-10", "effect": "Suppress_inflammation_and_reduce_lesion" },
+          { "cell_type": "B_Lymphocytes", "secretion": "Antibodies_to_oxLDL", "effect": "Clearance_of_oxidized_lipids_reducing_lesion" }
+        ]
+      },
+      "foam_cell_formation": [
+        "ApoB_containing_lipoproteins (VLDL/IDL/LDL) cross Endothelial_cells into Tunica_intima",
+        "LDL_undergoes_oxidation (Oxidized_LDL)",
+        "Macrophages_phagocytose_Oxidized_LDL_and_VLDL",
+        "Lipid_engorged_macrophages_become_Foam_cells"
+      ],
+      "insulin_resistance_and_adipose_axis": {
+        "dysfunctional_adipocytes": "Excess_fat_storage -> Adipocyte_dysfunction",
+        "adipose_tissue_factors": "Release of FFA, resistin, angiotensinogen, PAI-1, IL-6, TNF-alpha; DECREASE in Adiponectin",
+        "systemic_effects": ["Muscle_and_Liver_Insulin_Resistance -> Type_2_Diabetes", "Macrophage_AdipoR1_receptor_downregulation -> Vascular_wall_foam_cell_accumulation -> Cardiovascular_Disease"]
+      },
+      "plaque_architecture": {
+        "progression_stages": [
+          { "stage": "Stage_A_Healthy_Wall", "components": ["Endothelial_cell_monolayer", "Intima", "SMC_dominated_Media", "Adventitia_with_Mast_Cells_and_Fibroblasts"] },
+          { "stage": "Stage_B_Fatty_Streak", "components": ["Monocyte_transmigration", "Dendritic_cells", "Macrophage_and_T_cell_infiltration", "Foam_cell_formation"] },
+          { "stage": "Stage_C_Advanced_Lesion", "components": ["Cholesterol_crystals", "Apoptotic_macrophages_and_bodies", "Migrating_and_Dividing_SMCs", "Collagen_deposition", "Vasa_vasorum_neovascularization"] },
+          { "stage": "Stage_D_Plaque_Rupture", "components": ["Necrotic_Lipid_Core", "Fibrous_cap_rupture", "Platelet_aggregation", "Thrombus_formation_occluding_lumen"] }
+        ],
+        "biomechanical_rupture_models": [
+          {
+            "model_type": "Plaque_Rupture_Non_Tortuous",
+            "hemodynamic_load": "Main_load_Blood_Pressure",
+            "stress_points": "Maximal_stresses_around_micro_Ca_in_fibrous_cap",
+            "morphology": "Macro_Ca_and_Necrotic_Core_NC_in_proximal_linear_segment_low_tortuosity"
+          },
+          {
+            "model_type": "Calcified_Nodule_Tortuous",
+            "hemodynamic_load": "Complex_load_axial_stretch_torque_cyclic_bending_shear_stress",
+            "stress_points": "Dynamic_3D_stress_along_inner_curve_of_tortuous_segment",
+            "morphology": "Calcified_nodule_CN_erupting_through_fibrous_cap_into_lumen"
+          }
+        ]
+      }
+    }
+  }
+}
