@@ -1,0 +1,56 @@
+{
+  "engine_name": "Gastroenterology Sovereign Engine",
+  "version": "1.0.0",
+  "base_identity": "South_Asian_Clinical_Standard",
+  "topographical_architecture": {
+    "thoracoabdominal_cavity": {
+      "superior_boundary": ["Diaphragm", "Heart_in_Pericardial_Sac", "Lungs"],
+      "viscera": ["Liver", "Stomach", "Spleen", "Small_Intestine", "Large_Intestine"],
+      "major_vessels": ["Thoracic_Aorta", "Abdominal_Aorta", "Celiac_Artery", "Superior_Mesenteric_Artery", "Inferior_Vena_Cava"]
+    }
+  },
+  "hepatobiliary_and_portal_architecture": {
+    "liver_anatomy": {
+      "lobes": ["Right_lobe", "Left_lobe", "Caudate_lobe"],
+      "vascular_inflow": ["Portal_vein", "Hepatic_artery"],
+      "vascular_outflow": ["Hepatic_veins_Right_Middle_Left", "Inferior_Vena_Cava"]
+    },
+    "portal_venous_system": {
+      "tributaries": ["Superior_mesenteric_vein", "Splenic_vein", "Inferior_mesenteric_vein"],
+      "clinical_vectors": ["Portal_hypertension_flow_reversal", "Esophageal_varices_gradient"]
+    },
+    "interventional_shunt_TIPS": {
+      "procedure": "Transjugular_Intrahepatic_Portosystemic_Shunt",
+      "pathway": ["Right_Internal_Jugular_Vein", "Right_Brachiocephalic_Vein", "Superior_Vena_Cava", "Right_Atrium", "Inferior_Vena_Cava", "Hepatic_Vein"],
+      "placement": "Artificial_shunt_placed_connecting_the_portal_vein_with_the_hepatic_vein",
+      "visual_rule": "Catheter_advanced_retrograde_into_liver_parenchyma_creating_low_resistance_channel"
+    }
+  },
+  "lower_gastrointestinal_tract": {
+    "colonic_anatomy": {
+      "segments_in_order": [
+        "Cecum",
+        "Ascending_Colon",
+        "Hepatic_Flexure",
+        "Transverse_Colon",
+        "Splenic_Flexure",
+        "Descending_Colon",
+        "Sigmoid_Colon",
+        "Rectum",
+        "Anus"
+      ],
+      "appendages": ["Appendix"]
+    },
+    "colonic_histology": {
+      "layers": ["Lumen", "Mucosa", "Submucosa", "Circular_muscle", "Longitudinal_muscle", "Serosa"]
+    },
+    "colonoscopy_pathology": {
+      "procedure": "Colonoscope_advanced_retrograde_through_rectum_and_sigmoid_colon_visualizing_mucosal_surface_with_lighted_scope",
+      "acute_diverticulitis_complication": {
+        "event": "Colonoscope_accidentally_enters_large_inflamed_diverticulitis_pocket",
+        "vector_consequence": "Mechanical_pressure_causes_transmural_perforation",
+        "visual_rule": "Scope_tip_puncturing_through_serosa_into_peritoneal_cavity_with_extraluminal_light"
+      }
+    }
+  }
+}

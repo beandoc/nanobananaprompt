@@ -18,7 +18,11 @@
       }
     ],
     "coronary_circulation": {
-      "left_coronary_artery_LCA": ["Left_Anterior_Descending_LAD", "Circumflex_Artery_Cx", "Left_Marginal_Artery"],
+      "left_main_coronary_artery_LMCA": {
+        "left_anterior_descending_LAD": ["First_diagonal_branch", "Second_diagonal_branch"],
+        "circumflex_artery_Cx": ["First_obtuse_marginal_branch_OM1", "Second_obtuse_marginal_branch_OM2", "Left_Marginal_Artery"],
+        "trifurcation_variant": "Ramus_intermedius_branch"
+      },
       "right_coronary_artery_RCA": ["Right_Marginal_Artery", "Posterior_Descending_Artery_PDA", "SA_Nodal_Artery"],
       "venous_drainage": ["Great_Cardiac_Vein", "Middle_Cardiac_Vein", "Small_Cardiac_Vein", "Coronary_Sinus"],
       "physics": {
@@ -93,6 +97,29 @@
           "driver": "Retrograde_pressure_gradient",
           "magnitude": "Broad_turbulent_plume",
           "visual_rule": "Retrograde_flow_vectors_disturbing_normal_atrial_or_ventricular_filling"
+        },
+        {
+          "type": "Pulmonary_Embolism_Pathway",
+          "origin": "Deep_Veins_of_Lower_Extremity (Tibial -> Popliteal -> Femoral -> Common_Iliac)",
+          "destination": "Pulmonary_Artery_Bifurcation_or_Lobar_Branches",
+          "through": ["Inferior_Vena_Cava", "Right_Atrium", "Tricuspid_Valve", "Right_Ventricle", "Pulmonary_Valve"],
+          "driver": "Venous_return_flow_carrying_thrombus_embolus",
+          "visual_rule": "Embolus_lodged_in_pulmonary_tree_blocking_blood_flow_and_oxygen_exchange"
+        },
+        {
+          "type": "Cardioembolic_Stroke_Pathway",
+          "origin": "Left_Atrium_Thrombus",
+          "destination": "Cerebral_Arteries",
+          "through": ["Mitral_Valve", "Left_Ventricle", "Aortic_Valve", "Ascending_Aorta", "Aortic_Arch", "Left_Common_Carotid_Artery", "Internal_Carotid_Artery"],
+          "driver": "Systemic_arterial_pressure_propelling_embolus",
+          "visual_rule": "Wedge_shaped_area_of_ischemia_in_Parietal_Frontal_Temporal_or_Occipital_lobe_due_to_embolus_blocking_vessel"
+        },
+        {
+          "type": "Coronary_Artery_Dissection_Pathway",
+          "origin": "Spontaneous_tear_in_Tunica_Intima",
+          "destination": "False_lumen_between_Intima_and_Media",
+          "driver": "Arterial_blood_flow_pressure_dissecting_wall_layers",
+          "visual_rule": "Thrombus_formation_in_false_lumen_expanding_and_completely_blocking_true_lumen_causing_ischemia"
         }
       ]
     },
@@ -187,6 +214,43 @@
             "morphology": "Calcified_nodule_CN_erupting_through_fibrous_cap_into_lumen"
           }
         ]
+      }
+    },
+    "interventional_surgical_mechanics": {
+      "percutaneous_coronary_intervention_pci": {
+        "balloon_angioplasty_sequence": [
+          "Guide_wire_insertion_across_stenotic_lesion",
+          "Balloon_catheter_tracked_over_wire_into_plaque_core",
+          "Balloon_inflation_compressing_plaque_and_necrotic_core_outward",
+          "Metallic_stent_deployment_expanding_scaffold_into_intima"
+        ],
+        "flow_vector_change": {
+          "pre_intervention": "Turbulent_high_resistance_flow_across_reduced_lumen_diameter",
+          "post_intervention": "Normalized_laminar_flow_through_metallic_stent_scaffold"
+        }
+      },
+      "coronary_artery_bypass_grafting_cabg": {
+        "bypass_architecture": {
+          "origin_nodes": ["Ascending_Aorta", "Internal_Mammary_Artery_LIMA_RIMA"],
+          "destination_nodes": ["Coronary_artery_segment_distal_to_occlusion"],
+          "graft_conduits": ["Saphenous_vein", "Internal_mammary_artery", "Radial_artery"]
+        },
+        "hemodynamic_vector_change": {
+          "mechanism": "Creation_of_parallel_vascular_circuit_bypassing_pathological_resistance",
+          "vector": "Re-established_anterograde_flow_arrows_bypassing_the_occluded_native_vessel"
+        }
+      }
+    },
+    "ischemic_territorial_mapping": {
+      "coronary_stenosis_thresholds": {
+        "left_main_coronary_artery_LMCA": "60_percent_stenosis_critical_flow_restriction",
+        "left_anterior_descending_LAD": "90_to_100_percent_stenosis_causes_anterior_descending_infarction_fatal_heart_attack",
+        "circumflex_artery_Cx": "40_to_60_percent_stenosis_causes_lateral_wall_ischemia",
+        "right_coronary_artery_RCA": "90_to_100_percent_stenosis_causing_downstream_myocardial_infarction"
+      },
+      "hemodynamic_consequence": {
+        "steady_state": "Enlarged_view_shows_severe_occlusion_greater_than_95_percent_with_intraluminal_plaque",
+        "clinical_outcome": "Decreased_distal_blood_flow_vectors_leading_to_myocardial_tissue_necrosis"
       }
     }
   }

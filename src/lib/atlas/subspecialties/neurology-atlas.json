@@ -1,0 +1,59 @@
+{
+  "engine_name": "Neurology Sovereign Engine",
+  "version": "1.0.1",
+  "base_identity": "South_Asian_Clinical_Standard",
+  "neuro_anatomical_hierarchy": {
+    "meninges_and_csf_compartments": {
+      "layers": ["Dura_mater", "Arachnoid_mater", "Pia_mater"],
+      "spaces": ["Epidural_space", "Subdural_space", "Subarachnoid_space_containing_CSF"],
+      "structures": ["Arachnoid_villus", "Venous_sinus"]
+    },
+    "ventricular_system": {
+      "lateral_ventricles": ["Frontal_horn", "Temporal_horn", "Occipital_horn"],
+      "midline_structures": ["Third_ventricle", "Fourth_ventricle", "Cerebral_aqueduct"]
+    },
+    "subcortical_nuclei_basal_ganglia": {
+      "components": ["Head_of_caudate", "Body_of_caudate", "Tail_of_caudate", "Putamen", "Globus_pallidus"]
+    },
+    "cranial_nerves_and_foramina": {
+      "nerves": ["Glossopharyngeal_IX", "Vagus_X", "Accessory_XI_Cranial_and_Internal_roots"],
+      "exit_points": ["Jugular_foramen", "Foramen_magnum"]
+    }
+  },
+  "cerebrovascular_architecture": {
+    "circle_of_willis": {
+      "anterior_circulation": ["Internal_carotid_artery", "Middle_cerebral_artery", "Anterior_cerebral_artery", "Anterior_communicating_artery"],
+      "posterior_circulation": ["Vertebral_artery", "Basilar_artery", "Posterior_cerebral_artery", "Posterior_communicating_artery"]
+    },
+    "pathological_flows": [
+      {
+        "type": "Subarachnoid_Hemorrhage_SAH",
+        "origin": "Intracranial_Carotid_Artery_Aneurysm_or_Communicating_Artery_Aneurysm",
+        "destination": "Subarachnoid_Space",
+        "morphology": "Extensive_hemorrhage_filling_basilar_cisterns_and_right_sylvian_fissure",
+        "visual_rule": "Dense_blood_accumulation_in_temporoparietal_sulci; multi-lobed_aneurysmal_dilatation"
+      }
+    ],
+    "cerebral_lobes": ["Frontal_lobe", "Parietal_lobe", "Temporal_lobe", "Occipital_lobe"],
+    "functional_neuro_topography": {
+      "higher_mental_functions": ["Attention", "Judgment", "Social_Interaction"],
+      "motor_control": ["Primary_Motor_Cortex", "Eye_Movement", "Broca_s_Area"],
+      "sensory_processing": ["Somatosensory_Area", "Auditory_Area", "Visual_Area"],
+      "language_axis": ["Wernicke_s_Area", "Association_Areas"],
+      "cerebellopontine": ["Cerebellum_Balance", "Brain_Stem_Respiratory_Centers"]
+    },
+    "neuropathology_mapping": {
+      "ischemic_small_vessel_disease": {
+        "radiological_marker": "Multiple_areas_of_altered_signal_in_deep_white_matter",
+        "presentation": "T2_Flair_hyperintensities_axial_view",
+        "underlying_cause": "Chronic_microvascular_hypoperfusion"
+      },
+      "subacute_infarct": {
+        "location": "Medial_temporal_lobe_Hippocampus_and_Parahippocampal_regions",
+        "laterality": "Left_sided_brain_infarct",
+        "pathophysiology": "Large_area_of_tissue_death_due_to_local_lack_of_oxygen_ischemia",
+        "radiological_presentation": "Axial_and_Coronal_MRI_slices_showing_hyperintense_lesion_in_hippocampus_and_medial_temporal_lobe"
+      }
+    }
+  }
+}
