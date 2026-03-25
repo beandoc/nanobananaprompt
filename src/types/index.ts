@@ -1,4 +1,4 @@
-export type Mode = 'ad' | 'medical' | 'vector' | 'video' | 'storyboard' | 'manga' | 'comic' | 'food';
+export type Mode = 'ad' | 'medical' | 'vector' | 'video' | 'storyboard' | 'manga' | 'comic' | 'food' | 'infographic';
 export type AssetType = 'style' | 'subject' | 'structure';
 
 export interface StylePreset {
@@ -225,8 +225,41 @@ export interface BlueprintData {
     comic_pages?: ComicPage[];
     scenes?: StoryboardScene[];
 
+    // Infographic fields
+    infographic_title?: string;
+    aesthetic_style?: 'NEJM-Editorial' | 'BioRender-Technical' | 'Modern-Minimalist' | 'Painterly-Editorial' | 'Watercolor-Field-Notes' | 'Organic-Collage';
+    color_palette?: {
+        primary: string;
+        secondary: string;
+        accent: string;
+        background: string;
+    };
+    layout_structure?: 'central-hero-diagram' | 'organic-flow' | 'hub-and-spoke' | 'anatomical-overlay';
+    central_visual_metaphor?: {
+        concept: string;
+        style?: string;
+        rendering_detail?: string;
+    };
+    sections?: InfographicSection[];
+    directional_flow?: InfographicFlow[];
+
     // Common
     keywords?: string[];
+}
+
+export interface InfographicSection {
+    section_id: number;
+    headline: string;
+    visual_concept: string;
+    key_data_points?: string[];
+    iconography?: string[];
+    spatial_anchor?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center-left' | 'center-right' | 'floating-overlap';
+}
+
+export interface InfographicFlow {
+    from_section_id: number;
+    to_section_id: number;
+    relationship_type: 'leads_to' | 'inhibits' | 'enhances' | 'compares_to';
 }
 
 export interface MangaPanel {

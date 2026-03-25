@@ -96,7 +96,15 @@ const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
         { label: "[PRO] 3x3 Mockup Grid", value: "High-end designer storyboard presentation. 3x3 grid (9 equal panels). Focus on form, composition, and visual rhythm. Hero shot, close-ups, levitation, and geometric isometric angles.", description: "A 9-panel professional designer layout for cinematic storyboarding." }
     ],
     food: [
-        { label: "Explosive Splash", value: "High-speed liquid splash crown, levitating ingredients, micro-condensation 'chilled sweat', 1/8000s freeze.", description: "Ultra-high-speed culinary photography with stunning liquid physics.", previewUrl: "/previews/food-explosive-splash.png" }
+        { label: "Explosive Splash", value: "high-speed liquid splash crown, levitating ingredients, micro-condensation 'chilled sweat', 1/8000s freeze.", description: "Ultra-high-speed culinary photography with stunning liquid physics.", previewUrl: "/previews/food-explosive-splash.png" }
+    ],
+    infographic: [
+        { label: "NEJM Editorial", value: "NEJM-Editorial", description: "Clean, academic style with muted palettes and clear hierarchy.", previewUrl: "/previews/nejm-infographic.png" },
+        { label: "BioRender Technical", value: "BioRender-Technical", description: "Technical scientific illustration with bold icons and vibrant signaling pathways." },
+        { label: "Modern Minimalist", value: "Modern-Minimalist", description: "Clean, flat design with high contrast and geometric layouts." },
+        { label: "Painterly Editorial", value: "Painterly-Editorial", description: "Artistic, hand-painted style with rich textures and soft, blended colors." },
+        { label: "Watercolor Field Notes", value: "Watercolor-Field-Notes", description: "Hand-drawn sketch look with soft watercolor washes and handwritten-style labels." },
+        { label: "Organic Collage", value: "Organic-Collage", description: "A sticker-book aesthetic with elements appearing 'taped' or 'pinned' around a central hero." }
     ]
 };
 

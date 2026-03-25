@@ -31,7 +31,8 @@ export function Header({ mode, setMode, setShowLibrary, onLogout }: HeaderProps)
                         {mode === "ad" ? <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-white" /> :
                             mode === "medical" ? <Microscope className="w-5 h-5 md:w-6 md:h-6 text-white" /> :
                                 mode === "vector" ? <Layers className="w-5 h-5 md:w-6 md:h-6 text-white" /> :
-                                    <Camera className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                                    mode === "infographic" ? <Zap className="w-5 h-5 md:w-6 md:h-6 text-white" /> :
+                                        <Camera className="w-5 h-5 md:w-6 md:h-6 text-white" />}
                     </motion.div>
                     <div className="hidden sm:block">
                         <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 leading-none mb-1">Nano Banana</h1>
@@ -120,6 +121,17 @@ export function Header({ mode, setMode, setShowLibrary, onLogout }: HeaderProps)
                                 )}
                             >
                                 <Zap className="w-3 md:w-3.5 h-3 md:h-3.5 text-amber-500" /> <span className="hidden xs:inline">Food</span><span className="xs:hidden">Food</span>
+                            </button>
+                        </Tooltip>
+                        <Tooltip content="Switch to Infographic mode for complex data visualization.">
+                            <button
+                                onClick={() => setMode("infographic")}
+                                className={cn(
+                                    "px-3 md:px-4 py-2 md:py-2.5 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 whitespace-nowrap",
+                                    mode === "infographic" ? "bg-white text-indigo-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
+                                )}
+                            >
+                                <Zap className="w-3 md:w-3.5 h-3 md:h-3.5 text-indigo-500" /> <span className="hidden xs:inline">Infographic</span><span className="xs:hidden">Info</span>
                             </button>
                         </Tooltip>
                     </div>

@@ -12,6 +12,7 @@ import { mangaCharacterSchema } from "@/lib/schemas/manga-character";
 import { videoIllustrationSchema } from "@/lib/schemas/cinematic-video";
 import { foodIllustrationSchema } from "@/lib/schemas/food-illustration";
 import { promptService } from "@/lib/prompt-service";
+import { infographicSchema } from "@/lib/schemas/infographic";
 
 const schemaMap: any = {
     ad: adCreativeSchema,
@@ -21,7 +22,8 @@ const schemaMap: any = {
     storyboard: storyboardSchema,
     manga: mangaCharacterSchema,
     comic: comicStripSchema,
-    food: foodIllustrationSchema
+    food: foodIllustrationSchema,
+    infographic: infographicSchema
 };
 
 const creativeProtocols: any = {
@@ -151,6 +153,23 @@ const agentConfigs: any = {
         ],
         jsonRole: "Chief Storyboard Supervisor",
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a detailed multi-scene Storyboard JSON Blueprint.`
+    },
+    infographic: {
+        expansionRole: "Principal Scientific Infographic Architect",
+        expansionRules: [
+            "MISSION: Refine a raw brief into a 'Sovereign Hero Infographic' (NotebookLM / Notex Standard).",
+            "CENTRAL METAPHOR: You MUST identify a single 'Central Hero Diagram' (e.g. a divided plate, a multi-layered cell) that unifies all data points visually.",
+            "ORGANIC COLLAGE: Treat narrative sections as 'Stickers' or 'Field Notes' taped onto the central hero. Avoid rigid grids.",
+            "BAN ARROWS: Do NOT use diagrammatic arrows. Use spatial proximity, soft watercolor leader lines, or physical overlap to show relationships.",
+            "STYLISTIC LOCK: If 'Watercolor-Field-Notes' or 'Organic-Collage' is selected, describe the scene as a hand-drawn sketchbook page with soft textures.",
+            "DISTILLATION: Transform raw text into high-impact, pithy headers and data points.",
+            "IDENTITY: All human characters MUST be of Indian/South Asian descent."
+        ],
+        jsonRole: "Master Infographic Director",
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into an Organic Infographic JSON Blueprint.
+        SPATIAL INTEGRATION: Ensure 'sections' describe their physical relationship to the central hero (e.g., 'taped to the left side', 'floating within the circle').
+        VISUAL STYLE: Focus on a cohesive, hand-painted editorial aesthetic.`,
+        subjectField: "scientific_subject"
     }
 };
 

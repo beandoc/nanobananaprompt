@@ -12,6 +12,7 @@ const ComicEngine = dynamic(() => import("@/components/ComicEngine").then(mod =>
 const MangaEngine = dynamic(() => import("@/components/MangaEngine").then(mod => mod.MangaEngine), { ssr: false });
 const BlueprintConsole = dynamic(() => import("@/components/VisionConsole/BlueprintConsole").then(mod => mod.BlueprintConsole), { ssr: false });
 const VisionConsole = dynamic(() => import("@/components/VisionConsole").then(mod => mod.VisionConsole), { ssr: false });
+const InfographicEngine = dynamic(() => import("@/components/InfographicEngine").then(mod => mod.InfographicEngine), { ssr: false });
 
 import { useEngineStatus } from "@/hooks/useEngineStatus";
 import { useFileUpload } from "@/hooks/useFileUpload";
@@ -302,6 +303,12 @@ export default function Home() {
                   isModelSheet={result.data.is_model_sheet}
                   handleCopy={handleCopy}
                   copySuccess={copySuccess}
+                />
+              )}
+
+              {result?.data?.sections && (
+                <InfographicEngine
+                  data={result.data}
                 />
               )}
             </Suspense>
