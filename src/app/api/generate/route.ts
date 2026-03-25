@@ -157,18 +157,19 @@ const agentConfigs: any = {
     infographic: {
         expansionRole: "Principal Scientific Infographic Architect",
         expansionRules: [
-            "MISSION: Refine a raw brief into a 'Sovereign Hero Infographic' (NotebookLM / Notex Standard).",
-            "CENTRAL METAPHOR: You MUST identify a single 'Central Hero Diagram' (e.g. a divided plate, a multi-layered cell) that unifies all data points visually.",
-            "ORGANIC COLLAGE: Treat narrative sections as 'Stickers' or 'Field Notes' taped onto the central hero. Avoid rigid grids.",
-            "BAN ARROWS: Do NOT use diagrammatic arrows. Use spatial proximity, soft watercolor leader lines, or physical overlap to show relationships.",
-            "STYLISTIC LOCK: If 'Watercolor-Field-Notes' or 'Organic-Collage' is selected, describe the scene as a hand-drawn sketchbook page with soft textures.",
-            "DISTILLATION: Transform raw text into high-impact, pithy headers and data points.",
+            "MISSION: Refine a raw brief into a 'Sovereign Hero Infographic' (NotebookLM Gold Standard).",
+            "CENTRAL METAPHOR: You MUST identify a single 'Central Hero Diagram' (e.g. a divided plate, a multi-layered cell) that serves as the STAGE for all data.",
+            "ENVIRONMENTAL TOKENS: Explicitly describe a 'Rough tooth watercolor paper texture' and 'Candid sketchbook bleed' in the background.",
+            "STICKER-BOOK HIERARCHY: Treat narrative sections as 'Notes' or 'Scraps' appearing 'Taped' or 'Pinned' around the central hero. Use 'Washi-taped' or 'Translucent blue tape' descriptors.",
+            "BAN ARROWS: DO NOT use technical or diagrammatic arrows. Use 'Soft Graphite Pathways' or 'Sweeping Watercolor Trails' to show connectivity.",
+            "SAMPLING: Describe physical items (e.g. berries, cauliflower) as being 'Resting on/in' the central hero metaphor, not outside it.",
+            "TYPOGRAPHY: Describe labels as 'Handwritten graphite notation' or 'Soft charcoal lettering'.",
             "IDENTITY: All human characters MUST be of Indian/South Asian descent."
         ],
         jsonRole: "Master Infographic Director",
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into an Organic Infographic JSON Blueprint.
-        SPATIAL INTEGRATION: Ensure 'sections' describe their physical relationship to the central hero (e.g., 'taped to the left side', 'floating within the circle').
-        VISUAL STYLE: Focus on a cohesive, hand-painted editorial aesthetic.`,
+        COLLAGE LOGIC: Ensure 'sections' describe how they are 'taped' or 'integrated' into the ${style} environment.
+        MATERIALITY: Define the 'rendering_detail' for the central metaphor as having a 'Hand-drawn clinical sketch' or 'Artist field notes' quality.`,
         subjectField: "scientific_subject"
     }
 };
@@ -186,8 +187,8 @@ const getProtocol = (mode: string, style: string) => {
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { mode = "medical", brief = "", style = "NEJM", isStoryboard = false, image = null, assetInstruction = "style" } = body;
-        const normalizedStyle = style && style !== "" && style !== "-" ? style : (mode === 'medical' ? "NEJM" : "Modern");
+        const { mode = "medical", brief = "", style = "Watercolor-Field-Notes", isStoryboard = false, image = null, assetInstruction = "style" } = body;
+        const normalizedStyle = style && style !== "" && style !== "-" ? style : (mode === 'infographic' ? "Watercolor-Field-Notes" : (mode === 'medical' ? "NEJM" : "Modern"));
 
         if (!brief) return ResponseManager.badRequest("No brief provided");
 
