@@ -155,21 +155,33 @@ const agentConfigs: any = {
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a detailed multi-scene Storyboard JSON Blueprint.`
     },
     infographic: {
-        expansionRole: "Principal Scientific Infographic Architect",
+        expansionRole: "Principal Scientific Infographic Architect and Editorial Data Journalist (NotebookLM Gold Standard)",
         expansionRules: [
-            "MISSION: Refine a raw brief into a 'Sovereign Hero Infographic' (NotebookLM Gold Standard).",
-            "CENTRAL METAPHOR: You MUST identify a single 'Central Hero Diagram' (e.g. a divided plate, a multi-layered cell) that serves as the STAGE for all data.",
-            "ENVIRONMENTAL TOKENS: Explicitly describe a 'Rough tooth watercolor paper texture' and 'Candid sketchbook bleed' in the background.",
-            "STICKER-BOOK HIERARCHY: Treat narrative sections as 'Notes' or 'Scraps' appearing 'Taped' or 'Pinned' around the central hero. Use 'Washi-taped' or 'Translucent blue tape' descriptors.",
-            "BAN ARROWS: DO NOT use technical or diagrammatic arrows. Use 'Soft Graphite Pathways' or 'Sweeping Watercolor Trails' to show connectivity.",
-            "SAMPLING: Describe physical items (e.g. berries, cauliflower) as being 'Resting on/in' the central hero metaphor, not outside it.",
-            "TYPOGRAPHY: Describe labels as 'Handwritten graphite notation' or 'Soft charcoal lettering'.",
-            "IDENTITY: All human characters MUST be of Indian/South Asian descent."
+            "MISSION: Transform the brief into a publication-ready, magazine-quality 'Sovereign Infographic Blueprint'. Output must rival Google NotebookLM and Nature magazine visual data journalism.",
+            "1. POSTER STATISTIC: You MUST identify a single dominant, poster-scale statistic or finding from the brief (e.g. '10 Million Indians affected', '37% mortality reduction'). This becomes the 'global_stat_callout'.",
+            "2. PULL QUOTES: Extract 2-3 powerful, short soundbites from the brief that can be rendered as large pull-quotes across the layout. They must feel like expert consensus or breakthrough findings.",
+            "3. CENTRAL HERO METAPHOR: MANDATORY - Define a SINGLE powerful central visual (e.g. 'A cross-sectioned human kidney divided into 6 dietary quadrants', 'A glowing human silhouette with gut microbiome rivers'). All sections orbit this.",
+            "4. SPATIAL MAPPING (x_percent, y_percent): MANDATORY - For every section, assign a logical coordinate (0-100) on where it is 'pinned' on the central hero metaphor. (e.g. If the hero is a kidney, the 'Vegetables' section might be at x=20, y=30; 'Protein' at x=70, y=40).",
+            "5. COLOR-CODED ZONES: Each section MUST have a distinct hex color code for its section zone. Use a harmonious palette (e.g. warm terracotta for risk factors, cool teal for protective factors, amber for mechanisms).",
+            "6. CALLOUT ARCHETYPES: MANDATORY - You MUST assign a callout_type to each section: 'stat-hero' for sections with big numbers, 'comparison-table' for Before/After or East/West contrasts, 'myth-vs-fact', 'process-steps' for mechanisms, 'evidence-list' for research findings, 'risk-spectrum' for gradient risk data.",
+            "7. NARRATIVE DENSITY: Each section's 'detailed_narrative' MUST be 2+ sentences explaining the WHY and HOW. The 'annotations' array MUST have 3-5 specific, data-rich bullets.",
+            "8. STAT HIGHLIGHTS: Every major section needs a 'stat_highlight' with a specific number (e.g. '↓30%', '850mg/day', '3x risk').",
+            "9. PROCESS STEPS: For mechanism sections, use 'process_steps' with a numbered causal chain (e.g. 'Dietary fiber → Butyrate production → Colonocyte fuel → Reduced inflammation').",
+            "10. COMPARISON DATA: For before/after or east/west sections, populate 'comparison' with contrasting values.",
+            "11. HERO INTEGRATION: Describe how items are physically integrated INTO the central diagram, not placed beside it.",
+            "12. WATERCOLOR AESTHETICS: BAN '3D', 'Plasticine', 'Uniform vector'. Enforce 'Rough watercolor paper', 'Candid sketchbook bleed', 'Hand-drawn ink sketch', 'Soft graphite annotations'.",
+            "13. IDENTITY: All human representations MUST be of Indian/South Asian descent.",
+            "14. SCIENTIFIC CREDIBILITY: Add a 'footer_methodology' with a brief reference note to anchor the infographic scientifically.",
+            "15. EDITION TAG: Add a short editorial tag (e.g. 'Kidney Health Special Report') to the 'edition_tag' field."
         ],
-        jsonRole: "Master Infographic Director",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into an Organic Infographic JSON Blueprint.
-        COLLAGE LOGIC: Ensure 'sections' describe how they are 'taped' or 'integrated' into the ${style} environment.
-        MATERIALITY: Define the 'rendering_detail' for the central metaphor as having a 'Hand-drawn clinical sketch' or 'Artist field notes' quality.`,
+        jsonRole: "Master Infographic Director and Editorial Data Visualization Lead",
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the refined brief into a full Sovereign Infographic JSON Blueprint.
+        MANDATORY FIELDS: You MUST populate: global_stat_callout, pull_quotes, color_palette.zone_colors, and for every section: x_percent, y_percent, callout_type, visual_weight, and stat_highlight.
+        HERO ICON SELECTION: You MUST select a 'hero_icon_id' from this list that best represents the subject: ('Heart' | 'Brain' | 'Wind' | 'Stethoscope' | 'Microscope' | 'Activity' | 'Shield' | 'Zap' | 'Leaf' | 'Sun' | 'Droplets' | 'FlaskConical' | 'Thermometer' | 'BrainCircuit' | 'Dna' | 'Bone' | 'Eye').
+        COORDINATE RULES: Assign specific x_percent (0-100) and y_percent (0-100) that realistically place the section's data point on the central hero diagram.
+        NARRATIVE DEPTH: detailed_narrative must be 2+ sentences per section. annotations must have 3-5 bullets per section.
+        STYLE AUTHORITY: Follow a ${style} watercolor/painterly aesthetic with soft blended colors and handwritten typography.
+        IDENTITY LOCK: South Asian heritage standard for any human elements.`,
         subjectField: "scientific_subject"
     }
 };
