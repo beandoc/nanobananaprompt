@@ -59,8 +59,8 @@ const agentConfigs: any = {
             "2. ZERO NARRATIVE: Strictly NO explanations, descriptions, or sentences. Use only structured, renderable data-points.",
             "3. MECHANISM ENCODING: All biological processes MUST be encoded as stepwise pathways/causal relationships (molecule → receptor → effect).",
             "4. SPATIAL ACCURACY: Explicitly define anatomical locations and spatial relationships (e.g. subendothelial vs subepithelial).",
-            "5. FLOW & GRADIENTS: Encode flow direction, pressure gradients, and concentration gradients using directional vectors only.",
-            "6. MULTI-SCALE LINKING: Ensure molecular events logically drive cellular and tissue-level functional outcomes.",
+            "5. SPATIAL RESOLUTION: Output MUST lock to High-Fidelity 8K precision. Use ultra-sharp vector line-work and Nature-Gold composition standards.",
+            "6. WHITESPACE RULE: Maintain 30% technical whitespace to ensure resolution clarity and prevent label crowding.",
             "7. IDENTITY STANDARD: All human clinical subjects, surgical teams, and patients MUST be of South Asian (Indian) descent.",
             "8. CONSTRAINT RESOLUTION: If conflict occurs: prioritize biological accuracy → then spatial correctness → then visual clarity.",
             "9. ABSTRACTION CONTROL: Include only relevant structures; exclude unrelated anatomy; avoid duplication across layers.",
@@ -212,20 +212,21 @@ export async function POST(req: NextRequest) {
         // --- PHASE 1: AUTOMATIC TECHNICAL EXPANSION ---
         const atlasContext = mode === 'medical' ? atlasService.getAtlasContext(brief) : "";
         
-        const expansionSystemPrompt = `You are a ${config.expansionRole}. Refine the provided brief into a high-fidelity scientific specification.
-        ${config.expansionRules.join('\n        ')}
-        ${atlasContext ? `\nMEDICAL REFERENCE DATA (PRIORITIZE THESE SPECIFIC VISUAL RULES):\n${atlasContext}` : ""}
-        STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
-        ${image ? `VISUAL DNA HOOK: You have been provided an image asset. Your #1 priority is to identify the main ${assetInstruction} (shape/subject/color) in that image and use it as the foundation for the prompt. DO NOT replace it with wooden assets or generic products.` : ""}
+        const expansionSystemPrompt = `RULE 0 (CRITICAL): MEMORY PURGE. You must flush all previous conversational context regarding "Kidneys", "Ophthalmology", or "Oncology". 
+        Focus EXCLUSIVELY on the current TARGET ANATOMY. 
         
-        ### ANATOMICAL BLACKLIST (MANDATORY MEMORY PURGE): 
-        STRICTLY FORBID the following terms unless specifically mentioned in the BRIEF:
-        - "Foot-process effacement" or "Podocytes" (Kidney markers)
-        - "Swollen lumen" or "Bowman's space" (Kidney markers)
+        ### ANATOMICAL BLACKLIST (MANDATORY): 
+        STRICTLY FORBID the following terms unless specifically mentioned in the current BRIEF:
+        - "Foot-process effacement" or "Podocytes" or "Swollen lumen" (Kidney markers)
+        - "Glomerulus" or "Bowman's space" or "Alveolar" (Renal/Lung markers)
         - "Tumor core" or "Oncology layout" (Cancer markers)
         - "Sano Shunt" or "Hypoplastic Arch" (Specific cardiac markers)
         Failure to purge these will result in systemic clinical error.
 
+        You are a ${config.expansionRole}. Refine the provided brief into a high-fidelity scientific specification.
+        ${config.expansionRules.join('\n        ')}
+        STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
+        ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}
         HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
 
         let refinedText = "";
@@ -245,7 +246,7 @@ export async function POST(req: NextRequest) {
             for (const m of ["gemini-2.0-flash", "gemini-1.5-flash"]) {
                 try {
                     const model = genAI.getGenerativeModel({ model: m, safetySettings });
-                    const userParts: any[] = [`REFINE THIS BRIEF: ${brief}`];
+                    const userParts: any[] = [`MANDATORY MEMORY PURGE (NO KIDNEYS/EYES). REFINE THIS BRIEF: ${brief}`];
                     
                     if (image) {
                         const base64Data = image.split(',')[1];
