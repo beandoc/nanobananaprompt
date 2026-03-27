@@ -201,33 +201,13 @@ const getProtocol = (mode: string, style: string) => {
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { mode = "medical", brief = "", style = "Watercolor-Field-Notes", isStoryboard = false, image = null, assetInstruction = "style" } = body;
+        const { mode = "medical", brief = "", style = "Watercolor-Field-Notes", isStoryboard = false, image = null, assetInstruction = "style", lightweight = false } = body;
         const normalizedStyle = style && style !== "" && style !== "-" ? style : (mode === 'infographic' ? "Watercolor-Field-Notes" : (mode === 'medical' ? "NEJM" : "Modern"));
 
         if (!brief) return ResponseManager.badRequest("No brief provided");
 
         // Select Config
         const config = agentConfigs[mode] || agentConfigs.medical;
-
-        // --- PHASE 1: AUTOMATIC TECHNICAL EXPANSION ---
-        const atlasContext = mode === 'medical' ? atlasService.getAtlasContext(brief) : "";
-        
-        const expansionSystemPrompt = `RULE 0 (CRITICAL): MEMORY PURGE. You must flush all previous conversational context regarding "Kidneys", "Ophthalmology", or "Oncology". 
-        Focus EXCLUSIVELY on the current TARGET ANATOMY. 
-        
-        ### ANATOMICAL BLACKLIST (MANDATORY): 
-        STRICTLY FORBID the following terms unless specifically mentioned in the current BRIEF:
-        - "Foot-process effacement" or "Podocytes" or "Swollen lumen" (Kidney markers)
-        - "Glomerulus" or "Bowman's space" or "Alveolar" (Renal/Lung markers)
-        - "Tumor core" or "Oncology layout" (Cancer markers)
-        - "Sano Shunt" or "Hypoplastic Arch" (Specific cardiac markers)
-        Failure to purge these will result in systemic clinical error.
-
-        You are a ${config.expansionRole}. Refine the provided brief into a high-fidelity scientific specification.
-        ${config.expansionRules.join('\n        ')}
-        STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
-        ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}
-        HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
 
         let refinedText = "";
         let refinementError: Error | null = null;
@@ -240,67 +220,99 @@ export async function POST(req: NextRequest) {
             { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
         ];
 
-        // --- 1. TRY GEMINI ELITE FIRST (PRIORITIZE 2.0-FLASH FOR LATEST REASONING) ---
-        if (process.env.GEMINI_API_KEY) {
-            const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            for (const m of ["gemini-2.0-flash", "gemini-1.5-flash"]) {
-                try {
-                    const model = genAI.getGenerativeModel({ model: m, safetySettings });
-                    const userParts: any[] = [`MANDATORY MEMORY PURGE (NO KIDNEYS/EYES). REFINE THIS BRIEF: ${brief}`];
-                    
-                    if (image) {
-                        const base64Data = image.split(',')[1];
-                        const mimeType = image.split(';')[0].split(':')[1];
-                        userParts.push({
-                            inlineData: { data: base64Data, mimeType: mimeType }
-                        });
-                    }
+        // --- PHASE 1: AUTOMATIC TECHNICAL EXPANSION ---
+        if (!lightweight) { 
+            const atlasContext = mode === 'medical' ? atlasService.getAtlasContext(brief) : "";
+            
+            const expansionSystemPrompt = `RULE 0 (CRITICAL): MEMORY PURGE. You must flush all previous conversational context regarding "Kidneys", "Ophthalmology", or "Oncology". 
+            Focus EXCLUSIVELY on the current TARGET ANATOMY. 
+            
+            ### ANATOMICAL BLACKLIST (MANDATORY): 
+            STRICTLY FORBID the following terms unless specifically mentioned in the current BRIEF:
+            - "Foot-process effacement" or "Podocytes" or "Swollen lumen" (Kidney markers)
+            - "Glomerulus" or "Bowman's space" or "Alveolar" (Renal/Lung markers)
+            - "Tumor core" or "Oncology layout" (Cancer markers)
+            - "Sano Shunt" or "Hypoplastic Arch" (Specific cardiac markers)
+            Failure to purge these will result in systemic clinical error.
 
-                    const result = await model.generateContent([expansionSystemPrompt, ...userParts]);
-                    refinedText = result.response.text().trim();
+            You are a ${config.expansionRole}. Refine the provided brief into a high-fidelity scientific specification.
+            ${config.expansionRules.join('\n        ')}
+            STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
+            ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}
+            HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
+
+            // --- 1. TRY GEMINI ELITE FIRST (PRIORITIZE 2.0-FLASH FOR LATEST REASONING) ---
+            if (process.env.GEMINI_API_KEY) {
+                const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+                for (const m of ["gemini-2.0-flash", "gemini-1.5-flash"]) {
+                    try {
+                        const model = genAI.getGenerativeModel({ model: m, safetySettings });
+                        const userParts: any[] = [`MANDATORY MEMORY PURGE (NO KIDNEYS/EYES). REFINE THIS BRIEF: ${brief}`];
+                        
+                        if (image) {
+                            const base64Data = image.split(',')[1];
+                            const mimeType = image.split(';')[0].split(':')[1];
+                            userParts.push({
+                                inlineData: { data: base64Data, mimeType: mimeType }
+                            });
+                        }
+
+                        const result = await model.generateContent([expansionSystemPrompt, ...userParts]);
+                        refinedText = result.response.text().trim();
+                        if (refinedText) {
+                            providerHistory.push({ phase: "expansion", model: m, status: "success" });
+                            break;
+                        }
+                    } catch (err: any) { 
+                        providerHistory.push({ phase: "expansion", model: m, status: "fail", error: err.message });
+                        refinementError = err as Error; 
+                    }
+                }
+            }
+
+            // --- 2. FALLBACK TO GROQ (ONLY IF GEMINI QUOTA IS EMPTY) ---
+            if (!refinedText && process.env.GROQ_API_KEY) {
+                try {
+                    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+                    const completion = await groq.chat.completions.create({
+                        messages: [
+                            { role: "system", content: expansionSystemPrompt },
+                            { role: "user", content: `REFINE THIS BRIEF: ${brief}` }
+                        ],
+                        model: "llama-3.3-70b-versatile"
+                    });
+                    refinedText = completion.choices[0]?.message?.content?.trim() || "";
                     if (refinedText) {
-                        providerHistory.push({ phase: "expansion", model: m, status: "success" });
-                        break;
+                        providerHistory.push({ phase: "expansion", model: "groq-llama-3.3-70b", status: "success" });
                     }
                 } catch (err: any) { 
-                    providerHistory.push({ phase: "expansion", model: m, status: "fail", error: err.message });
+                    providerHistory.push({ phase: "expansion", model: "groq-llama-3.3-70b", status: "fail", error: err.message });
                     refinementError = err as Error; 
                 }
             }
         }
 
-        // --- 2. FALLBACK TO GROQ (ONLY IF GEMINI QUOTA IS EMPTY) ---
-        if (!refinedText && process.env.GROQ_API_KEY) {
-            try {
-                const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-                const completion = await groq.chat.completions.create({
-                    messages: [
-                        { role: "system", content: expansionSystemPrompt },
-                        { role: "user", content: `REFINE THIS BRIEF: ${brief}` }
-                    ],
-                    model: "llama-3.3-70b-versatile"
-                });
-                refinedText = completion.choices[0]?.message?.content?.trim() || "";
-                if (refinedText) {
-                    providerHistory.push({ phase: "expansion", model: "groq-llama-3.3-70b", status: "success" });
-                }
-            } catch (err: any) { 
-                providerHistory.push({ phase: "expansion", model: "groq-llama-3.3-70b", status: "fail", error: err.message });
-                refinementError = err as Error; 
-            }
-        }
-
-        const finalBriefForJson = refinedText || brief;
-
-        // --- PHASE 2: AUTOMATIC JSON GENERATION ---
+        const finalBriefForJson = (lightweight ? brief : refinedText) || brief;
+        
+        // --- PHASE 2: CONVERT SPEC TO JSON BLUEPRINT ---
         const currentSchema = (mode === 'comic' && isStoryboard) ? comicStripSchema : (isStoryboard ? storyboardSchema : (schemaMap[mode] || medicalIllustrationSchema));
         
         // CLEAN STYLE NAME FOR METADATA
         const sanitizedStyleName = normalizedStyle.split(' ')[0].replace(/[-,]/g, '');
         
-        const systemInstruction = `You are a ${config.jsonRole}. 
-        ${config.jsonInstructions(sanitizedStyleName)}
-        STYLE PROTOCOL: ${atlasService.getStyleProtocol(normalizedStyle)}`;
+        const systemInstruction = lightweight ? `Return ONLY a valid JSON blueprint for: "${mode}". 
+        SCHEMA: ${JSON.stringify(currentSchema)}
+        NEGATIVE: No text, no labels.` : `### ROLE: Ultimate Medical Art Director
+        You are a clinical strategist that converts technical specifications into high-fidelity JSON blueprints.
+        
+        ### SCHEMA MANDATE:
+        You MUST strictly adhere to the following 12/12 hierarchy JSON schema:
+        ${JSON.stringify(currentSchema)}
+        
+        ### NEGATIVE ANATOMY BLOCK (MANDATORY): 
+        DO NOT use: "Podocytes", "Foot-process effacement", "Glomerulus", "Bowman's space", "Sano Shunt", "Hypoplastic Arch", "Tumor core". 
+        
+        HARD ZERO-TEXT BAN: No text characters, no labels. Output the specification in academic, renderable JSON.`;
 
         let adData: any = null;
         let generationError: Error | null = null;
@@ -309,7 +321,8 @@ export async function POST(req: NextRequest) {
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
             // 1.5-flash is the most stable anchor for schema-heavy tasks
-            for (const m of ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"]) {
+            const modelsToTry = lightweight ? ["gemini-1.5-flash"] : ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"];
+            for (const m of modelsToTry) {
                 try {
                     const model = genAI.getGenerativeModel({ 
                         model: m, 
