@@ -212,11 +212,20 @@ export async function POST(req: NextRequest) {
         // --- PHASE 1: AUTOMATIC TECHNICAL EXPANSION ---
         const atlasContext = mode === 'medical' ? atlasService.getAtlasContext(brief) : "";
         
-        let expansionSystemPrompt = `You are a ${config.expansionRole}.
+        const expansionSystemPrompt = `You are a ${config.expansionRole}. Refine the provided brief into a high-fidelity scientific specification.
         ${config.expansionRules.join('\n        ')}
         ${atlasContext ? `\nMEDICAL REFERENCE DATA (PRIORITIZE THESE SPECIFIC VISUAL RULES):\n${atlasContext}` : ""}
         STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
         ${image ? `VISUAL DNA HOOK: You have been provided an image asset. Your #1 priority is to identify the main ${assetInstruction} (shape/subject/color) in that image and use it as the foundation for the prompt. DO NOT replace it with wooden assets or generic products.` : ""}
+        
+        ### ANATOMICAL BLACKLIST (MANDATORY MEMORY PURGE): 
+        STRICTLY FORBID the following terms unless specifically mentioned in the BRIEF:
+        - "Foot-process effacement" or "Podocytes" (Kidney markers)
+        - "Swollen lumen" or "Bowman's space" (Kidney markers)
+        - "Tumor core" or "Oncology layout" (Cancer markers)
+        - "Sano Shunt" or "Hypoplastic Arch" (Specific cardiac markers)
+        Failure to purge these will result in systemic clinical error.
+
         HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
 
         let refinedText = "";
