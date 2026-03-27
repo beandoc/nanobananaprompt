@@ -221,6 +221,7 @@ export async function POST(req: NextRequest) {
 
         let refinedText = "";
         let refinementError: Error | null = null;
+        let providerHistory: any[] = [];
 
         const safetySettings = [
             { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
@@ -247,8 +248,14 @@ export async function POST(req: NextRequest) {
 
                     const result = await model.generateContent([expansionSystemPrompt, ...userParts]);
                     refinedText = result.response.text().trim();
-                    if (refinedText) break;
-                } catch (err) { refinementError = err as Error; }
+                    if (refinedText) {
+                        providerHistory.push({ phase: "expansion", model: m, status: "success" });
+                        break;
+                    }
+                } catch (err: any) { 
+                    providerHistory.push({ phase: "expansion", model: m, status: "fail", error: err.message });
+                    refinementError = err as Error; 
+                }
             }
         }
 
@@ -264,7 +271,13 @@ export async function POST(req: NextRequest) {
                     model: "llama-3.3-70b-versatile"
                 });
                 refinedText = completion.choices[0]?.message?.content?.trim() || "";
-            } catch (err) { refinementError = err as Error; }
+                if (refinedText) {
+                    providerHistory.push({ phase: "expansion", model: "groq-llama-3.3-70b", status: "success" });
+                }
+            } catch (err: any) { 
+                providerHistory.push({ phase: "expansion", model: "groq-llama-3.3-70b", status: "fail", error: err.message });
+                refinementError = err as Error; 
+            }
         }
 
         const finalBriefForJson = refinedText || brief;
@@ -305,9 +318,13 @@ export async function POST(req: NextRequest) {
 
                     const result = await model.generateContent([systemInstruction, ...userParts]);
                     adData = JSON.parse(result.response.text());
-                    if (adData) break;
+                    if (adData) {
+                        providerHistory.push({ phase: "json", model: m, status: "success" });
+                        break;
+                    }
                 } catch (err: any) { 
                     console.error(`[ENGINE] ${m} Generation Failed:`, err.message);
+                    providerHistory.push({ phase: "json", model: m, status: "fail", error: err.message });
                     generationError = err as Error; 
                 }
             }
@@ -326,7 +343,13 @@ export async function POST(req: NextRequest) {
                     response_format: { type: "json_object" }
                 });
                 adData = JSON.parse(completion.choices[0]?.message?.content || "{}");
-            } catch (err) { generationError = err as Error; }
+                if (adData) {
+                    providerHistory.push({ phase: "json", model: "groq-llama-3.3-70b", status: "success" });
+                }
+            } catch (err: any) { 
+                providerHistory.push({ phase: "json", model: "groq-llama-3.3-70b", status: "fail", error: err.message });
+                generationError = err as Error; 
+            }
         }
 
         if (!adData) {
@@ -364,7 +387,8 @@ export async function POST(req: NextRequest) {
             refinedPrompt: finalBriefForJson,
             promptFile: filename,
             folder: mode + "_prompts",
-            activeProvider
+            activeProvider,
+            providerHistory
         });
 
     } catch (error: any) {
