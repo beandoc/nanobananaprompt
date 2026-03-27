@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { Groq } from "groq-sdk";
 import { ResponseManager } from "@/lib/api-response";
 import { atlasService } from "@/lib/atlas-service";
@@ -222,13 +222,19 @@ export async function POST(req: NextRequest) {
         let refinedText = "";
         let refinementError: Error | null = null;
 
-        // --- 1. TRY GEMINI ELITE FIRST (PRIORITIZE 1.5-FLASH FOR SPEED/STABILITY) ---
+        const safetySettings = [
+            { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+            { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
+            { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
+            { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+        ];
+
+        // --- 1. TRY GEMINI ELITE FIRST (PRIORITIZE 2.0-FLASH FOR LATEST REASONING) ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            // Optimized model stack: 1.5-flash is significantly faster for schema-heavy tasks
-            for (const m of ["gemini-1.5-flash", "gemini-2.0-flash"]) {
+            for (const m of ["gemini-2.0-flash", "gemini-1.5-flash"]) {
                 try {
-                    const model = genAI.getGenerativeModel({ model: m });
+                    const model = genAI.getGenerativeModel({ model: m, safetySettings });
                     const userParts: any[] = [`REFINE THIS BRIEF: ${brief}`];
                     
                     if (image) {
@@ -279,12 +285,13 @@ export async function POST(req: NextRequest) {
         // --- 1. TRY GEMINI ELITE SUITE (PRIORITIZE 1.5-FLASH FOR JSON) ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            // 1.5-flash provides the fastest JSON response for structured outputs
-            for (const m of ["gemini-1.5-flash", "gemini-2.0-flash"]) {
+            // Prioritize 2.0-flash for high-complexity structural reasoning
+            for (const m of ["gemini-2.0-flash", "gemini-1.5-flash"]) {
                 try {
                     const model = genAI.getGenerativeModel({ 
                         model: m, 
-                        generationConfig: { responseMimeType: "application/json", responseSchema: currentSchema }
+                        generationConfig: { responseMimeType: "application/json", responseSchema: currentSchema },
+                        safetySettings
                     });
                     const userParts: any[] = [`JSON BLUEPRINT FOR: ${finalBriefForJson}`];
                     
