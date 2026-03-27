@@ -64,14 +64,16 @@ const agentConfigs: any = {
             "7. IDENTITY STANDARD: All human clinical subjects, surgical teams, and patients MUST be of South Asian (Indian) descent.",
             "8. CONSTRAINT RESOLUTION: If conflict occurs: prioritize biological accuracy → then spatial correctness → then visual clarity.",
             "9. ABSTRACTION CONTROL: Include only relevant structures; exclude unrelated anatomy; avoid duplication across layers.",
-            "10. DIAGNOSTIC VERIFICATION: Identify 3 pathognomonic visual markers required for this specific diagnosis."
+            "10. DIAGNOSTIC VERIFICATION: Identify 3 pathognomonic visual markers required for this specific diagnosis.",
+            "11. EDITORIAL DIRECTIVES: (a) GRADIENT MANDATE: Use 'diffusion halos' in the visualization descriptions. (b) VECTOR HIERARCHY: Pathological flows MUST use 'fine-dotted' (Low), 'solid-directional' (Moderate), and 'bold-tapered' (High) styles. (c) WHITESPACE RULE: Prevent label overcrowding via logical grouping. (d) SPATIAL LOCK: Explicitly define compass-rule locations (Center-Right, Upper-Margin, etc.) for all major pathology markers. (e) MORPHOLOGY FEATURES: For each cell, describe visual pathological features (e.g. 'swelling', 'effacement'). (f) CAUSAL SEQUENCE: Distill the full mechanism into a linear, step-by-step causal chain.",
+            "12. BEHAVIORAL RENDERING: All flow vectors MUST describe their physical action (e.g. 'deflected away from core', 'chemically trapped'). All textures MUST be explicit (e.g. 'micro-fibrillar detailing', 'technical stippling')."
         ],
-        jsonRole: "Master Medical Art Director and Technical Lead",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a Production-Grade 12/12 Hierarchical JSON.
+        jsonRole: "Ultimate Medical Art Director and Clinical Strategist",
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a Sovereign 12/12 JSON Blueprint (NotebookLM Gold Standard).
         STRICT COMPLIANCE: Adhere to the SUPER-ENGINE PROTOCOL (Hierarchy, Zero-Narrative, Mechanism-Encoding).
-        SPATIAL LOCK: Ensure 'visual_constraints' and 'layout' fields map precise coordinate/zoom data.
-        IDENTITY LOCK: Enforce South Asian heritage standard for any human elements.
-        STYLE AUTHORITY: Apply the ${style} standard with specific texture definitions.`,
+        SOVEREIGN POLISH: (1) Populate 'hierarchy' summary as a global attention anchor. (2) Provide 'behavioral rendering' in all visualization fields (action-oriented descriptions). (3) Define 'spatial_lock' for all markers. (4) Map 'optimization_flags' for minimalist clarity. (5) Use deep hex-code mapping in 'palette_hex_logic'.
+        IDENTITY LOCK: Enforce South Asian heritage standard.
+        STYLE AUTHORITY: Apply the ${style} standard with specific texture/lighting physics.`,
         subjectField: "scientific_subject",
         styleField: "journal_standard",
         styleSuffix: "standard"
