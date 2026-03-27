@@ -285,8 +285,8 @@ export async function POST(req: NextRequest) {
         // --- 1. TRY GEMINI ELITE SUITE (PRIORITIZE 1.5-FLASH FOR JSON) ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            // Prioritize 2.0-flash for high-complexity structural reasoning
-            for (const m of ["gemini-2.0-flash", "gemini-1.5-flash"]) {
+            // 1.5-flash is the most stable anchor for schema-heavy tasks
+            for (const m of ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"]) {
                 try {
                     const model = genAI.getGenerativeModel({ 
                         model: m, 
@@ -306,7 +306,10 @@ export async function POST(req: NextRequest) {
                     const result = await model.generateContent([systemInstruction, ...userParts]);
                     adData = JSON.parse(result.response.text());
                     if (adData) break;
-                } catch (err) { generationError = err as Error; }
+                } catch (err: any) { 
+                    console.error(`[ENGINE] ${m} Generation Failed:`, err.message);
+                    generationError = err as Error; 
+                }
             }
         }
 
