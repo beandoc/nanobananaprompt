@@ -220,43 +220,30 @@ export async function POST(req: NextRequest) {
             { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
         ];
 
-        // --- PHASE 1: AUTOMATIC TECHNICAL EXPANSION ---
+        // --- PHASE 1: EXPANSION (STABILIZED) ---
         if (!lightweight) { 
             const atlasContext = mode === 'medical' ? atlasService.getAtlasContext(brief) : "";
-            
-            const expansionSystemPrompt = `RULE 0 (CRITICAL): MEMORY PURGE. You must flush all previous conversational context regarding "Kidneys", "Ophthalmology", or "Oncology". 
-            Focus EXCLUSIVELY on the current TARGET ANATOMY. 
-            
-            ### ANATOMICAL BLACKLIST (MANDATORY): 
-            STRICTLY FORBID the following terms unless specifically mentioned in the current BRIEF:
-            - "Foot-process effacement" or "Podocytes" or "Swollen lumen" (Kidney markers)
-            - "Glomerulus" or "Bowman's space" or "Alveolar" (Renal/Lung markers)
-            - "Tumor core" or "Oncology layout" (Cancer markers)
-            - "Sano Shunt" or "Hypoplastic Arch" (Specific cardiac markers)
-            Failure to purge these will result in systemic clinical error.
-
-            You are a ${config.expansionRole}. Refine the provided brief into a high-fidelity scientific specification.
+            const expansionSystemPrompt = `RULE 0 (CRITICAL): MEMORY PURGE. Flush previous anatomy. Focus EXCLUSIVELY on: ${brief.substring(0, 50)}...
+            ANATOMICAL BLACKLIST: "Foot-process", "Glomerulus", "Tumor core", "Sano Shunt".
+            You are a ${config.expansionRole}. Refine into high-fidelity scientific spec.
             ${config.expansionRules.join('\n        ')}
             STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
             ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}
             HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
 
-            // --- 1. TRY GEMINI ELITE FIRST (PRIORITIZE 2.0-FLASH FOR LATEST REASONING) ---
             if (process.env.GEMINI_API_KEY) {
                 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-                for (const m of ["gemini-2.0-flash", "gemini-1.5-flash"]) {
+                // Stabilized IDs: gemini-1.5-flash is the primary to conserve quota
+                const modelsToTry = ["gemini-1.5-flash", "gemini-2.0-flash"]; 
+                for (const m of modelsToTry) {
                     try {
                         const model = genAI.getGenerativeModel({ model: m, safetySettings });
-                        const userParts: any[] = [`MANDATORY MEMORY PURGE (NO KIDNEYS/EYES). REFINE THIS BRIEF: ${brief}`];
-                        
+                        const userParts: any[] = [`EXPAND THIS BRIEF: ${brief}`];
                         if (image) {
                             const base64Data = image.split(',')[1];
                             const mimeType = image.split(';')[0].split(':')[1];
-                            userParts.push({
-                                inlineData: { data: base64Data, mimeType: mimeType }
-                            });
+                            userParts.push({ inlineData: { data: base64Data, mimeType } });
                         }
-
                         const result = await model.generateContent([expansionSystemPrompt, ...userParts]);
                         refinedText = result.response.text().trim();
                         if (refinedText) {
@@ -264,13 +251,17 @@ export async function POST(req: NextRequest) {
                             break;
                         }
                     } catch (err: any) { 
+                        const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota");
+                        const isNotFound = err.message?.includes("404") || err.message?.toLowerCase().includes("not found");
                         providerHistory.push({ phase: "expansion", model: m, status: "fail", error: err.message });
-                        refinementError = err as Error; 
+                        refinementError = err as Error;
+                        if (isNotFound) continue; 
+                        if (isQuota) break; 
                     }
                 }
             }
 
-            // --- 2. FALLBACK TO GROQ (ONLY IF GEMINI QUOTA IS EMPTY) ---
+            // Fallback to Groq for expansion
             if (!refinedText && process.env.GROQ_API_KEY) {
                 try {
                     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
@@ -282,63 +273,45 @@ export async function POST(req: NextRequest) {
                         model: "llama-3.3-70b-versatile"
                     });
                     refinedText = completion.choices[0]?.message?.content?.trim() || "";
-                    if (refinedText) {
-                        providerHistory.push({ phase: "expansion", model: "groq-llama-3.3-70b", status: "success" });
-                    }
+                    if (refinedText) providerHistory.push({ phase: "expansion", model: "groq-llama-3", status: "success" });
                 } catch (err: any) { 
-                    providerHistory.push({ phase: "expansion", model: "groq-llama-3.3-70b", status: "fail", error: err.message });
-                    refinementError = err as Error; 
+                    providerHistory.push({ phase: "expansion", model: "groq-error", status: "fail", error: err.message });
+                    refinementError = err as Error;
                 }
             }
         }
 
         const finalBriefForJson = (lightweight ? brief : refinedText) || brief;
-        
-        // --- PHASE 2: CONVERT SPEC TO JSON BLUEPRINT ---
         const currentSchema = (mode === 'comic' && isStoryboard) ? comicStripSchema : (isStoryboard ? storyboardSchema : (schemaMap[mode] || medicalIllustrationSchema));
-        
-        // CLEAN STYLE NAME FOR METADATA
         const sanitizedStyleName = normalizedStyle.split(' ')[0].replace(/[-,]/g, '');
         
-        const systemInstruction = lightweight ? `Return ONLY a valid JSON blueprint for: "${mode}". 
-        SCHEMA: ${JSON.stringify(currentSchema)}
-        NEGATIVE: No text, no labels.` : `### ROLE: Ultimate Medical Art Director
-        You are a clinical strategist that converts technical specifications into high-fidelity JSON blueprints.
-        
-        ### SCHEMA MANDATE:
-        You MUST strictly adhere to the following 12/12 hierarchy JSON schema:
-        ${JSON.stringify(currentSchema)}
-        
-        ### NEGATIVE ANATOMY BLOCK (MANDATORY): 
-        DO NOT use: "Podocytes", "Foot-process effacement", "Glomerulus", "Bowman's space", "Sano Shunt", "Hypoplastic Arch", "Tumor core". 
-        
-        HARD ZERO-TEXT BAN: No text characters, no labels. Output the specification in academic, renderable JSON.`;
+        const systemInstruction = lightweight ? `Return ONLY valid JSON for: "${mode}". SCHEMA: ${JSON.stringify(currentSchema)}` : 
+            `### ROLE: Ultimate Medical Art Director
+            SCHEMA MANDATE: Return JSON strictly following: ${JSON.stringify(currentSchema)}
+            NEGATIVE BLOCK: No "Podocytes", "Glomerulus", "Sano Shunt".
+            NO TEXT LABELS. Academic renderable JSON only.`;
 
         let adData: any = null;
         let generationError: Error | null = null;
 
-        // --- 1. TRY GEMINI ELITE SUITE (PRIORITIZE 1.5-FLASH FOR JSON) ---
+        // --- PHASE 2: JSON GENERATION ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            // 1.5-flash is the most stable anchor for schema-heavy tasks
-            const modelsToTry = lightweight ? ["gemini-1.5-flash"] : ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"];
-            for (const m of modelsToTry) {
+            const jsonModels = lightweight ? ["gemini-1.5-flash"] : ["gemini-1.5-flash", "gemini-1.5-pro"];
+            
+            for (const m of jsonModels) {
                 try {
                     const model = genAI.getGenerativeModel({ 
                         model: m, 
                         generationConfig: { responseMimeType: "application/json", responseSchema: currentSchema },
                         safetySettings
                     });
-                    const userParts: any[] = [`JSON BLUEPRINT FOR: ${finalBriefForJson}`];
-                    
+                    const userParts: any[] = [`GENERATE JSON BLUEPRINT FOR: ${finalBriefForJson}`];
                     if (image) {
                         const base64Data = image.split(',')[1];
                         const mimeType = image.split(';')[0].split(':')[1];
-                        userParts.push({
-                            inlineData: { data: base64Data, mimeType: mimeType }
-                        });
+                        userParts.push({ inlineData: { data: base64Data, mimeType } });
                     }
-
                     const result = await model.generateContent([systemInstruction, ...userParts]);
                     adData = JSON.parse(result.response.text());
                     if (adData) {
@@ -346,14 +319,15 @@ export async function POST(req: NextRequest) {
                         break;
                     }
                 } catch (err: any) { 
-                    console.error(`[ENGINE] ${m} Generation Failed:`, err.message);
+                    const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota");
                     providerHistory.push({ phase: "json", model: m, status: "fail", error: err.message });
+                    if (isQuota) break; 
                     generationError = err as Error; 
                 }
             }
         }
 
-        // --- 2. TRY GROQ EMERGENCY FALLBACK ---
+        // Final Emergency Fallback
         if (!adData && process.env.GROQ_API_KEY) {
             try {
                 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
@@ -366,24 +340,18 @@ export async function POST(req: NextRequest) {
                     response_format: { type: "json_object" }
                 });
                 adData = JSON.parse(completion.choices[0]?.message?.content || "{}");
-                if (adData) {
-                    providerHistory.push({ phase: "json", model: "groq-llama-3.3-70b", status: "success" });
-                }
+                if (adData) providerHistory.push({ phase: "json", model: "groq-llama-3", status: "success" });
             } catch (err: any) { 
-                providerHistory.push({ phase: "json", model: "groq-llama-3.3-70b", status: "fail", error: err.message });
+                providerHistory.push({ phase: "json", model: "groq-fail", status: "fail", error: err.message });
                 generationError = err as Error; 
             }
         }
 
-        if (!adData) {
-            return ResponseManager.error(`Sovereign Sequence Failure: ${generationError?.message || refinementError?.message}`, 500);
-        }
+        if (!adData) return ResponseManager.error(`Sovereign Sequence Failure: ${generationError?.message || refinementError?.message || "All cores failed."}`, 500);
 
-        // Final Patch for metadata integrity & Command Scrubbing
         const scrubSubject = (s: string) => s.replace(/^(create|generate|show|make|build|give me|render|draw|an)\s+(an|a|the|image of|illustration of|diagram of|blueprint of|map for)\s+/gi, "").trim();
         const finalSubject = scrubSubject(brief);
         
-        // Mode-Aware Injection (Only perform if field is empty/missing to avoid wiping AI detection)
         if (adData) {
             if (config.subjectField && (!adData[config.subjectField] || adData[config.subjectField].toLowerCase().includes("subject") || adData[config.subjectField].trim().length < 5)) {
                 adData[config.subjectField] = finalSubject;
@@ -396,21 +364,11 @@ export async function POST(req: NextRequest) {
         const filename = `gen-${Date.now()}.json`;
         await promptService.savePrompt({ name: filename, type: mode, content: adData });
 
-        const phase1Provider = refinedText && !refinementError ? "Gemini-1.5-Flash" : "Groq-Llama-3";
-        const phase2Provider = adData && !generationError ? "Gemini-1.5-Flash" : "Groq-Llama-3";
-        const activeProvider = (phase1Provider.includes("Gemini") && phase2Provider.includes("Gemini")) ? "Gemini-System-Elite (Fast-Tracked)" : `Fallback-Active (${phase1Provider}/${phase2Provider})`;
-
-        console.log(`[ENGINE] Latency Optimization: Done | Provider: ${activeProvider}`);
-        if (refinementError || generationError) {
-            console.warn(`[ENGINE] WARNING: Quota or API Error occurred. Falling back to secondary core.`, { refinementError: refinementError?.message, generationError: generationError?.message });
-        }
-
         return ResponseManager.success({
             data: adData,
             refinedPrompt: finalBriefForJson,
             promptFile: filename,
             folder: mode + "_prompts",
-            activeProvider,
             providerHistory
         });
 
