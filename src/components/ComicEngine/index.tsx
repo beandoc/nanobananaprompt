@@ -369,8 +369,30 @@ export function ComicEngine({
                             <div key={pIdx} className="space-y-8 md:space-y-12">
                                 <div className="flex items-center gap-4 md:gap-6 px-2 md:px-4">
                                     <div className="h-px bg-slate-200 flex-1" />
-                                    <div className="px-4 md:px-6 py-1.5 md:py-2 bg-slate-900 text-white rounded-xl md:rounded-2xl text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.4em]">
-                                        Page {page.page_number || pIdx + 1}
+                                    <div className="flex flex-col md:flex-row items-center gap-4">
+                                        <div className="px-4 md:px-6 py-1.5 md:py-2 bg-slate-900 text-white rounded-xl md:rounded-2xl text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.4em]">
+                                            Page {page.page_number || pIdx + 1}
+                                        </div>
+                                        <button 
+                                            onClick={() => {
+                                                const pageBlueprint = {
+                                                    comic_title: comicTitle,
+                                                    page_number: page.page_number || pIdx + 1,
+                                                    cast_of_characters: castOfCharacters,
+                                                    visual_anchor: consistentCharacter,
+                                                    art_style: artStyle,
+                                                    panels: page.panels
+                                                };
+                                                handleCopy(JSON.stringify(pageBlueprint, null, 2), `page-json-${pIdx}`);
+                                            }}
+                                            className={cn(
+                                                "flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all border",
+                                                copySuccess === `page-json-${pIdx}` ? "bg-emerald-500 text-white border-emerald-400" : "bg-white text-slate-500 border-slate-200 hover:border-indigo-200 hover:text-indigo-600"
+                                            )}
+                                        >
+                                            {copySuccess === `page-json-${pIdx}` ? <Check className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
+                                            {copySuccess === `page-json-${pIdx}` ? 'Blueprint Copied!' : 'Copy Page Blueprint'}
+                                        </button>
                                     </div>
                                     <div className="h-px bg-slate-200 flex-1" />
                                 </div>
