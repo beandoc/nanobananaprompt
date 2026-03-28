@@ -88,8 +88,9 @@ const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
         { label: "[PRO] Character Model Sheet", value: "Official character model sheet matrix: Frontal, 1/3, and profile poses. High-fidelity modern anime lineart. Uniform lighting and studio neutral gray environment.", description: "A professional character reference sheet showing front, side, and 3/4 views." }
     ],
     comic: [
-        { label: "Golden Age Sequential", value: "Golden Age comic style, vibrant primary colors, heavy ink outlines, ben-day dots", description: "Classic 1950s comic aesthetic with Ben-Day dots and vibrant primary colors." },
-        { label: "Modern Graphic Novel", value: "Modern graphic novel, cinematic framing, painterly digital textures, sophisticated palettes", description: "Painterly digital textures with moody lighting and cinematic framing." },
+        { label: "Golden Age Sequential", value: "golden-age", description: "Classic 1950s comic aesthetic with Ben-Day dots and vibrant primary colors." },
+        { label: "Modern Graphic Novel", value: "modern-graphic-novel", description: "Painterly digital textures with moody lighting and cinematic framing." },
+        { label: "[PRO] Marvel Hero Project", value: "marvel-hero-project", description: "High-end Marvel-style superhero aesthetic: vibrant primary colors, dynamic perspective, and cinematic action posing.", previewUrl: "/previews/marvel-hero-project.jpg" },
         { label: "[PRO] Dual Exposure Grid", value: "Complex dual exposure photo-grid composite. Silhouette acting as a vessel for action-shot photo mosaic grid. Halftone dots and mixed-media textures.", description: "A sophisticated silhouette-based mosaic grid with mixed-media textures." }
     ],
     storyboard: [

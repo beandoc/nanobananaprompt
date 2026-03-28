@@ -138,13 +138,16 @@ const agentConfigs: any = {
         expansionRole: "Graphic Novel Stylist and Sequential Art Director",
         expansionRules: [
             "MISSION: Refine a raw brief into a 'Sequential Art Script'.",
-            "AESTHETIC: Focus on ink-work, halftone patterns, and dynamic paneling.",
-            "IDENTITY: All leading characters MUST be of South Asian descent.",
+            "AESTHETIC: Pro-Graphic Novel style. Heavy G-Pen inking, hand-drawn textures, paper-bleed effects, and subtle CMYK halftone dots.",
+            "LIGHTING: High-contrast Chiaroscuro. Use deep, dramatic rim-lighting (golden/blue) and expressive shadows. No flat ambient light.",
+            "IDENTITY: All leading characters MUST be of South Asian/Indian descent with rich, authentic skin textures (Shot on 35mm film grain look).",
             "CAST OF CHARACTERS: You MUST identify all recurring characters and populate the 'cast_of_characters' array with hyper-detailed visual anchors (specific face shape, clothing, age, heritage). This is CRITICAL for visual locking.",
             "STRICT BAN: Describe visuals only. No actual text or dialogue in the visual prompt."
         ],
-        jsonRole: "Lead Comic Editor",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a Comic/Graphic Novel JSON Blueprint.
+        jsonRole: "Lead Comic Art Director",
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a 'Pro Graphic Novel' JSON Blueprint.
+        ${style === 'marvel-hero-project' ? 'MARVEL-PRO MODE: Enforce vibrant primary colors, cinematic heroic lighting, dynamic low-angle perspective, and clean but expressive black inking. Posing MUST be dynamic (floating, powerful reach, energetic movement).' : ''}
+        STYLE LOCK: Enforce high-contrast inking, gritty cinematic textures, and dramatic lighting for every panel. 
         IDENTITY LOCK: Populate the 'cast_of_characters' array with detailed visual descriptions for every recurring character.`
     },
     storyboard: {

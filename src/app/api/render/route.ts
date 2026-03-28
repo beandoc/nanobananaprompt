@@ -45,7 +45,10 @@ export async function POST(req: NextRequest) {
                 VISUALS: ${va.textures || ""}, ${va.lighting || ""}. 
                 STYLE: ${promptData.illustration_style}. NO TEXT, NO LABELS. NATURE/NEJM STANDARD.`;
             } else if (mode === "comic") {
-                visualPrompt = `${identityLock} COMIC PANEL ILLUSTRATION: ${promptData.characters}. ACTION: ${promptData.action}. SETTING: ${promptData.background}. STYLE: ${promptData.art_style || "Modern Graphic Novel"}.`;
+                const styleSpecifics = promptData.art_style === "marvel-hero-project" 
+                    ? "Marvel Hero Project style: vibrant superhero colors, dynamic cinematic lighting, clean but expressive black inking, heroic perspective." 
+                    : promptData.art_style || "Modern Graphic Novel";
+                visualPrompt = `${identityLock} COMIC PANEL ILLUSTRATION: ${promptData.characters}. ACTION: ${promptData.action}. SETTING: ${promptData.background}. STYLE: ${styleSpecifics}.`;
             } else {
                 visualPrompt = `${identityLock} HIGH-QUALITY ${mode.toUpperCase()} ILLUSTRATION: ${JSON.stringify(promptData)}.`;
             }
