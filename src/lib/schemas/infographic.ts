@@ -101,7 +101,29 @@ export const infographicSchema = {
         symmetry_enforced: { type: "boolean", default: true },
         max_words_per_panel: { type: "number", default: 10 }
       }
+    },
+
+    // ── DIFFUSION AESTHETIC DIRECTIVES (To fix Gemini vs DALL-E Gap) ──
+    diffusion_aesthetic: {
+      type: "object",
+      description: "Explicit prompts to force high-fidelity 3D scholarly aesthetics in diffusion models (Nano Banana/Gemini).",
+      properties: {
+        global_style: { 
+          type: "string", 
+          description: "e.g., 'Hyper-realistic scholarly medical illustration, print-grade CMYK, macroscopic textures'" 
+        },
+        iconography_style: { 
+          type: "string", 
+          description: "e.g., 'Detailed 3D renders with subsurface scattering, fluid condensation, soft studio lighting. STRICTLY NO FLAT VECTOR UI.'"
+        },
+        negative_prompt: { 
+          type: "string", 
+          description: "e.g., 'Flat UI, vector, clipart, corporate dashboard, wireframe, app mockups'" 
+        }
+      },
+      required: ["global_style", "iconography_style", "negative_prompt"]
     }
   },
-  required: ["title", "panels", "conclusion_banner"]
+  required: ["title", "panels", "conclusion_banner", "diffusion_aesthetic"]
 };
+

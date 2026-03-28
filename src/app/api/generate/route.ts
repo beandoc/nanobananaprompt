@@ -162,36 +162,36 @@ const agentConfigs: any = {
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a detailed multi-scene Storyboard JSON Blueprint.`
     },
     infographic: {
-        expansionRole: "Principal Medical Illustrator and Scientific Director (Sovereign 18.0)",
+        expansionRole: "Lead Publication Art Director & Scientific Illustrator (Sovereign 22.0 Texture Forcing)",
         expansionRules: [
-            "ACT AS A PRINCIPAL MEDICAL ILLUSTRATOR AND SCIENTIFIC DIRECTOR.",
-            "FOLLOW THE NEJM DONANEMAB/FLOW SCHOLARLY STANDARDS.",
-            "1. COUPLED NARRATIVE: Interventions and outcomes MUST be visually locked in the same vertical column.",
-            "2. PRIMARY ENDPOINT: Anchor the central clinical target in the primary_endpoint_headline.",
-            "3. SINGLE ACCENT LAW: Use only ONE accent color (e.g. #1A365D). No secondary colors.",
-            "4. CLINICAL ICON PRECISION: Use 'IV_Bag', 'Steroid_Vial', 'Pill', 'Infusion', 'Vial', 'Patient_Group'.",
-            "5. NEUTRAL INFERENCE: Conclusions must be neutral clinical facts. Avoid 'significantly', 'markedly', or 'dramatically'.",
-            "6. 10-WORD VERDICT: Final conclusion must be strictly 5-10 words."
+            "AESTHETIC LAW: ABANDON FLAT DIGITAL UI. Force the aesthetic of a HIGH-FIDELITY PHYSICAL SCHOLARLY PLATE.",
+            "1. TEXTURE: Explicitly specify 'Heavy Paper Grain', 'Creamy Parchment Base', and 'Subtle Offset-Ink Bleed'.",
+            "2. COLOR: Use 'Deep Matte Scholarly Navy' (#0A1F44) and 'Rich Clinical Gold' (#C5A059). Banish digital-grey.",
+            "3. LIGHTING: Enforce 'Cinematic Rim-Lighting' and 'Global Illumination' with realistic shadows for all 3D medical hero objects.",
+            "4. 3D HERO ASSETS: Describe all vials, pills, and IV-bags with 'Subsurface Scattering', 'Realistic Condensation', and 'Macro-Photography Depth of Field'.",
+            "5. NO VECTOR LOOK: Ban words like 'flat', 'clean', 'UI', 'dashboard', 'minimalist'. Use 'Classical', 'High-Impact', 'Masterpiece', 'Filmic'."
         ],
-        jsonInstructions: (style: string) => `### SOVEREIGN 18.0 COUPLED NARRATIVE PROTOCOL
-        1. THE NARRATIVE COLUMN: Your 'panels' MUST couple the treatment and its result. Type 'coupled_outcome' is mandatory.
-        2. NEUTRALITY LAW: Your 'conclusion_banner.text' must be a neutral inference (e.g. 'No difference in mortality found').
-        3. EXPLICIT SCALING: All 'coupled_outcome' units MUST include a 'scale' (e.g. '0_to_40_percent').
-        4. PRIMARY SIGNAL: Set 'primary: true' for the central analytic result in the outcome panel.
+        jsonInstructions: (style: string) => `### SOVEREIGN 22.0 TEXTURE-FORCING PROTOCOL
+        1. THE NARRATIVE COLUMN: You MUST couple the treatment and its result. Type 'coupled_outcome' is mandatory.
+        2. AESTHETIC DIRECTIVE: Populate the 'diffusion_aesthetic' block with AGGRESSIVE textural descriptors. 
+        3. GLOBAL STYLE: Use 'High-fidelity physical print plate on textured fine-art paper, 8K, cinematic macro photography, hyper-detailed 3D clinical models, deep scholarly palette'.
         
         ### 10/10 JSON TEMPLATE (COUPLED NARRATIVE):
         {
-          "title": "Balanced Solutions vs. Saline in Critically Ill Adults",
-          "primary_endpoint_headline": { "text": "Death or Renal-Replacement Therapy at Day 90" },
+          "title": "Empagliflozin in Patients with Chronic Kidney Disease",
+          "primary_endpoint_headline": { "text": "Progression of Kidney Disease or CV Death" },
           "panels": [
-            { "id": "population", "position": "left", "header": "PARTICIPANTS", "content": [{ "type": "icon_stat", "value": "5037", "label": "Adults in the ICU requiring fluid resuscitation", "icon": "Patient_Group" }] },
-            { "id": "arm_1", "position": "center", "header": "BALANCED SOLUTION", "content": [{ "type": "allocation_block", "n": "2515", "icon": "Infusion" }, { "type": "coupled_outcome", "primary": true, "outcome_value": "21.8%", "sub_stat": "N=548", "visual_type": "proportional_bars", "scale": "0_to_30_percent", "label": "Death at 90 days" }] },
-            { "id": "arm_2", "position": "right", "header": "SALINE", "content": [{ "type": "allocation_block", "n": "2522", "icon": "Vial" }, { "type": "coupled_outcome", "primary": true, "outcome_value": "22.0%", "sub_stat": "N=556", "visual_type": "proportional_bars", "scale": "0_to_30_percent", "label": "Death at 90 days" }] }
+            { "id": "population", "position": "left", "header": "PARTICIPANTS", "content": [{ "type": "icon_stat", "value": "6609", "label": "Adults in the ICU", "icon": "Patient_Group" }] },
+            { "id": "arm_1", "position": "center", "header": "EMPAGLIFLOZIN", "content": [{ "type": "allocation_block", "n": "3304", "icon": "Infusion" }, { "type": "coupled_outcome", "primary": true, "outcome_value": "13.1%", "sub_stat": "N=432", "visual_type": "proportional_bars", "scale": "0_to_30_percent", "label": "Death at 90 days" }] }
           ],
-          "conclusion_banner": { "text": "No significant difference in clinical outcomes between solutions" }
+          "diffusion_aesthetic": {
+            "global_style": "High-fidelity physical print plate on textured fine-art heavy parchment paper, 8K, cinematic macro photography, deep matte navy shadows, rich clinical gold accents",
+            "iconography_style": "Every medical icon (vials, pills) must be a high-fidelity 3D model with subsurface scattering, realistic reflections, and macroscopic detail. Surround objects with subtle ink-grain textures.",
+            "negative_prompt": "Flat UI, vector graphics, clipart, 2D dashboard, corporate blue, wireframes, digital-grey, clean edges, plastic UI"
+          }
         }
         
-        STYLE AUTHORITY: Follow the ${style} standard. Zero decorative noise. Pure clinical flow.`,
+        STYLE AUTHORITY: Follow the ${style} standard. Zero digital-grey noise, targeted 3D realism, heavy physical textures.`,
         subjectField: "title"
     }
 };

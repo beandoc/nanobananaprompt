@@ -256,9 +256,33 @@ export interface BlueprintData {
     };
     citation?: {
         authors: string;
+        authors_short?: string;
         doi?: string;
         abstract_credit?: string;
     };
+
+    // Sovereign 21.0: NEJM Visual Abstract fields
+    journal_style?: string;
+    primary_endpoint_headline?: { text: string };
+    color_system?: { accent?: string; neutral_light?: string };
+    canvas?: { grid_type?: string; column_width_ratio?: number[] };
+    results_grid?: {
+        metrics?: {
+            label: string;
+            primary?: boolean;
+            values: { outcome_value: string; sub_stat?: string }[];
+            effect?: string;
+            p_value?: string;
+        }[];
+    };
+    interpretation_belt?: { text: string };
+    conclusion_banner?: { text: string };
+    diffusion_aesthetic?: {
+        global_style?: string;
+        iconography_style?: string;
+        negative_prompt?: string;
+    };
+    rendering_rules?: { symmetry_enforced?: boolean; max_words_per_panel?: number };
 
     // Common
     keywords?: string[];

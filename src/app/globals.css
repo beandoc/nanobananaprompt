@@ -43,7 +43,34 @@ html, body {
 }
 
 body {
-  background: #f1f5f9;
-  color: #1e293b;
+  background: #f8fafc;
+  color: #0f172a;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Masterpiece Grain Overlay */
+.paper-texture {
+  background-color: #ffffff;
+  background-image: url("https://www.transparenttextures.com/patterns/felt.png");
+  position: relative;
+}
+
+.paper-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(248, 250, 252, 0.05) 100%);
+  pointer-events: none;
+}
+
+.nejm-header-gradient {
+  background: linear-gradient(180deg, #1A365D 0%, #2D3748 100%);
+}
+
+.nejm-sub-gradient {
+  background: linear-gradient(180deg, #EDF2F7 0%, #E2E8F0 100%);
+}
+
+.icon-3d-shadow {
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.05));
 }

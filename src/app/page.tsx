@@ -297,7 +297,7 @@ export default function Home() {
                 />
               )}
 
-              {result?.data?.panels && (
+              {result?.data?.panels && !result?.data?.journal_style && (
                 <MangaEngine
                   mangaSubject={result.data.manga_subject || ""}
                   panels={result.data.panels}
@@ -307,7 +307,7 @@ export default function Home() {
                 />
               )}
 
-              {(result?.data?.cohort || result?.data?.results) && (
+              {(result?.data?.journal_style || result?.data?.results_grid || result?.data?.cohort || result?.data?.canvas) && (
                 <InfographicEngine
                   data={result.data}
                 />
