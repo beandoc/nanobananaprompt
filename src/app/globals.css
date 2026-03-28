@@ -1,8 +1,13 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,800;1,400;1,800&display=swap');
 
+/* Sovereign 13.0 Medical Poster Master-Sheet */
 :root {
-  --background: #020617;
-  --foreground: #f8fafc;
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --nejm-blue: #1e3a8a;
+  --nejm-teal: #008b8b;
+  --nejm-gold: #c5a059;
 }
 
 @theme inline {
@@ -10,31 +15,35 @@
   --color-foreground: var(--foreground);
 }
 
+.scholarly-serif {
+  font-family: 'EB Garamond', ui-serif, Georgia, serif;
+  font-feature-settings: "kern" 1, "liga" 1, "pnum" 1, "tnum" 1, "onum" 1, "lnum" 1, "dlig" 1;
+  letter-spacing: -0.01em;
+}
+
+.print-shading {
+  background: white;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.triptych-shading {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 1) 100%);
+}
+
+.nejm-belt {
+  background: #27272a;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
 html, body {
   overflow-x: hidden;
   scroll-behavior: smooth;
+  background: #f1f5f9;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: #f1f5f9;
+  color: #1e293b;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.2);
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.4);
 }

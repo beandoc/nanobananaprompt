@@ -162,34 +162,37 @@ const agentConfigs: any = {
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a detailed multi-scene Storyboard JSON Blueprint.`
     },
     infographic: {
-        expansionRole: "Principal Scientific Infographic Architect and Editorial Data Journalist (NotebookLM Gold Standard)",
+        expansionRole: "Principal Medical Illustrator and Scientific Director (Sovereign 18.0)",
         expansionRules: [
-            "MISSION: Transform the brief into a publication-ready, magazine-quality 'Sovereign Infographic Blueprint'. Output must rival Google NotebookLM and Nature magazine visual data journalism.",
-            "1. POSTER STATISTIC: You MUST identify a single dominant, poster-scale statistic or finding from the brief (e.g. '10 Million Indians affected', '37% mortality reduction'). This becomes the 'global_stat_callout'.",
-            "2. PULL QUOTES: Extract 2-3 powerful, short soundbites from the brief that can be rendered as large pull-quotes across the layout. They must feel like expert consensus or breakthrough findings.",
-            "3. CENTRAL HERO METAPHOR: MANDATORY - Define a SINGLE powerful central visual (e.g. 'A cross-sectioned human kidney divided into 6 dietary quadrants', 'A glowing human silhouette with gut microbiome rivers'). All sections orbit this.",
-            "4. SPATIAL MAPPING (x_percent, y_percent): MANDATORY - For every section, assign a logical coordinate (0-100) on where it is 'pinned' on the central hero metaphor. (e.g. If the hero is a kidney, the 'Vegetables' section might be at x=20, y=30; 'Protein' at x=70, y=40).",
-            "5. COLOR-CODED ZONES: Each section MUST have a distinct hex color code for its section zone. Use a harmonious palette (e.g. warm terracotta for risk factors, cool teal for protective factors, amber for mechanisms).",
-            "6. CALLOUT ARCHETYPES: MANDATORY - You MUST assign a callout_type to each section: 'stat-hero' for sections with big numbers, 'comparison-table' for Before/After or East/West contrasts, 'myth-vs-fact', 'process-steps' for mechanisms, 'evidence-list' for research findings, 'risk-spectrum' for gradient risk data.",
-            "7. NARRATIVE DENSITY: Each section's 'detailed_narrative' MUST be 2+ sentences explaining the WHY and HOW. The 'annotations' array MUST have 3-5 specific, data-rich bullets.",
-            "8. STAT HIGHLIGHTS: Every major section needs a 'stat_highlight' with a specific number (e.g. '↓30%', '850mg/day', '3x risk').",
-            "9. PROCESS STEPS: For mechanism sections, use 'process_steps' with a numbered causal chain (e.g. 'Dietary fiber → Butyrate production → Colonocyte fuel → Reduced inflammation').",
-            "10. COMPARISON DATA: For before/after or east/west sections, populate 'comparison' with contrasting values.",
-            "11. HERO INTEGRATION: Describe how items are physically integrated INTO the central diagram, not placed beside it.",
-            "12. WATERCOLOR AESTHETICS: BAN '3D', 'Plasticine', 'Uniform vector'. Enforce 'Rough watercolor paper', 'Candid sketchbook bleed', 'Hand-drawn ink sketch', 'Soft graphite annotations'.",
-            "13. IDENTITY: All human representations MUST be of Indian/South Asian descent.",
-            "14. SCIENTIFIC CREDIBILITY: Add a 'footer_methodology' with a brief reference note to anchor the infographic scientifically.",
-            "15. EDITION TAG: Add a short editorial tag (e.g. 'Kidney Health Special Report') to the 'edition_tag' field."
+            "ACT AS A PRINCIPAL MEDICAL ILLUSTRATOR AND SCIENTIFIC DIRECTOR.",
+            "FOLLOW THE NEJM DONANEMAB/FLOW SCHOLARLY STANDARDS.",
+            "1. COUPLED NARRATIVE: Interventions and outcomes MUST be visually locked in the same vertical column.",
+            "2. PRIMARY ENDPOINT: Anchor the central clinical target in the primary_endpoint_headline.",
+            "3. SINGLE ACCENT LAW: Use only ONE accent color (e.g. #1A365D). No secondary colors.",
+            "4. CLINICAL ICON PRECISION: Use 'IV_Bag', 'Steroid_Vial', 'Pill', 'Infusion', 'Vial', 'Patient_Group'.",
+            "5. NEUTRAL INFERENCE: Conclusions must be neutral clinical facts. Avoid 'significantly', 'markedly', or 'dramatically'.",
+            "6. 10-WORD VERDICT: Final conclusion must be strictly 5-10 words."
         ],
-        jsonRole: "Master Infographic Director and Editorial Data Visualization Lead",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the refined brief into a full Sovereign Infographic JSON Blueprint.
-        MANDATORY FIELDS: You MUST populate: global_stat_callout, pull_quotes, color_palette.zone_colors, and for every section: x_percent, y_percent, callout_type, visual_weight, and stat_highlight.
-        HERO ICON SELECTION: You MUST select a 'hero_icon_id' from this list that best represents the subject: ('Heart' | 'Brain' | 'Wind' | 'Stethoscope' | 'Microscope' | 'Activity' | 'Shield' | 'Zap' | 'Leaf' | 'Sun' | 'Droplets' | 'FlaskConical' | 'Thermometer' | 'BrainCircuit' | 'Dna' | 'Bone' | 'Eye').
-        COORDINATE RULES: Assign specific x_percent (0-100) and y_percent (0-100) that realistically place the section's data point on the central hero diagram.
-        NARRATIVE DEPTH: detailed_narrative must be 2+ sentences per section. annotations must have 3-5 bullets per section.
-        STYLE AUTHORITY: Follow a ${style} watercolor/painterly aesthetic with soft blended colors and handwritten typography.
-        IDENTITY LOCK: South Asian heritage standard for any human elements.`,
-        subjectField: "scientific_subject"
+        jsonInstructions: (style: string) => `### SOVEREIGN 18.0 COUPLED NARRATIVE PROTOCOL
+        1. THE NARRATIVE COLUMN: Your 'panels' MUST couple the treatment and its result. Type 'coupled_outcome' is mandatory.
+        2. NEUTRALITY LAW: Your 'conclusion_banner.text' must be a neutral inference (e.g. 'No difference in mortality found').
+        3. EXPLICIT SCALING: All 'coupled_outcome' units MUST include a 'scale' (e.g. '0_to_40_percent').
+        4. PRIMARY SIGNAL: Set 'primary: true' for the central analytic result in the outcome panel.
+        
+        ### 10/10 JSON TEMPLATE (COUPLED NARRATIVE):
+        {
+          "title": "Balanced Solutions vs. Saline in Critically Ill Adults",
+          "primary_endpoint_headline": { "text": "Death or Renal-Replacement Therapy at Day 90" },
+          "panels": [
+            { "id": "population", "position": "left", "header": "PARTICIPANTS", "content": [{ "type": "icon_stat", "value": "5037", "label": "Adults in the ICU requiring fluid resuscitation", "icon": "Patient_Group" }] },
+            { "id": "arm_1", "position": "center", "header": "BALANCED SOLUTION", "content": [{ "type": "allocation_block", "n": "2515", "icon": "Infusion" }, { "type": "coupled_outcome", "primary": true, "outcome_value": "21.8%", "sub_stat": "N=548", "visual_type": "proportional_bars", "scale": "0_to_30_percent", "label": "Death at 90 days" }] },
+            { "id": "arm_2", "position": "right", "header": "SALINE", "content": [{ "type": "allocation_block", "n": "2522", "icon": "Vial" }, { "type": "coupled_outcome", "primary": true, "outcome_value": "22.0%", "sub_stat": "N=556", "visual_type": "proportional_bars", "scale": "0_to_30_percent", "label": "Death at 90 days" }] }
+          ],
+          "conclusion_banner": { "text": "No significant difference in clinical outcomes between solutions" }
+        }
+        
+        STYLE AUTHORITY: Follow the ${style} standard. Zero decorative noise. Pure clinical flow.`,
+        subjectField: "title"
     }
 };
 
@@ -207,7 +210,7 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const { mode = "medical", brief = "", style = "Watercolor-Field-Notes", isStoryboard = false, image = null, assetInstruction = "style", lightweight = false } = body;
-        const normalizedStyle = style && style !== "" && style !== "-" ? style : (mode === 'infographic' ? "Watercolor-Field-Notes" : (mode === 'medical' ? "NEJM" : "Modern"));
+        const normalizedStyle = style && style !== "" && style !== "-" ? style : (mode === 'infographic' ? "Nature-Gold-Standard" : (mode === 'medical' ? "NEJM" : "Modern"));
 
         if (!brief) return ResponseManager.badRequest("No brief provided");
 
@@ -228,13 +231,22 @@ export async function POST(req: NextRequest) {
         // --- PHASE 1: EXPANSION (STABILIZED) ---
         if (!lightweight) { 
             const atlasContext = mode === 'medical' ? atlasService.getAtlasContext(brief) : "";
-            const expansionSystemPrompt = `RULE 0 (CRITICAL): MEMORY PURGE. Flush previous anatomy. Focus EXCLUSIVELY on: ${brief.substring(0, 50)}...
-            ANATOMICAL BLACKLIST: "Foot-process", "Glomerulus", "Tumor core", "Sano Shunt".
-            You are a ${config.expansionRole}. Refine into high-fidelity scientific spec.
-            ${config.expansionRules.join('\n        ')}
-            STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
-            ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}
-            HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
+            const isInfographic = mode === 'infographic';
+            const expansionSystemPrompt = isInfographic 
+                ? `### ROLE: Principal Visual Abstract Director
+                Refine the user's brief into a high-fidelity 'Visual Abstract Design Specification'.
+                1. EXTRACT ALL CLINICAL DATA: Identify N-values, p-values, HR, CI, and primary results.
+                2. NEJM ARCHITECTURE: Organize into Cohort, Interventions, and Results.
+                3. NO TEXT BAN EXEMPTION: This is a text-heavy infographic. Preserve all numbers and metrics.
+                ${config.expansionRules.join('\n        ')}
+                STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}`
+                : `RULE 0 (CRITICAL): MEMORY PURGE. Flush previous anatomy. Focus EXCLUSIVELY on: ${brief.substring(0, 50)}...
+                ANATOMICAL BLACKLIST: "Foot-process", "Glomerulus", "Tumor core", "Sano Shunt".
+                You are a ${config.expansionRole}. Refine into high-fidelity scientific spec.
+                ${config.expansionRules.join('\n        ')}
+                STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
+                ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}
+                HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
 
             if (process.env.GEMINI_API_KEY) {
                 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -275,7 +287,7 @@ export async function POST(req: NextRequest) {
                             { role: "system", content: expansionSystemPrompt },
                             { role: "user", content: `REFINE THIS BRIEF: ${brief}` }
                         ],
-                        model: "llama-3.3-70b-versatile"
+                        model: "llama-3.1-8b-instant"
                     });
                     refinedText = completion.choices[0]?.message?.content?.trim() || "";
                     if (refinedText) providerHistory.push({ phase: "expansion", model: "groq-llama-3", status: "success" });
@@ -291,10 +303,10 @@ export async function POST(req: NextRequest) {
         const sanitizedStyleName = normalizedStyle.split(' ')[0].replace(/[-,]/g, '');
         
         const systemInstruction = lightweight ? `Return ONLY valid JSON for: "${mode}". SCHEMA: ${JSON.stringify(currentSchema)}` : 
-            `### ROLE: Ultimate Medical Art Director
+            `### ROLE: ${config.jsonRole}
+            ${config.jsonInstructions ? config.jsonInstructions(normalizedStyle) : ""}
             SCHEMA MANDATE: Return JSON strictly following: ${JSON.stringify(currentSchema)}
-            NEGATIVE BLOCK: No "Podocytes", "Glomerulus", "Sano Shunt".
-            NO TEXT LABELS. Academic renderable JSON only.`;
+            NO TEXT LABELS (This rule only applies to medical illustrations, ignore if mode is infographic).`;
 
         let adData: any = null;
         let generationError: Error | null = null;
@@ -341,7 +353,7 @@ export async function POST(req: NextRequest) {
                         { role: "system", content: systemInstruction + "\nSCHEMA:\n" + JSON.stringify(currentSchema) },
                         { role: "user", content: `JSON BLUEPRINT FOR: ${finalBriefForJson}` }
                     ],
-                    model: "llama-3.3-70b-versatile",
+                    model: "llama-3.1-8b-instant",
                     response_format: { type: "json_object" }
                 });
                 adData = JSON.parse(completion.choices[0]?.message?.content || "{}");

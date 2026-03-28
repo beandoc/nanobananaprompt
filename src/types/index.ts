@@ -226,67 +226,81 @@ export interface BlueprintData {
     comic_pages?: ComicPage[];
     scenes?: StoryboardScene[];
 
-    // Infographic fields
-    infographic_title?: string;
-    subtitle?: string;
-    edition_tag?: string;
-    aesthetic_style?: 'NEJM-Editorial' | 'BioRender-Technical' | 'Modern-Minimalist' | 'Painterly-Editorial' | 'Watercolor-Field-Notes' | 'Organic-Collage';
-    color_palette?: {
-        primary: string;
-        secondary: string;
+    // Visual Abstract / Poster fields
+    title?: string;
+    journal_or_conference?: string;
+    color_scheme?: {
+        title_bg: string;
+        title_text: string;
+        cohort_bg: string;
+        results_bg: string;
+        conclusion_bg: string;
         accent: string;
-        background: string;
-        zone_colors?: string[];
     };
-    layout_structure?: 'central-hero-diagram' | 'organic-flow' | 'hub-and-spoke' | 'anatomical-overlay' | 'editorial-magazine' | 'tiered-narrative';
-    central_visual_metaphor?: {
-        concept: string;
-        style?: string;
-        rendering_detail?: string;
-        dominant_element?: string;
-        hero_icon_id?: string;
+    cohort?: {
+        heading: string;
+        watermark_icon?: string;
+        items: VisualAbstractCohortItem[];
     };
-    global_stat_callout?: {
-        stat: string;
-        label: string;
-        source?: string;
+    methods?: {
+        heading: string;
+        items: VisualAbstractMethodItem[];
     };
-    pull_quotes?: Array<{
-        quote: string;
-        attribution?: string;
-    }>;
-    sections?: InfographicSection[];
-    directional_flow?: InfographicFlow[];
-    footer_methodology?: string;
+    results?: {
+        heading: string;
+        blocks: ResultBlock[];
+    };
+    conclusion?: {
+        heading: string;
+        text: string;
+    };
+    citation?: {
+        authors: string;
+        doi?: string;
+        abstract_credit?: string;
+    };
 
     // Common
     keywords?: string[];
 }
 
-export interface InfographicSection {
-    section_id: number;
-    headline: string;
-    visual_concept: string;
-    color_zone?: string;
-    callout_type?: 'stat-hero' | 'comparison-table' | 'process-steps' | 'evidence-list' | 'myth-vs-fact' | 'mechanism-explainer' | 'risk-spectrum';
-    detailed_narrative?: string;
-    stat_highlight?: { value: string; label: string; };
-    annotations?: string[];
-    key_data_points?: string[];
-    comparison?: { left_label: string; left_value: string; right_label: string; right_value: string; };
-    process_steps?: string[];
-    iconography?: string[];
-    spatial_anchor?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center-left' | 'center-right' | 'floating-overlap' | 'full-width-band';
-    visual_weight?: 'hero' | 'major' | 'minor';
-    x_percent?: number;
-    y_percent?: number;
+export interface VisualAbstractCohortItem {
+    icon_id: string;
+    text: string;
+    emphasis?: string;
 }
 
-export interface InfographicFlow {
-    from_section_id: number;
-    to_section_id: number;
-    relationship_type: 'leads_to' | 'inhibits' | 'enhances' | 'compares_to' | 'causes' | 'prevents';
-    flow_label?: string;
+export interface VisualAbstractMethodItem {
+    icon_id: string;
+    technique: string;
+    detail?: string;
+}
+
+export interface ResultBlock {
+    block_type: 'comparison_table' | 'stat_cards' | 'icon_text_pairs' | 'key_finding' | 'venn_overlap' | 'versus_grid' | 'mechanism_cycle';
+    block_title?: string;
+    table_data?: {
+        column_headers: string[];
+        rows: Array<{ label: string; values: string[]; p_value?: string }>;
+    };
+    stat_cards?: Array<{ label: string; value: string; color?: string }>;
+    icon_pairs?: Array<{ icon_id: string; text: string; stat?: string }>;
+    finding_text?: string;
+    finding_stat?: string;
+    finding_subtext?: string;
+    venn_data?: {
+        circles: Array<{ label: string; value: string; color?: string }>;
+        overlap_label?: string;
+    };
+    versus_grid?: {
+        arms: Array<{ name: string; n: string; icon_id?: string }>;
+        metrics: Array<{ label: string; values: string[]; p_value?: string }>;
+        verdict_tag?: string;
+    };
+    mechanism_cycle?: {
+        steps: Array<{ label: string; icon_id: string }>;
+        is_circular: boolean;
+    };
 }
 
 export interface MangaPanel {

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, Microscope, Layers, Zap, Stethoscope, Camera, History, LogOut } from "lucide-react";
+import { Sparkles, Microscope, Layers, Zap, Stethoscope, Camera, History, LogOut, BookOpen } from "lucide-react";
 import { Tooltip } from "../Shared/Tooltip";
 import { Mode } from "@/types";
 import { cn } from "@/lib/utils";
@@ -123,7 +123,7 @@ export function Header({ mode, setMode, setShowLibrary, onLogout }: HeaderProps)
                                 <Zap className="w-3 md:w-3.5 h-3 md:h-3.5 text-amber-500" /> <span className="hidden xs:inline">Food</span><span className="xs:hidden">Food</span>
                             </button>
                         </Tooltip>
-                        <Tooltip content="Switch to Infographic mode for complex data visualization.">
+                        <Tooltip content="Switch to Visual Abstract mode for 1-page academic posters and study summaries.">
                             <button
                                 onClick={() => setMode("infographic")}
                                 className={cn(
@@ -131,7 +131,7 @@ export function Header({ mode, setMode, setShowLibrary, onLogout }: HeaderProps)
                                     mode === "infographic" ? "bg-white text-indigo-600 shadow-md border border-slate-200/60" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                                 )}
                             >
-                                <Zap className="w-3 md:w-3.5 h-3 md:h-3.5 text-indigo-500" /> <span className="hidden xs:inline">Infographic</span><span className="xs:hidden">Info</span>
+                                <BookOpen className="w-3 md:w-3.5 h-3 md:h-3.5 text-indigo-500" /> <span className="hidden xs:inline">Visual Abstract</span><span className="xs:hidden">Poster</span>
                             </button>
                         </Tooltip>
                     </div>

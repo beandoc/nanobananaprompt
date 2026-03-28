@@ -100,12 +100,10 @@ const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
         { label: "Explosive Splash", value: "high-speed liquid splash crown, levitating ingredients, micro-condensation 'chilled sweat', 1/8000s freeze.", description: "Ultra-high-speed culinary photography with stunning liquid physics.", previewUrl: "/previews/food-explosive-splash.png" }
     ],
     infographic: [
-        { label: "NEJM Editorial", value: "NEJM-Editorial", description: "Clean, academic style with muted palettes and clear hierarchy.", previewUrl: "/previews/nejm-infographic.png" },
-        { label: "BioRender Technical", value: "BioRender-Technical", description: "Technical scientific illustration with bold icons and vibrant signaling pathways." },
-        { label: "Modern Minimalist", value: "Modern-Minimalist", description: "Clean, flat design with high contrast and geometric layouts." },
-        { label: "Painterly Editorial", value: "Painterly-Editorial", description: "Artistic, hand-painted style with rich textures and soft, blended colors." },
-        { label: "Watercolor Field Notes", value: "Watercolor-Field-Notes", description: "Hand-drawn sketch look with soft watercolor washes and handwritten-style labels." },
-        { label: "Organic Collage", value: "Organic-Collage", description: "A sticker-book aesthetic with elements appearing 'taped' or 'pinned' around a central hero." }
+        { label: "CJASN Blue Standard", value: "CJASN-Blue-Standard", description: "Clean blue/white grid. Academic and readable. Structured column layout." },
+        { label: "WCN-Style (Clinical)", value: "WCN-Clinical", description: "Dark navy title bar with rich color-coded metric cards. Optimized for WCN conferences." },
+        { label: "NEJM Minimal", value: "NEJM-Minimal", description: "Ultra-clean, minimal color. White background, thin borders, high typographic focus." },
+        { label: "Nature Bold", value: "Nature-Bold", description: "High contrast deep navy with gold or clinical teal accents. Premium data-dense layout." }
     ]
 };
 

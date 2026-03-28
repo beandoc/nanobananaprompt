@@ -307,7 +307,7 @@ export default function Home() {
                 />
               )}
 
-              {result?.data?.sections && (
+              {(result?.data?.cohort || result?.data?.results) && (
                 <InfographicEngine
                   data={result.data}
                 />
