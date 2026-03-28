@@ -17,8 +17,18 @@ export async function POST(req: NextRequest) {
 
         // Construct the ultimate generation prompt
         // IF we have a refined prompt, it is the ABSOLUTE authority
-        // BUT we prepend a Hard Identity Lock to ensure Flux doesn't ignore the patient.
-        const identityLock = "[CORE VISUAL ANCHOR: A ghosted clinical silhouette of an Indian patient with warm South Asian features in the background background]";
+        // BUT we prepend a Hard Identity Lock to ensure Flux doesn't ignore the patient/character.
+        let identityLock = "[CORE VISUAL ANCHOR: A ghosted clinical silhouette of an Indian patient with warm South Asian features in the background]";
+        
+        if (mode !== "medical") {
+            const charDesc = promptData?.consistent_character || promptData?.consistent_character_description;
+            if (charDesc) {
+                identityLock = `[CORE VISUAL ANCHOR: ${charDesc}. Must be Indian/South Asian descent with authentic features.]`;
+            } else {
+                identityLock = "[CORE VISUAL ANCHOR: High-fidelity South Asian characters with consistent features]";
+            }
+        }
+
         let visualPrompt = refinedPrompt ? `${identityLock} ${refinedPrompt}` : "";
         
         if (!visualPrompt) {
@@ -28,6 +38,8 @@ export async function POST(req: NextRequest) {
                 LAYOUT: ${promptData.layout_composition}. 
                 VISUALS: ${va.textures || ""}, ${va.lighting || ""}. 
                 STYLE: ${promptData.illustration_style}. NO TEXT, NO LABELS. NATURE/NEJM STANDARD.`;
+            } else if (mode === "comic") {
+                visualPrompt = `${identityLock} COMIC PANEL ILLUSTRATION: ${promptData.characters}. ACTION: ${promptData.action}. SETTING: ${promptData.background}. STYLE: ${promptData.art_style || "Modern Graphic Novel"}.`;
             } else {
                 visualPrompt = `${identityLock} HIGH-QUALITY ${mode.toUpperCase()} ILLUSTRATION: ${JSON.stringify(promptData)}.`;
             }
