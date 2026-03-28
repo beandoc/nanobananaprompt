@@ -277,6 +277,50 @@ export interface BlueprintData {
     };
     interpretation_belt?: { text: string };
     conclusion_banner?: { text: string };
+    
+    // Sovereign 28.0: Advanced Data-Viz Components
+    forest_plot?: {
+        heading?: string;
+        studies: {
+            name: string;
+            value: number;
+            ci_low: number;
+            ci_high: number;
+            weight?: number;
+        }[];
+        pooled_effect?: {
+            value: number;
+            ci_low: number;
+            ci_high: number;
+        };
+        heterogeneity?: {
+            i_squared: string;
+            p_value: string;
+        };
+    };
+    
+    survival_curve?: {
+        heading?: string;
+        time_unit: string;
+        max_time: number;
+        groups: {
+            name: string;
+            points: { t: number; y: number }[];
+            color?: string;
+        }[];
+        at_risk_data?: {
+            time_points: number[];
+            groups: {
+                name: string;
+                values: number[];
+            }[];
+        };
+        hazard_ratio?: {
+            value: string;
+            ci: string;
+        };
+    };
+
     diffusion_aesthetic?: {
         global_style?: string;
         iconography_style?: string;
