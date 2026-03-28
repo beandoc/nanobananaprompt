@@ -21,11 +21,17 @@ export async function POST(req: NextRequest) {
         let identityLock = "[CORE VISUAL ANCHOR: A ghosted clinical silhouette of an Indian patient with warm South Asian features in the background]";
         
         if (mode !== "medical") {
-            const charDesc = promptData?.consistent_character || promptData?.consistent_character_description;
-            if (charDesc) {
-                identityLock = `[CORE VISUAL ANCHOR: ${charDesc}. Must be Indian/South Asian descent with authentic features.]`;
+            const cast = promptData?.cast_of_characters;
+            if (Array.isArray(cast) && cast.length > 0) {
+                const combinedCast = cast.map((c: any) => `${c.name}: ${c.description}`).join(". ");
+                identityLock = `[CORE VISUAL ANCHOR: ${combinedCast}. Must be Indian/South Asian descent with authentic features.]`;
             } else {
-                identityLock = "[CORE VISUAL ANCHOR: High-fidelity South Asian characters with consistent features]";
+                const charDesc = promptData?.consistent_character || promptData?.consistent_character_description;
+                if (charDesc) {
+                    identityLock = `[CORE VISUAL ANCHOR: ${charDesc}. Must be Indian/South Asian descent with authentic features.]`;
+                } else {
+                    identityLock = "[CORE VISUAL ANCHOR: High-fidelity South Asian characters with consistent features]";
+                }
             }
         }
 

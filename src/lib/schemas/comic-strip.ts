@@ -10,9 +10,22 @@ export const comicStripSchema: Schema = {
             type: SchemaType.STRING,
             description: "A brief summary of the story being told in this strip."
         },
+        cast_of_characters: {
+            type: SchemaType.ARRAY,
+            description: "List of all recurring characters with highly detailed visual anchors to ensure identity locking across all panels.",
+            items: {
+                type: SchemaType.OBJECT,
+                properties: {
+                    name: { type: SchemaType.STRING, description: "Character name or ID (e.g., 'Character Subject A', 'Grandmother')." },
+                    description: { type: SchemaType.STRING, description: "Hyper-detailed physical description (e.g., 'Indian male, mid-30s, sharp jawline, messy hair, wearing a worn grey trench coat')." },
+                    role: { type: SchemaType.STRING, description: "Role in the story (e.g., 'Protagonist', 'Mentor')." }
+                },
+                required: ["name", "description"]
+            }
+        },
         consistent_character: {
             type: SchemaType.STRING,
-            description: "Define the core visual anchor (e.g., 'Character Subject A: Indian male, mid-30s, sharp jawline, messy hair, wearing a worn grey trench coat'). This ensures identity locking across all panels."
+            description: "A summary string of all characters (legacy support for simple renders)."
         },
         art_style: {
             type: SchemaType.STRING,

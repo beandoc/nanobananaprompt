@@ -27,6 +27,7 @@ interface ComicEngineProps {
     pacingEnergy?: string;
     productionCredits?: string;
     consistentCharacter?: string;
+    castOfCharacters?: Array<{ name: string; description: string; role?: string }>;
     handleCopy: (text: string, id: string) => void;
     onRender?: (data: any) => void;
     copySuccess: string | null;
@@ -45,6 +46,7 @@ export function ComicEngine({
     pacingEnergy,
     productionCredits,
     consistentCharacter,
+    castOfCharacters = [],
     handleCopy,
     onRender,
     copySuccess
@@ -257,6 +259,37 @@ export function ComicEngine({
                                 </button>
                             </div>
                         </div>
+
+                        {/* Cast of Characters Tray */}
+                        {(castOfCharacters.length > 0 || consistentCharacter) && (
+                            <div className="space-y-4 pt-4 border-t border-slate-100">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 flex items-center gap-2">
+                                    <Users className="w-3 h-3" /> Cast of Characters
+                                </label>
+                                <div className="space-y-3">
+                                    {castOfCharacters.length > 0 ? (
+                                        castOfCharacters.map((char, cIdx) => (
+                                            <div key={cIdx} className="bg-slate-50 border border-slate-100 rounded-xl p-3 hover:border-indigo-200 transition-colors group/char">
+                                                <div className="flex items-center justify-between mb-1">
+                                                    <span className="text-[10px] font-black text-slate-900 uppercase truncate">{char.name}</span>
+                                                    {char.role && <span className="text-[8px] font-black text-indigo-400 bg-indigo-50 px-1.5 py-0.5 rounded uppercase">{char.role}</span>}
+                                                </div>
+                                                <p className="text-[9px] font-bold text-slate-500 leading-tight line-clamp-2 group-hover/char:line-clamp-none transition-all">
+                                                    {char.description}
+                                                </p>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="bg-indigo-50/50 border border-indigo-100 rounded-xl p-3">
+                                            <span className="text-[10px] font-black text-indigo-900 uppercase block mb-1">Primary Anchor</span>
+                                            <p className="text-[9px] font-bold text-indigo-600 leading-tight">
+                                                {consistentCharacter}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Creative Spark / Randomize */}
                         <div className="space-y-4">

@@ -289,6 +289,7 @@ export default function Home() {
                   globalColorGrade={result.data.global_color_grade}
                   pacingEnergy={result.data.pacing_energy}
                   consistentCharacter={result.data.consistent_character}
+                  castOfCharacters={result.data.cast_of_characters}
                   productionCredits={result.data.production_credits}
                   handleCopy={handleCopy}
                   onRender={(panelData) => renderBlueprint(panelData, 'comic', assetImage, result?.refinedPrompt)}

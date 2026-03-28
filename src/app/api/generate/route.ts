@@ -140,10 +140,12 @@ const agentConfigs: any = {
             "MISSION: Refine a raw brief into a 'Sequential Art Script'.",
             "AESTHETIC: Focus on ink-work, halftone patterns, and dynamic paneling.",
             "IDENTITY: All leading characters MUST be of South Asian descent.",
+            "CAST OF CHARACTERS: You MUST identify all recurring characters and populate the 'cast_of_characters' array with hyper-detailed visual anchors (specific face shape, clothing, age, heritage). This is CRITICAL for visual locking.",
             "STRICT BAN: Describe visuals only. No actual text or dialogue in the visual prompt."
         ],
         jsonRole: "Lead Comic Editor",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a Comic/Graphic Novel JSON Blueprint.`
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a Comic/Graphic Novel JSON Blueprint.
+        IDENTITY LOCK: Populate the 'cast_of_characters' array with detailed visual descriptions for every recurring character.`
     },
     storyboard: {
         expansionRole: "Cinematic Storyboard Artist and Previs Director",

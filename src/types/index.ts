@@ -219,6 +219,7 @@ export interface BlueprintData {
     is_model_sheet?: boolean;
     comic_title?: string;
     logline?: string;
+    cast_of_characters?: ComicCastItem[];
     global_color_grade?: 'Golden Hour Mumbai' | 'Retro 4-Color Print' | 'Nocturnal Neon' | 'Classic Marvel Primary';
     pacing_energy?: 'high' | 'low';
 
@@ -315,6 +316,13 @@ export interface ComicPanel {
     perspective?: 'high-angle' | 'eye-level' | 'low-angle' | 'pov';
     visual_texture?: string;
     lettering_weight?: 'Action' | 'Whimsy' | 'Regular';
+}
+
+export interface ComicCastItem {
+    name: string;
+    description: string;
+    role?: string;
+    visual_anchor?: string; // Optional specific prompt snippet
 }
 
 export interface StoryboardScene {
