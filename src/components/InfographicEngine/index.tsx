@@ -221,62 +221,83 @@ export function InfographicEngine({ data }: { data: any }) {
 
             <div className="flex justify-center overflow-x-auto pb-40">
                 <div ref={canvasRef} className="bg-white shadow-5xl relative flex flex-col overflow-hidden border border-slate-200 paper-texture" style={{ width: '1200px', minHeight: '1450px' }}>
-                    <div className="px-24 pt-28 pb-10 relative overflow-hidden bg-[#f8fafc] border-b-2 border-slate-900/5">
+                    <div className="px-24 pt-28 pb-10 relative overflow-hidden bg-[#fbfdfb] border-b-2 border-slate-900/5">
                         <div className="flex flex-col gap-10 relative z-10">
                             <div className="flex items-center gap-6">
                                 <div className="text-[13px] font-bold text-slate-800 tracking-[0.65em] scholarly-serif uppercase">THE NEW ENGLAND <span className="font-light">JOURNAL</span> OF MEDICINE</div>
                                 <div className="h-px flex-1 bg-slate-200" />
-                                <div className="text-[10px] font-black text-slate-400 tracking-[0.15em]">SOVEREIGN 28.2</div>
+                                <div className="text-[10px] font-black text-slate-400 tracking-[0.15em]">SOVEREIGN v31 DUAL-TRACK ({data.metadata?.journal_standard || 'Standard'})</div>
                             </div>
-                            <h2 className="text-[52px] font-bold text-[#0a1f44] leading-[1.0] tracking-tight max-w-[1000px] scholarly-serif italic text-center mx-auto">{data.title}</h2>
+                            <h2 className="text-[52px] font-bold text-[#0a1f44] leading-[1.0] tracking-tight max-w-[1000px] scholarly-serif italic text-center mx-auto">{data.metadata?.title || data.title}</h2>
                             <div className="mt-2 bg-[#2d3748] py-2.5 px-12 shadow-md flex items-center justify-center border-l-[12px] border-[#C5A059]">
-                                <h3 className="text-[16px] font-bold text-white tracking-[0.25em] uppercase font-sans">SUB-ANALYSIS: CLINICAL DATA VISUALIZATION</h3>
+                                <h3 className="text-[16px] font-bold text-white tracking-[0.25em] uppercase font-sans">CLINICAL DATA BLOCK: {data.medical_content?.intervention_category || 'TRIAL SUMMARY'}</h3>
                             </div>
                         </div>
                     </div>
 
                     {/* MAIN CONTENT GRID */}
                     <div className="p-16 flex-1 space-y-16">
-                        {/* 1. THE TRADITIONAL TRIPTYCH COHORT (Top Row) */}
+                        {/* 1. THE TRADITIONAL TRIPTYCH COHORT (Top Row) with SEMANTIC ROLES */}
                         <div className="grid grid-cols-3 gap-8">
-                             {data.panels?.map((panel: any, i: number) => {
-                                 const alloc = panel.content?.find((c: any) => c.type === "allocation_block") || panel.content?.find((c: any) => c.type === "icon_stat");
+                             {data.visual_specification?.panels?.map((panel: any, i: number) => {
+                                 const stats = panel.content_items?.find((c: any) => c.type === "icon_stat") || panel.content_items?.find((c: any) => c.type === "allocation_block");
                                  return (
-                                     <div key={i} className="bg-[#f8fafc]/50 border border-slate-100 p-12 flex flex-col items-center group shadow-sm rounded-sm">
+                                     <div key={i} className="bg-[#f8fafc]/50 border border-slate-100 p-12 flex flex-col items-center group shadow-sm rounded-sm relative overflow-hidden">
+                                         <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-40 transition-opacity">
+                                             <div className="text-[8px] font-black uppercase tracking-widest">{panel.semantic_role}</div>
+                                         </div>
                                          <div className="text-[14px] font-black text-slate-400 uppercase tracking-widest mb-10">{panel.header}</div>
                                          <div className="w-32 h-32 bg-white rounded-full border border-slate-50 flex items-center justify-center text-[#1a365d] shadow-2xl icon-3d-shadow rotate-[-6deg] group-hover:rotate-0 transition-all duration-1000 mb-10">
-                                            <SmartIcon iconId={alloc?.icon || "Pill"} className="w-16 h-16 opacity-80" />
+                                            <SmartIcon iconId={stats?.icon || "Users"} className="w-16 h-16 opacity-80" />
                                          </div>
-                                         <div className="text-[62px] font-black text-[#0a1f44] leading-none mb-4">{alloc?.value || alloc?.n || "N/A"}</div>
-                                         <div className="text-[12px] font-bold text-slate-400 uppercase text-center max-w-[150px]">{alloc?.label}</div>
+                                         <div className="text-[62px] font-black text-[#0a1f44] leading-none mb-4">{stats?.value || stats?.n || "N/A"}</div>
+                                         <div className="text-[12px] font-bold text-slate-400 uppercase text-center max-w-[150px]">{stats?.label}</div>
                                      </div>
                                  );
                              })}
                         </div>
 
                         {/* 2. THE ADVANCED FOREST PLOT (Scholarly Expansion) */}
-                        <ForestPlot data={data.forest_plot} />
+                        {data.medical_content?.meta_analysis && <ForestPlot data={data.medical_content.meta_analysis} />}
+                        {!data.medical_content?.meta_analysis && data.forest_plot && <ForestPlot data={data.forest_plot} />}
 
-                        {/* 3. THE RESULT STRIP BELT */}
-                        <div className="border border-slate-200">
-                             {data.results_grid?.metrics?.map((m: any, i: number) => (
-                                 <NarrativeStrip key={i} metric={m} armCount={armCount} accent={accent} />
-                             ))}
-                        </div>
+                        {/* 3. DIFFUSION SYNTHESIS (LAYER 5) - The Render Signal */}
+                        {data.diffusion_synthesis && (
+                            <div className="bg-[#f8fafc] border-2 border-dashed border-slate-200 p-10 rounded-sm">
+                                <div className="flex items-center gap-4 mb-6">
+                                    <Layers className="w-5 h-5 text-indigo-500" />
+                                    <div className="text-[14px] font-black text-slate-900 uppercase tracking-widest">Diffusion Synthesis (Layer 5)</div>
+                                </div>
+                                <p className="text-[15px] text-slate-600 leading-relaxed scholarly-serif italic mb-8">
+                                    "{data.diffusion_synthesis.master_prompt}"
+                                </p>
+                                <div className="flex flex-wrap gap-3">
+                                    {data.diffusion_synthesis.style_descriptors?.map((s: string, idx: number) => (
+                                        <span key={idx} className="bg-indigo-50 text-indigo-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-indigo-100">
+                                            {s}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                         
                         {/* THE VERDICT BELT */}
                         <div className="bg-[#0a1f44] p-16 text-center border-l-[16px] border-[#C5A059] shadow-2xl">
                              <div className="text-[13px] font-black text-[#C5A059] uppercase tracking-[0.5em] mb-6">THE FINAL CLINICAL VERDICT</div>
-                             <div className="text-[42px] font-black text-white italic scholarly-serif leading-tight">"{data.conclusion_banner?.text}"</div>
+                             <div className="text-[42px] font-black text-white italic scholarly-serif leading-tight">
+                                 "{data.medical_content?.conclusion?.statement || data.conclusion_banner?.text || "Trial Endpoints Met"}"
+                             </div>
                         </div>
                     </div>
 
                     <div className="bg-[#f8fafc] px-24 py-12 flex items-center justify-between border-t border-slate-100 text-[11px] font-bold text-slate-300 tracking-[0.3em]">
                         <div className="flex gap-16">
                             <span>MASSACHUSETTS MEDICAL SOCIETY © 2026</span>
-                            <span>PEER-REVIEWED DATA BLOCK</span>
+                            <span>PEER-REVIEWED DATA BLOCK - v31.2</span>
                         </div>
-                        <div className="text-slate-900 scholarly-serif italic">{data.citation?.authors_short} | DOI: {data.citation?.doi}</div>
+                        <div className="text-slate-900 scholarly-serif italic">
+                            {data.metadata?.authors || data.citation?.authors_short} | DOI: {data.metadata?.doi || data.citation?.doi || 'PENDING'}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -52,31 +52,35 @@ const agentConfigs: any = {
         IDENTITY STANDARD: South Asian features only.`,
     },
     medical: {
-        expansionRole: "Principal Medical Illustrator and Scientific Director (SUPER-ENGINE PROTOCOL)",
+        expansionRole: "Principal Medical Illustrator and Scientific Director (SOVEREIGN v31 DUAL-TRACK PROTOCOL)",
         expansionRules: [
-            "MISSION: Refine a raw brief into a high-fidelity 'Disease Mapping Blueprint' for Nature/NEJM/Lancet standards.",
-            "1. STRICT HIERARCHY: Output MUST follow: tissue → micro → cellular → molecular → flow_dynamics → annotations → layout → render_layers.",
-            "2. ZERO NARRATIVE: Strictly NO explanations, descriptions, or sentences. Use only structured, renderable data-points.",
-            "3. MECHANISM ENCODING: All biological processes MUST be encoded as stepwise pathways/causal relationships (molecule → receptor → effect).",
-            "4. SPATIAL ACCURACY: Explicitly define anatomical locations and spatial relationships (e.g. subendothelial vs subepithelial).",
-            "5. SPATIAL RESOLUTION: Output MUST lock to High-Fidelity 8K precision. Use ultra-sharp vector line-work and Nature-Gold composition standards.",
-            "6. WHITESPACE RULE: Maintain 30% technical whitespace to ensure resolution clarity and prevent label crowding.",
-            "7. IDENTITY STANDARD: All human clinical subjects, surgical teams, and patients MUST be of South Asian (Indian) descent.",
-            "8. CONSTRAINT RESOLUTION: If conflict occurs: prioritize biological accuracy → then spatial correctness → then visual clarity.",
-            "9. ABSTRACTION CONTROL: Include only relevant structures; exclude unrelated anatomy; avoid duplication across layers.",
-            "10. DIAGNOSTIC VERIFICATION: MANDATORY - Source 3 SPECIFIC pathognomonic visual markers for the EXACT diagnosis in the brief. STICTLY FORBID using markers from previous Turn-Context (e.g., NO 'Foot-process effacement' or 'Swollen lumen' for cardiac cases).",
-            "11. EDITORIAL DIRECTIVES: (a) GRADIENT MANDATE: Use 'diffusion halos' in the visualization descriptions. (b) VECTOR HIERARCHY: Pathological flows MUST use 'fine-dotted' (Low), 'solid-directional' (Moderate), and 'bold-tapered' (High) styles. (c) WHITESPACE RULE: Prevent label overcrowding via logical grouping. (d) SPATIAL LOCK: Explicitly define compass-rule locations (Center-Right, Upper-Margin, etc.) for all major pathology markers. (e) MORPHOLOGY FEATURES: For each cell, describe visual pathological features (e.g. 'swelling', 'effacement'). (f) CAUSAL SEQUENCE: Distill the full mechanism into a linear, step-by-step causal chain. (g) CONTEXT ISOLATION: Purge all unrelated anatomical keywords; ensure EVERY field matches the TARGET anatomy only (e.g. No 'tumor core' in non-oncology briefs).",
-            "12. BEHAVIORAL RENDERING: All flow vectors MUST describe their physical action (e.g. 'deflected away from core', 'chemically trapped'). All textures MUST be explicit (e.g. 'micro-fibrillar detailing', 'technical stippling')."
+            "RULE 0 (CRITICAL): This is a POPULATED DATA INSTANCE, not a schema. Never use 'type: object' or 'properties' in the output JSON. Fill fields with ACTUAL values.",
+            "1. MULTISCALE MAPPING: Every illustration MUST have at least 2 distinct panels: 1x MACRO (Organ-level perspective) and 1x MICRO (Cellular/Molecular-level perspective).",
+            "2. COORDINATE MANDATE: Every visual entity needs absolute {x, y, width, height} positioning on a 680x840 scholarly canvas. Vague spatial terms are BANNED.",
+            "3. MEDICAL ACCURACY: Every cellular change MUST map to a known mechanism (e.g. 'ATP depletion -> Na+/K+ Failure').",
+            "4. ZERO VAGUE TERMS: Ban 'fine-dotted', 'technical stippling'. Use 'stroke_dasharray: 2,2', 'texture: stippled'.",
+            "5. SEMANTIC COLOR LOGIC: Every color MUST answer: 'What physiologic property does this color encode?'. Blue for cooling/oxygenated, Dark Red for necrotic, etc.",
+            "6. IDENTITY STANDARD: All human subjects MUST be of South Asian (Indian) descent with authentic skin textures.",
+            "7. NO-TEXT RULE (STRICT): Describe visuals only. HARD ZERO-TEXT BAN on labels, sentences, or characters in the visual prompt fields (ignore for metadata/content).",
+            "8. CONSTRAINT RESOLUTION: Biological accuracy -> Spatial correctness -> Visual clarity.",
+            "9. DIFFUSION SYNTHESIS (MANDATORY): The diffusion_synthesis layer MUST be the last thing you write. It must be a DISTILLATION of the medical and visual content into natural language. Think: what would a medical illustrator say to brief a Flux artist? Use anatomical terminology, not pixel values."
         ],
         jsonRole: "Ultimate Medical Art Director and Clinical Strategist",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a Sovereign 12/12 JSON Blueprint (NotebookLM Gold Standard).
-        STRICT COMPLIANCE: Adhere to the SUPER-ENGINE PROTOCOL (Hierarchy, Zero-Narrative, Mechanism-Encoding).
-        SOVEREIGN POLISH: (1) Populate 'hierarchy' summary as a global attention anchor. (2) Provide 'behavioral rendering' in all visualization fields (action-oriented descriptions). (3) Define 'spatial_lock' for all markers. (4) Map 'optimization_flags' for minimalist clarity. (5) Use deep hex-code mapping in 'palette_hex_logic'.
-        IDENTITY LOCK: Enforce South Asian heritage standard.
-        STYLE AUTHORITY: Apply the ${style} standard with specific texture/lighting physics.`,
-        subjectField: "scientific_subject",
-        styleField: "journal_standard",
-        styleSuffix: "standard"
+        jsonInstructions: (style: string) => `### SOVEREIGN v31 DUAL-TRACK PROTOCOL
+        1. INSTANCE LAW: return JSON with FIVE top-level layers: metadata, medical_content, visual_specification, rendering_instructions, diffusion_synthesis.
+        2. SVG MAPPING (Layers 3-4): Standardize all rendering to SVG/CSS properties (stroke_dasharray, opacity, stroke_width). Absolute coordinates on 680x840 canvas.
+        3. MULTISCALE: At least 1 Macro panel and 1 Micro panel with separate bounds.
+        4. JOURNAL: Set journal_standard to "${style}".
+        5. ★ LAYER 5 — DIFFUSION SYNTHESIS (Most Important for Image Quality):
+           - master_prompt: Write a 150-220 word NATURAL LANGUAGE paragraph. Start with the anatomy, describe the pathophysiology narrative visually, end with journal aesthetic terms. NO pixel coordinates, NO hex codes, NO SVG values.
+           - anatomical_narrative: Describe spatial layout using ANATOMICAL terms (superior/inferior, subendothelial/subepicardial, lateral/medial), not pixel coordinates.
+           - style_descriptors: 6-10 strings like "NEJM scholarly plate", "muted clinical navy", "BioRender aesthetic", "heavy textured paper grain". NO SVG values.
+           - color_language: Translate EACH anatomical zone color from hex to natural language. Example: "deep arterial crimson for ischemic zones", "pale cerulean for healthy ventricle walls".
+           - pathophysiology_visual_summary: 2-3 sentence visual story. What does a viewer SEE flowing/changing/disrupting in the illustration?
+           - negative_prompt: Ban cross-domain anatomy (e.g. "no glomeruli" for a cardiac brief), no text labels, no photorealism, no decorative borders.`,
+        subjectPath: "metadata.subject",
+        stylePath: "metadata.journal_standard",
+        styleSuffix: "v31_DUAL-TRACK"
     },
     vector: {
         expansionRole: "Principal Brand Designer for Scalable Vector Illustrations",
@@ -162,37 +166,27 @@ const agentConfigs: any = {
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a detailed multi-scene Storyboard JSON Blueprint.`
     },
     infographic: {
-        expansionRole: "Lead Publication Art Director & Scientific Illustrator (Sovereign 22.0 Texture Forcing)",
+        expansionRole: "Lead Publication Art Director & Scientific Illustrator (SOVEREIGN v31 DUAL-TRACK)",
         expansionRules: [
             "AESTHETIC LAW: ABANDON FLAT DIGITAL UI. Force the aesthetic of a HIGH-FIDELITY PHYSICAL SCHOLARLY PLATE.",
-            "1. TEXTURE: Explicitly specify 'Heavy Paper Grain', 'Creamy Parchment Base', and 'Subtle Offset-Ink Bleed'.",
-            "2. COLOR: Use 'Deep Matte Scholarly Navy' (#0A1F44) and 'Rich Clinical Gold' (#C5A059). Banish digital-grey.",
-            "3. LIGHTING: Enforce 'Cinematic Rim-Lighting' and 'Global Illumination' with realistic shadows for all 3D medical hero objects.",
-            "4. 3D HERO ASSETS: Describe all vials, pills, and IV-bags with 'Subsurface Scattering', 'Realistic Condensation', and 'Macro-Photography Depth of Field'.",
-            "5. NO VECTOR LOOK: Ban words like 'flat', 'clean', 'UI', 'dashboard', 'minimalist'. Use 'Classical', 'High-Impact', 'Masterpiece', 'Filmic'."
+            "1. LAYER SEPARATION: Maintain strict metadata/content/visual/rendering/diffusion_synthesis layers.",
+            "2. TEXTURE: Explicitly specify 'Heavy Paper Grain', 'Creamy Parchment Base', and 'Subtle Offset-Ink Bleed'.",
+            "3. COORDINATES: Define panel bounds and content positions using absolute coordinates for render stability.",
+            "4. NO VECTOR LOOK: Ban words like 'flat', 'clean', 'UI', 'minimalist'. Use 'Classical', 'High-Impact', 'Masterpiece', 'Filmic'.",
+            "5. COUPLED OUTCOMES: Every intervention MUST be coupled with its statistical result in the schematic.",
+            "6. DIFFUSION SYNTHESIS (MANDATORY): The diffusion_synthesis layer MUST be the last thing you write. Distill the trial results into a NATURAL LANGUAGE briefing for a diffusion model."
         ],
-        jsonInstructions: (style: string) => `### SOVEREIGN 22.0 TEXTURE-FORCING PROTOCOL
-        1. THE NARRATIVE COLUMN: You MUST couple the treatment and its result. Type 'coupled_outcome' is mandatory.
-        2. AESTHETIC DIRECTIVE: Populate the 'diffusion_aesthetic' block with AGGRESSIVE textural descriptors. 
-        3. GLOBAL STYLE: Use 'High-fidelity physical print plate on textured fine-art paper, 8K, cinematic macro photography, hyper-detailed 3D clinical models, deep scholarly palette'.
-        
-        ### 10/10 JSON TEMPLATE (COUPLED NARRATIVE):
-        {
-          "title": "Empagliflozin in Patients with Chronic Kidney Disease",
-          "primary_endpoint_headline": { "text": "Progression of Kidney Disease or CV Death" },
-          "panels": [
-            { "id": "population", "position": "left", "header": "PARTICIPANTS", "content": [{ "type": "icon_stat", "value": "6609", "label": "Adults in the ICU", "icon": "Patient_Group" }] },
-            { "id": "arm_1", "position": "center", "header": "EMPAGLIFLOZIN", "content": [{ "type": "allocation_block", "n": "3304", "icon": "Infusion" }, { "type": "coupled_outcome", "primary": true, "outcome_value": "13.1%", "sub_stat": "N=432", "visual_type": "proportional_bars", "scale": "0_to_30_percent", "label": "Death at 90 days" }] }
-          ],
-          "diffusion_aesthetic": {
-            "global_style": "High-fidelity physical print plate on textured fine-art heavy parchment paper, 8K, cinematic macro photography, deep matte navy shadows, rich clinical gold accents",
-            "iconography_style": "Every medical icon (vials, pills) must be a high-fidelity 3D model with subsurface scattering, realistic reflections, and macroscopic detail. Surround objects with subtle ink-grain textures.",
-            "negative_prompt": "Flat UI, vector graphics, clipart, 2D dashboard, corporate blue, wireframes, digital-grey, clean edges, plastic UI"
-          }
-        }
-        
-        STYLE AUTHORITY: Follow the ${style} standard. Zero digital-grey noise, targeted 3D realism, heavy physical textures.`,
-        subjectField: "title"
+        jsonRole: "Ultimate Scholarly Plate Designer",
+        jsonInstructions: (style: string) => `### SOVEREIGN v31 INFOGRAPHIC PROTOCOL
+        1. HIERARCHY: metadata -> medical_content -> visual_specification -> rendering_instructions -> diffusion_synthesis (Layer 5).
+        2. CANVAS: 680x840 scholarly plate.
+        3. PANELS: Use absolute bounds. Couple the treatment and result in adjacent or integrated panels.
+        4. ★ LAYER 5 — DIFFUSION SYNTHESIS:
+           - master_prompt: 150-200 word NATURAL LANGUAGE paragraph. Describe the background (creamy parchment), the structured layout, and the primary clinical conclusion visually. Include "South Asian human subjects" for all clinical representations.
+           - NO hex codes, NO pixel x/y/w/h values in Layer 5.
+        5. STYLE AUTHORITY: Use "${style}".`,
+        subjectPath: "metadata.title",
+        stylePath: "metadata.journal_standard"
     }
 };
 
@@ -204,6 +198,113 @@ const getProtocol = (mode: string, style: string) => {
         if (lStyle.includes('ecom')) return creativeProtocols.ecom;
     }
     return atlasService.getStyleProtocol(style);
+};
+
+/**
+ * Derives a dynamic anatomical blacklist from the user's brief.
+ * Extracts the primary anatomical subject and bans unrelated canonical landmarks
+ * to prevent the model from hallucinating anatomy from previous requests.
+ */
+const getDynamicBlacklist = (brief: string): string => {
+    const list = atlasService.getBlacklist(brief);
+    if (list.length > 0) {
+        return `ANATOMICAL BLACKLIST (derived from your brief): ${list.map(b => `"${b}"`).join(", ")}. These structures are FORBIDDEN. Do NOT include, reference, or imply them.`;
+    }
+    return `ANATOMICAL BLACKLIST: "Foot-process", "Glomerulus", "Tumor core", "Sano Shunt". These structures are FORBIDDEN unless explicitly in the brief.`;
+};
+
+/**
+ * Post-generation validator for medical JSON output.
+ * Returns { valid: boolean, issues: string[] }
+ */
+const validateMedicalOutput = (data: any): { valid: boolean; issues: string[] } => {
+    const issues: string[] = [];
+
+    // Check pathophysiology cascade is populated
+    const cascade = data?.medical_content?.pathophysiology?.cascade;
+    if (!Array.isArray(cascade) || cascade.length === 0) {
+        issues.push("pathophysiology.cascade is empty or missing");
+    } else {
+        const placeholderPattern = /^(step|event|mechanism|consequence|placeholder|\[|TBD|N\/A)$/i;
+        cascade.forEach((step: any, i: number) => {
+            if (!step.event || placeholderPattern.test(step.event.trim())) {
+                issues.push(`pathophysiology.cascade[${i}].event is a placeholder or empty: "${step.event}"`);
+            }
+        });
+    }
+
+    // Check anatomical zones are populated
+    const zones = data?.medical_content?.anatomical_zones;
+    if (!Array.isArray(zones) || zones.length === 0) {
+        issues.push("medical_content.anatomical_zones is empty or missing");
+    } else {
+        zones.forEach((z: any, i: number) => {
+            if (!z.definition || z.definition.trim().length < 5) {
+                issues.push(`anatomical_zones[${i}].definition is missing or too short`);
+            }
+        });
+    }
+
+    // Check visual panels exist
+    const panels = data?.visual_specification?.panels;
+    if (!Array.isArray(panels) || panels.length < 2) {
+        issues.push("visual_specification.panels must have at least 2 panels (macro + micro)");
+    }
+
+    // Check diffusion_synthesis is populated (the critical Layer 5)
+    const ds = data?.diffusion_synthesis;
+    if (!ds) {
+        issues.push("diffusion_synthesis (Layer 5) is entirely missing — diffusion models have no rendering signal");
+    } else {
+        if (!ds.master_prompt || ds.master_prompt.trim().length < 50) {
+            issues.push("diffusion_synthesis.master_prompt is missing or too short (needs 150-220 words)");
+        }
+        if (!Array.isArray(ds.style_descriptors) || ds.style_descriptors.length < 3) {
+            issues.push("diffusion_synthesis.style_descriptors must have at least 3 entries");
+        }
+        if (!Array.isArray(ds.color_language) || ds.color_language.length === 0) {
+            issues.push("diffusion_synthesis.color_language is empty — hex codes from Layer 3 were not translated to natural language");
+        }
+        if (!ds.negative_prompt || ds.negative_prompt.trim().length < 10) {
+            issues.push("diffusion_synthesis.negative_prompt is missing");
+        }
+        // Guard against SVG bleed-through (common model error: copying coordinates into master_prompt)
+        const svgLeakPattern = /stroke_dasharray|stroke_width|z_index|\{\s*x:\s*\d|\{\s*y:\s*\d|#[0-9a-fA-F]{6}/;
+        if (svgLeakPattern.test(ds.master_prompt || "")) {
+            issues.push("diffusion_synthesis.master_prompt contains SVG/CSS values or hex codes — these are invisible to diffusion models and must be translated to natural language");
+        }
+    }
+
+    return { valid: issues.length === 0, issues };
+};
+
+/**
+ * Post-generation validator for infographic JSON output.
+ */
+const validateInfographicOutput = (data: any): { valid: boolean; issues: string[] } => {
+    const issues: string[] = [];
+
+    // Check medical content
+    const interventions = data?.medical_content?.interventions;
+    if (!Array.isArray(interventions) || interventions.length === 0) {
+        issues.push("medical_content.interventions is missing trial arms");
+    }
+
+    // Check for Layer 5
+    const ds = data?.diffusion_synthesis;
+    if (!ds) {
+        issues.push("diffusion_synthesis (Layer 5) is missing");
+    } else {
+        if (!ds.master_prompt || ds.master_prompt.trim().length < 50) {
+            issues.push("diffusion_synthesis.master_prompt is too short");
+        }
+        const svgLeakPattern = /stroke_dasharray|stroke_width|z_index|\{\s*x:\s*\d|\{\s*y:\s*\d|#[0-9a-fA-F]{6}/;
+        if (svgLeakPattern.test(ds.master_prompt || "")) {
+            issues.push("diffusion_synthesis.master_prompt contains SVG/CSS or hex leaks");
+        }
+    }
+
+    return { valid: issues.length === 0, issues };
 };
 
 export async function POST(req: NextRequest) {
@@ -230,18 +331,21 @@ export async function POST(req: NextRequest) {
 
         // --- PHASE 1: EXPANSION (STABILIZED) ---
         if (!lightweight) { 
-            const atlasContext = mode === 'medical' ? atlasService.getAtlasContext(brief) : "";
+            const atlasContext = (mode === 'medical' || mode === 'infographic') ? atlasService.getAtlasContext(brief) : "";
             const isInfographic = mode === 'infographic';
+            const dynamicBlacklist = (mode === 'medical' || mode === 'infographic') ? getDynamicBlacklist(brief) : "";
             const expansionSystemPrompt = isInfographic 
                 ? `### ROLE: Principal Visual Abstract Director
                 Refine the user's brief into a high-fidelity 'Visual Abstract Design Specification'.
                 1. EXTRACT ALL CLINICAL DATA: Identify N-values, p-values, HR, CI, and primary results.
                 2. NEJM ARCHITECTURE: Organize into Cohort, Interventions, and Results.
                 3. NO TEXT BAN EXEMPTION: This is a text-heavy infographic. Preserve all numbers and metrics.
+                ${dynamicBlacklist}
                 ${config.expansionRules.join('\n        ')}
-                STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}`
+                STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
+                ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}`
                 : `RULE 0 (CRITICAL): MEMORY PURGE. Flush previous anatomy. Focus EXCLUSIVELY on: ${brief.substring(0, 50)}...
-                ANATOMICAL BLACKLIST: "Foot-process", "Glomerulus", "Tumor core", "Sano Shunt".
+                ${dynamicBlacklist}
                 You are a ${config.expansionRole}. Refine into high-fidelity scientific spec.
                 ${config.expansionRules.join('\n        ')}
                 STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
@@ -268,12 +372,14 @@ export async function POST(req: NextRequest) {
                             break;
                         }
                     } catch (err: any) { 
-                        const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota");
+                        const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota") || err.message?.includes("limit");
                         const isNotFound = err.message?.includes("404") || err.message?.toLowerCase().includes("not found");
                         providerHistory.push({ phase: "expansion", model: m, status: "fail", error: err.message });
                         refinementError = err as Error;
-                        if (isNotFound) continue; 
-                        if (isQuota) break; 
+                        
+                        if (isQuota) break; // Immedately switch provider on quota hit
+                        if (isNotFound) continue; // Try next Gemini model if version is wrong
+                        break; // Fail-fast on other errors to reach Groq
                     }
                 }
             }
@@ -336,28 +442,46 @@ export async function POST(req: NextRequest) {
                         break;
                     }
                 } catch (err: any) { 
-                    const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota");
+                    const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota") || err.message?.includes("limit");
                     providerHistory.push({ phase: "json", model: m, status: "fail", error: err.message });
-                    if (isQuota) break; 
                     generationError = err as Error; 
+                    if (isQuota) break; // Drop out of Gemini loop on quota
                 }
             }
         }
 
-        // Final Emergency Fallback
+        // Final Emergency Fallback — uses llama-3.3-70b-versatile for reliable structured JSON
         if (!adData && process.env.GROQ_API_KEY) {
             try {
                 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+                // Build an explicit field-by-field instruction list from the schema's required fields
+                // so the 70b model has a deterministic target even without native responseSchema support.
+                const schemaRequiredFields = (currentSchema as any)?.required ?? [];
+                const schemaFieldGuide = schemaRequiredFields.length > 0
+                    ? `\n\nREQUIRED TOP-LEVEL FIELDS (you MUST populate ALL of these with real values, not placeholders):\n${schemaRequiredFields.map((f: string) => `- "${f}"`).join('\n')}`
+                    : "";
+
+                const groqSystemPrompt = [
+                    systemInstruction,
+                    `SCHEMA STRUCTURE (JSON):`,
+                    JSON.stringify(currentSchema, null, 2),
+                    schemaFieldGuide,
+                    `CRITICAL: Return ONLY a valid JSON object. No markdown fences, no commentary. Every field must contain real, meaningful data — no placeholders like "string", "[value]", "TBD", or empty arrays.`
+                ].join('\n\n');
+
                 const completion = await groq.chat.completions.create({
                     messages: [
-                        { role: "system", content: systemInstruction + "\nSCHEMA:\n" + JSON.stringify(currentSchema) },
-                        { role: "user", content: `JSON BLUEPRINT FOR: ${finalBriefForJson}` }
+                        { role: "system", content: groqSystemPrompt },
+                        { role: "user", content: `GENERATE JSON BLUEPRINT FOR: ${finalBriefForJson}` }
                     ],
-                    model: "llama-3.1-8b-instant",
-                    response_format: { type: "json_object" }
+                    model: "llama-3.3-70b-versatile",
+                    response_format: { type: "json_object" },
+                    temperature: 0.4  // Lower temp = more deterministic, schema-faithful output
                 });
-                adData = JSON.parse(completion.choices[0]?.message?.content || "{}");
-                if (adData) providerHistory.push({ phase: "json", model: "groq-llama-3", status: "success" });
+                const rawContent = completion.choices[0]?.message?.content || "{}";
+                adData = JSON.parse(rawContent);
+                if (adData) providerHistory.push({ phase: "json", model: "groq-llama-3.3-70b", status: "success" });
             } catch (err: any) { 
                 providerHistory.push({ phase: "json", model: "groq-fail", status: "fail", error: err.message });
                 generationError = err as Error; 
@@ -366,15 +490,49 @@ export async function POST(req: NextRequest) {
 
         if (!adData) return ResponseManager.error(`Sovereign Sequence Failure: ${generationError?.message || refinementError?.message || "All cores failed."}`, 500);
 
+        // --- POST-GENERATION VALIDATION ---
+        let validationResult: { valid: boolean; issues: string[] } | null = null;
+        if (adData) {
+            if (mode === 'medical') {
+                validationResult = validateMedicalOutput(adData);
+            } else if (mode === 'infographic') {
+                validationResult = validateInfographicOutput(adData);
+            }
+            
+            if (validationResult && !validationResult.valid) {
+                 console.warn(`[SOVEREIGN VALIDATION] ${mode} output issue:`, validationResult.issues);
+            }
+        }
+
         const scrubSubject = (s: string) => s.replace(/^(create|generate|show|make|build|give me|render|draw|an)\s+(an|a|the|image of|illustration of|diagram of|blueprint of|map for)\s+/gi, "").trim();
         const finalSubject = scrubSubject(brief);
         
         if (adData) {
-            if (config.subjectField && (!adData[config.subjectField] || adData[config.subjectField].toLowerCase().includes("subject") || adData[config.subjectField].trim().length < 5)) {
-                adData[config.subjectField] = finalSubject;
+            const setNestedValue = (obj: any, path: string, value: any) => {
+                const parts = path.split('.');
+                let current = obj;
+                for (let i = 0; i < parts.length - 1; i++) {
+                    if (!current[parts[i]]) current[parts[i]] = {};
+                    current = current[parts[i]];
+                }
+                current[parts[parts.length - 1]] = value;
+            };
+
+            const getNestedValue = (obj: any, path: string) => {
+                return path.split('.').reduce((o, i) => o?.[i], obj);
+            };
+
+            const subPath = config.subjectPath || config.subjectField;
+            const stylePath = config.stylePath || config.styleField;
+
+            if (subPath) {
+                const val = getNestedValue(adData, subPath);
+                if (!val || val.toLowerCase().includes("subject") || val.trim().length < 5) {
+                    setNestedValue(adData, subPath, finalSubject);
+                }
             }
-            if (config.styleField && adData[config.styleField] !== undefined) {
-                adData[config.styleField] = sanitizedStyleName + (config.styleSuffix ? `-${config.styleSuffix}` : "");
+            if (stylePath) {
+                setNestedValue(adData, stylePath, sanitizedStyleName + (config.styleSuffix ? `-${config.styleSuffix}` : ""));
             }
         }
 
@@ -386,7 +544,8 @@ export async function POST(req: NextRequest) {
             refinedPrompt: finalBriefForJson,
             promptFile: filename,
             folder: mode + "_prompts",
-            providerHistory
+            providerHistory,
+            ...(validationResult && !validationResult.valid ? { _validation_warnings: validationResult.issues } : {})
         });
 
     } catch (error: any) {
