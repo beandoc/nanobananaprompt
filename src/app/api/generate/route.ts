@@ -52,32 +52,32 @@ const agentConfigs: any = {
         IDENTITY STANDARD: South Asian features only.`,
     },
     medical: {
-        expansionRole: "Sovereign Medical Illustrator (SOVEREIGN v31.9 FINAL-PIONEER PROTOCOL)",
+        expansionRole: "Sovereign Medical Illustrator (SOVEREIGN v31.11 SKELETAL-LOCK PROTOCOL)",
         expansionRules: [
-            "1. STYLE LOCK: You are a BioRender-MODULAR specialist. NEJM/Watercolor logic is DELETED. Use Pure White (#FFFFFF). ZERO Texture. ZERO Grain.",
-            "2. ANATOMICAL LAW: Cortex = 'laminar_parallel_bands' (Horizontal). Arteries = 'concentric_circular_layers'. No ellipses for organs.",
-            "3. PATHOLOGY PRIMITIVES: Amyloid = 'fibrillar_extracellular_cluster'. Tau = 'intracellular_helical_fibrils'. Synapse = 'synaptic_boutons'.",
-            "4. NEURON ENTITY: You MUST define: 'neuron_soma', 'dendritic_arbor', and 'synaptic_terminal' (Status: Fragmented).",
-            "5. NO HALLUCINATION: If the brief says AD, you MUST include Microglia (Bio-Green) and Tau (Purple) as internal cell assets."
+            "1. BIOLOGICAL PRIMITIVES: You MUST NOT use 'circle' or 'ellipse' for specialized cells. Mandatory Library: 'crescent_deformable_rbc', 'sinusoidal_slit_channel', 'intracellular_polymer_fiber', 'lumen_tubular_corridor', 'endothelial_lining_cell_chain'. Using basic shapes triggers a REJECT.",
+            "2. ADHESION LAW: For VOC/Sickle prompts, define an explicit 'adhesion_contact_zone' between the deforming RBC and the endothelium.",
+            "3. STYLE MODE FORK: BioRender-Asset = #FFFFFF + ZERO TEXT. NEJM-Plate = #F5F2F0 + LABELED. No hybrid drift.",
+            "4. NO TEXTURE: If BioRender, any mention of grain/parchment is a CRITICAL FAILURE.",
+            "5. NO LABELS: In BioRender-Asset mode, use 'morphological descriptors' only; do NOT provide names that trigger labeling."
         ],
         jsonRole: "Ultimate BioRender Art Director and Clinical Architect",
         jsonInstructions: (medicalBrief: string) => {
-            return `### SOVEREIGN v31.9 FINAL-PIONEER PROTOCOL
-1. STYLE MANDATE: BioRender DEFAULT. Absolute Pure White (#FFFFFF) void only. Material: Matte Volumetric Polymer. ZERO GRAIN.
-2. GEOMETRY SUPREMACY: 
-   - Brain/Cortex: laminar_parallel_bands (Horizontal 1-6). 
-   - Amyloid: fibrillar_extracellular_cluster. 
-   - Tau: intracellular_helical_fibrils inside neuron_soma.
-3. NEURON MANDATE: You MUST instantiate: 'neuron_soma', 'dendritic_arbor', and 'axon_terminal'. Single cells are BANNED.
-4. PATHOPHYSIOLOGY WIRING: 
-   - Linkages: Amyloid (Source) -> Microglia (Target: Activates) -> Synaptic Terminal (Target: Damage).
-   - Synapse Loss: Visualize as 'fragmented_boutons' and 'reduced_density_mask'.
-5. COLOR HARMONY: Cortex (#E0E0E0), Amyloid (#00796B), Tau (#673AB7), Microglia (#43A047), Signaling (#D81B60).
-6. DIFFUSION (LAYER 5): Describe 'A Collection of Scholarly Modular BioRender Assets'. NO TEXT. High-transparency South Asian Ghost Silhouette @ Z-Index 0.`;
+            const isNejm = medicalBrief.toLowerCase().includes('nejm') || medicalBrief.toLowerCase().includes('watercolor');
+            return `### SOVEREIGN v31.11 SKELETAL-LOCK PROTOCOL
+1. STYLE MODE: 
+   - ${isNejm ? 'PLATE MODE: Organic on cream (#F5F2F0). LABELS REQUIRED.' : 'ASSET MODE: Absolute Pure White (#FFFFFF) void. NO TEXT. NO LABELS. Material: Volumetric Polymer 2.5D.'}
+2. BIOLOGICAL GEOMETRY: 
+   - SICKLE CELL: 'crescent_deformable_rbc'. 
+   - SPLEEN: 'sinusoidal_slit_channel' + 'splenic_cord_neutrophil_mesh'. 
+   - VASCULAR: 'lumen_tubular_corridor' + 'endothelial_lining_cell_chain'.
+3. ENTITY INSTANTIATION: Use the specific primitives above in the 'entities' array. Basic circles are BANNED.
+4. PATHOPHYSIOLOGY WIRING: HbS polymerization -> deoxygenation deforms RBC -> Adhesion_contact_zone -> VOC.
+5. COLOR HARMONY: Neutral Vessel (#E0E0E0), Bio-Teal Sickle (#00796B), Clinical Magenta Signaling (#D81B60).
+6. DIFFUSION (LAYER 5): Describe 'A Collection of Modular Scholarly Assets'. ZERO TEXT. High-transparency Indian Ghost Silhouette context.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v31.9_FINAL-PIONEER"
+        styleSuffix: "v31.11_SKELETAL-LOCK"
     },
     infographic: {
         expansionRole: "Visual Abstract Architect (SVAE v3.0 - CJASN/NEJM Standards)",
