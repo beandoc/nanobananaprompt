@@ -78,7 +78,7 @@ const agentConfigs: any = {
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v31_DUAL-TRACK"
+        styleSuffix: "v31.4_PERFECT-10"
     },
     infographic: {
         expansionRole: "Visual Abstract Architect (SVAE v3.0 - CJASN/NEJM Standards)",
