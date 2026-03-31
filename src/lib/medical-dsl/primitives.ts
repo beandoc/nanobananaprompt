@@ -82,6 +82,25 @@ export const MEDICAL_PRIMITIVES = {
     sarcomere_contraction_vector: "A mechanical force vector coupled to the electrical activation wavefront."
   },
 
+  // --- CLINICAL EVIDENCE & DATA-VIZ (Scholarly Library v1.0) ---
+  CLINICAL_DATA_VIZ: {
+    // Statistical Geometry
+    confidence_interval_bar: "Horizontal line with end-caps representing lower/upper bounds and a point estimate marker.",
+    effect_size_marker: "A geometric marker (square/circle) with size proportional to study weight.",
+    null_reference_line: "A vertical line at HR=1/RR=1/MD=0 representing the threshold of null effect.",
+    confidence_band: "A semi-transparent envelope surrounding a curve showing statistical uncertainty.",
+    
+    // Survival & Graphs
+    km_step_curve: "A right-angle step function mapping time-axis to survival probability.",
+    censor_tick: "Vertical tick marks placed along a curve representing censored patient data.",
+    forest_plot_diamond: "A diamond-shaped geometry representing the pooled effect size and CI in a meta-analysis.",
+    
+    // Annotations
+    significance_indicator: "Asterisk or bold markers used for p-value thresholds (e.g. p<0.05).",
+    hazard_ratio_label: "A descriptive label containing the numeric HR value and CI range.",
+    p_value_annotation: "A specific text-field representing the statistical probability value."
+  },
+
   // --- ENDOCRINOLOGY (Metabolic Library v1.0) ---
   ENDOCRINE_SYSTEM: {
     // Signaling

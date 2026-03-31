@@ -252,21 +252,60 @@ export const MEDICAL_MECHANISM_TEMPLATES: Record<string, MedicalTemplate> = {
     ]
   },
 
-  // --- META-SYNTHESIS (Bench-to-Bedside Scale Logic v2.0) ---
+  // --- CLINICAL EVIDENCE (Trial-Results Library) ---
+  forest_plot_meta_analysis: {
+    required_primitives: [
+      "confidence_interval_bar",
+      "effect_size_marker",
+      "null_reference_line",
+      "forest_plot_diamond"
+    ],
+    required_relations: [
+      "individual_study_estimates -> plotted_relative_to -> null_reference_line",
+      "study_weights -> determine -> effect_size_marker_scaling",
+      "all_studies -> synthesized_into -> forest_plot_diamond"
+    ]
+  },
+  kaplan_meier_survival_curve: {
+    required_primitives: [
+      "km_step_curve",
+      "censor_tick",
+      "confidence_band",
+      "hazard_ratio_label"
+    ],
+    required_relations: [
+      "treatment_vs_control -> mapped_as -> km_step_curve",
+      "statistical_uncertainty -> represented_by -> confidence_band"
+    ]
+  },
+  hazard_ratio_summary: {
+    required_primitives: [
+      "effect_size_marker",
+      "confidence_interval_bar",
+      "null_reference_line",
+      "p_value_annotation"
+    ],
+    required_relations: [
+      "point_estimate -> distance_from -> null_reference_line",
+      "ci_range -> determines_significance -> crossing_null"
+    ]
+  },
+
+  // --- META-SYNTHESIS (Bench-to-Bedside Scale Logic v2.0 - FULL EVIDENCE PACK) ---
   bench_to_bedside_synthesis: {
     required_primitives: [
       "protein_leak_flux",
       "receptor_internalization",
       "signaling_field_gradient",
-      "pressure_gradient_field",
-      "liver_organ_surface"
+      "km_step_curve",
+      "hazard_ratio_label"
     ],
     required_relations: [
       "PANEL_A (Molecular): ligand_antibody -> binding_interface -> target_receptor",
       "PANEL_B (Cellular): receptor_activation -> modulates -> signaling_field_gradient",
-      "PANEL_C (Patient): cellular_state_change -> drives -> clinical_outcome_comparison",
-      "LINKAGE: same_drug_color_consistent -> across -> all_panels",
-      "CAUSALITY: A_molecular -> drives_B_cellular -> drives_C_patient"
+      "PANEL_C (Evidence): cellular_state_change -> translates_into -> km_step_curve",
+      "EVIDENCE: clinical_outcome_comparison -> annotated_with -> hazard_ratio_label",
+      "CAUSALITY: A_molecular -> drives_B_cellular -> proves_C_evidence"
     ]
   }
 } as const;
