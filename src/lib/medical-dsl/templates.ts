@@ -16,6 +16,11 @@ export const MEDICAL_MECHANISM_TEMPLATES = {
       "rbc_adhesion_cluster",
       "adhesion_contact_zone"
     ],
+    required_relations: [
+      "rbc_sickled_crescent -> adheres_to -> endothelial_lining_cell_chain",
+      "rbc_adhesion_cluster -> obstructs -> lumen_tubular_corridor"
+    ]
+  },
   // --- CARDIOLOGY (Master Library) ---
   atherothrombosis_rupture: {
     required_primitives: ["concentric_layered_vessel_wall", "eccentric_plaque_protrusion", "fibrous_cap_over_lipid_core", "thrombotic_occlusion_cluster"],
@@ -138,6 +143,45 @@ export const MEDICAL_MECHANISM_TEMPLATES = {
     required_relations: [
       "device_flow_stream -> undergoes_countercurrent_exchange -> filtration_barrier",
       "pressure_gradient_field -> drives_ultrafiltration_at -> filtration_barrier"
+    ]
+  },
+
+  // --- SYNTHETIC IMMUNOLOGY & GENE THERAPY (Next-Gen MoA Library) ---
+  car_t_synapse_formation: {
+    required_primitives: [
+      "car_t_cell",
+      "tumor_cell_antigen_positive",
+      "synthetic_immunological_synapse",
+      "car_signal_cascade",
+      "directed_cytotoxic_release"
+    ],
+    required_relations: [
+      "car_t_cell -> engineered_recognition_of -> tumor_cell_antigen_positive",
+      "car_t_cell -> forms_synthetic_synapse_with -> tumor_cell_antigen_positive",
+      "synthetic_immunological_synapse -> triggers_branching -> car_signal_cascade",
+      "car_signal_cascade -> induces_focused -> directed_cytotoxic_release"
+    ]
+  },
+  bite_antibody_bridging: {
+    required_primitives: [
+      "cytotoxic_t_cell",
+      "tumor_cell_antigen_positive",
+      "bite_antibody_bridge"
+    ],
+    required_relations: [
+      "bite_antibody_bridge -> cross_links_cd3_on_tcell_to -> tumor_cell_antigen_positive",
+      "bite_antibody_bridge -> forces_artificial_proximity_to -> cytotoxic_t_cell"
+    ]
+  },
+  mrna_lnp_delivery: {
+    required_primitives: [
+      "lipid_nanoparticle",
+      "endosomal_escape_event",
+      "mrna_translation_process"
+    ],
+    required_relations: [
+      "lipid_nanoparticle -> undergoes_endocytosis_and -> endosomal_escape_event",
+      "endosomal_escape_event -> releases_mrna_for -> mrna_translation_process"
     ]
   }
 } as const;

@@ -82,6 +82,27 @@ export const MEDICAL_PRIMITIVES = {
     sarcomere_contraction_vector: "A mechanical force vector coupled to the electrical activation wavefront."
   },
 
+  // --- SYNTHETIC IMMUNOLOGY (Next-Gen Pharma v1.0) ---
+  SYNTHETIC_BIOLOGY: {
+    // Engineered Cellular
+    car_t_cell: "T-cell with specialized chimeric antigen receptor (CAR) clusters and CD3z/CD28 signaling domains.",
+    tumor_cell_antigen_positive: "Irregular tumor cell surface expressing a high density of the target antigen.",
+    
+    // Synthetic Interface (The Core)
+    car_antigen_binding_interface: "A dense, MHC-independent multivalent contact zone between CAR and antigen.",
+    synthetic_immunological_synapse: "Flattened interface disk with central activation and peripheral adhesion zones.",
+    bite_antibody_bridge: "Flexible dual-arm antibody connector bridging CD3 on T-cells and tumor antigens.",
+    
+    // Intracellular Signaling
+    car_signal_cascade: "Intracellular branching signal pathway (CD3z/costimulatory activation) within a CAR-T cell.",
+    directed_cytotoxic_release: "Focused vector release of perforin and granzyme granules toward the synapse center.",
+    
+    // Delivery Systems (mRNA / LNP)
+    lipid_nanoparticle: "Spherical lipid bilayer shell containing an encapsulated mRNA core.",
+    endosomal_escape_event: "Membrane disruption burst triggering mRNA release from an endosome into the cytoplasm.",
+    mrna_translation_process: "Ribosomal linear track process showing therapeutic protein expression output."
+  },
+
   // --- MECHANICAL & INTERVENTIONAL (Device Library v1.0) ---
   MECHANICAL_DEVICES: {
     // Structural Materials
