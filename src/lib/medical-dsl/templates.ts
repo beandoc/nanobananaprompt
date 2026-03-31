@@ -379,6 +379,40 @@ export const MEDICAL_MECHANISM_TEMPLATES: Record<string, MedicalTemplate> = {
     ]
   },
 
+  // --- REGIONAL ANATOMY ATLAS (Digital Atlas v1.0) ---
+  head_neck_anatomy: {
+    required_primitives: ["organ_brain", "vessel_artery", "vessel_vein", "tissue_block_neural"],
+    required_relations: [
+      "skull_base -> protects -> organ_brain",
+      "neurovascular_bundle -> tracks -> carotid_artery + jugular_vein",
+      "airway_trachea -> aligned_with -> thyroid_gland"
+    ]
+  },
+  thorax_anatomy: {
+    required_primitives: ["organ_heart", "organ_lung", "vessel_artery", "vessel_vein", "flow_streamlines_parallel"],
+    required_relations: [
+      "rib_cage -> encloses -> heart + lungs",
+      "diaphragm -> bounded_by -> intercostals",
+      "pulmonary_vessels -> mapped_as -> flow_streamlines"
+    ]
+  },
+  abdomen_anatomy: {
+    required_primitives: ["organ_liver", "organ_kidney", "organ_pancreas", "vessel_vein"],
+    required_relations: [
+      "liver -> connected_to -> portal_vein",
+      "renal_vessels -> supply -> kidney_unit",
+      "abdominal_wall -> encloses -> GI_organs"
+    ]
+  },
+  lower_limb_anatomy: {
+    required_primitives: ["bone_cortical", "bone_trabecular", "load_vector_arrow", "joint_space"],
+    required_relations: [
+      "femur_tibia -> form -> knee_joint",
+      "muscle_groups -> produce -> joint_movement_arc",
+      "load_vector -> distributed_across -> bone_matrix"
+    ]
+  },
+
   // --- MULTI-MODAL FUSION (Mechanism–Imaging–Pathology Fusion v1.0) ---
   multi_modal_clinical_fusion: {
     required_primitives: [
