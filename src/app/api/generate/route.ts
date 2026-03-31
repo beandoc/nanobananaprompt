@@ -57,27 +57,27 @@ const agentConfigs: any = {
         IDENTITY STANDARD: South Asian features only.`,
     },
     medical: {
-        expansionRole: "Sovereign Medical Visual Grammar Engine (SOVEREIGN v32.35 - MULTI-MODAL SYNTHESIS)",
+        expansionRole: "Sovereign Medical Visual Grammar Engine (v32.39)",
         expansionRules: [
-            "1. UNIVERSAL TAXONOMY: You MUST use the CIT-100+ Common Icon Taxonomy. Assemble scenes using 'Visual Atoms' (e.g. cell_generic, ligand_small, mri_slice).",
-            "2. STYLE PILLAR: Detect the intent (Lab/BioRender vs. Journal/NEJM). If BioRender, use BIORENDER_MODERN. If Journal, use SCHOLARLY_NEJM. This is the GLOBAL AESTHETIC CONTRACT.",
-            "3. 3-PANEL CAUSAL CHAIN: All translational prompts MUST follow: Panel A (Molecular/Nano) -> Panel B (Cellular/Micro) -> Panel C (Patient/Clinical/Diagnostic/Evidence).",
-            "4. IDENTITY STANDARD: All humans (Patients/Doctors) MUST be of South Asian descent (modern urban Indian styling).",
-            "5. NO-LABEL POLICY: Strictly NO floating text labels in the illustration panels (Infographics excluded). Use causal connectors (arrows/zooms) for logic."
+            "1. UNIVERSAL TAXONOMY: Use CIT-100+ categories (CELLULAR, MOLECULAR, RADIOLOGY, PATHOLOGY, DATA_VIZ).",
+            "2. CLINICAL-SEAL: Same Site across all panels (Site A === Site B === Site C).",
+            "3. MOLECULAR: Use 'bispecific_antibody_bridge' linking 't_cell' to 'tumor_cell'.",
+            "4. EVIDENCE: KM Plots must have 2 curves + CI bands + Hazard Ratio labels.",
+            "5. AESTHETIC: BIORENDER_MODERN (Sans) vs. SCHOLARLY_NEJM (Serif/Muted)."
         ],
-        jsonRole: "Head Medical Grammar Architect and Clinical DSL Specialist",
+        jsonRole: "Director of Clinical Visual Evidence",
         jsonInstructions: (style: string) => {
             const styleLock = style.toLowerCase().includes('nejm') || style.toLowerCase().includes('journal') || style.toLowerCase().includes('scholarly') ? 'SCHOLARLY_NEJM' : 'BIORENDER_MODERN';
-            return `### SOVEREIGN v32.35 MULTI-MODAL PROTOCOL
-1. AESTHETIC LOCK: Apply the ${styleLock} pillar (Geometry, Lighting, Typography, Colors).
-2. TRANSLATIONAL SYNERGY: Correlate Mechanism (Panel A) -> Imaging/Pathology (Panel B) -> Outcome/Evidence (Panel C).
-3. ATOMIC ASSEMBLY: Use CIT-100+ primitives ONLY. Do not invent new structures.
-4. CAUSALITY: Use 'zoom_in_connector' or 'arrow_transition' to link physical scales.
-5. PURE BACKGROUND: Absolute zero grain. White (#FFFFFF) base.`;
+            return `### SOVEREIGN v32.39 PROTOCOL
+1. STYLE: Apply ${styleLock} (Serif/Muted for NEJM, Sans/Vibrant for BioRender).
+2. ANATOMY: Site(A) === Site(B) === Site(C). No site drift.
+3. ENTITIES: Use CIT-100+ primitives ONLY (e.g. mri_slice, step_curve_km).
+4. LAYOUT: Panels A(Molecular) -> B(Diagnostic) -> C(Evidence).
+5. CONNECTORS: Use 'arrow_transition' between panels.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v32.35_SOVEREIGN"
+        styleSuffix: "v32.39_SOVEREIGN"
     },
     infographic: {
         expansionRole: "Visual Abstract Architect (SVAE v3.0 - CJASN/NEJM Standards)",
