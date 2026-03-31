@@ -56,26 +56,29 @@ const agentConfigs: any = {
         expansionRules: [
             "1. IDENTITY: All human subjects MUST be of South Asian (Indian) descent.",
             "2. TRACK 1 (SCIENTIFIC): Define complex tissue -> cellular -> molecular cascades.",
-            "3. TRACK 2 (VISUAL): Command specific rendering styles (NEJM Watercolor vs. BioRender 2.5D).",
-            "4. NO GEOMETRY: Do NOT describe SVG shapes (rectangles/circles) or hex codes in the visual narrative. Use biological terms only.",
+            "3. TRACK 2 (VISUAL): Command specific rendering styles (BioRender 2.5D).",
+            "4. EXPLICIT GEOMETRY: Define shapes using biological terms (e.g., ellipsoid_cluster, multi-lobulated_contour).",
             "5. NO CITATIONS: Do NOT generate DOIs or citations for image-only generation."
         ],
         jsonRole: "Ultimate Medical Art Director and Clinical Strategist",
-        jsonInstructions: (style: string) => {
-            const isBioRender = style.toLowerCase().includes('biorender');
-            
+        jsonInstructions: (medicalBrief: string) => {
+            const isBioRender = medicalBrief.toLowerCase().includes('biorender');
             return `### SOVEREIGN v31 DUAL-TRACK PROTOCOL
 1. INSTANCE LAW: return JSON with FIVE top-level layers: metadata, medical_content, visual_specification, rendering_instructions, diffusion_synthesis.
-2. SVG MAPPING (Layers 3-4): Standardize all rendering to SVG/CSS properties. Absolute coordinates on 680x840 canvas.
-3. AESTHETIC LOCK: 
-   - IF style is BioRender: Use "Soft white ambient lighting", "Pastel clinical palette", "Modular 2.5D assets", "Flat clinical shading", and "Pure white background (#FFFFFF)".
-   - ELSE (NEJM): Use "Technical stippling", "Soft watercolor transitions", "Muted clinical palette on cream parchment", and "Traditional anatomical realism".
-4. ★ LAYER 5 — DIFFUSION SYNTHESIS (CRITICAL):
-   - master_prompt: Write a 190-230 word NATURAL LANGUAGE paragraph focusing ON ANATOMY, NON-DRAMATIC LIGHTING, and TEXTURE.
-   - STERN BAN: NO hex codes, NO SVG shapes (rectangle, circle), NO coordinates (x:100, etc.) in Layer 5. This causes engine failure. 
-   - AESTHETIC LAW (BioRender): Avoid dark backgrounds or cinematic glow. Use "bright textbook lighting", "clean modular assets", and "uniform clinical clarity".
-   - Instead of "teal rectangle", use "columnar epithelial cells with translucent teal membranes".
-5. NO CITATION: Leave metadata.citation empty or very minimal. No DOIs needed for images.`;
+2. BIOLOGICAL FIDELITY: For PKD, prioritize canonical progression: Tubular Dilation -> Cyst Expansion -> Interstitial Fibrosis -> Nephron Loss. Avoid the non-canonical term 'cysts rupture'.
+3. STYLE UNIFICATION: 
+   - ${isBioRender ? 'BIORENDER MODE: NO WATERCOLOR. NO NEJM. Use: "Flat clinical modularity", "Internal volumetric gradients", "Smooth clinical polymer texture", "Pure white canvas (#FFFFFF)".' : 'NEJM MODE: Use "Watercolor stippling", "Soft organic transitions", "Muted clinical palette on parchment (#F5F2F0)".'}
+4. GEOMETRY & SHAPE LOCK: The 'shape' field MUST NOT be empty. Use: "ellipsoid_cluster", "multi-lobulated_contour", "columnar_array", or "biconcave_disc".
+5. SPATIAL HIERARCHY: Use discrete coordinates on 680x840 canvas. 
+   - Panel A (Macro): Top half [0,0,680,420]. 
+   - Panel B (Micro): Bottom half [0,440,680,400]. 
+   No overlapping (0,0,680,840) for distinct modular assets.
+6. CLINICAL PALETTE: 
+   - BioRender: Teal (#00796B), Clinical Magenta (#D81B60), Slate Grey (#455A64).
+   - NEJM: Deep Renal Red (#8B0000), Ochre (#B8860B), Indigo (#191970).
+7. LAYER 5 (DIFFUSION SYNTHESIS): Describe individual "Clinically-Accurate Modular Assets". 
+   - BAN: hex codes, SVG shapes, and coordinates in Layer 5. This causes engine failure. 
+   - AESTHETIC: Focus on 2.5D volumetric icons with zero external shadows on a pure white background. NO TEXT.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
