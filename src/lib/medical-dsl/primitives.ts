@@ -57,6 +57,24 @@ export const MEDICAL_PRIMITIVES = {
     glucose_molecular_flux: "The directional movement of hexagonal glucose molecules across a cellular membrane barrier."
   },
 
+  // --- HEPATOLOGY ---
+  LIVER_BILIARY: {
+    liver_lobule_hexagonal_unit: "A structural hexagonal hepatic lobule with radiating plates of hepatocytes and a central vein.",
+    portal_triad_cluster: "A specific clustering of a portal vein branch, hepatic artery branch, and bile ductule at the periphery of a lobule.",
+    central_vein: "A thin-walled terminal hepatic venule located at the exact center of a liver lobule.",
+    fibrous_septa: "Thick, dense bands of collagenous scar tissue bridging between portal tracts, disrupting normal lobular architecture.",
+    regenerative_nodule: "A spherical cluster of proliferating hepatocytes completely surrounded by dense fibrous septa.",
+    sinusoidal_channel: "A specialized, highly permeable capillary channel lined with fenestrated endothelium and Kupffer cells.",
+    portal_vein_branch: "A large-caliber venous vessel with a thin wall, delivering nutrient-rich blood to the sinusoids.",
+    splenic_congestion_zone: "An engorged region of splenic red pulp with dilated sinusoids packed with stagnant erythrocytes due to back-pressure."
+  },
+
+  // --- NEPHROLOGY (Renal) ---
+  KIDNEY: {
+    glomerulus_capillary_tuft: "A highly complex, tangled spherical network of fenestrated capillaries enclosed within Bowman's capsule.",
+    renal_tubule_cross_section: "A cross-section of a nephron tubule lined with cuboidal epithelial cells with prominent microvilli borders."
+  },
+
   // --- GEOMETRY ENFORCEMENT ---
   LAYOUT: {
     tapered_zoom_linkage: "A trapezoidal geometric connector between a macro bounding box and its micro detailed panel.",

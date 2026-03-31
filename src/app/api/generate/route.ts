@@ -52,32 +52,33 @@ const agentConfigs: any = {
         IDENTITY STANDARD: South Asian features only.`,
     },
     medical: {
-        expansionRole: "Sovereign Medical Visual Grammar Engine (SOVEREIGN v32.2 DOMAIN-LOCK)",
+        expansionRole: "Sovereign Medical Visual Grammar Engine (SOVEREIGN v32.3 DOMAIN-ALIGNED)",
         expansionRules: [
             "1. NO-DRIFT POLICY: You are a BioRender specialist. ALL NEJM/Parchment/Grain logic is DELETED. Use #FFFFFF. ZERO Texture.",
-            "2. DOMAIN LOCK: Primitives MUST align to their domain. Using 'rbc_sickled_crescent' for a Foam Cell or 'laminar_cortex_band' for a vascular wall is a FATAL ERROR.",
-            "3. VASCULAR SKELETON: Use 'concentric_layered_vessel_wall' and 'eccentric_plaque_protrusion' ONLY. No rectangles.",
-            "4. PATHOLOGY PRIMITIVES: Foam Cells = 'macrophage_lipid_phagocyte'. Plaque = 'fibrous_cap_over_lipid_core'.",
-            "5. CAUSAL SIGNALING: Cytokines MUST have a 'source_entity' (e.g. Macrophage) and a 'target_entity' (e.g. Endothelium)."
+            "2. STRICT DOMAIN LOCK: Primitives MUST align exactly to their domain field. Using vascular primitives for a Hepatology prompt (e.g. 'concentric_layered' for Liver) is a FATAL ERROR.",
+            "3. HEPATOLOGY SKELETON: Liver MUST use 'liver_lobule_hexagonal_unit', 'portal_triad_cluster', 'sinusoidal_channel'. Never use vascular or neuro shapes for liver tissue.",
+            "4. PATHOLOGY PRIMITIVES: Fibrosis = 'fibrous_septa'. Nodules = 'regenerative_nodule'. Portal Hypertension = 'portal_vein_branch -> congestion -> splenic_congestion_zone'.",
+            "5. CAUSAL SIGNALING: Vectors MUST connect functional biological components indicating flow, pressure, or signaling."
         ],
         jsonRole: "Head Medical Grammar Architect and Clinical DSL Specialist",
         jsonInstructions: (medicalBrief: string) => {
-            return `### SOVEREIGN v32.2 DOMAIN-LOCK PROTOCOL
+            return `### SOVEREIGN v32.3 DOMAIN-ALIGNED PROTOCOL
 1. STYLE MANDATE: BioRender DEFAULT. Absolute Pure White (#FFFFFF). Material: Matte Volumetric Polymer. ZERO GRAIN. ZERO PARCHMENT.
 2. ARCHITECTURE LAYERS:
-   - Layer 1 (Truth): Instantiate entities using DOMAIN-ALIGNED primitives only. (e.g. Vascular scene = Vascular primitives).
+   - Layer 1 (Truth): Instantiate entities using DOMAIN-ALIGNED primitives only. (e.g. Hepatology scene = Hepatic primitives).
    - Layer 2 (Layout): Define 'panels' with zero-coordinate overlap.
-3. BIOLOGICAL DSL LIBRARY:
+3. BIOLOGICAL DSL LIBRARY (Strictly use these, do not invent):
    - VASCULAR: 'concentric_layered_vessel_wall', 'eccentric_plaque_protrusion', 'fibrous_cap_over_lipid_core'.
-   - HEMATOLOGY: 'rbc_normal_biconcave', 'rbc_sickled_crescent', 'rbc_adhesion_cluster'.
+   - HEPATOLOGY: 'liver_lobule_hexagonal_unit', 'portal_triad_cluster', 'sinusoidal_channel', 'fibrous_septa', 'regenerative_nodule'.
+   - NEPHROLOGY: 'glomerulus_capillary_tuft', 'renal_tubule_cross_section'.
    - NEURO: 'laminar_cortex_band', 'neuron_with_dendrites', 'amyloid_extracellular_plaque'.
-4. SIGNALING LAW: Cytokine signaling MUST be a directional vector starting from a specific cellular source entity.
+4. SIGNALING LAW: Cytokine & Flow signaling MUST be a directional vector starting from a specific cellular source entity.
 5. COLOR HARMONY: Neutral (#E0E0E0), Pathology (#00796B), Immune (#43A047), Damage (#D81B60).
 6. DIFFUSION (LAYER 5): Describe 'A Collection of Modular Clinical Assets'. NO TEXT. High-transparency South Asian Ghost Silhouette context.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v32.2_DOMAIN-LOCK"
+        styleSuffix: "v32.3_DOMAIN-ALIGNED"
     },
     infographic: {
         expansionRole: "Visual Abstract Architect (SVAE v3.0 - CJASN/NEJM Standards)",

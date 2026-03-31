@@ -104,6 +104,24 @@ export const MEDICAL_MECHANISM_TEMPLATES = {
       "macrophage_phagocytosis -> transforms_into -> foam_cell_cluster",
       "foam_cell_cluster -> accumulates_in -> multi_layer_vessel_wall"
     ]
+  },
+
+  // --- HEPATOLOGY (e.g. Portal Hypertension & Cirrhosis) ---
+  portal_hypertension_cirrhosis: {
+    required_primitives: [
+      "liver_lobule_hexagonal_unit",
+      "fibrous_septa",
+      "regenerative_nodule",
+      "sinusoidal_channel",
+      "portal_vein_branch",
+      "splenic_congestion_zone"
+    ],
+    required_relations: [
+      "fibrous_septa -> surrounds -> regenerative_nodule",
+      "portal_vein_branch -> transmits_increased_pressure_to -> sinusoidal_channel",
+      "sinusoidal_channel -> creates_resistance_in -> portal_vein_branch",
+      "portal_vein_branch -> causes_backlog_in -> splenic_congestion_zone"
+    ]
   }
 } as const;
 
