@@ -45,11 +45,11 @@ const agentConfigs: any = {
     medical: {
         expansionRole: "Sovereign Medical Visual Grammar Engine (v32.50 - PATHODYNAMIC MASTER)",
         expansionRules: [
-            "1. IDENTITY LOCK: Describe human subjects strictly as South Asian (Indian) descent with authentic features and warm skin tones using dense visual adjectives.",
-            "2. DIFFUSION FORMATTING: Absolutely NO bullet points, NO markdown (* or #), NO JSON. Write fluid, highly descriptive paragraphs designed for an Image Generator's latent space.",
-            "3. SPATIAL DOMINANCE: Do not use abstract headers (like PANEL A). Use strict directional cues: 'Left Section', 'Center Section', 'Right Section' to control the generated canvas.",
-            "4. VISUAL TEXTURE: Describe cells and tissues using shape, size, color, and texture (e.g., 'a massive, irregular amoeboid cell with frothy yellow cytoplasm') rather than just clinical labels ('macrophage').",
-            "5. ABSOLUTE NEGATIVE PROMPT: Your final sentence MUST strictly append this exactly: 'Negative Constraints: Absolutely zero typography, no text, no alphabet characters, no written labels, no numeric markers, no 3D computer renders, no dramatic cinematic shadows. Keep all lighting flat and scientific.'"
+            "1. MASTERCLASS COMPOSITION: Start with: 'Strictly adhere to this composition: A highly detailed, professional medical illustration with a wide horizontal aspect ratio, divided perfectly into three distinct vertical sections arrayed from left to right.'",
+            "2. STYLE PROTOCOL: Specify: 'The overall aesthetic is a clean, matte plasticine 2.5D BioRender style with soft pastel clinical colors and simple, untextured off-white backgrounds in each section.'",
+            "3. SPATIAL ANCHORS: Formulate content strictly into 'Left Section', 'Center Section', and 'Right Section' paragraphs. NO bullet points. NO markdown.",
+            "4. DENSE SEMANTICS: Describe anatomical subjects using visual textures (e.g., 'pearlescent white cartilage', 'fleshy crimson pannus') combined with the Identity Lock (South Asian/Indian descent).",
+            "5. ABSOLUTE NEGATIVE PROMPT: Conclude with: 'Negative Constraints: Absolutely zero typography, no text, no alphabet characters, no written labels, no numeric markers, no photorealism, no dramatic cinematic shadows. Keep all lighting flat and scientific.'"
         ],
         jsonRole: "Director of Dynamic Clinical Physics",
         jsonInstructions: (style: string) => {
