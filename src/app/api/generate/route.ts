@@ -52,30 +52,32 @@ const agentConfigs: any = {
         IDENTITY STANDARD: South Asian features only.`,
     },
     medical: {
-        expansionRole: "Sovereign Medical Illustrator (SOVEREIGN v31 DUAL-TRACK PROTOCOL)",
+        expansionRole: "Sovereign Medical Illustrator (SOVEREIGN v31.9 FINAL-PIONEER PROTOCOL)",
         expansionRules: [
-            "1. ZERO-DRIFT POLICY: If BioRender is requested, any mention of 'parchment', 'grain', 'paper', 'texture', 'nejm', or 'watercolor' is a fatal error. Delete them from your vocabulary.",
-            "2. STYLE LOCK: BioRender = Absolute Pure White (#FFFFFF). Zero depth-texturing. Matte clinical polymer ONLY.",
-            "3. ANATOMICAL ACCURACY: Cortex = Laminar Parallel Bands (1-6). Arteries = Concentric Circular layers. NO RECTANGLES.",
-            "4. ENTITY LOCK: Alzheimer's prompts MUST include Microglia (Bio-Green) and Synaptic Terminals as entities.",
-            "5. NO CITATIONS: Do NOT generate DOIs or citations."
+            "1. STYLE LOCK: You are a BioRender-MODULAR specialist. NEJM/Watercolor logic is DELETED. Use Pure White (#FFFFFF). ZERO Texture. ZERO Grain.",
+            "2. ANATOMICAL LAW: Cortex = 'laminar_parallel_bands' (Horizontal). Arteries = 'concentric_circular_layers'. No ellipses for organs.",
+            "3. PATHOLOGY PRIMITIVES: Amyloid = 'fibrillar_extracellular_cluster'. Tau = 'intracellular_helical_fibrils'. Synapse = 'synaptic_boutons'.",
+            "4. NEURON ENTITY: You MUST define: 'neuron_soma', 'dendritic_arbor', and 'synaptic_terminal' (Status: Fragmented).",
+            "5. NO HALLUCINATION: If the brief says AD, you MUST include Microglia (Bio-Green) and Tau (Purple) as internal cell assets."
         ],
-        jsonRole: "Ultimate Medical Art Director and Clinical Strategist",
+        jsonRole: "Ultimate BioRender Art Director and Clinical Architect",
         jsonInstructions: (medicalBrief: string) => {
-            const isNejm = medicalBrief.toLowerCase().includes('nejm') || medicalBrief.toLowerCase().includes('watercolor');
-            return `### SOVEREIGN v31.8 ZERO-DRIFT PROTOCOL
-1. STYLE MANDATE: 
-   - ${isNejm ? 'NEJM MODE: Organic on cream.' : 'BIORENDER DEFAULT: ZERO TEXTURE. ZERO GRAIN. ZERO PARCHMENT. Absolutely Pure White (#FFFFFF) void. Material: Volumetric Polymer 2.5D.'}
+            return `### SOVEREIGN v31.9 FINAL-PIONEER PROTOCOL
+1. STYLE MANDATE: BioRender DEFAULT. Absolute Pure White (#FFFFFF) void only. Material: Matte Volumetric Polymer. ZERO GRAIN.
 2. GEOMETRY SUPREMACY: 
-   - Brain: laminar_parallel_bands. Vessels: concentric_circular_layers. Organs: multi-lobulated_contour.
-3. ENTITY INSTANTIATION: You MUST instantiate all cellular drivers (Microglia, Foam Cells, etc.) in the 'entities' array.
-4. COLOR HARMONY: Cortex (#E0E0E0), Amyloid (#00796B), Tau (#673AB7), Microglia (#43A047), Signaling (#D81B60).
-5. SPATIAL COHESION: Top [0,0,680,400]; Bottom [0,440,680,400]. Mandatory tapered_zoom_connector in Layer 3.
-6. LAYER 5 (DIFFUSION): Master Prompt MUST NOT contain 'grain', 'parchment', or 'nejm'. Describe 'Scholarly Modular Clinical Assets'. Z-Index 0: Indian Ghost Silhouette context.`;
+   - Brain/Cortex: laminar_parallel_bands (Horizontal 1-6). 
+   - Amyloid: fibrillar_extracellular_cluster. 
+   - Tau: intracellular_helical_fibrils inside neuron_soma.
+3. NEURON MANDATE: You MUST instantiate: 'neuron_soma', 'dendritic_arbor', and 'axon_terminal'. Single cells are BANNED.
+4. PATHOPHYSIOLOGY WIRING: 
+   - Linkages: Amyloid (Source) -> Microglia (Target: Activates) -> Synaptic Terminal (Target: Damage).
+   - Synapse Loss: Visualize as 'fragmented_boutons' and 'reduced_density_mask'.
+5. COLOR HARMONY: Cortex (#E0E0E0), Amyloid (#00796B), Tau (#673AB7), Microglia (#43A047), Signaling (#D81B60).
+6. DIFFUSION (LAYER 5): Describe 'A Collection of Scholarly Modular BioRender Assets'. NO TEXT. High-transparency South Asian Ghost Silhouette @ Z-Index 0.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v31.8_ZERO-DRIFT"
+        styleSuffix: "v31.9_FINAL-PIONEER"
     },
     infographic: {
         expansionRole: "Visual Abstract Architect (SVAE v3.0 - CJASN/NEJM Standards)",
