@@ -55,28 +55,40 @@ export const MEDICAL_PRIMITIVES = {
     thrombotic_occlusion_cluster: "A dense, fibrin-rich aggregation of platelets and erythrocytes forming a complete blockage within a lumen."
   },
 
-  // --- NEPHROLOGY (Renal v1.0) ---
+  // --- NEPHROLOGY (Renal Mesh v1.0) ---
   KIDNEY: {
     // Macro
     kidney_organ: "Bean-shaped renal capsule showing cortex, medulla pyramids, and hilum entry.",
     corticomedullary_axis: "Radial gradient layers showing the cortex, outer medulla, and inner medulla.",
-    renal_vascular_tree: "Branching hierarchy: renal artery -> segmental -> arcuate -> afferent arteriole.",
     
-    // Micro
-    glomerulus_tuft: "Complex capillary ball cluster within Bowman's space with mesangial matrix.",
-    filtration_barrier: "Three-layer barrier: fenestrated endothelium, basement membrane, and podocytes.",
-    podocyte_cell: "Cell body with interdigitating foot processes (pedicels) and slit diaphragms.",
-    nephron_tubule_chain: "Continuous coiled tubular path: proximal, loop of Henle, distal, and collecting duct.",
+    // Micro (The Mesh System)
+    fenestrated_endothelium: "A perforated endothelial sheet with uniform porous openings for filtration.",
+    glomerular_basement_membrane: "A dense, layered molecular filter showing charge-selective barriers.",
+    podocyte_foot_process_mesh: "An interdigitating mesh of foot-processes (pedicels) with regular slit diaphragms.",
     
     // Pathology
+    foot_process_effacement: "A flattened, continuous epithelial sheet resulting from the loss of the podocyte foot-process mesh.",
+    protein_leak_flux: "A directional particle stream migrating from the capillary through the mesh into the urinary space.",
     glomerulosclerosis_lesion: "Segmental or global capillary collapse with extracellular matrix expansion.",
-    crescent_formation: "Semilunar fill of Bowman's space with proliferating cells and fibrin.",
-    tubular_atrophy_segment: "Thinned, narrowed tubule segment with loss of epithelial lining.",
-    protein_leak_stream: "Diffuse particle flow originating at the filtration barrier and entering the tubule.",
-    
-    // Hemodynamics
-    glomerular_flow_vector: "Pressure-proportional directional vector from afferent to efferent arteriole.",
-    filtration_gradient_field: "Pressure map showing high-gradient capillary to low-gradient Bowman's space."
+    crescent_formation: "Semilunar fill of Bowman's space with proliferating cells and fibrin."
+  },
+
+  // --- CARDIOLOGY (Electrophysiology Physics v1.0) ---
+  CARDIOLOGY: {
+    ion_channel_cluster: "Membrane-embedded nodes representing Na+, K+, and Ca2+ channel clusters.",
+    action_potential_waveform: "A chronological mapping of voltage-time phases from depolarization to repolarization.",
+    electrical_wavefront: "A moving activation front with clear directionality and velocity properties.",
+    reentry_circuit: "A circular wavefront loop representing self-sustained arrhythmic activation.",
+    sarcomere_contraction_vector: "A mechanical force vector coupled to the electrical activation wavefront."
+  },
+
+  // --- IMMUNOLOGY (Signaling Fields v1.0) ---
+  SIGNALING_PHYSICS: {
+    cytokine_cloud: "A diffuse radial molecular field representing local IL-6 and TNF-alpha concentrations.",
+    receptor_internalization: "A membrane-bound lock-and-key cluster undergoing active endocytosis.",
+    jak_stat_cascade: "A nucleus-directed signal chain showing STAT phosphorylation and translocation.",
+    signaling_field_gradient: "A vector field showing continuous curved streamlines of a diffusion gradient.",
+    neuroinflammatory_field: "A zone of diffuse cell activation and cytokine diffusion gradients."
   },
 
   // --- NEUROLOGY (Neuro v1.0) ---

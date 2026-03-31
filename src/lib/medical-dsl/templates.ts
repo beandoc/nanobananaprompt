@@ -22,21 +22,49 @@ export const MEDICAL_MECHANISM_TEMPLATES = {
     ]
   },
 
-  // --- NEPHROLOGY (e.g. Nephrotic Syndrome / FSGS) ---
-  nephrotic_syndrome_damage: {
+  // --- NEPHROLOGY (e.g. Glomerular Filtration Barrier Damage MoA) ---
+  renal_filtration_failure: {
     required_primitives: [
-      "glomerulus_tuft",
-      "filtration_barrier",
-      "podocyte_cell",
-      "glomerulosclerosis_lesion",
-      "protein_leak_stream",
-      "filtration_gradient_field"
+      "fenestrated_endothelium",
+      "glomerular_basement_membrane",
+      "podocyte_foot_process_mesh",
+      "foot_process_effacement",
+      "protein_leak_flux"
     ],
     required_relations: [
-      "glomerulosclerosis_lesion -> collapses -> glomerulus_tuft",
-      "podocyte_cell -> foot_process_effacement_at -> filtration_barrier",
-      "filtration_barrier -> permits_leakage_of -> protein_leak_stream",
-      "protein_leak_stream -> enters -> nephron_tubule_chain"
+      "podocyte_foot_process_mesh -> transforms_into -> foot_process_effacement",
+      "foot_process_effacement -> increases_permeability_to -> protein_leak_flux",
+      "protein_leak_flux -> passes_through -> glomerular_basement_membrane"
+    ]
+  },
+
+  // --- IMMUNOLOGY (e.g. Cytokine Storm Signaling Field MoA) ---
+  cytokine_signaling_cascade: {
+    required_primitives: [
+      "cytokine_cloud",
+      "signaling_field_gradient",
+      "jak_stat_cascade",
+      "receptor_internalization"
+    ],
+    required_relations: [
+      "cytokine_cloud -> creates -> signaling_field_gradient",
+      "signaling_field_gradient -> activates -> receptor_internalization",
+      "receptor_internalization -> triggers -> jak_stat_cascade"
+    ]
+  },
+
+  // --- CARDIOLOGY (e.g. Cardiac Action Potential Wavefront MoA) ---
+  cardiac_electrophysiology: {
+    required_primitives: [
+      "ion_channel_cluster",
+      "electrical_wavefront",
+      "reentry_circuit",
+      "sarcomere_contraction_vector"
+    ],
+    required_relations: [
+      "ion_channel_cluster -> triggers -> electrical_wavefront",
+      "electrical_wavefront -> propagates_into -> reentry_circuit",
+      "reentry_circuit -> causes -> sarcomere_contraction_vector"
     ]
   },
 
