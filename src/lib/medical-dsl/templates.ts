@@ -323,6 +323,24 @@ export const MEDICAL_MECHANISM_TEMPLATES: Record<string, MedicalTemplate> = {
     ]
   },
 
+  // --- MULTI-MODAL FUSION (Mechanism–Imaging–Pathology Fusion v1.0) ---
+  multi_modal_clinical_fusion: {
+    required_primitives: [
+      "ligand_antibody",
+      "hounsfield_unit_field",
+      "radiological_ghost_overlay",
+      "he_stain_palette",
+      "pleomorphic_nuclei",
+      "disorganized_tissue_architecture"
+    ],
+    required_relations: [
+      "PANEL_A: drug_binding -> inhibits -> cellular_signaling",
+      "PANEL_B: ct_scan_pre_post -> shows -> lesion_reduction_on_hounsfield_field",
+      "PANEL_C: biopsy_pre_post -> confirms -> histologic_normalization_on_he_stain",
+      "LINKAGE: molecular_A -> correlates_to -> imaging_B -> confirmed_by -> pathology_C"
+    ]
+  },
+
   // --- META-SYNTHESIS (Bench-to-Bedside Scale Logic v2.0 - FULL EVIDENCE PACK) ---
   bench_to_bedside_synthesis: {
     required_primitives: [
