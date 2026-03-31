@@ -16,95 +16,90 @@ export const MEDICAL_MECHANISM_TEMPLATES = {
       "rbc_adhesion_cluster",
       "adhesion_contact_zone"
     ],
-    required_relations: [
-      "rbc_sickled_crescent -> adheres_to -> endothelial_lining_cell_chain",
-      "rbc_adhesion_cluster -> obstructs -> lumen_tubular_corridor"
-    ]
+  // --- CARDIOLOGY (Master Library) ---
+  atherothrombosis_rupture: {
+    required_primitives: ["concentric_layered_vessel_wall", "eccentric_plaque_protrusion", "fibrous_cap_over_lipid_core", "thrombotic_occlusion_cluster"],
+    required_relations: ["fibrous_cap_over_lipid_core -> thins_and_ruptures -> eccentric_plaque_protrusion", "exposure -> triggers -> thrombotic_occlusion_cluster"]
+  },
+  coronary_flow_stenosis: {
+    required_primitives: ["lumen_tubular_corridor", "pressure_gradient_field"],
+    required_relations: ["lumen_tubular_corridor -> creates_resistance_in -> pressure_gradient_field"]
+  },
+  valve_regurgitation_dynamics: {
+    required_primitives: ["electrical_wavefront", "pressure_gradient_field"],
+    required_relations: ["pressure_gradient_field -> generates_backflow -> electrical_wavefront"] 
   },
 
-  // --- NEPHROLOGY (e.g. Glomerular Filtration Barrier Damage MoA) ---
-  renal_filtration_failure: {
-    required_primitives: [
-      "fenestrated_endothelium",
-      "glomerular_basement_membrane",
-      "podocyte_foot_process_mesh",
-      "foot_process_effacement",
-      "protein_leak_flux"
-    ],
-    required_relations: [
-      "podocyte_foot_process_mesh -> transforms_into -> foot_process_effacement",
-      "foot_process_effacement -> increases_permeability_to -> protein_leak_flux",
-      "protein_leak_flux -> passes_through -> glomerular_basement_membrane"
-    ]
+  // --- NEUROLOGY (Master Library) ---
+  bbb_disruption: {
+    required_primitives: ["endothelial_lining_cell_chain", "astrocyte_cell", "cytokine_diffusion_field"],
+    required_relations: ["cytokine_diffusion_field -> breaks_tight_junctions_in -> endothelial_lining_cell_chain", "endothelial_lining_cell_chain -> causes_edema_around -> astrocyte_cell"]
+  },
+  excitotoxicity_cascade: {
+    required_primitives: ["neuron_full_structure", "synaptic_junction", "cytokine_diffusion_field"],
+    required_relations: ["synaptic_junction -> releases_excess_glutamate -> cytokine_diffusion_field", "cytokine_diffusion_field -> causes_calcium_overload_in -> neuron_full_structure"]
+  },
+  demyelination_conduction_block: {
+    required_primitives: ["white_matter_tract", "synaptic_signal_vector"],
+    required_relations: ["white_matter_tract -> loses_myelin_leading_to -> synaptic_signal_vector"]
   },
 
-  // --- IMMUNOLOGY (e.g. Cytokine Storm Signaling Field MoA) ---
-  cytokine_signaling_cascade: {
-    required_primitives: [
-      "cytokine_cloud",
-      "signaling_field_gradient",
-      "jak_stat_cascade",
-      "receptor_internalization"
-    ],
-    required_relations: [
-      "cytokine_cloud -> creates -> signaling_field_gradient",
-      "signaling_field_gradient -> activates -> receptor_internalization",
-      "receptor_internalization -> triggers -> jak_stat_cascade"
-    ]
+  // --- NEPHROLOGY (Master Library) ---
+  tubuloglomerular_feedback: {
+    required_primitives: ["glomerulus_tuft", "nephron_tubule_chain", "filtration_gradient_field"],
+    required_relations: ["nephron_tubule_chain -> senses_nacl_and_signals -> glomerulus_tuft", "glomerulus_tuft -> reduces_gfr_via -> filtration_gradient_field"]
+  },
+  atn_ischemia_reperfusion: {
+    required_primitives: ["nephron_tubule_chain", "macrophage_phagocytosis", "neuroinflammatory_field"],
+    required_relations: ["nephron_tubule_chain -> undergoes_necrosis_releasing -> neuroinflammatory_field"]
+  },
+  nephrotic_protein_leak: {
+    required_primitives: ["podocyte_foot_process_mesh", "foot_process_effacement", "protein_leak_flux"],
+    required_relations: ["podocyte_foot_process_mesh -> effaces_at -> foot_process_effacement", "foot_process_effacement -> allows_flux_of -> protein_leak_flux"]
   },
 
-  // --- CARDIOLOGY (e.g. Cardiac Action Potential Wavefront MoA) ---
-  cardiac_electrophysiology: {
-    required_primitives: [
-      "ion_channel_cluster",
-      "electrical_wavefront",
-      "reentry_circuit",
-      "sarcomere_contraction_vector"
-    ],
-    required_relations: [
-      "ion_channel_cluster -> triggers -> electrical_wavefront",
-      "electrical_wavefront -> propagates_into -> reentry_circuit",
-      "reentry_circuit -> causes -> sarcomere_contraction_vector"
-    ]
+  // --- IMMUNOLOGY / ONCOLOGY (Master Library) ---
+  car_t_targeting: {
+    required_primitives: ["tumor_cell", "cytotoxic_t_cell", "tcr_mhc_binding_complex"],
+    required_relations: ["cytotoxic_t_cell -> engineered_binding_to -> tumor_cell", "tcr_mhc_binding_complex -> triggers -> cytotoxic_release"]
+  },
+  adc_internalization: {
+    required_primitives: ["tumor_cell", "receptor_internalization", "cytotoxic_release"],
+    required_relations: ["tumor_cell -> binds_and_internalizes -> receptor_internalization", "receptor_internalization -> releases_cytotoxic_payload -> tumor_cell"]
+  },
+  cytokine_storm_systemic: {
+    required_primitives: ["cytokine_cloud", "signaling_field_gradient", "neuroinflammatory_field"],
+    required_relations: ["cytokine_cloud -> creates_global -> signaling_field_gradient"]
   },
 
-  // --- NEURODEGENERATION (e.g. Alzheimer's Pathology - Deep Causality) ---
-  alzheimers_neurodegeneration: {
-    required_primitives: [
-      "cortical_laminar_bands",
-      "neuron_full_structure",
-      "amyloid_plaque",
-      "tau_neurofibrillary_tangle",
-      "synaptic_loss_pattern",
-      "microglial_cell",
-      "cytokine_diffusion_field"
-    ],
-    required_relations: [
-      "amyloid_plaque -> triggers_activation_of -> microglial_cell",
-      "microglial_cell -> releases -> cytokine_diffusion_field",
-      "tau_neurofibrillary_tangle -> causes_apoptosis_in -> neuron_full_structure",
-      "neuron_full_structure -> leading_to -> synaptic_loss_pattern"
-    ]
+  // --- PULMONOLOGY (Master Library) ---
+  ards_alveolar_leak: {
+    required_primitives: ["alveolar_sac_cluster", "endothelial_lining_cell_chain", "cytokine_diffusion_field"],
+    required_relations: ["cytokine_diffusion_field -> causes_leakage_into -> alveolar_sac_cluster"]
+  },
+  vq_mismatch_hypoxemia: {
+    required_primitives: ["alveolar_sac_cluster", "lumen_tubular_corridor", "pressure_gradient_field"],
+    required_relations: ["lumen_tubular_corridor -> perfusion_mismatch_with -> alveolar_sac_cluster"]
   },
 
-  // --- ONCOLOGY (e.g. PD-L1 Immune Checkpoint Inhibition MoA) ---
-  oncology_checkpoint_inhibition: {
-    required_primitives: [
-      "tumor_cell",
-      "cytotoxic_t_cell",
-      "pdl1_ligand",
-      "pd1_receptor",
-      "pd1_pdl1_binding",
-      "tcr_mhc_binding_complex",
-      "exhausted_t_cell"
-    ],
-    required_relations: [
-      "tumor_cell -> presents -> tcr_mhc_binding_complex",
-      "pdl1_ligand -> binds_to -> pd1_receptor",
-      "pd1_pdl1_binding -> triggers -> checkpoint_inhibition_signal",
-      "checkpoint_inhibition_signal -> causes -> t_cell_signal_attenuation",
-      "t_cell_signal_attenuation -> inhibits -> cytotoxic_release"
-    ]
+  // --- ENDOCRINOLOGY (Master Library) ---
+  insulin_pi3k_akt_signaling: {
+    required_primitives: ["pancreatic_islet_beta_cell", "jak_stat_cascade", "glucose_molecular_flux"],
+    required_relations: ["pancreatic_islet_beta_cell -> triggers_signaling_for -> glucose_molecular_flux"]
+  },
+  thyroid_feedback_loop: {
+    required_primitives: ["jak_stat_cascade", "cytokine_diffusion_field"],
+    required_relations: ["cytokine_diffusion_field -> inhibits -> jak_stat_cascade"]
+  },
+
+  // --- HEMATOLOGY (Master Library) ---
+  coagulation_amplification: {
+    required_primitives: ["thrombotic_occlusion_cluster", "lumen_tubular_corridor"],
+    required_relations: ["lumen_tubular_corridor -> supports -> thrombotic_occlusion_cluster"]
+  },
+  sickle_cell_voc_adhesion: {
+    required_primitives: ["rbc_sickled_crescent", "rbc_adhesion_cluster", "endothelial_lining_cell_chain"],
+    required_relations: ["rbc_sickled_crescent -> adheres_and_blocks -> endothelium_lining_cell_chain"]
   }
 } as const;
 
