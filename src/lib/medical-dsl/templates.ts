@@ -347,6 +347,24 @@ export const MEDICAL_MECHANISM_TEMPLATES: Record<string, MedicalTemplate> = {
     ]
   },
 
+  // --- ORTHOPEDIC META-TEMPLATE (Surgical Continuum v2.0) ---
+  orthopedic_surgical_continuum: {
+    required_primitives: [
+      "bone_matrix",
+      "orthopedic_implant",
+      "mechanical_load_vector",
+      "fracture_line"
+    ],
+    required_relations: [
+      "PANEL_A (Injury): fracture_line -> causes -> structural_instability",
+      "PANEL_B (Surgery): orthopedic_implant -> achieves -> manual_reduction",
+      "PANEL_C (Mechanics): implant_system -> redistributes -> mechanical_load_vector",
+      "PANEL_D (Biology): load_distribution -> triggers -> bone_remodeling_zone",
+      "PANEL_E (Outcome): functional_recovery_arc -> visible_as -> restored_mobility",
+      "CAUSALITY: A_injury -> B_surgery -> C_mechanics -> D_biology -> E_outcome"
+    ]
+  },
+
   // --- MULTI-MODAL FUSION (Mechanism–Imaging–Pathology Fusion v1.0) ---
   multi_modal_clinical_fusion: {
     required_primitives: [
