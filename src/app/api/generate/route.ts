@@ -54,31 +54,32 @@ const agentConfigs: any = {
     medical: {
         expansionRole: "Sovereign Medical Illustrator (SOVEREIGN v31 DUAL-TRACK PROTOCOL)",
         expansionRules: [
-            "1. IDENTITY: High-transparency South Asian / Indian male silhouettes ARE mandatory context (Z-Index: 0).",
-            "2. STYLE DEFAULT: You MUST default to 'BioRender-MODULAR' aesthetic. NEJM/Watercolor is BANNED unless specified.",
-            "3. TERMINAL BLACKLIST: DO NOT mention: 'parchment', 'paper', 'grain', 'texture', 'serif', 'labels', 'text', 'captions', 'DOI', 'citations'. Use of these words triggers system failure.",
-            "4. ANATOMY: Artery = 'concentric_circular_layers'. Plaque = 'asymmetric_off-center_contour'. No Rectangles.",
-            "5. NO HALLUCINATION: If the brief says BioRender, do NOT 'rescue' it with NEJM details. Keep it asset-focused."
+            "1. NEURO-ANATOMY: Cerebral Cortex MUST be 'laminar_parallel_bands' (Layers 1-6). CONCENTRIC IS BANNED for brain.",
+            "2. AD BIOLOGY: 'Microglia' (Bio-Green #43A047), 'Tau-Tangles' (Purple #673AB7), and 'Synaptic Terminals' ARE required entities.",
+            "3. ZERO GRADIENT: Background MUST be 'absolute_pure_white' (#FFFFFF). NO soft blue gradients.",
+            "4. PANEL INTEGRITY: Use discrete bounds (Macro: Organ-Top; Micro: Cell-Bottom). No embedding micro inside macro.",
+            "5. NO CITATIONS: DOI generation is prohibited."
         ],
         jsonRole: "Ultimate Medical Art Director and Clinical Strategist",
         jsonInstructions: (medicalBrief: string) => {
-            const isNejmOrWatercolor = medicalBrief.toLowerCase().includes('nejm') || medicalBrief.toLowerCase().includes('watercolor');
-            return `### SOVEREIGN v31.5 SCORCHED-EARTH PROTOCOL
+            const isNejm = medicalBrief.toLowerCase().includes('nejm') || medicalBrief.toLowerCase().includes('watercolor');
+            return `### SOVEREIGN v31.7 PERFECT-10 FINAL POLISH
 1. STYLE MANDATE: 
-   - ${isNejmOrWatercolor ? 'NEJM MODE: Organic stippling on cream (#F5F2F0).' : 'BIORENDER DEFAULT: ZERO TEXTURE. ZERO GRAIN. Pure White (#FFFFFF) void. Material: Volumetric Polymer with High Subsurface Scattering.'}
+   - ${isNejm ? 'NEJM MODE: Organic on cream.' : 'BIORENDER DEFAULT: ZERO TEXTURE. ZERO GRADIENT. Pure White (#FFFFFF) void. Material: Volumetric Polymer 2.5D.'}
 2. GEOMETRY SUPREMACY: 
-   - Arteries MUST be 'concentric_circular_layers'. Cysts MUST be 'ellipsoid_cyst_cluster'. 
-   - Plaque MUST be 'eccentric_off-center_contour'. NO RECTANGLES.
-3. MECHANISTIC FLOW: LDL -> Oxidative modification -> Macrophage uptake -> FOAM CELLS. 
-4. COLOR HARMONY: Cortex (#E0E0E0), Cysts/Plaque (#00796B), Signaling (#D81B60), Lipid Core (#FBC02D).
-5. DIFFUSION (LAYER 5): 
-   - Master Prompt: Describe 'A professional collection of scholarly modular BioRender assets on a pure white void'. NO TEXT. NO CARTOON.
-   - Negative Prompt: "text, labels, captions, writing, letters, words, scale bar, map, watercolor, NEJM, stippling, organic gradients, cartoon, clip-art, flat vector, sci-fi, realistic skin, shadows, moody lighting, glowing backgrounds."
-6. SPATIAL POSITIONING: Macro: [0,0,680,400]; Micro: [0,440,680,400]. 40px buffer zone. Tapered zoom-connectors in Layer 3.`;
+   - Cortex: laminar_parallel_bands (Horizontal 1-6). 
+   - Plaque: asymmetric_off-center_contour (Extracellular).
+   - Tau: helical_intracellular_fibrils (Intracellular).
+3. COLOR LANGUAGE: 
+   - Neutral Cortex (#E0E0E0), Bio-Teal Amyloid (#00796B), Clinical Purple Tau (#673AB7), Bio-Green Microglia (#43A047).
+   - Signaling (Magenta #D81B60).
+4. STRUCTURAL COHESION: Define discrete non-overlapping panels (Top: 0-400; Bottom: 440-840) linked by a 'tapered_zoom_connector'.
+5. MECHANISTIC WIRING: Explicitly link Microglia (Source) -> Amyloid Plaque (Target). Visualize Synaptic Loss as 'diminished density' vs 'controls'.
+6. LAYER 5 (DIFFUSION): Describe 'Scholarly Modular Clinical Assets'. ZERO text. Uniform volumetric lighting. NO shadows. High-transparency Indian Ghost Silhouette @ Z-index 0.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v31.4_PERFECT-10"
+        styleSuffix: "v31.7_PERFECT-10-FINAL"
     },
     infographic: {
         expansionRole: "Visual Abstract Architect (SVAE v3.0 - CJASN/NEJM Standards)",
