@@ -83,5 +83,29 @@ export const MEDICAL_PRIMITIVES: any = {
   ANNOTATION: [
     "zoom_in_connector", "zoom_out_connector", "highlight_ring", "comparison_bracket",
     "before_after_state", "arrow_transition", "timeline_axis"
-  ]
+  ],
+
+  // 14. STYLE & AESTHETIC MODES (Editorial Layer v1.0)
+  STYLE_AESTHETICS: {
+    BIORENDER_MODERN: {
+      geometry: "clean_vector_rounded",
+      lighting: "soft_ambient_occlusion",
+      colors: "saturated_clinical_vibrance",
+      typography: "inter_sans_serif",
+      background: "pure_white_no_texture"
+    },
+    SCHOLARLY_NEJM: {
+      geometry: "high_fidelity_scalar_render",
+      lighting: "volumetric_chiaroscuro",
+      colors: "muted_academic_hues",
+      typography: "georgia_serif_scholarly",
+      background: "theoretical_off_white_paper"
+    },
+    DIGITAL_MICROSCOPY: {
+      geometry: "point_cloud_diffusion",
+      lighting: "fluorescence_glow",
+      colors: "high_intensity_spectra",
+      typography: "monospaced_data_overlay"
+    }
+  }
 };

@@ -47,6 +47,11 @@ const agentConfigs: any = {
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a high-impact JSON Ad Blueprint.
         STYLE AUTHORITY: Follow a ${style} aesthetic. Use the local creative protocols.
         PROMPT DISTILLATION: In the "core_prompt" field, distill the refined brief into a 50-word HIGH-CONVERSION visual hook. Start with the HERO and end with the ATMOSPHERE. 
+        "9. Style Pillar Selection: You MUST detect the target platform (Lab/BioRender vs. Journal/NEJM) and set the global STYLE_AESTHETICS lock.\n" +
+    "    - BioRender-style: use 'BIORENDER_MODERN' (saturated colors, sans-serif, clean vector).\n" +
+    "    - Scholarly/Journal-style: use 'SCHOLARLY_NEJM' (muted hues, serif, volumetric shading).\n" +
+    "\n" +
+    "10. High-Impact Output: Ensure the output is a single, clean, structured JSON object that correlates mechanism, imaging, and styling.",
         SENSORY LOCK: Ensure at least 3 material texture descriptors (e.g., 'glistening', 'etched', 'velvety') are included in the core_prompt.
         TYPOGRAPHY: Use the "exact_text" field for any copy. Keep it punchy and emotional.
         IDENTITY STANDARD: South Asian features only.`,
