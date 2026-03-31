@@ -54,27 +54,27 @@ const agentConfigs: any = {
     medical: {
         expansionRole: "Sovereign Medical Illustrator (SOVEREIGN v31 DUAL-TRACK PROTOCOL)",
         expansionRules: [
-            "1. IDENTITY: South Asian silhouette (Ghost Underlay) MUST be placed at Z-Index: 0 for context.",
-            "2. ZOOM CONTINUITY: Define 'tapered_zoom_connectors' (trapezoids) to link the Macro Organ to the Micro Detail.",
-            "3. GRID LAW: Use 680x840 canvas. Mandate a 40px empty 'Structural Buffer' between Macro (0-400) and Micro (440-840) to prevent asset collision.",
-            "4. MATERIAL SPEC: Use 'Subsurface Scattering' for lipids, cysts, and membranes. NO GRAIN.",
-            "5. NO CITATIONS: DOI generation is strictly prohibited."
+            "1. IDENTITY: High-transparency South Asian / Indian male silhouettes ARE mandatory context (Z-Index: 0).",
+            "2. STYLE DEFAULT: You MUST default to 'BioRender-MODULAR' aesthetic. NEJM/Watercolor is BANNED unless specified.",
+            "3. TERMINAL BLACKLIST: DO NOT mention: 'parchment', 'paper', 'grain', 'texture', 'serif', 'labels', 'text', 'captions', 'DOI', 'citations'. Use of these words triggers system failure.",
+            "4. ANATOMY: Artery = 'concentric_circular_layers'. Plaque = 'asymmetric_off-center_contour'. No Rectangles.",
+            "5. NO HALLUCINATION: If the brief says BioRender, do NOT 'rescue' it with NEJM details. Keep it asset-focused."
         ],
         jsonRole: "Ultimate Medical Art Director and Clinical Strategist",
         jsonInstructions: (medicalBrief: string) => {
-            const isBioRender = medicalBrief.toLowerCase().includes('biorender');
-            return `### SOVEREIGN v31.4 PERFECT-10 FINAL PROTOCOL
-1. STYLE ARCHITECTURE: 
-   - ${isBioRender ? 'BIORENDER MODE: ZERO TEXTURE. ZERO GRAIN. Pure White (#FFFFFF) void only. Material: Volumetric Polymer with High Subsurface Scattering for translucent cells.' : 'NEJM MODE: Organic stippling on cream (#F5F2F0).'}
-2. STRUCTURAL COHESION: Define a tapered "Zoom Box" in Layer 3 connecting the specific organ site to the cellular detail panel.
-3. CONCENTRIC ANATOMY: (Vessels ONLY): concentric_circular_layers. (Organs ONLY): multi-lobulated_contour. No rectangular organs.
-4. COLOR HARMONY: 
-   - Neutral Base (#E0E0E0) for cortex/walls.
-   - Clinical Magenta (#D81B60) for signaling/receptors.
-   - Bio-Teal (#00796B) for cysts/pathology.
-   - Lipid Yellow (#FBC02D) for lipid cores.
-5. SIGNALING CONNECTIVITY: Every signaling arrow MUST link a CLEAR source (e.g., receptor) to a CLEAR outcome (e.g., cell nucleus).
-6. LAYER 5 (DIFFUSION): Describe 'Scholarly Modular Clinical Assets'. ZERO text. Uniform 2.5D lighting. No external shadows. Pure clinical void.`;
+            const isNejmOrWatercolor = medicalBrief.toLowerCase().includes('nejm') || medicalBrief.toLowerCase().includes('watercolor');
+            return `### SOVEREIGN v31.5 SCORCHED-EARTH PROTOCOL
+1. STYLE MANDATE: 
+   - ${isNejmOrWatercolor ? 'NEJM MODE: Organic stippling on cream (#F5F2F0).' : 'BIORENDER DEFAULT: ZERO TEXTURE. ZERO GRAIN. Pure White (#FFFFFF) void. Material: Volumetric Polymer with High Subsurface Scattering.'}
+2. GEOMETRY SUPREMACY: 
+   - Arteries MUST be 'concentric_circular_layers'. Cysts MUST be 'ellipsoid_cyst_cluster'. 
+   - Plaque MUST be 'eccentric_off-center_contour'. NO RECTANGLES.
+3. MECHANISTIC FLOW: LDL -> Oxidative modification -> Macrophage uptake -> FOAM CELLS. 
+4. COLOR HARMONY: Cortex (#E0E0E0), Cysts/Plaque (#00796B), Signaling (#D81B60), Lipid Core (#FBC02D).
+5. DIFFUSION (LAYER 5): 
+   - Master Prompt: Describe 'A professional collection of scholarly modular BioRender assets on a pure white void'. NO TEXT. NO CARTOON.
+   - Negative Prompt: "text, labels, captions, writing, letters, words, scale bar, map, watercolor, NEJM, stippling, organic gradients, cartoon, clip-art, flat vector, sci-fi, realistic skin, shadows, moody lighting, glowing backgrounds."
+6. SPATIAL POSITIONING: Macro: [0,0,680,400]; Micro: [0,440,680,400]. 40px buffer zone. Tapered zoom-connectors in Layer 3.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
