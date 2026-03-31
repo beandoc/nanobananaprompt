@@ -28,51 +28,52 @@ export const MEDICAL_PRIMITIVES = {
     thrombotic_occlusion_cluster: "A dense, fibrin-rich aggregation of platelets and erythrocytes forming a complete blockage within a lumen."
   },
 
-  // --- NEUROLOGY ---
-  BRAIN: {
-    laminar_cortex_band: "A wide horizontal band of cortical tissue composed of 6 distinct parallel layers with subtle vertical striations.",
-    neuron_with_dendrites: "A volumetric neuronal soma with complex dendritic branching and a clear, singular axon projection.",
-    synaptic_bouton_cluster: "A series of small, bulbous axonal endings forming connections (synapses) with a dendritic spine.",
-    amyloid_extracellular_plaque: "An irregular, fibrillar, bio-teal (#00796B) cluster of misfolded protein in the extracellular space.",
-    intracellular_tau_tangle: "Spirally-curled, clinical purple (#673AB7) helical fibrils occupying the interior of a neuronal cell body."
-  },
-
-  // --- IMMUNOLOGY & ONCOLOGY ---
-  IMMUNE_CELLS: {
-    microglial_activation: "A ramified immune cell with multiple branching processes migrating toward a target structure.",
-    macrophage_phagocytosis: "A granular, amorphous cell body in the process of engulfing cellular debris or deformed erythrocytes.",
-    foam_cell_cluster: "A lipid-laden macrophage appearing as a bloated cell with a bubbly, translucent interior and yellowish hue.",
-    tumor_microenvironment_stroma: "A dense, fibrous extracellular matrix populated by cancer-associated fibroblasts and tumor cells.",
-    angiogenic_vessel_sprouting: "The formation of new, thin-walled vascular structures branching abnormally from an existing vessel.",
-    metastatic_intravasation_event: "The physical entry of a malignant cell into a vascular lumen through a disrupted endothelial barrier."
-  },
-
-  // --- PULMONOLOGY & DIABETES ---
-  METABOLIC_RESPIRATORY: {
-    alveolar_sac_cluster: "A group of hollow, grape-like pulmonary air sacs with thin, translucent epithelial walls.",
-    bronchial_smooth_muscle_hypertrophy: "A thickened, constricted layer of smooth muscle surrounding a narrowed bronchial airway.",
-    mucus_hypersecretion_plug: "A viscous, semi-transparent accumulation of mucus obstructing a pulmonary lumen.",
-    pancreatic_islet_beta_cell: "A specialized cluster of insulin-producing endocrine cells within a pancreatic islet.",
-    insulin_receptor_GLUT4_complex: "A molecular-scale docking station on a cell membrane showing insulin binding and glucose transporter activation.",
-    glucose_molecular_flux: "The directional movement of hexagonal glucose molecules across a cellular membrane barrier."
-  },
-
-  // --- HEPATOLOGY ---
-  LIVER_BILIARY: {
-    liver_lobule_hexagonal_unit: "A structural hexagonal hepatic lobule with radiating plates of hepatocytes and a central vein.",
-    portal_triad_cluster: "A specific clustering of a portal vein branch, hepatic artery branch, and bile ductule at the periphery of a lobule.",
-    central_vein: "A thin-walled terminal hepatic venule located at the exact center of a liver lobule.",
-    fibrous_septa: "Thick, dense bands of collagenous scar tissue bridging between portal tracts, disrupting normal lobular architecture.",
-    regenerative_nodule: "A spherical cluster of proliferating hepatocytes completely surrounded by dense fibrous septa.",
-    sinusoidal_channel: "A specialized, highly permeable capillary channel lined with fenestrated endothelium and Kupffer cells.",
-    portal_vein_branch: "A large-caliber venous vessel with a thin wall, delivering nutrient-rich blood to the sinusoids.",
-    splenic_congestion_zone: "An engorged region of splenic red pulp with dilated sinusoids packed with stagnant erythrocytes due to back-pressure."
-  },
-
-  // --- NEPHROLOGY (Renal) ---
+  // --- NEPHROLOGY (Renal v1.0) ---
   KIDNEY: {
-    glomerulus_capillary_tuft: "A highly complex, tangled spherical network of fenestrated capillaries enclosed within Bowman's capsule.",
-    renal_tubule_cross_section: "A cross-section of a nephron tubule lined with cuboidal epithelial cells with prominent microvilli borders."
+    // Macro
+    kidney_organ: "Bean-shaped renal capsule showing cortex, medulla pyramids, and hilum entry.",
+    corticomedullary_axis: "Radial gradient layers showing the cortex, outer medulla, and inner medulla.",
+    renal_vascular_tree: "Branching hierarchy: renal artery -> segmental -> arcuate -> afferent arteriole.",
+    
+    // Micro
+    glomerulus_tuft: "Complex capillary ball cluster within Bowman's space with mesangial matrix.",
+    filtration_barrier: "Three-layer barrier: fenestrated endothelium, basement membrane, and podocytes.",
+    podocyte_cell: "Cell body with interdigitating foot processes (pedicels) and slit diaphragms.",
+    nephron_tubule_chain: "Continuous coiled tubular path: proximal, loop of Henle, distal, and collecting duct.",
+    
+    // Pathology
+    glomerulosclerosis_lesion: "Segmental or global capillary collapse with extracellular matrix expansion.",
+    crescent_formation: "Semilunar fill of Bowman's space with proliferating cells and fibrin.",
+    tubular_atrophy_segment: "Thinned, narrowed tubule segment with loss of epithelial lining.",
+    protein_leak_stream: "Diffuse particle flow originating at the filtration barrier and entering the tubule.",
+    
+    // Hemodynamics
+    glomerular_flow_vector: "Pressure-proportional directional vector from afferent to efferent arteriole.",
+    filtration_gradient_field: "Pressure map showing high-gradient capillary to low-gradient Bowman's space."
+  },
+
+  // --- NEUROLOGY (Neuro v1.0) ---
+  BRAIN_CNS: {
+    // Macro
+    brain_cortical_surface: "Gyral and sulcal folded sheet structure showing three-dimensional depth.",
+    cortical_laminar_bands: "Six distinct parallel horizontal bands (Layer I-VI) with vertical striations.",
+    white_matter_tract: "Bundled parallel fibers showing longitudinal signal flow polarity.",
+    
+    // Micro
+    neuron_full_structure: "Volumetric soma with complex dendritic tree, axon, and synaptic terminals.",
+    synaptic_junction: "Molecular gap between pre- and post-synaptic membranes with vesicle release.",
+    microglial_cell: "Ramified branching cell (resting) or activated amoeboid immune cell.",
+    astrocyte_cell: "Star-shaped support cell regulating the blood-brain barrier (BBB).",
+    
+    // Pathology
+    amyloid_plaque: "Extracellular fibrillar protein cluster with a dense core and neuritic halo.",
+    tau_neurofibrillary_tangle: "Intracellular twisted helical fibrils occupying the soma and axon.",
+    synaptic_loss_pattern: "Visual representation of reduced synapse density and network disconnectivity.",
+    neuroinflammatory_field: "Zone of diffuse microglial activation and cytokine diffusion gradients.",
+    
+    // Signaling
+    synaptic_signal_vector: "Discrete signal pulse vector propagating from axon to synapse.",
+    cytokine_diffusion_field: "Radial spread gradient originating from activated microglia."
   },
 
   // --- GEOMETRY ENFORCEMENT ---

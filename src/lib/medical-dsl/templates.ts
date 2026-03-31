@@ -22,105 +22,54 @@ export const MEDICAL_MECHANISM_TEMPLATES = {
     ]
   },
 
-  // --- NEURODEGENERATION (e.g. Alzheimer's Disease) ---
-  alzheimers_pathophysiology: {
+  // --- NEPHROLOGY (e.g. Nephrotic Syndrome / FSGS) ---
+  nephrotic_syndrome_damage: {
     required_primitives: [
-      "laminar_cortex_band",
-      "neuron_with_dendrites",
-      "synaptic_bouton_cluster",
-      "amyloid_extracellular_plaque",
-      "intracellular_tau_tangle",
-      "microglial_activation"
+      "glomerulus_tuft",
+      "filtration_barrier",
+      "podocyte_cell",
+      "glomerulosclerosis_lesion",
+      "protein_leak_stream",
+      "filtration_gradient_field"
     ],
     required_relations: [
-      "amyloid_extracellular_plaque -> activates -> microglial_activation",
-      "microglial_activation -> damages -> synaptic_bouton_cluster",
-      "intracellular_tau_tangle -> occupies -> neuron_with_dendrites"
+      "glomerulosclerosis_lesion -> collapses -> glomerulus_tuft",
+      "podocyte_cell -> foot_process_effacement_at -> filtration_barrier",
+      "filtration_barrier -> permits_leakage_of -> protein_leak_stream",
+      "protein_leak_stream -> enters -> nephron_tubule_chain"
     ]
   },
 
-  // --- CARDIOLOGY (e.g. Myocardial Infarction) ---
-  myocardial_infarction: {
+  // --- NEURODEGENERATION (e.g. Alzheimer's Pathology - Deep Causality) ---
+  alzheimers_neurodegeneration: {
     required_primitives: [
-      "lumen_tubular_corridor",
-      "thrombotic_occlusion_cluster",
-      "cardiomyocytes_radial_alignment",
-      "endothelial_lining_cell_chain"
+      "cortical_laminar_bands",
+      "neuron_full_structure",
+      "amyloid_plaque",
+      "tau_neurofibrillary_tangle",
+      "synaptic_loss_pattern",
+      "microglial_cell",
+      "cytokine_diffusion_field"
     ],
     required_relations: [
-      "thrombotic_occlusion_cluster -> blocks -> lumen_tubular_corridor",
-      "lumen_tubular_corridor -> causes_ischemia_in -> cardiomyocytes_radial_alignment"
+      "amyloid_plaque -> triggers_activation_of -> microglial_cell",
+      "microglial_cell -> releases -> cytokine_diffusion_field",
+      "tau_neurofibrillary_tangle -> causes_apoptosis_in -> neuron_full_structure",
+      "neuron_full_structure -> leading_to -> synaptic_loss_pattern"
     ]
   },
 
-  // --- ONCOLOGY (e.g. Tumor Angiogenesis) ---
-  tumor_angiogenesis: {
+  // --- ONCOLOGY (e.g. PD-L1 Immune Checkpoint MoA) ---
+  oncology_immune_evasion: {
     required_primitives: [
       "tumor_microenvironment_stroma",
       "angiogenic_vessel_sprouting",
-      "endothelial_lining_cell_chain"
-    ],
-    required_relations: [
-      "tumor_microenvironment_stroma -> triggers -> angiogenic_vessel_sprouting",
-      "angiogenic_vessel_sprouting -> invades -> tumor_microenvironment_stroma"
-    ]
-  },
-
-  // --- PULMONOLOGY (e.g. COPD / Alveolar Damage) ---
-  copd_alveolar_damage: {
-    required_primitives: [
-      "alveolar_sac_cluster",
-      "bronchial_smooth_muscle_hypertrophy",
-      "mucus_hypersecretion_plug"
-    ],
-    required_relations: [
-      "bronchial_smooth_muscle_hypertrophy -> constricts -> lumen_tubular_corridor",
-      "mucus_hypersecretion_plug -> obstructs -> alveolar_sac_cluster"
-    ]
-  },
-
-  // --- DIABETES (e.g. Insulin Resistance) ---
-  insulin_resistance: {
-    required_primitives: [
-      "pancreatic_islet_beta_cell",
-      "insulin_receptor_GLUT4_complex",
-      "glucose_molecular_flux"
-    ],
-    required_relations: [
-      "pancreatic_islet_beta_cell -> secretes -> insulin_receptor_GLUT4_complex",
-      "glucose_molecular_flux -> failed_uptake_at -> insulin_receptor_GLUT4_complex"
-    ]
-  },
-
-  // --- ATHEROSCLEROSIS (e.g. Plaque Formation) ---
-  atherosclerosis: {
-    required_primitives: [
-      "multi_layer_vessel_wall",
-      "endothelial_lining_cell_chain",
-      "foam_cell_cluster",
+      "microglial_activation",
       "macrophage_phagocytosis"
     ],
     required_relations: [
-      "macrophage_phagocytosis -> transforms_into -> foam_cell_cluster",
-      "foam_cell_cluster -> accumulates_in -> multi_layer_vessel_wall"
-    ]
-  },
-
-  // --- HEPATOLOGY (e.g. Portal Hypertension & Cirrhosis) ---
-  portal_hypertension_cirrhosis: {
-    required_primitives: [
-      "liver_lobule_hexagonal_unit",
-      "fibrous_septa",
-      "regenerative_nodule",
-      "sinusoidal_channel",
-      "portal_vein_branch",
-      "splenic_congestion_zone"
-    ],
-    required_relations: [
-      "fibrous_septa -> surrounds -> regenerative_nodule",
-      "portal_vein_branch -> transmits_increased_pressure_to -> sinusoidal_channel",
-      "sinusoidal_channel -> creates_resistance_in -> portal_vein_branch",
-      "portal_vein_branch -> causes_backlog_in -> splenic_congestion_zone"
+      "tumor_microenvironment_stroma -> suppresses -> microglial_activation",
+      "angiogenic_vessel_sprouting -> sustains -> tumor_microenvironment_stroma"
     ]
   }
 } as const;
