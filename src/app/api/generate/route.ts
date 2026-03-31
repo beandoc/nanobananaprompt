@@ -27,163 +27,96 @@ const schemaMap: any = {
 };
 
 const creativeProtocols: any = {
-    ugc: `\nUGC CREATIVE PROTOCOL:\n- Aesthetic: Raw, candid, shot on mobile device.\n- Lighting: Natural, imperfect, multi-directional ambient light.\n- Texture: Pores visible, slight motion blur, authentic fabric folds.\n- Composition: Uncentered, dynamic, 'in-the-moment' framing.\n`,
-    editorial: `\nHIGH-END EDITORIAL PROTOCOL:\n- Aesthetic: Vogue/Harper's Bazaar style, extremely polished.\n- Lighting: Cinematic moody-rim or softbox beauty lighting.\n- Texture: Skin retouching (subtle), high-gloss surfaces, liquid flow physics.\n- Composition: Perfect rule of thirds, architectural depth.\n`,
-    ecom: `\nCLEAN E-COMMERCE PROTOCOL:\n- Aesthetic: Minimalist, Apple/Dyson style, distraction-free.\n- Lighting: Bright-diffused daylight, sharp shadow definition on product.\n- Texture: Precise material rendering (matte/glass), crisp edges.\n- Composition: Centered or 60/40 hero product placement.\n`
+    ugc: `\nUGC CREATIVE PROTOCOL:\n- Aesthetic: Raw, candid, shot on mobile device.\n- Lighting: Natural, imperfect, multi-directional ambient light.\n- Texture: Pores visible, authentic fabric folds.\n`,
+    editorial: `\nHIGH-END EDITORIAL PROTOCOL:\n- Aesthetic: Vogue/Harper's Bazaar style, extremely polished.\n- Lighting: Cinematic moody-rim or softbox beauty lighting.\n`,
+    ecom: `\nCLEAN E-COMMERCE PROTOCOL:\n- Aesthetic: Minimalist, Apple/Dyson style, distraction-free.\n- Lighting: Bright-diffused daylight, sharp shadow definition on product.\n`
 };
 
 const agentConfigs: any = {
     ad: {
-        expansionRole: "Elite Art Director and Prompt Engineer for a high-end DTC creative agency",
-        expansionRules: [
-            "MISSION: Refine a raw brief into a high-converting 'Visual Ad Concept'.",
-            "IDENTITY: IF human characters are featured, they MUST be of Indian descent (South Asian features, modern urban Indian styling, warm olive skin tones). Do not add humans to product-only scenes unless requested.",
-            "SENSORY DETAIL EXAMPLES: Your descriptions MUST be exhaustive. Use texture keywords appropriate to the subject (e.g., 'viscous liquid', 'matte cardboard', 'brushed aluminum', 'glistening moisture'). DO NOT use these specific examples if they do not fit the actual subject.",
-            "REALISM: Enforce photographic realism ('shot on iPhone 15 Pro' for UGC, '85mm/100mm macro' for Editorial). Capture facial expressions with nuanced emotional keywords (e.g., 'eyes squinted in genuine laughter', 'serene focus').",
-            "STRICT BAN: NO conversational fillers, NO text/labels/names in the description paragraph, NO bracket notation.",
-            "MATERIAL ATLAS Rule: Differentiate between glossy, matte, satin, and textured surfaces. If the subject is an fruit, focus on skin texture, stem detail, and waxy sheen. If it is hardware, focus on metallic grains and reflections."
-        ],
+        expansionRole: "Elite Art Director and Prompt Engineer",
+        expansionRules: ["1. IDENTITY: South Asian heritage only.", "2. SENSORY: Use rich texture keywords."],
         jsonRole: "High-Performance DTC Ad Director",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a high-impact JSON Ad Blueprint.
-        STYLE AUTHORITY: Follow a ${style} aesthetic. Use the local creative protocols.
-        PROMPT DISTILLATION: In the "core_prompt" field, distill the refined brief into a 50-word HIGH-CONVERSION visual hook. Start with the HERO and end with the ATMOSPHERE. 
-        "9. Style Pillar Selection: You MUST detect the target platform (Lab/BioRender vs. Journal/NEJM) and set the global STYLE_AESTHETICS lock.\n" +
-    "    - BioRender-style: use 'BIORENDER_MODERN' (saturated colors, sans-serif, clean vector).\n" +
-    "    - Scholarly/Journal-style: use 'SCHOLARLY_NEJM' (muted hues, serif, volumetric shading).\n" +
-    "\n" +
-    "10. High-Impact Output: Ensure the output is a single, clean, structured JSON object that correlates mechanism, imaging, and styling.",
-        SENSORY LOCK: Ensure at least 3 material texture descriptors (e.g., 'glistening', 'etched', 'velvety') are included in the core_prompt.
-        TYPOGRAPHY: Use the "exact_text" field for any copy. Keep it punchy and emotional.
-        IDENTITY STANDARD: South Asian features only.`,
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert brief into Ad JSON. Style: ${style}.`
     },
     medical: {
-        expansionRole: "Sovereign Medical Visual Grammar Engine (v32.39)",
+        expansionRole: "Sovereign Medical Visual Grammar Engine (v32.48 - PATHODYNAMIC MASTER)",
         expansionRules: [
-            "1. UNIVERSAL TAXONOMY: Use CIT-100+ categories (CELLULAR, MOLECULAR, RADIOLOGY, PATHOLOGY, DATA_VIZ).",
-            "2. CLINICAL-SEAL: Same Site across all panels (Site A === Site B === Site C).",
-            "3. MOLECULAR: Use 'bispecific_antibody_bridge' linking 't_cell' to 'tumor_cell'.",
-            "4. EVIDENCE: KM Plots must have 2 curves + CI bands + Hazard Ratio labels.",
-            "5. AESTHETIC: BIORENDER_MODERN (Sans) vs. SCHOLARLY_NEJM (Serif/Muted)."
+            "1. PURPOSE: Professional Clinical Illustration/Anatomy.",
+            "2. PATHODYNAMIC LAW: Mandate flow direction vectors and gradients.",
+            "3. INTEGRATED-ZOOMS: Single unified frame. No panels. Focal cutouts only.",
+            "4. SILENT-MASTER: Strictly no numeric coordinates in text labels.",
+            "5. CITATION-ERASER: Strictly delete citation and doi fields."
         ],
-        jsonRole: "Director of Clinical Visual Evidence",
+        jsonRole: "Director of Dynamic Clinical Physics",
         jsonInstructions: (style: string) => {
             const styleLock = style.toLowerCase().includes('nejm') || style.toLowerCase().includes('journal') || style.toLowerCase().includes('scholarly') ? 'SCHOLARLY_NEJM' : 'BIORENDER_MODERN';
-            return `### SOVEREIGN v32.39 PROTOCOL
-1. STYLE: Apply ${styleLock} (Serif/Muted for NEJM, Sans/Vibrant for BioRender).
-2. ANATOMY: Site(A) === Site(B) === Site(C). No site drift.
-3. ENTITIES: Use CIT-100+ primitives ONLY (e.g. mri_slice, step_curve_km).
-4. LAYOUT: Panels A(Molecular) -> B(Diagnostic) -> C(Evidence).
-5. CONNECTORS: Use 'arrow_transition' between panels.`;
+            return `### SOVEREIGN v32.48 MEDICAL ILLUSTRATION PROTOCOL
+1. STYLE: Apply ${styleLock} aesthetic to the anatomical scene.
+2. DYNAMICS: Explicitly define biological causality (e.g., retrograde flow).
+3. ARCHITECTURE: Unified physical scene with tapered in-situ focal zooms.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v32.39_SOVEREIGN"
+        styleSuffix: "v32.48_ILLUSTRATION"
     },
     infographic: {
-        expansionRole: "Visual Abstract Architect (SVAE v3.0 - CJASN/NEJM Standards)",
+        expansionRole: "Principal NEJM Scholarly Plate Architect (SVAE v3.50 - NEJM-COLUMNAR Standard)",
         expansionRules: [
-            "1. INFOGRAPHIC FOCUS: Convert clinical briefs into card-centric visual abstracts.",
-            "2. CARD LOGIC: Define discrete cards (PICO, Results, Conclusion).",
-            "3. STYLE LOCK: NEJM Dense Slab (Academic Grid) vs. CJASN Blue Standard (Electric Blue Cards).",
-            "4. IDENTITY: All human representations (Patients/Doctors) MUST be South Asian.",
-            "5. DATA VIZ: Propose specific charts (Forest Plots, Kaplan-Meier, etc.) for the results panel."
+            "1. NEJM VERTICALITY: Strict 3-Column Layout: Left (Population/Sidebar) | Middle (Treatment/Intervention) | Right (Placebo/Comparator).",
+            "2. ENDPOINT ROWS: outcomes must be rendered as horizontal rows crossing the Middle and Right columns.",
+            "3. STATISTICAL SUB-TEXT: HR, 95% CI, and P-values must be placed immediately under the primary result in each cell.",
+            "4. COLUMNAR SHADING: Apply unique fill colors to Middle and Right columns for visual separation.",
+            "5. HEADER PRIMITIVES: Place primary clinical mechanism (Syringe, Pill, IV Bag) in the top-header of each column.",
+            "6. NO FLOATING CARDS: This is a single, integrated horizontal-vertical grid."
         ],
-        jsonRole: "Lead Scholarly Plate Designer (Visual Abstract Engine)",
-        jsonInstructions: (style: string) => {
-            const isCjasn = style.toLowerCase().includes('cjasn');
-            return `### SVAE PROTOCOL (INFOGRAPHICS)
-1. GRID LAW: 680x840 canvas. Define distinct "Slabs" or "Cards" with header/body hierarchies.
-2. STYLE ENFORCEMENT:
-   - IF style is CJASN: Use Electric Navy (#03055B) headers, rounded white cards, and teal/slate accents.
-   - ELSE (NEJM): Use Dense academic grids, saturated left-rail metadata, and serif typography (implied).
-3. CONTENT: Map the brief to PICO (Population, Intervention, Comparator, Outcome) structure.
-4. RENDERING: Specify card bounds, colors, and font-weights clearly in layers 3-4.
-5. NO IMAGE ASSETS: Focus on iconography and layout, not complex anatomical paintings.`;
-        }
+        jsonRole: "Director of High-Impact Visual Abstracts",
+        jsonInstructions: (style: string) => `### SVAE v3.50 NEJM-COLUMNAR PROTOCOL
+1. ARCHITECTURE: Population (Sidebar) | Intervention (Col A) | Control (Col B).
+2. ENDPOINTS: Map clinical results horizontally across Col A and Col B.
+3. STATISTICS: Pair every result with its (HR, 95% CI, P) block.
+4. PRIMITIVES: Header Mechanism Icons for each column.
+5. IDENTITY: South Asian patient silhouettes in the Population sidebar.`,
+        subjectPath: "metadata.subject",
+        stylePath: "metadata.journal_standard",
+        styleSuffix: "v3.50_NEJM_COLUMNAR"
     },
     vector: {
-        expansionRole: "Principal Brand Designer for Scalable Vector Illustrations",
-        expansionRules: [
-            "MISSION: Refine a raw brief into a geometric 'Vector Logic Paragraph'.",
-            "AESTHETIC: Focus on clean lines, geometric shapes, and flat colors.",
-            "IDENTITY: IF human characters are present, they MUST be Indian descent/South Asian features.",
-            "STRICT BAN: NO TEXT, noise, blur, or complex textures."
-        ],
+        expansionRole: "Principal Brand Designer",
+        expansionRules: ["1. IDENTITY: South Asian heritage only.", "2. AESTHETIC: Clean geometric lines."],
         jsonRole: "Master Brand Architect",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a Scalable Vector JSON Blueprint.
-        STYLE AUTHORITY: Use a ${style} framework.
-        IDENTITY STANDARD: South Asian features for all human subjects.`,
-        // No subjectField overwrite - illustration_subject is detailed
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert brief into Vector JSON. Style: ${style}.`
     },
     video: {
-        expansionRole: "Cinematic Director for Generative Video Systems",
-        expansionRules: [
-            "MISSION: Refine a raw brief into a cinematic 'Visual Motion Paragraph'.",
-            "MOTION: Describe camera movements (dolly, pan) and object dynamics.",
-            "IDENTITY: IF human characters are featured, they MUST be of South Asian descent.",
-            "VISUALS: Describe lighting (neon, golden hour) and environment in detail."
-        ],
+        expansionRole: "Cinematic Director",
+        expansionRules: ["1. IDENTITY: South Asian heritage only.", "2. MOTION: Describe camera dolly/pan."],
         jsonRole: "Chief Cinematic Engineer",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a Video JSON Blueprint.
-        STYLE AUTHORITY: Apply a ${style} cinematic aesthetic.`,
-        // No subjectField overwrite - description is detailed
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert brief into Video JSON. Style: ${style}.`
     },
     manga: {
-        expansionRole: "Manga Concept Artist and Multi-Verse Designer",
-        expansionRules: [
-            "MISSION: Refine a raw brief into a 'Manga Universe Specification'.",
-            "DIVERSITY: Describe how the character adapts across different manga styles (visuals only).",
-            "IDENTITY: Character MUST be of Indian/South Asian descent.",
-            "STRICT BAN: NO TEXT in the visual description."
-        ],
+        expansionRole: "Manga Concept Artist",
+        expansionRules: ["1. IDENTITY: South Asian characters only.", "2. AESTHETIC: Pro Manga inking."],
         jsonRole: "Lead Manga Editor",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the character into a Multi-Universe Manga JSON Blueprint.`,
-        // No subjectField overwrite - manga_subject is detailed
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert to Manga JSON.`
     },
     food: {
-        expansionRole: "Industrial Food & Beverage Infographic Artist and Culinary Visual Lead",
-        expansionRules: [
-            "MISSION: Refine a raw brief into a 'Culinary Macro Analysis'.",
-            "TEXTURES: Focus on viscous, glistening, fibrous, and flaky textures. Specifically describe 'thermal vapor' (steam) or 'condensation beads' (chilled).",
-            "PRODUCT FINISH: Describe glaze levels (e.g., 'high-gloss balsamic-reduction', 'matte flour dusting').",
-            "IDENTITY: IF any human is present (chef/user), they MUST be of Indian descent. DO NOT ethnic-ize the food itself unless explicitly requested in the brief (e.g. an 'apple' remains an 'apple', not a 'samosa').",
-            "STRICT BAN: NO TEXT or labels."
-        ],
+        expansionRole: "Industrial Food Infographic Artist",
+        expansionRules: ["1. IDENTITY: Indian heritage for chefs.", "2. TEXTURES: Glistening/Steam."],
         jsonRole: "Culinary Visual Director",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a Scientific Culinary JSON Blueprint.
-        JOURNAL STANDARD: ${style}-Editorial.
-        MATERIAL LOCK: Prioritize 'glistening' and 'texture-rich' descriptors in the scientific_subject.`,
-        subjectField: "scientific_subject",
-        styleField: "journal_standard",
-        styleSuffix: "Editorial"
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert to Food JSON. Journal: ${style}.`
     },
     comic: {
-        expansionRole: "Graphic Novel Stylist and Sequential Art Director",
-        expansionRules: [
-            "MISSION: Refine a raw brief into a 'Sequential Art Script'.",
-            "AESTHETIC: Pro-Graphic Novel style. Heavy G-Pen inking, hand-drawn textures, paper-bleed effects, and subtle CMYK halftone dots.",
-            "LIGHTING: High-contrast Chiaroscuro. Use deep, dramatic rim-lighting (golden/blue) and expressive shadows. No flat ambient light.",
-            "IDENTITY: All leading characters MUST be of South Asian/Indian descent with rich, authentic skin textures (Shot on 35mm film grain look).",
-            "CAST OF CHARACTERS: You MUST identify all recurring characters and populate the 'cast_of_characters' array with hyper-detailed visual anchors (specific face shape, clothing, age, heritage). This is CRITICAL for visual locking.",
-            "STRICT BAN: Describe visuals only. No actual text or dialogue in the visual prompt."
-        ],
+        expansionRole: "Sequential Art Director",
+        expansionRules: ["1. IDENTITY: South Asian heritage only.", "2. AESTHETIC: Pro Graphic Novel and cinematic lighting."],
         jsonRole: "Lead Comic Art Director",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a 'Pro Graphic Novel' JSON Blueprint.
-        ${style === 'marvel-hero-project' ? 'MARVEL-PRO MODE: Enforce vibrant primary colors, cinematic heroic lighting, dynamic low-angle perspective, and clean but expressive black inking. Posing MUST be dynamic (floating, powerful reach, energetic movement).' : ''}
-        STYLE LOCK: Enforce high-contrast inking, gritty cinematic textures, and dramatic lighting for every panel. 
-        IDENTITY LOCK: Populate the 'cast_of_characters' array with detailed visual descriptions for every recurring character.`
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert to Comic Script JSON.`
     },
     storyboard: {
-        expansionRole: "Cinematic Storyboard Artist and Previs Director",
-        expansionRules: [
-            "MISSION: Refine a raw brief into a 'Multi-Scene Narrative Flow'.",
-            "CONTINUITY: Describe character appearance consistently across all scenes.",
-            "IDENTITY: All featured characters MUST be of South Asian descent.",
-            "MOTION: Specify camera angles and timing for each shot."
-        ],
+        expansionRole: "Storyboarding Previs Director",
+        expansionRules: ["1. IDENTITY: South Asian heritage only.", "2. CONTINUITY: Consistent appearance."],
         jsonRole: "Chief Storyboard Supervisor",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a detailed multi-scene Storyboard JSON Blueprint.`
-    },
+        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert to Storyboard JSON.`
+    }
 };
 
 const getProtocol = (mode: string, style: string) => {
@@ -516,6 +449,13 @@ export async function POST(req: NextRequest) {
         const finalSubject = scrubSubject(brief);
         
         if (adData) {
+            // --- v32.44 CITATION-ERASER HOOK ---
+            if (mode === 'medical' && adData.metadata) {
+                console.log("[SOVEREIGN SANITIZER] Stripping halluncinated citation artifacts...");
+                delete adData.metadata.citation;
+                delete adData.metadata.doi;
+            }
+
             const setNestedValue = (obj: any, path: string, value: any) => {
                 const parts = path.split('.');
                 let current = obj;
