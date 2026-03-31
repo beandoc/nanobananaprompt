@@ -59,17 +59,23 @@ export const MEDICAL_MECHANISM_TEMPLATES = {
     ]
   },
 
-  // --- ONCOLOGY (e.g. PD-L1 Immune Checkpoint MoA) ---
-  oncology_immune_evasion: {
+  // --- ONCOLOGY (e.g. PD-L1 Immune Checkpoint Inhibition MoA) ---
+  oncology_checkpoint_inhibition: {
     required_primitives: [
-      "tumor_microenvironment_stroma",
-      "angiogenic_vessel_sprouting",
-      "microglial_activation",
-      "macrophage_phagocytosis"
+      "tumor_cell",
+      "cytotoxic_t_cell",
+      "pdl1_ligand",
+      "pd1_receptor",
+      "pd1_pdl1_binding",
+      "tcr_mhc_binding_complex",
+      "exhausted_t_cell"
     ],
     required_relations: [
-      "tumor_microenvironment_stroma -> suppresses -> microglial_activation",
-      "angiogenic_vessel_sprouting -> sustains -> tumor_microenvironment_stroma"
+      "tumor_cell -> presents -> tcr_mhc_binding_complex",
+      "pdl1_ligand -> binds_to -> pd1_receptor",
+      "pd1_pdl1_binding -> triggers -> checkpoint_inhibition_signal",
+      "checkpoint_inhibition_signal -> causes -> t_cell_signal_attenuation",
+      "t_cell_signal_attenuation -> inhibits -> cytotoxic_release"
     ]
   }
 } as const;

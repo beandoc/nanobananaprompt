@@ -18,6 +18,33 @@ export const MEDICAL_PRIMITIVES = {
     macrophage_lipid_phagocyte: "A specialized, granular macrophage (Foam Cell) with a bubbly, lipid-laden interior following the phagocytosis of LDL molecules."
   },
 
+  // --- IMMUNOLOGY & ONCOLOGY (Onco-Pharma Library v1.0) ---
+  IMMUNE_ONCOLOGY: {
+    // Core Cellular
+    tumor_cell: "Irregular membrane tumor cell with high nucleus-to-cytoplasm ratio and dense surface receptors.",
+    cytotoxic_t_cell: "Activated spherical CD8+ T-cell with TCR clusters and cd8 co-receptors.",
+    exhausted_t_cell: "Rounded, signal-attenuated T-cell with high PD-1 expression and reduced TCR signaling.",
+    antigen_presenting_cell: "Irregular membrane cell with surface MHC complexes and co-stimulatory molecules.",
+    
+    // Molecular Interface (The Core)
+    tcr_mhc_binding_complex: "A lock-and-key interface between the T-cell receptor (TCR) and the tumor-antigen-MHC-I complex.",
+    pd1_receptor: "A membrane-bound inhibitory checkpoint receptor located on the T-cell surface.",
+    pdl1_ligand: "An immune-inhibitory ligand expressed on the tumor cell surface.",
+    pd1_pdl1_binding: "A tight surface lock-and-key contact between PD-1 and PD-L1, mediating T-cell inhibition.",
+    
+    // Functional / Signaling
+    t_cell_activation_signal: "Bright directional intracellular signal vector originating from TCR-MHC binding.",
+    checkpoint_inhibition_signal: "Diffuse signal-suppression field originating from PD-1:PD-L1 binding.",
+    cytotoxic_release: "Directional release of perforin and granzyme granules toward the tumor cell.",
+    t_cell_signal_attenuation: "Fading or broken signal lines representing reduced cytotoxicity and exhaustion.",
+    
+    // Legacy support (to be phased out)
+    microglial_activation: "A ramified immune cell with multiple branching processes.",
+    tumor_microenvironment_stroma: "A fibrous extracellular matrix with cancer-associated fibroblasts.",
+    angiogenic_vessel_sprouting: "Abnormal new vascular structures branching from an existing vessel.",
+    metastatic_intravasation_event: "A malignant cell entering a vascular lumen through a disrupted barrier."
+  },
+
   // --- HEMATOLOGY & CARDIOLOGY ---
   SICKLE_CELL: {
     rbc_normal_biconcave: "A smooth, red biconcave erythrocyte disk with a slight central indentation.",
