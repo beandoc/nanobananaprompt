@@ -1,11 +1,11 @@
 ⨯ Failed to start server
 Error: listen EADDRINUSE: address already in use :::3000
-    at <unknown> (Error: listen EADDRINUSE: address already in use :::3000)
-    at new Promise (<anonymous>) {
-  code: 'EADDRINUSE',
-  errno: -48,
-  syscall: 'listen',
-  address: '::',
-  port: 3000
-}
+    at <unknown> (Error: listen EADDRINUSE: address already in use :::⨯ Another next dev server is already running.
+
+- Local:        http://localhost:3000
+- PID:          14737
+- Dir:          /Users/sachinsrivastava/Library/CloudStorage/GoogleDrive-sachinsrivastava.id@gmail.com/My Drive/nanobananaprompt
+- Log:          .next/dev/logs/next-development.log
+
+Run kill 14737 to stop it.
 [?25h

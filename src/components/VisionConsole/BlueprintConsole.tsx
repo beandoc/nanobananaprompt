@@ -44,11 +44,25 @@ export function BlueprintConsole({
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Tooltip content="Copy the current blueprint to take it to Gemini Web for rendering.">
+                    <Tooltip content="Copy exactly the targeted prompt designed for Imagen 3 (Gemini Web).">
+                        <button
+                            onClick={() => {
+                                const masterPrompt = (data as any)?.diffusion_synthesis?.master_prompt || (data as any)?.prompt || "Failed to parse master prompt.";
+                                const negPrompt = (data as any)?.diffusion_synthesis?.negative_prompt || "no text, no 3d render";
+                                const finalPrompt = `Strictly follow this prompt:\n\n${masterPrompt}\n\nNegative Constraints:\n${negPrompt}`;
+                                navigator.clipboard.writeText(finalPrompt);
+                                window.open("https://gemini.google.com/app", "_blank");
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-500 text-[10px] md:text-[11px] text-white font-black uppercase tracking-widest px-4 md:px-5 py-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
+                        >
+                            <Terminal className="w-3.5 h-3.5" />
+                            Copy Imagen Prompt
+                        </button>
+                    </Tooltip>
+                    <Tooltip content="Copy RAW JSON (For Developer/Programmatic Use)">
                         <button
                             onClick={() => {
                                 navigator.clipboard.writeText(JSON.stringify(data, null, 2));
-                                window.open("https://gemini.google.com/app", "_blank");
                             }}
                             className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-500 hover:border-indigo-100 transition-all shadow-sm"
                         >

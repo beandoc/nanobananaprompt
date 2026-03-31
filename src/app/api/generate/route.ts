@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+
+export const maxDuration = 60; // Extend Vercel Serverless function timeout to 60s (Hobby max)
+
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { Groq } from "groq-sdk";
 import { ResponseManager } from "@/lib/api-response";
@@ -369,13 +372,15 @@ export async function POST(req: NextRequest) {
         // --- PHASE 2: JSON GENERATION (RESILIENT) ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            const jsonModels = lightweight ? ["gemini-1.5-flash"] : ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"];
+            // Optimized models list: removed 1.5-pro bounds token exhaustion as it's heavily rate limited on free tier (2 RPM)
+            const jsonModels = lightweight ? ["gemini-1.5-flash"] : ["gemini-1.5-flash", "gemini-2.0-flash"];
             
             for (const m of jsonModels) {
                 try {
                     const model = genAI.getGenerativeModel({ 
                         model: m, 
-                        generationConfig: { responseMimeType: "application/json", responseSchema: currentSchema },
+                        // v32.55 HOTFIX: Use minSchema in Google's generationConfig to prevent sending 28KB JSON schema inside payload
+                        generationConfig: { responseMimeType: "application/json", responseSchema: minSchema },
                         safetySettings
                     });
                     const result = await model.generateContent([systemInstruction, `GENERATE JSON BLUEPRINT FOR: ${finalBriefForJson}`]);
