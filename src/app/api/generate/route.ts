@@ -57,35 +57,27 @@ const agentConfigs: any = {
         IDENTITY STANDARD: South Asian features only.`,
     },
     medical: {
-        expansionRole: "Sovereign Medical Visual Grammar Engine (SOVEREIGN v32.3 DOMAIN-ALIGNED)",
+        expansionRole: "Sovereign Medical Visual Grammar Engine (SOVEREIGN v32.35 - MULTI-MODAL SYNTHESIS)",
         expansionRules: [
-            "1. NO-DRIFT POLICY: You are a BioRender specialist. ALL NEJM/Parchment/Grain logic is DELETED. Use #FFFFFF. ZERO Texture.",
-            "2. STRICT DOMAIN LOCK: Primitives MUST align exactly to their domain field. Using vascular primitives for a Hepatology prompt (e.g. 'concentric_layered' for Liver) is a FATAL ERROR.",
-            "3. HEPATOLOGY SKELETON: Liver MUST use 'liver_lobule_hexagonal_unit', 'portal_triad_cluster', 'sinusoidal_channel'. Never use vascular or neuro shapes for liver tissue.",
-            "4. PATHOLOGY PRIMITIVES: Fibrosis = 'fibrous_septa'. Nodules = 'regenerative_nodule'. Portal Hypertension = 'portal_vein_branch -> congestion -> splenic_congestion_zone'.",
-            "5. CAUSAL SIGNALING: Vectors MUST connect functional biological components indicating flow, pressure, or signaling."
+            "1. UNIVERSAL TAXONOMY: You MUST use the CIT-100+ Common Icon Taxonomy. Assemble scenes using 'Visual Atoms' (e.g. cell_generic, ligand_small, mri_slice).",
+            "2. STYLE PILLAR: Detect the intent (Lab/BioRender vs. Journal/NEJM). If BioRender, use BIORENDER_MODERN. If Journal, use SCHOLARLY_NEJM. This is the GLOBAL AESTHETIC CONTRACT.",
+            "3. 3-PANEL CAUSAL CHAIN: All translational prompts MUST follow: Panel A (Molecular/Nano) -> Panel B (Cellular/Micro) -> Panel C (Patient/Clinical/Diagnostic/Evidence).",
+            "4. IDENTITY STANDARD: All humans (Patients/Doctors) MUST be of South Asian descent (modern urban Indian styling).",
+            "5. NO-LABEL POLICY: Strictly NO floating text labels in the illustration panels (Infographics excluded). Use causal connectors (arrows/zooms) for logic."
         ],
         jsonRole: "Head Medical Grammar Architect and Clinical DSL Specialist",
-        jsonInstructions: (medicalBrief: string) => {
-            return `### SOVEREIGN v32.3 DOMAIN-ALIGNED PROTOCOL
-1. STYLE MANDATE: BioRender DEFAULT. Absolute Pure White (#FFFFFF). Material: Matte Volumetric Polymer. ZERO GRAIN. ZERO PARCHMENT.
-2. ARCHITECTURE LAYERS (TRANSLATIONAL STANDARD):
-   - Layer 1 (Molecular - Panel A): Render the binding interface (e.g. Receptor/Ligand interaction) at nanometer scale.
-   - Layer 2 (Cellular - Panel B): Render the signaling modulation (e.g. Signaling Field/Cascade) at micrometer scale.
-   - Layer 3 (Clinical - Panel C): Render the patient outcome (Pre vs Post Treatment) at organ/system scale.
-   - Layer 4 (Layout): Use Tapered-Zoom and Causal Connectors between all three panels.
-3. BIOLOGICAL DSL LIBRARY (Strictly use these, do not invent):
-   - ONCO-PHARMA: 'pd1_pdl1_binding', 'car_t_cell', 'bite_antibody_bridge', 'lipid_nanoparticle'.
-   - INFECTIOUS: 'viral_spike_proteins', 'peptidoglycan_mesh', 'efflux_pump'.
-   - PHYSICS/FIELDS: 'signaling_field_gradient', 'pressure_gradient_field', 'podocyte_foot_process_mesh'.
-   - HEPATOLOGY/NEPHRO/NEURO: 'liver_lobule_hexagon', 'filtration_barrier', 'cortical_laminar_bands'.
-4. SIGNALING LAW: Cytokine & Flow signaling MUST be a directional vector starting from a specific cellular source entity.
-5. COLOR HARMONY: Neutral (#E0E0E0), Pathology (#00796B), Immune (#43A047), Damage (#D81B60).
-6. DIFFUSION (LAYER 5): Describe 'A Collection of Modular Clinical Assets'. NO TEXT. High-transparency South Asian Ghost Silhouette context.`;
+        jsonInstructions: (style: string) => {
+            const styleLock = style.toLowerCase().includes('nejm') || style.toLowerCase().includes('journal') || style.toLowerCase().includes('scholarly') ? 'SCHOLARLY_NEJM' : 'BIORENDER_MODERN';
+            return `### SOVEREIGN v32.35 MULTI-MODAL PROTOCOL
+1. AESTHETIC LOCK: Apply the ${styleLock} pillar (Geometry, Lighting, Typography, Colors).
+2. TRANSLATIONAL SYNERGY: Correlate Mechanism (Panel A) -> Imaging/Pathology (Panel B) -> Outcome/Evidence (Panel C).
+3. ATOMIC ASSEMBLY: Use CIT-100+ primitives ONLY. Do not invent new structures.
+4. CAUSALITY: Use 'zoom_in_connector' or 'arrow_transition' to link physical scales.
+5. PURE BACKGROUND: Absolute zero grain. White (#FFFFFF) base.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v32.3_DOMAIN-ALIGNED"
+        styleSuffix: "v32.35_SOVEREIGN"
     },
     infographic: {
         expansionRole: "Visual Abstract Architect (SVAE v3.0 - CJASN/NEJM Standards)",
