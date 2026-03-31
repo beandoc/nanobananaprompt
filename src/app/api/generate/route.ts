@@ -52,32 +52,35 @@ const agentConfigs: any = {
         IDENTITY STANDARD: South Asian features only.`,
     },
     medical: {
-        expansionRole: "Sovereign Medical Illustrator (SOVEREIGN v31.11 SKELETAL-LOCK PROTOCOL)",
+        expansionRole: "Sovereign Medical Visual Grammar Engine (SOVEREIGN v32 VISUAL-DSL)",
         expansionRules: [
-            "1. BIOLOGICAL PRIMITIVES: You MUST NOT use 'circle' or 'ellipse' for specialized cells. Mandatory Library: 'crescent_deformable_rbc', 'sinusoidal_slit_channel', 'intracellular_polymer_fiber', 'lumen_tubular_corridor', 'endothelial_lining_cell_chain'. Using basic shapes triggers a REJECT.",
-            "2. ADHESION LAW: For VOC/Sickle prompts, define an explicit 'adhesion_contact_zone' between the deforming RBC and the endothelium.",
-            "3. STYLE MODE FORK: BioRender-Asset = #FFFFFF + ZERO TEXT. NEJM-Plate = #F5F2F0 + LABELED. No hybrid drift.",
-            "4. NO TEXTURE: If BioRender, any mention of grain/parchment is a CRITICAL FAILURE.",
-            "5. NO LABELS: In BioRender-Asset mode, use 'morphological descriptors' only; do NOT provide names that trigger labeling."
+            "1. 3-LAYER ARCHITECTURE: Output MUST separate: Layer 1 (Biological Graph: entities + relations), Layer 2 (Spatial Layout Engine), and Layer 3 (Rendering Layer: style/background).",
+            "2. BIOLOGICAL PRIMITIVES (DSL): Do NOT use basic shapes. Use 'rbc_sickled_crescent', 'endothelial_surface', 'vascular_lumen', 'sinusoidal_gap', 'laminar_cortex_band', 'synaptic_terminal_loss'.",
+            "3. MECHANISM TEMPLATES: Use 'vascular_occlusion' (requires lumen, flow_direction, obstruction_entity, adhesion_interface) OR 'neurodegeneration' (requires neuron, intracellular_pathology, synapse, loss_pattern).",
+            "4. STRICT MODE FORK: Mode 1: 'biorender_clean' (Asset Mode) -> #FFFFFF, ZERO TEXT, ZERO LABELS, zero textures. Mode 2: 'infographic_labeled' (Plate Mode) -> #F5F2F0, labels allowed.",
+            "5. SPATIAL RELATIONSHIPS: Define explicit constraints like 'RBC_inside_lumen', 'RBC_contact_endothelium', 'macrophage_outside_vessel'."
         ],
-        jsonRole: "Ultimate BioRender Art Director and Clinical Architect",
+        jsonRole: "Ultimate BioRender Grammar Architect and Clinical Rules Engine",
         jsonInstructions: (medicalBrief: string) => {
             const isNejm = medicalBrief.toLowerCase().includes('nejm') || medicalBrief.toLowerCase().includes('watercolor');
-            return `### SOVEREIGN v31.11 SKELETAL-LOCK PROTOCOL
-1. STYLE MODE: 
-   - ${isNejm ? 'PLATE MODE: Organic on cream (#F5F2F0). LABELS REQUIRED.' : 'ASSET MODE: Absolute Pure White (#FFFFFF) void. NO TEXT. NO LABELS. Material: Volumetric Polymer 2.5D.'}
-2. BIOLOGICAL GEOMETRY: 
-   - SICKLE CELL: 'crescent_deformable_rbc'. 
-   - SPLEEN: 'sinusoidal_slit_channel' + 'splenic_cord_neutrophil_mesh'. 
-   - VASCULAR: 'lumen_tubular_corridor' + 'endothelial_lining_cell_chain'.
-3. ENTITY INSTANTIATION: Use the specific primitives above in the 'entities' array. Basic circles are BANNED.
-4. PATHOPHYSIOLOGY WIRING: HbS polymerization -> deoxygenation deforms RBC -> Adhesion_contact_zone -> VOC.
-5. COLOR HARMONY: Neutral Vessel (#E0E0E0), Bio-Teal Sickle (#00796B), Clinical Magenta Signaling (#D81B60).
-6. DIFFUSION (LAYER 5): Describe 'A Collection of Modular Scholarly Assets'. ZERO TEXT. High-transparency Indian Ghost Silhouette context.`;
+            return `### SOVEREIGN v32.0 VISUAL-DSL PROTOCOL
+1. ARCHITECTURE SEPARATION:
+   - Layer 1 (Biological Graph): Define all functional 'entities' (using DSL primitives) and their 'relations' (e.g. HbS -> polymerizes -> RBC, RBC -> adheres_to -> Endothelium).
+   - Layer 2 (Spatial Layout Engine): Define 'macro_panel', 'micro_panel', 'link': 'zoom_connector', and explicit 'spatial_relationships'.
+   - Layer 3 (Rendering Engine): Strict Style Enforcement.
+2. STYLE/MODE ENFORCEMENT LAYER:
+   - ${isNejm ? 'MODE 2: infographic_labeled. Background: #F5F2F0. Text labels enabled.' : 'MODE 1: biorender_clean. Background: #FFFFFF. CRITICAL CONSTRAINT: ZERO TEXT, ZERO LABELS, ZERO PARCHMENT, ZERO GRAIN.'}
+   - If Mode 1, any appearance of the words 'text', 'labels', or 'grain' triggers an automatic system rejection.
+3. BIOLOGICAL PRIMITIVE LIBRARY (DSL):
+   - SICKLE CELL: 'rbc_normal_biconcave', 'rbc_sickled_crescent', 'rbc_adhesion_cluster', 'endothelial_surface', 'intracellular_hbs_polymer'.
+   - NEURO: 'laminar_cortex_band', 'neuron_with_dendrites', 'amyloid_extracellular_plaque', 'intracellular_tau_tangle'.
+4. MECHANISM TEMPLATES: Validate that all required properties of the target disease mechanism (e.g. 'adhesion_interface' for VOC) are instantiated.
+5. COLOR HARMONY: Cortex/Vessels (#E0E0E0), Pathology/Sickle (#00796B), Immune/Microglia (#43A047), Signaling/Damage (#D81B60).
+6. DIFFUSION (LAYER 5): Describe 'A 3-layer biological graph illustration'. ZERO TEXT/TYPOGRAPHY. Include 'Ghost Indian Silhouette' anchor @ Z-Index 0.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v31.11_SKELETAL-LOCK"
+        styleSuffix: "v32.0_VISUAL-DSL"
     },
     infographic: {
         expansionRole: "Visual Abstract Architect (SVAE v3.0 - CJASN/NEJM Standards)",
