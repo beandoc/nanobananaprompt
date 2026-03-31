@@ -353,7 +353,6 @@ export async function POST(req: NextRequest) {
 
             if (process.env.GEMINI_API_KEY) {
                 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-                // Stabilized IDs: gemini-1.5-flash is the primary to conserve quota
                 const modelsToTry = ["gemini-1.5-flash", "gemini-2.0-flash"]; 
                 for (const m of modelsToTry) {
                     try {
@@ -371,14 +370,14 @@ export async function POST(req: NextRequest) {
                             break;
                         }
                     } catch (err: any) { 
-                        const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota") || err.message?.includes("limit");
-                        const isNotFound = err.message?.includes("404") || err.message?.toLowerCase().includes("not found");
-                        providerHistory.push({ phase: "expansion", model: m, status: "fail", error: err.message });
-                        refinementError = err as Error;
+                        const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota");
+                        providerHistory.push({ phase: "expansion", model: m, status: "fail", error: err.message, isQuota });
                         
-                        if (isQuota) break; // Immedately switch provider on quota hit
-                        if (isNotFound) continue; // Try next Gemini model if version is wrong
-                        break; // Fail-fast on other errors to reach Groq
+                        if (isQuota) {
+                            console.warn(`[SOVEREIGN FAILOVER] Expansion quota hit on ${m}. Breaking Gemini loop and pivoting to Groq...`);
+                            break; // Aggressively break out of the Google loop to reach Groq
+                        }
+                        continue; // For other errors (like 404), try the next Gemini model
                     }
                 }
             }
