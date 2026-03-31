@@ -4,6 +4,20 @@ interface MedicalTemplate {
 }
 
 export const MEDICAL_MECHANISM_TEMPLATES: Record<string, MedicalTemplate> = {
+  // --- VISUAL DNA (Icon Composition System v1.0) ---
+  icon_composition_system: {
+    required_primitives: [
+      "cell_generic",
+      "ligand_icon",
+      "receptor_icon",
+      "signal_vector_activation"
+    ],
+    required_relations: [
+      "each_entity -> must_map_to -> primitive_icon",
+      "no_freehand_shapes -> enforced_by -> atomic_assembly_rule"
+    ]
+  },
+
   // --- VASCULAR OCCLUSION (e.g. Sickle Cell VOC) ---
   vascular_occlusion: {
     required_primitives: [

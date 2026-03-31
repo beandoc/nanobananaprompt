@@ -6,7 +6,46 @@
  * deterministic biological rendering across all AI models.
  */
 
-export const MEDICAL_PRIMITIVES = {
+/**
+ * MEDICAL_PRIMITIVES - The Sovereign v32.x Domain-Aligned Visual Dictionary
+ * 
+ * Organized in a 3-tier hierarchy:
+ * 1. COMMON_ICONS: Visual atoms (cells, receptors, arrows) for consistency.
+ * 2. DOMAIN_PRIMITIVES: Specialized biology (Hepatology, Nephrology, etc.).
+ * 3. PHYSICS_AND_MECHANICS: Flow, Load, and Device structures.
+ */
+export const MEDICAL_PRIMITIVES: any = {
+  // --- COMMON ICONS (Visual DNA v1.0) ---
+  COMMON_ICONS: {
+    // Base Geometry
+    cell_generic: "Rounded membrane structure with a central dense nucleus; variants: epithelial, immune, tumor.",
+    vesicle_particle: "Small spherical sphere used for cytokines, drug molecules, or exosomes.",
+    cell_membrane_boundary: "Lipid bilayer outline with support for receptor embedding.",
+    
+    // Molecular & Signaling
+    ligand_icon: "Geometrically specific 'key' shape for receptor-target binding.",
+    receptor_icon: "Membrane-embedded 'hook' with distinct active/inactive conformational states.",
+    signal_vector_activation: "Curved or straight solid arrow in semantic Green (#2ECC71).",
+    signal_vector_inhibition: "T-bar blocked vector in semantic Red (#E74C3C).",
+    
+    // Flow & Fields
+    diffusion_cloud: "Soft radial gradient blob representing local molecular concentration.",
+    flow_streamlines: "Parallel curved lines indicating fluid (blood/air) velocity and direction.",
+    
+    // Data & Evidence
+    data_point_marker: "Standardized square or circle marker for plot alignment.",
+    error_bar_marker: "Vertical line with end-caps representing statistical uncertainty.",
+    
+    // Semantic Roles (Mandatory)
+    semantics: {
+      activation: "#2ECC71",
+      inhibition: "#E74C3C",
+      neutral: "#95A5A6",
+      signal_flow: "#3498DB",
+      structural_base: "#BDC3C7"
+    }
+  },
+
   // --- VASCULAR & CARDIOVASCULAR ---
   BLOOD_VESSEL: {
     lumen_tubular_corridor: "A smooth, neutral-toned vascular lumen with clear depth and a three-dimensional tubular surface.",
