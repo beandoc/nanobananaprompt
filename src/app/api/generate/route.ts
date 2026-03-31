@@ -54,32 +54,28 @@ const agentConfigs: any = {
     medical: {
         expansionRole: "Sovereign Medical Illustrator (SOVEREIGN v31 DUAL-TRACK PROTOCOL)",
         expansionRules: [
-            "1. NEURO-ANATOMY: Cerebral Cortex MUST be 'laminar_parallel_bands' (Layers 1-6). CONCENTRIC IS BANNED for brain.",
-            "2. AD BIOLOGY: 'Microglia' (Bio-Green #43A047), 'Tau-Tangles' (Purple #673AB7), and 'Synaptic Terminals' ARE required entities.",
-            "3. ZERO GRADIENT: Background MUST be 'absolute_pure_white' (#FFFFFF). NO soft blue gradients.",
-            "4. PANEL INTEGRITY: Use discrete bounds (Macro: Organ-Top; Micro: Cell-Bottom). No embedding micro inside macro.",
-            "5. NO CITATIONS: DOI generation is prohibited."
+            "1. ZERO-DRIFT POLICY: If BioRender is requested, any mention of 'parchment', 'grain', 'paper', 'texture', 'nejm', or 'watercolor' is a fatal error. Delete them from your vocabulary.",
+            "2. STYLE LOCK: BioRender = Absolute Pure White (#FFFFFF). Zero depth-texturing. Matte clinical polymer ONLY.",
+            "3. ANATOMICAL ACCURACY: Cortex = Laminar Parallel Bands (1-6). Arteries = Concentric Circular layers. NO RECTANGLES.",
+            "4. ENTITY LOCK: Alzheimer's prompts MUST include Microglia (Bio-Green) and Synaptic Terminals as entities.",
+            "5. NO CITATIONS: Do NOT generate DOIs or citations."
         ],
         jsonRole: "Ultimate Medical Art Director and Clinical Strategist",
         jsonInstructions: (medicalBrief: string) => {
             const isNejm = medicalBrief.toLowerCase().includes('nejm') || medicalBrief.toLowerCase().includes('watercolor');
-            return `### SOVEREIGN v31.7 PERFECT-10 FINAL POLISH
+            return `### SOVEREIGN v31.8 ZERO-DRIFT PROTOCOL
 1. STYLE MANDATE: 
-   - ${isNejm ? 'NEJM MODE: Organic on cream.' : 'BIORENDER DEFAULT: ZERO TEXTURE. ZERO GRADIENT. Pure White (#FFFFFF) void. Material: Volumetric Polymer 2.5D.'}
+   - ${isNejm ? 'NEJM MODE: Organic on cream.' : 'BIORENDER DEFAULT: ZERO TEXTURE. ZERO GRAIN. ZERO PARCHMENT. Absolutely Pure White (#FFFFFF) void. Material: Volumetric Polymer 2.5D.'}
 2. GEOMETRY SUPREMACY: 
-   - Cortex: laminar_parallel_bands (Horizontal 1-6). 
-   - Plaque: asymmetric_off-center_contour (Extracellular).
-   - Tau: helical_intracellular_fibrils (Intracellular).
-3. COLOR LANGUAGE: 
-   - Neutral Cortex (#E0E0E0), Bio-Teal Amyloid (#00796B), Clinical Purple Tau (#673AB7), Bio-Green Microglia (#43A047).
-   - Signaling (Magenta #D81B60).
-4. STRUCTURAL COHESION: Define discrete non-overlapping panels (Top: 0-400; Bottom: 440-840) linked by a 'tapered_zoom_connector'.
-5. MECHANISTIC WIRING: Explicitly link Microglia (Source) -> Amyloid Plaque (Target). Visualize Synaptic Loss as 'diminished density' vs 'controls'.
-6. LAYER 5 (DIFFUSION): Describe 'Scholarly Modular Clinical Assets'. ZERO text. Uniform volumetric lighting. NO shadows. High-transparency Indian Ghost Silhouette @ Z-index 0.`;
+   - Brain: laminar_parallel_bands. Vessels: concentric_circular_layers. Organs: multi-lobulated_contour.
+3. ENTITY INSTANTIATION: You MUST instantiate all cellular drivers (Microglia, Foam Cells, etc.) in the 'entities' array.
+4. COLOR HARMONY: Cortex (#E0E0E0), Amyloid (#00796B), Tau (#673AB7), Microglia (#43A047), Signaling (#D81B60).
+5. SPATIAL COHESION: Top [0,0,680,400]; Bottom [0,440,680,400]. Mandatory tapered_zoom_connector in Layer 3.
+6. LAYER 5 (DIFFUSION): Master Prompt MUST NOT contain 'grain', 'parchment', or 'nejm'. Describe 'Scholarly Modular Clinical Assets'. Z-Index 0: Indian Ghost Silhouette context.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v31.7_PERFECT-10-FINAL"
+        styleSuffix: "v31.8_ZERO-DRIFT"
     },
     infographic: {
         expansionRole: "Visual Abstract Architect (SVAE v3.0 - CJASN/NEJM Standards)",
