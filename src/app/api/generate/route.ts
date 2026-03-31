@@ -54,30 +54,27 @@ const agentConfigs: any = {
     medical: {
         expansionRole: "Sovereign Medical Illustrator (SOVEREIGN v31 DUAL-TRACK PROTOCOL)",
         expansionRules: [
-            "1. IDENTITY: High-transparency South Asian / Indian male silhouettes ARE mandatory for context.",
-            "2. VESSEL GEOMETRY: Artery walls MUST be 'concentric_circular_layers'. rectangles for vessels are FORBIDDEN.",
-            "3. PLAQUE LOGIC: Plaque MUST be 'eccentric_off-center' with explicit 'luminal_narrowing' bounds.",
-            "4. ATHERO BIOLOGY: 'Foam Cells' and 'Necrotic Core' are REQUIRED entities. LDL cascade: Retention -> Modification -> Uptake.",
-            "5. NO CITATIONS: DOI generation is banned for this track."
+            "1. IDENTITY: South Asian silhouette (Ghost Underlay) MUST be placed at Z-Index: 0 for context.",
+            "2. ZOOM CONTINUITY: Define 'tapered_zoom_connectors' (trapezoids) to link the Macro Organ to the Micro Detail.",
+            "3. GRID LAW: Use 680x840 canvas. Mandate a 40px empty 'Structural Buffer' between Macro (0-400) and Micro (440-840) to prevent asset collision.",
+            "4. MATERIAL SPEC: Use 'Subsurface Scattering' for lipids, cysts, and membranes. NO GRAIN.",
+            "5. NO CITATIONS: DOI generation is strictly prohibited."
         ],
         jsonRole: "Ultimate Medical Art Director and Clinical Strategist",
         jsonInstructions: (medicalBrief: string) => {
             const isBioRender = medicalBrief.toLowerCase().includes('biorender');
-            return `### SOVEREIGN v31.3 JACC-PIONEER PROTOCOL
-1. STYLE LOCKDOWN: 
-   - ${isBioRender ? 'BIORENDER MODE: ZERO TEXTURE. ZERO PARCHMENT. ZERO GRAIN. Pure White (#FFFFFF) canvas only. Matte 2.5D polymer assets.' : 'NEJM MODE: Organic stippling on cream (#F5F2F0).'}
-2. GEOMETRY SUPREMACY: 
-   - Artery Walls: concentric_circular_layers (No rectangles).
-   - Plaque: asymmetric_off-center_contour.
-   - Fluid/Lumen: amorphous_luminal_pool.
-3. MECHANISTIC WIRING: Mandate 'source_entity' -> 'target_entity' for all directional signaling vectors. Visualise: LDL -> Oxidation -> Macrophage foam-cell transformation.
-4. COLOR DISCIPLINE (BioRender): 
-   - Vessel Wall: Neutral (#E0E0E0).
-   - Lipid Core: Deep Yellow (#FBC02D).
-   - Plaque/Cysts: Bio-Teal (#00796B).
-   - Signaling: Clinical Magenta (#D81B60).
-5. SPATIAL POSITIONING: Discrete Panel Bounds (Organ-Macro: [0,0,680,400]; Cell-Micro: [0,420,680,420]).
-6. LAYER 5 (DIFFUSION): Describe 'High-Fidelity Clinical Asset Collection'. NO labels. NO text. 2.5D Volumetric icons on a pure white void.`;
+            return `### SOVEREIGN v31.4 PERFECT-10 FINAL PROTOCOL
+1. STYLE ARCHITECTURE: 
+   - ${isBioRender ? 'BIORENDER MODE: ZERO TEXTURE. ZERO GRAIN. Pure White (#FFFFFF) void only. Material: Volumetric Polymer with High Subsurface Scattering for translucent cells.' : 'NEJM MODE: Organic stippling on cream (#F5F2F0).'}
+2. STRUCTURAL COHESION: Define a tapered "Zoom Box" in Layer 3 connecting the specific organ site to the cellular detail panel.
+3. CONCENTRIC ANATOMY: (Vessels ONLY): concentric_circular_layers. (Organs ONLY): multi-lobulated_contour. No rectangular organs.
+4. COLOR HARMONY: 
+   - Neutral Base (#E0E0E0) for cortex/walls.
+   - Clinical Magenta (#D81B60) for signaling/receptors.
+   - Bio-Teal (#00796B) for cysts/pathology.
+   - Lipid Yellow (#FBC02D) for lipid cores.
+5. SIGNALING CONNECTIVITY: Every signaling arrow MUST link a CLEAR source (e.g., receptor) to a CLEAR outcome (e.g., cell nucleus).
+6. LAYER 5 (DIFFUSION): Describe 'Scholarly Modular Clinical Assets'. ZERO text. Uniform 2.5D lighting. No external shadows. Pure clinical void.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
