@@ -82,6 +82,24 @@ export const MEDICAL_PRIMITIVES = {
     sarcomere_contraction_vector: "A mechanical force vector coupled to the electrical activation wavefront."
   },
 
+  // --- INFECTIOUS DISEASE (Pathogen Library v1.0) ---
+  PATHOGENS: {
+    // Viral
+    viral_capsid: "Protective icosahedral protein shell enclosing a coiled genomic core (RNA/DNA).",
+    viral_spike_proteins: "Surface-protruding trimers (e.g. Spike/Hemagglutinin) mediating host receptor binding.",
+    virus_host_fusion_interface: "A transitional membrane-merging zone facilitating viral entry into the host cell.",
+    endocytic_vesicle: "Membrane-enclosed sphere facilitating the internalization of viral particles.",
+    
+    // Bacterial
+    peptidoglycan_mesh: "A crosslinked polymer lattice (cell wall) providing structural rigidity and porosity.",
+    biofilm_matrix: "A gel-like extracellular field composed of polysaccharides, proteins, and DNA fragments.",
+    diffusion_barrier_field: "A dense gradient zone within a biofilm matrix that reduces antibiotic penetration.",
+    
+    // Resistance & Transport
+    efflux_pump: "A membrane-spanning channel facilitating the active export of drugs from the intracellular space.",
+    antibiotic_particle: "A diffusive particle field targeting specific bacterial structural components."
+  },
+
   // --- SYNTHETIC IMMUNOLOGY (Next-Gen Pharma v1.0) ---
   SYNTHETIC_BIOLOGY: {
     // Engineered Cellular

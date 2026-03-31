@@ -64,14 +64,16 @@ const agentConfigs: any = {
         jsonInstructions: (medicalBrief: string) => {
             return `### SOVEREIGN v32.3 DOMAIN-ALIGNED PROTOCOL
 1. STYLE MANDATE: BioRender DEFAULT. Absolute Pure White (#FFFFFF). Material: Matte Volumetric Polymer. ZERO GRAIN. ZERO PARCHMENT.
-2. ARCHITECTURE LAYERS:
-   - Layer 1 (Truth): Instantiate entities using DOMAIN-ALIGNED primitives only. (e.g. Hepatology scene = Hepatic primitives).
-   - Layer 2 (Layout): Define 'panels' with zero-coordinate overlap.
+2. ARCHITECTURE LAYERS (TRANSLATIONAL STANDARD):
+   - Layer 1 (Molecular - Panel A): Render the binding interface (e.g. Receptor/Ligand interaction) at nanometer scale.
+   - Layer 2 (Cellular - Panel B): Render the signaling modulation (e.g. Signaling Field/Cascade) at micrometer scale.
+   - Layer 3 (Clinical - Panel C): Render the patient outcome (Pre vs Post Treatment) at organ/system scale.
+   - Layer 4 (Layout): Use Tapered-Zoom and Causal Connectors between all three panels.
 3. BIOLOGICAL DSL LIBRARY (Strictly use these, do not invent):
-   - VASCULAR: 'concentric_layered_vessel_wall', 'eccentric_plaque_protrusion', 'fibrous_cap_over_lipid_core'.
-   - HEPATOLOGY: 'liver_lobule_hexagonal_unit', 'portal_triad_cluster', 'sinusoidal_channel', 'fibrous_septa', 'regenerative_nodule'.
-   - NEPHROLOGY: 'glomerulus_capillary_tuft', 'renal_tubule_cross_section'.
-   - NEURO: 'laminar_cortex_band', 'neuron_with_dendrites', 'amyloid_extracellular_plaque'.
+   - ONCO-PHARMA: 'pd1_pdl1_binding', 'car_t_cell', 'bite_antibody_bridge', 'lipid_nanoparticle'.
+   - INFECTIOUS: 'viral_spike_proteins', 'peptidoglycan_mesh', 'efflux_pump'.
+   - PHYSICS/FIELDS: 'signaling_field_gradient', 'pressure_gradient_field', 'podocyte_foot_process_mesh'.
+   - HEPATOLOGY/NEPHRO/NEURO: 'liver_lobule_hexagon', 'filtration_barrier', 'cortical_laminar_bands'.
 4. SIGNALING LAW: Cytokine & Flow signaling MUST be a directional vector starting from a specific cellular source entity.
 5. COLOR HARMONY: Neutral (#E0E0E0), Pathology (#00796B), Immune (#43A047), Damage (#D81B60).
 6. DIFFUSION (LAYER 5): Describe 'A Collection of Modular Clinical Assets'. NO TEXT. High-transparency South Asian Ghost Silhouette context.`;

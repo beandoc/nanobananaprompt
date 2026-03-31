@@ -1,12 +1,9 @@
-/**
- * Sovereign v32.0 Medical Mechanism Templates
- * 
- * Each template explicitly mandates which primitives and relations
- * MUST be present in the generated JSON. This ensures clinical accuracy
- * regardless of the LLM's inherent medical knowledge.
- */
+interface MedicalTemplate {
+  required_primitives: string[];
+  required_relations: string[];
+}
 
-export const MEDICAL_MECHANISM_TEMPLATES = {
+export const MEDICAL_MECHANISM_TEMPLATES: Record<string, MedicalTemplate> = {
   // --- VASCULAR OCCLUSION (e.g. Sickle Cell VOC) ---
   vascular_occlusion: {
     required_primitives: [
@@ -182,6 +179,58 @@ export const MEDICAL_MECHANISM_TEMPLATES = {
     required_relations: [
       "lipid_nanoparticle -> undergoes_endocytosis_and -> endosomal_escape_event",
       "endosomal_escape_event -> releases_mrna_for -> mrna_translation_process"
+    ]
+  },
+
+  // --- INFECTIOUS DISEASE (Global-Summit Library) ---
+  viral_entry_uncoating: {
+    required_primitives: [
+      "viral_capsid",
+      "viral_spike_proteins",
+      "host_receptor",
+      "virus_host_fusion_interface",
+      "endocytic_vesicle"
+    ],
+    required_relations: [
+      "viral_spike_proteins -> binds_to -> host_receptor",
+      "virus_host_fusion_interface -> mediates -> endocytic_vesicle"
+    ]
+  },
+  bacterial_biofilm_formation: {
+    required_primitives: [
+      "peptidoglycan_mesh",
+      "biofilm_matrix",
+      "diffusion_barrier_field"
+    ],
+    required_relations: [
+      "biofilm_matrix -> creates -> diffusion_barrier_field"
+    ]
+  },
+  antibiotic_resistance_efflux: {
+    required_primitives: [
+      "efflux_pump",
+      "antibiotic_particle"
+    ],
+    required_relations: [
+      "efflux_pump -> expels -> antibiotic_particle"
+    ]
+  },
+
+  // --- META-SYNTHESIS (Bench-to-Bedside Scale Logic v2.0) ---
+  bench_to_bedside_synthesis: {
+    required_primitives: [
+      "protein_leak_flux",
+      "receptor_internalization",
+      "signaling_field_gradient",
+      "pressure_gradient_field",
+      "liver_organ_surface"
+    ],
+    required_relations: [
+      "PANEL_A (Molecular): ligand_antibody -> binding_interface -> target_receptor",
+      "PANEL_B (Cellular): receptor_activation -> modulates -> signaling_field_gradient",
+      "PANEL_C (Patient): cellular_state_change -> drives -> clinical_outcome_comparison",
+      "LINKAGE: same_drug_color_consistent -> across -> all_panels",
+      "CAUSALITY: A_molecular -> drives_B_cellular -> drives_C_patient"
     ]
   }
 } as const;
