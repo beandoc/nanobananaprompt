@@ -82,6 +82,24 @@ export const MEDICAL_PRIMITIVES = {
     sarcomere_contraction_vector: "A mechanical force vector coupled to the electrical activation wavefront."
   },
 
+  // --- VASCULAR HEMODYNAMICS (Flow Physics v1.0) ---
+  VASCULAR_PHYSICS: {
+    hemodynamic_flow_field: "Laminar or turbulent streamlines indicating velocity gradients and shear stress levels.",
+    wall_shear_stress_map: "A surface heatmap representing the mechanical stress applied by blood flow to the vessel wall.",
+    thrombus_mesh: "A complex fibrin network with embedded platelets causing localized flow obstruction.",
+    aneurysmal_dilation_zone: "A segment of weakened arterial wall showing localized volumetric expansion.",
+    flow_vortex_pattern: "A swirling fluid-dynamic pattern indicating localized turbulence and stagnation."
+  },
+
+  // --- ORTHOPEDICS (Biomechanics & Structural Matrix v1.0) ---
+  ORTHOPEDIC_BIOMECHANICS: {
+    bone_matrix: "Multi-layered structure consisting of a dense cortical shell and a porous trabecular lattice.",
+    mechanical_load_vector: "Directional force arrows with specified magnitude and axis of load application.",
+    fracture_line: "A discontinuity plane representing transverse, spiral, or comminuted bone failure.",
+    orthopedic_implant: "A rigid fixation structure (plate, screw, prosthesis) used for mechanical stabilization.",
+    joint_space_gap: "The functional interval between bone surfaces representing articular health or degeneration."
+  },
+
   // --- DIAGNOSTIC RADIOLOGY (Imaging Library v1.0) ---
   RADIOLOGY: {
     // Core Imaging

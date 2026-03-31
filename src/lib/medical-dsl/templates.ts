@@ -323,6 +323,30 @@ export const MEDICAL_MECHANISM_TEMPLATES: Record<string, MedicalTemplate> = {
     ]
   },
 
+  // --- VASCULAR & ORTHOPEDIC PHYSICS (Physical Grammar v1.0) ---
+  stent_hemodynamics_restoration: {
+    required_primitives: [
+      "hemodynamic_flow_field",
+      "wall_shear_stress_map",
+      "orthopedic_implant"
+    ],
+    required_relations: [
+      "implant_expansion -> restores -> hemodynamic_flow_field_laminar",
+      "hemodynamic_flow_field -> reduces -> wall_shear_stress_map"
+    ]
+  },
+  fracture_fixation_biomechanics: {
+    required_primitives: [
+      "bone_matrix",
+      "fracture_line",
+      "mechanical_load_vector"
+    ],
+    required_relations: [
+      "fracture_line -> collapses -> mechanical_load_vector_distribution",
+      "internal_fixation -> restores -> mechanical_stability"
+    ]
+  },
+
   // --- MULTI-MODAL FUSION (Mechanism–Imaging–Pathology Fusion v1.0) ---
   multi_modal_clinical_fusion: {
     required_primitives: [
