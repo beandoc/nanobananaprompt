@@ -40,25 +40,27 @@ const agentConfigs: any = {
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert brief into Ad JSON. Style: ${style}.`
     },
     medical: {
-        expansionRole: "Sovereign Medical Visual Grammar Engine (v32.48 - PATHODYNAMIC MASTER)",
+        expansionRole: "Sovereign Medical Visual Grammar Engine (v32.50 - PATHODYNAMIC MASTER)",
         expansionRules: [
-            "1. PURPOSE: Professional Clinical Illustration/Anatomy.",
-            "2. PATHODYNAMIC LAW: Mandate flow direction vectors and gradients.",
-            "3. INTEGRATED-ZOOMS: Single unified frame. No panels. Focal cutouts only.",
-            "4. SILENT-MASTER: Strictly no numeric coordinates in text labels.",
-            "5. CITATION-ERASER: Strictly delete citation and doi fields."
+            "1. IDENTITY LOCK: All human clinical subjects, patients, and surgical teams MUST be of South Asian (Indian) descent with authentic features and warm skin tones.",
+            "2. ANTI-LEAKAGE: STRICTLY NO TEXT LABELS. Do NOT render JSON keys, entity IDs (e.g., ent_beta), coordinates, or numbers in the image.",
+            "3. CAUSAL SEPARATION: Separate disease pathogenesis (e.g., high glucose in T1DM) from treatment complications (e.g., iatrogenic hypoglycemia). Do NOT blend them.",
+            "4. PATHODYNAMIC LAW: Mandate flow direction vectors and concentration gradients.",
+            "5. NARRATIVE PROGRESSION: For complex briefs, use a 3-panel sequential layout for high-fidelity storytelling.",
+            "6. SILENT-MASTER: In diffusion_synthesis.master_prompt, describe visuals using terminology (e.g., 'medial', 'proximal', 'stippled texture')—NEVER use JSON property names, IDs, or numeric coordinates."
         ],
         jsonRole: "Director of Dynamic Clinical Physics",
         jsonInstructions: (style: string) => {
             const styleLock = style.toLowerCase().includes('nejm') || style.toLowerCase().includes('journal') || style.toLowerCase().includes('scholarly') ? 'SCHOLARLY_NEJM' : 'BIORENDER_MODERN';
-            return `### SOVEREIGN v32.48 MEDICAL ILLUSTRATION PROTOCOL
+            return `### SOVEREIGN v32.50 MEDICAL ILLUSTRATION PROTOCOL
 1. STYLE: Apply ${styleLock} aesthetic to the anatomical scene.
-2. DYNAMICS: Explicitly define biological causality (e.g., retrograde flow).
-3. ARCHITECTURE: Unified physical scene with tapered in-situ focal zooms.`;
+2. IDENTITY: Mandate South Asian (Indian) descent in diffusion_synthesis.
+3. ANTI-LEAK: Explicitly ban JSON keys, IDs, and coordinates from the visual rendering.
+4. ARCHITECTURE: 3-Panel Sequential Narrative (Trigger -> Execution -> Systemic Result).`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v32.48_ILLUSTRATION"
+        styleSuffix: "v32.50_ILLUSTRATION"
     },
     infographic: {
         expansionRole: "Principal NEJM Scholarly Plate Architect (SVAE v3.50 - NEJM-COLUMNAR Standard)",
@@ -202,6 +204,12 @@ const validateMedicalOutput = (data: any): { valid: boolean; issues: string[] } 
         if (svgLeakPattern.test(ds.master_prompt || "")) {
             issues.push("diffusion_synthesis.master_prompt contains SVG/CSS values or hex codes — these are invisible to diffusion models and must be translated to natural language");
         }
+
+        // Guard against ID/Property name leakage (e.g., 'ent_beta' or 'p1_micro' appearing in text)
+        const idLeakPattern = /ent_|panel_|p1_|p2_|p3_|\w+_\w+/;
+        if (idLeakPattern.test(ds.master_prompt || "")) {
+            issues.push("diffusion_synthesis.master_prompt contains internal JSON property names or IDs (e.g., 'ent_beta') — this causes 'ID Leakage' in the rendered image. Remove these technical markers.");
+        }
     }
 
     return { valid: issues.length === 0, issues };
@@ -336,10 +344,23 @@ export async function POST(req: NextRequest) {
         const currentSchema = (mode === 'comic' && isStoryboard) ? comicStripSchema : (isStoryboard ? storyboardSchema : (schemaMap[mode] || medicalIllustrationSchema));
         const sanitizedStyleName = normalizedStyle.split(' ')[0].replace(/[-,]/g, '');
         
-        const systemInstruction = lightweight ? `Return ONLY valid JSON for: "${mode}". SCHEMA: ${JSON.stringify(currentSchema)}` : 
+        // --- SCHEMA MINIFICATION (v32.51) ---
+        // Prevents Buffer Overflow errors for large schemas (e.g., medical-illustration 28KB)
+        const minSchema = JSON.parse(JSON.stringify(currentSchema));
+        const pruneDescriptions = (obj: any) => {
+            if (obj.description) delete obj.description;
+            if (obj.properties) {
+                for (let k in obj.properties) pruneDescriptions(obj.properties[k]);
+            }
+            if (obj.items) pruneDescriptions(obj.items);
+        };
+        pruneDescriptions(minSchema);
+        const schemaStr = JSON.stringify(minSchema);
+
+        const systemInstruction = lightweight ? `Return ONLY valid JSON for: "${mode}". SCHEMA: ${schemaStr}` : 
             `### ROLE: ${config.jsonRole}
             ${config.jsonInstructions ? config.jsonInstructions(normalizedStyle) : ""}
-            SCHEMA MANDATE: Return JSON strictly following: ${JSON.stringify(currentSchema)}
+            SCHEMA MANDATE: Return JSON strictly following schema: ${schemaStr}
             NO TEXT LABELS (This rule only applies to medical illustrations, ignore if mode is infographic).`;
 
         let adData: any = null;
