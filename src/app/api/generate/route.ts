@@ -379,8 +379,9 @@ export async function POST(req: NextRequest) {
                 try {
                     const model = genAI.getGenerativeModel({ 
                         model: m, 
-                        // v32.55 HOTFIX: Use minSchema in Google's generationConfig to prevent sending 28KB JSON schema inside payload
-                        generationConfig: { responseMimeType: "application/json", responseSchema: minSchema },
+                        // Removed responseSchema to prevent 400 Bad Request parameter mapping errors.
+                        // We rely on responseMimeType and the system prompt structure.
+                        generationConfig: { responseMimeType: "application/json" },
                         safetySettings
                     });
                     const result = await model.generateContent([systemInstruction, `GENERATE JSON BLUEPRINT FOR: ${finalBriefForJson}`]);
@@ -411,7 +412,7 @@ export async function POST(req: NextRequest) {
 
         // --- FINAL EMERGENCY FALLBACK (GROQ MULTIMAL-MODEL HOPPING) ---
         if (!adData && process.env.GROQ_API_KEY) {
-            console.log("[SOVEREIGN RECOVERY] Gemini exhausted. Entering Groq Multi-Model Recovery...");
+            console.log("[SOVEREIGN RECOVERY] Gemini exhausted or rejected schema. Entering Groq Multi-Model Recovery...");
             const groqModels = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "llama3-70b-8192", "gemma2-9b-it"];
             const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
             
@@ -423,7 +424,7 @@ export async function POST(req: NextRequest) {
             const groqSystemPrompt = [
                 systemInstruction,
                 `SCHEMA STRUCTURE:`,
-                JSON.stringify(currentSchema, null, 2),
+                schemaStr,
                 schemaFieldGuide,
                 `CRITICAL: Return ONLY valid JSON. No markdown. No chatter.`
             ].join('\n\n');
