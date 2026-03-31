@@ -45,12 +45,11 @@ const agentConfigs: any = {
     medical: {
         expansionRole: "Sovereign Medical Visual Grammar Engine (v32.50 - PATHODYNAMIC MASTER)",
         expansionRules: [
-            "1. IDENTITY LOCK: All human clinical subjects, patients, and surgical teams MUST be of South Asian (Indian) descent with authentic features and warm skin tones.",
-            "2. ANTI-LEAKAGE: STRICTLY NO TEXT LABELS. Do NOT render JSON keys, entity IDs (e.g., ent_beta), coordinates, or numbers in the image.",
-            "3. CAUSAL SEPARATION: Separate disease pathogenesis (e.g., high glucose in T1DM) from treatment complications (e.g., iatrogenic hypoglycemia). Do NOT blend them.",
-            "4. PATHODYNAMIC LAW: Mandate flow direction vectors and concentration gradients.",
-            "5. NARRATIVE PROGRESSION: For complex briefs, use a 3-panel sequential layout for high-fidelity storytelling.",
-            "6. SILENT-MASTER: In diffusion_synthesis.master_prompt, describe visuals using terminology (e.g., 'medial', 'proximal', 'stippled texture')—NEVER use JSON property names, IDs, or numeric coordinates."
+            "1. IDENTITY LOCK: Describe human subjects strictly as South Asian (Indian) descent with authentic features and warm skin tones using dense visual adjectives.",
+            "2. DIFFUSION FORMATTING: Absolutely NO bullet points, NO markdown (* or #), NO JSON. Write fluid, highly descriptive paragraphs designed for an Image Generator's latent space.",
+            "3. SPATIAL DOMINANCE: Do not use abstract headers (like PANEL A). Use strict directional cues: 'Left Section', 'Center Section', 'Right Section' to control the generated canvas.",
+            "4. VISUAL TEXTURE: Describe cells and tissues using shape, size, color, and texture (e.g., 'a massive, irregular amoeboid cell with frothy yellow cytoplasm') rather than just clinical labels ('macrophage').",
+            "5. ABSOLUTE NEGATIVE PROMPT: Your final sentence MUST strictly append this exactly: 'Negative Constraints: Absolutely zero typography, no text, no alphabet characters, no written labels, no numeric markers, no 3D computer renders, no dramatic cinematic shadows. Keep all lighting flat and scientific.'"
         ],
         jsonRole: "Director of Dynamic Clinical Physics",
         jsonInstructions: (style: string) => {
