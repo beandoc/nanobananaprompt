@@ -100,10 +100,9 @@ const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
         { label: "Explosive Splash", value: "high-speed liquid splash crown, levitating ingredients, micro-condensation 'chilled sweat', 1/8000s freeze.", description: "Ultra-high-speed culinary photography with stunning liquid physics.", previewUrl: "/previews/food-explosive-splash.png" }
     ],
     infographic: [
-        { label: "CJASN Blue Standard", value: "CJASN-Blue-Standard", description: "Clean blue/white grid. Academic and readable. Structured column layout." },
-        { label: "WCN-Style (Clinical)", value: "WCN-Clinical", description: "Dark navy title bar with rich color-coded metric cards. Optimized for WCN conferences." },
-        { label: "NEJM Minimal", value: "NEJM-Minimal", description: "Ultra-clean, minimal color. White background, thin borders, high typographic focus." },
-        { label: "Nature Bold", value: "Nature-Bold", description: "High contrast deep navy with gold or clinical teal accents. Premium data-dense layout." }
+        { label: "CJASN Blue Standard", value: "CJASN-Blue-Standard", description: "The gold standard for Nephrology: clean electric-blue blocks, rounded card-centric stats, and high-contrast clinical headers." },
+        { label: "NEJM Dense Slab", value: "NEJM-Minimal", description: "Ultra-dense academic grid with saturated left-rail cells and tabular data stacking. Optimized for high-impact journals." },
+        { label: "Nature Flow / WCN", value: "Nature-Bold", description: "Experimental causal flow with generous whitespace and monoline scientific iconography." }
     ]
 };
 

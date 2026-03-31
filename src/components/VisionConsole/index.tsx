@@ -105,16 +105,26 @@ export function VisionConsole({
                         </div>
 
                         {result?.data ? (
-                            <div className="flex flex-col items-center gap-4 md:gap-6">
-                                <span className="text-[10px] md:text-[11px] font-black tracking-[0.3em] md:tracking-[0.4em] uppercase text-indigo-400">Blueprint Loaded</span>
-                                <button
-                                    onClick={() => (window as any).triggerGlobalRender?.()}
-                                    className="px-6 md:px-8 py-3.5 md:py-4 bg-indigo-600 text-white rounded-xl md:rounded-2xl text-[10px] md:text-[11px] font-black uppercase tracking-widest shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-95 flex items-center gap-2 md:gap-3"
-                                >
-                                    <Zap className="w-3.5 md:w-4 h-3.5 md:h-4" />
-                                    Begin Render
-                                </button>
-                            </div>
+                            mode === 'infographic' ? (
+                                <div className="flex flex-col items-center gap-4 md:gap-6">
+                                    <span className="text-[10px] md:text-[11px] font-black tracking-[0.3em] md:tracking-[0.4em] uppercase text-indigo-400">Data Loaded</span>
+                                    <div className="px-6 md:px-8 py-3.5 md:py-4 bg-slate-100 text-slate-400 rounded-xl md:rounded-2xl text-[10px] md:text-[11px] font-black uppercase tracking-widest shadow-inner shadow-slate-200 flex items-center gap-2 md:gap-3">
+                                        <Layers className="w-3.5 md:w-4 h-3.5 md:h-4" />
+                                        Strict React Rendering Enabled
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center gap-4 md:gap-6">
+                                    <span className="text-[10px] md:text-[11px] font-black tracking-[0.3em] md:tracking-[0.4em] uppercase text-indigo-400">Blueprint Loaded</span>
+                                    <button
+                                        onClick={() => (window as any).triggerGlobalRender?.()}
+                                        className="px-6 md:px-8 py-3.5 md:py-4 bg-indigo-600 text-white rounded-xl md:rounded-2xl text-[10px] md:text-[11px] font-black uppercase tracking-widest shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-95 flex items-center gap-2 md:gap-3"
+                                    >
+                                        <Zap className="w-3.5 md:w-4 h-3.5 md:h-4" />
+                                        Begin Render
+                                    </button>
+                                </div>
+                            )
                         ) : (
                             <span className="text-[10px] md:text-[11px] font-black tracking-[0.3em] md:tracking-[0.4em] uppercase text-slate-500 opacity-40">Awaiting Signal</span>
                         )}

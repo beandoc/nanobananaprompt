@@ -145,6 +145,11 @@ export default function Home() {
   // --- Manual Render Trigger for Vision Console ---
   useEffect(() => {
     (window as any).triggerGlobalRender = () => {
+      // STRICT DECOUPLING: Never send Infographic data to the image generator
+      if (mode === 'infographic') {
+        console.log("Image generation disabled for Infographics. Relying on React rendering engine.");
+        return;
+      }
       if (result?.data) renderBlueprint(result.data, mode, assetImage, result.refinedPrompt);
     };
   }, [result, mode, assetImage, renderBlueprint]);
@@ -297,7 +302,7 @@ export default function Home() {
                 />
               )}
 
-              {result?.data?.panels && !result?.data?.journal_style && (
+              {mode === 'manga' && result?.data?.panels && (
                 <MangaEngine
                   mangaSubject={result.data.manga_subject || ""}
                   panels={result.data.panels}
@@ -307,7 +312,7 @@ export default function Home() {
                 />
               )}
 
-              {(result?.data?.journal_style || result?.data?.results_grid || result?.data?.cohort || result?.data?.canvas) && (
+              {mode === 'infographic' && (result?.data?.journal_style || result?.data?.panels || result?.data?.results_grid || result?.data?.cohort || result?.data?.canvas) && (
                 <InfographicEngine
                   data={result.data}
                 />
