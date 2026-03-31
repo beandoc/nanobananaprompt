@@ -216,6 +216,42 @@ export const MEDICAL_MECHANISM_TEMPLATES: Record<string, MedicalTemplate> = {
     ]
   },
 
+  // --- ENDOCRINOLOGY (Metabolic MoA Library) ---
+  insulin_glucose_homeostasis: {
+    required_primitives: [
+      "endocrine_gland_node",
+      "hormone_diffusion_field",
+      "hormone_receptor_binding",
+      "transporter_translocation"
+    ],
+    required_relations: [
+      "endocrine_gland_node -> secretes -> hormone_diffusion_field",
+      "hormone_diffusion_field -> triggers -> hormone_receptor_binding",
+      "hormone_receptor_binding -> activates -> transporter_translocation"
+    ]
+  },
+  insulin_resistance_pathophysiology: {
+    required_primitives: [
+      "hormone_diffusion_field",
+      "receptor_resistance_state",
+      "hormone_excess_gradient"
+    ],
+    required_relations: [
+      "hormone_excess_gradient -> fails_to_activate -> receptor_resistance_state"
+    ]
+  },
+  thyroid_axis_feedback_loop: {
+    required_primitives: [
+      "endocrine_gland_node",
+      "negative_feedback_loop",
+      "hormone_diffusion_field"
+    ],
+    required_relations: [
+      "hormone_diffusion_field -> triggers -> negative_feedback_loop",
+      "negative_feedback_loop -> suppresses -> endocrine_gland_node"
+    ]
+  },
+
   // --- META-SYNTHESIS (Bench-to-Bedside Scale Logic v2.0) ---
   bench_to_bedside_synthesis: {
     required_primitives: [

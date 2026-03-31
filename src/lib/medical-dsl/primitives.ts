@@ -82,6 +82,25 @@ export const MEDICAL_PRIMITIVES = {
     sarcomere_contraction_vector: "A mechanical force vector coupled to the electrical activation wavefront."
   },
 
+  // --- ENDOCRINOLOGY (Metabolic Library v1.0) ---
+  ENDOCRINE_SYSTEM: {
+    // Signaling
+    hormone_diffusion_field: "Radial gradient field representing systemic hormone concentration decay.",
+    endocrine_gland_node: "Vascularized secretion source (e.g. Pancreas, Thyroid) for hormone release.",
+    hormone_receptor_binding: "Ligand-receptor lock-and-key interface at the membrane or intracellularly.",
+    
+    // Feedback & Regulation
+    negative_feedback_loop: "A closed regulatory cycle that suppresses signals at their source to maintain stability.",
+    homeostatic_setpoint: "A target-level band used to symbolize physiological stability and regulation.",
+    pulsatile_secretion_pattern: "A waveform signal representing the frequency and amplitude of hormone release.",
+    
+    // Cellular & Disease
+    metabolic_activation_field: "Intracellular signal diffusion showing active enzyme or pathway modulation.",
+    transporter_translocation: "Directional vesicle-to-membrane movement (e.g. GLUT4) for substrate uptake.",
+    receptor_resistance_state: "Ligand binding without signal propagation, representing a functional signal blockade.",
+    hormone_excess_gradient: "High-intensity diffuse field representing a pathological hormone surplus."
+  },
+
   // --- INFECTIOUS DISEASE (Pathogen Library v1.0) ---
   PATHOGENS: {
     // Viral
