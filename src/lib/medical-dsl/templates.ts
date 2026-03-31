@@ -291,6 +291,38 @@ export const MEDICAL_MECHANISM_TEMPLATES: Record<string, MedicalTemplate> = {
     ]
   },
 
+  // --- DIAGNOSTICS (Imaging & Pathology Library) ---
+  ct_anatomical_segmentation: {
+    required_primitives: [
+      "hounsfield_unit_field",
+      "iso_intensity_region",
+      "imaging_slice_plane"
+    ],
+    required_relations: [
+      "voxel_intensity -> mapped_to -> hounsfield_unit_field",
+      "imaging_slice_plane -> captures -> iso_intensity_region"
+    ]
+  },
+  mri_t2_hyperintensity: {
+    required_primitives: [
+      "t2_hyperintensity_zone",
+      "imaging_slice_plane"
+    ],
+    required_relations: [
+      "pathology_accumulation -> visible_as -> t2_hyperintensity_zone"
+    ]
+  },
+  histopathology_he_stain: {
+    required_primitives: [
+      "he_stain_palette",
+      "histology_section",
+      "pleomorphic_nuclei"
+    ],
+    required_relations: [
+      "histology_section -> stained_with -> he_stain_palette"
+    ]
+  },
+
   // --- META-SYNTHESIS (Bench-to-Bedside Scale Logic v2.0 - FULL EVIDENCE PACK) ---
   bench_to_bedside_synthesis: {
     required_primitives: [
@@ -298,14 +330,15 @@ export const MEDICAL_MECHANISM_TEMPLATES: Record<string, MedicalTemplate> = {
       "receptor_internalization",
       "signaling_field_gradient",
       "km_step_curve",
-      "hazard_ratio_label"
+      "hounsfield_unit_field",
+      "he_stain_palette"
     ],
     required_relations: [
       "PANEL_A (Molecular): ligand_antibody -> binding_interface -> target_receptor",
       "PANEL_B (Cellular): receptor_activation -> modulates -> signaling_field_gradient",
-      "PANEL_C (Evidence): cellular_state_change -> translates_into -> km_step_curve",
-      "EVIDENCE: clinical_outcome_comparison -> annotated_with -> hazard_ratio_label",
-      "CAUSALITY: A_molecular -> drives_B_cellular -> proves_C_evidence"
+      "PANEL_C (Diagnostic): imaging_focus -> visible_on -> hounsfield_unit_field",
+      "PANEL_D (Evidence): cellular_state_change -> translates_into -> km_step_curve",
+      "CAUSALITY: A_molecular -> drives_B_cellular -> proves_C_diagnostic -> proves_D_evidence"
     ]
   }
 } as const;

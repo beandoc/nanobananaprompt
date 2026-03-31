@@ -82,6 +82,36 @@ export const MEDICAL_PRIMITIVES = {
     sarcomere_contraction_vector: "A mechanical force vector coupled to the electrical activation wavefront."
   },
 
+  // --- DIAGNOSTIC RADIOLOGY (Imaging Library v1.0) ---
+  RADIOLOGY: {
+    // Core Imaging
+    hounsfield_unit_field: "A voxel intensity map (CT physics) ranging from -1000 (Air) to 700+ (Bone).",
+    iso_intensity_region: "A contiguous cluster of voxels with uniform signal character (segmentation).",
+    imaging_slice_plane: "Axial, coronal, or sagittal plane with millimeter-scale thickness.",
+    radiological_ghost_overlay: "Semi-transparent anatomical outline for aligning mechanisms with scans.",
+    
+    // MRI & Ultrasound
+    t2_hyperintensity_zone: "A bright signal region in MRI indicating increased water content (edema/fluid).",
+    doppler_flow_field: "Bidirectional color streamlines (Red: Toward / Blue: Away) for US hemodynamics.",
+    acoustic_shadow_zone: "A signal void region caused by high-density structures (e.g. stones/calcification)."
+  },
+
+  // --- HISTOPATHOLOGY (Micro-Pathology Library v1.0) ---
+  PATHOLOGY_HISTOLOGY: {
+    // Staining & Sectioning
+    he_stain_palette: "H&E staining system: Nuclei = Deep Purple/Blue, Cytoplasm/Collagen = Pink.",
+    histology_section: "A micrometer-scale thin tissue slice for microscopic analysis.",
+    
+    // Morphology
+    pleomorphic_nuclei: "Irregular, variable-sized nuclei with hyperchromasia (malignancy marker).",
+    mitotic_figure: "Geometric chromosome condensation pattern indicating active cell division.",
+    high_nuclear_ratio: "Enlarged nucleus relative to cytoplasm (atypia marker).",
+    
+    // Architecture
+    disorganized_tissue_architecture: "Loss of structural pattern with invasion fronts and cellular disarray.",
+    fibrotic_matrix_expansion: "Dense collagen deposition causing tissue stiffening and distortion."
+  },
+
   // --- CLINICAL EVIDENCE & DATA-VIZ (Scholarly Library v1.0) ---
   CLINICAL_DATA_VIZ: {
     // Statistical Geometry
