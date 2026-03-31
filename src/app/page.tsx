@@ -26,7 +26,7 @@ import { Mode, AssetType, LibraryItem } from "@/types";
 import { apiClient } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Lock, ShieldAlert, Key, Loader2 } from "lucide-react";
+import { Lock, ShieldAlert, Key, Loader2, Sparkles } from "lucide-react";
 import { AUTH_CONSTANTS, APP_CONFIG, UI_CONSTANTS } from "@/lib/constants";
 
 export default function Home() {
@@ -113,34 +113,23 @@ export default function Home() {
     setShowLibrary(false);
   }, [setResult]);
 
-  const onGenerate = useCallback(async () => {
-    if (!brief) return;
+  const onGenerate = useCallback(() => {
+    generateBlueprint({
+      mode,
+      isStoryboard,
+      selectedStyle,
+      assetImage,
+      assetType
+    });
+  }, [generateBlueprint, mode, isStoryboard, selectedStyle, assetImage, assetType]);
 
-    try {
-      const res = await apiClient.generateBlueprint({
-        mode,
-        brief,
-        isStoryboard,
-        style: selectedStyle
-      });
-
-      // Update the text box with the refined paragraph automatically
-      if (res.refinedPrompt) {
-        setBrief(res.refinedPrompt);
-      }
-
-      setResult({
-        data: res.data,
-        promptFile: res.promptFile,
-        folder: res.folder,
-        refinedPrompt: res.refinedPrompt,
-        activeProvider: res.activeProvider
-      });
-      
-    } catch (err: any) {
-      console.error("Single-Shot Generation Error:", err);
+  // --- State Persistence & Mode Switches ---
+  useEffect(() => {
+    const isSequentialMode = ["video", "manga", "comic"].includes(mode);
+    if (!isSequentialMode && isStoryboard) {
+      setIsStoryboard(false);
     }
-  }, [brief, mode, isStoryboard, selectedStyle, setBrief, setResult]);
+  }, [mode, isStoryboard]);
 
   // --- Manual Render Trigger for Vision Console ---
   useEffect(() => {
@@ -159,6 +148,7 @@ export default function Home() {
       onGenerate();
       return;
     }
+    // Set loading for the refinement phase manually since refineBrief doesn't do it yet
     const refined = await refineBrief(brief, mode, isStoryboard, selectedStyle, assetImage);
     if (refined) setBrief(refined);
   }, [isStoryboard, onGenerate, refineBrief, brief, mode, selectedStyle, assetImage, setBrief]);
@@ -350,6 +340,39 @@ export default function Home() {
         pre::-webkit-scrollbar { height: 4px; }
         pre::-webkit-scrollbar-thumb { background: #cbd5e1; }
       `}</style>
+
+      {/* Global Loading Overlay */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: (isLoading || isRefining) ? 1 : 0 }}
+        style={{ pointerEvents: (isLoading || isRefining) ? "auto" : "none" }}
+        className="fixed inset-0 z-[100] bg-white/20 backdrop-blur-md flex items-center justify-center transition-all duration-500"
+      >
+        <div className="bg-white/90 backdrop-blur-2xl border border-white rounded-[2.5rem] p-12 shadow-[0_50px_100px_rgba(0,0,0,0.1)] flex flex-col items-center gap-8 max-w-sm w-full mx-4">
+          <div className="relative">
+            <div className="absolute inset-0 bg-indigo-500/20 blur-3xl rounded-full scale-150 animate-pulse" />
+            <div className="w-24 h-24 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-3xl flex items-center justify-center shadow-2xl relative z-10">
+              <Sparkles className="w-12 h-12 text-white animate-pulse" />
+            </div>
+          </div>
+          <div className="text-center space-y-3">
+            <h3 className="text-xl font-black uppercase tracking-[0.2em] text-slate-800 italic">Sovereign Engine</h3>
+            <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest animate-pulse">
+              {isRefining ? "Refining Clinical Precision..." : "Synthesizing Neural Blueprint..."}
+            </p>
+            <div className="flex items-center gap-1.5 justify-center mt-4">
+               {[0, 1, 2].map((i) => (
+                 <motion.div
+                   key={i}
+                   animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
+                   transition={{ repeat: Infinity, duration: 1.5, delay: i * 0.2 }}
+                   className="w-2 h-2 rounded-full bg-indigo-500"
+                 />
+               ))}
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </main>
   );
 }

@@ -148,13 +148,20 @@ export function ProjectInput({
                         >
                             Single Shot
                         </button>
-                        <button
-                            type="button"
-                            onClick={() => setIsStoryboard(true)}
-                            className={cn("flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-1.5", isStoryboard ? "bg-white text-rose-600 shadow-sm border border-rose-100" : "text-slate-400 hover:text-slate-600")}
-                        >
-                            <Film className="w-3 h-3" /> Storyboard
-                        </button>
+                        <Tooltip content={!["video", "manga", "comic"].includes(mode) ? "Storyboard mode is reserved for sequential creative workflows (Video/Manga/Comic)." : "Switch to sequential storytelling mode."}>
+                            <button
+                                type="button"
+                                disabled={!["video", "manga", "comic"].includes(mode)}
+                                onClick={() => setIsStoryboard(true)}
+                                className={cn(
+                                    "flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-1.5",
+                                    isStoryboard ? "bg-white text-rose-600 shadow-sm border border-rose-100" : "text-slate-400 hover:text-slate-600",
+                                    !["video", "manga", "comic"].includes(mode) && "opacity-40 cursor-not-allowed grayscale"
+                                )}
+                            >
+                                <Film className="w-3 h-3" /> Storyboard
+                            </button>
+                        </Tooltip>
                     </div>
                     <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="image/*" className="hidden" />
                     <Tooltip content="Upload an image to extract its style, colors, or structure.">

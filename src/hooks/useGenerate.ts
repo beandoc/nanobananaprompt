@@ -56,7 +56,14 @@ export function useGenerate() {
         try {
             const data = await apiClient.generateBlueprint(body);
             setResult(data);
-            if (!isRefinement) setBrief("");
+            
+            // If the API returned an expanded/refined prompt, update the local text area
+            if (data.refinedPrompt) {
+                setBrief(data.refinedPrompt);
+            } else if (!isRefinement) {
+                setBrief("");
+            }
+            
             return data;
         } catch (err) {
             const error = err as Error;
@@ -67,5 +74,5 @@ export function useGenerate() {
         }
     }, [brief, result?.data]);
 
-    return { brief, setBrief, isLoading, result, setResult, error, generateBlueprint };
+    return { brief, setBrief, isLoading, setIsLoading, result, setResult, error, generateBlueprint };
 }

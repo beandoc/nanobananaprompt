@@ -52,35 +52,56 @@ const agentConfigs: any = {
         IDENTITY STANDARD: South Asian features only.`,
     },
     medical: {
-        expansionRole: "Principal Medical Illustrator and Scientific Director (SOVEREIGN v31 DUAL-TRACK PROTOCOL)",
+        expansionRole: "Sovereign Medical Illustrator (SOVEREIGN v31 DUAL-TRACK PROTOCOL)",
         expansionRules: [
-            "RULE 0 (CRITICAL): This is a POPULATED DATA INSTANCE, not a schema. Never use 'type: object' or 'properties' in the output JSON. Fill fields with ACTUAL values.",
-            "1. MULTISCALE MAPPING: Every illustration MUST have at least 2 distinct panels: 1x MACRO (Organ-level perspective) and 1x MICRO (Cellular/Molecular-level perspective).",
-            "2. COORDINATE MANDATE: Every visual entity needs absolute {x, y, width, height} positioning on a 680x840 scholarly canvas. Vague spatial terms are BANNED.",
-            "3. MEDICAL ACCURACY: Every cellular change MUST map to a known mechanism (e.g. 'ATP depletion -> Na+/K+ Failure').",
-            "4. ZERO VAGUE TERMS: Ban 'fine-dotted', 'technical stippling'. Use 'stroke_dasharray: 2,2', 'texture: stippled'.",
-            "5. SEMANTIC COLOR LOGIC: Every color MUST answer: 'What physiologic property does this color encode?'. Blue for cooling/oxygenated, Dark Red for necrotic, etc.",
-            "6. IDENTITY STANDARD: All human subjects MUST be of South Asian (Indian) descent with authentic skin textures.",
-            "7. NO-TEXT RULE (STRICT): Describe visuals only. HARD ZERO-TEXT BAN on labels, sentences, or characters in the visual prompt fields (ignore for metadata/content).",
-            "8. CONSTRAINT RESOLUTION: Biological accuracy -> Spatial correctness -> Visual clarity.",
-            "9. DIFFUSION SYNTHESIS (MANDATORY): The diffusion_synthesis layer MUST be the last thing you write. It must be a DISTILLATION of the medical and visual content into natural language. Think: what would a medical illustrator say to brief a Flux artist? Use anatomical terminology, not pixel values."
+            "1. IDENTITY: All human subjects MUST be of South Asian (Indian) descent.",
+            "2. TRACK 1 (SCIENTIFIC): Define complex tissue -> cellular -> molecular cascades.",
+            "3. TRACK 2 (VISUAL): Command specific rendering styles (NEJM Watercolor vs. BioRender 2.5D).",
+            "4. NO GEOMETRY: Do NOT describe SVG shapes (rectangles/circles) or hex codes in the visual narrative. Use biological terms only.",
+            "5. NO CITATIONS: Do NOT generate DOIs or citations for image-only generation."
         ],
         jsonRole: "Ultimate Medical Art Director and Clinical Strategist",
-        jsonInstructions: (style: string) => `### SOVEREIGN v31 DUAL-TRACK PROTOCOL
-        1. INSTANCE LAW: return JSON with FIVE top-level layers: metadata, medical_content, visual_specification, rendering_instructions, diffusion_synthesis.
-        2. SVG MAPPING (Layers 3-4): Standardize all rendering to SVG/CSS properties (stroke_dasharray, opacity, stroke_width). Absolute coordinates on 680x840 canvas.
-        3. MULTISCALE: At least 1 Macro panel and 1 Micro panel with separate bounds.
-        4. JOURNAL: Set journal_standard to "${style}".
-        5. ★ LAYER 5 — DIFFUSION SYNTHESIS (Most Important for Image Quality):
-           - master_prompt: Write a 150-220 word NATURAL LANGUAGE paragraph. Start with the anatomy, describe the pathophysiology narrative visually, end with journal aesthetic terms. NO pixel coordinates, NO hex codes, NO SVG values.
-           - anatomical_narrative: Describe spatial layout using ANATOMICAL terms (superior/inferior, subendothelial/subepicardial, lateral/medial), not pixel coordinates.
-           - style_descriptors: 6-10 strings like "NEJM scholarly plate", "muted clinical navy", "BioRender aesthetic", "heavy textured paper grain". NO SVG values.
-           - color_language: Translate EACH anatomical zone color from hex to natural language. Example: "deep arterial crimson for ischemic zones", "pale cerulean for healthy ventricle walls".
-           - pathophysiology_visual_summary: 2-3 sentence visual story. What does a viewer SEE flowing/changing/disrupting in the illustration?
-           - negative_prompt: Ban cross-domain anatomy (e.g. "no glomeruli" for a cardiac brief), no text labels, no photorealism, no decorative borders.`,
+        jsonInstructions: (style: string) => {
+            const isBioRender = style.toLowerCase().includes('biorender');
+            
+            return `### SOVEREIGN v31 DUAL-TRACK PROTOCOL
+1. INSTANCE LAW: return JSON with FIVE top-level layers: metadata, medical_content, visual_specification, rendering_instructions, diffusion_synthesis.
+2. SVG MAPPING (Layers 3-4): Standardize all rendering to SVG/CSS properties. Absolute coordinates on 680x840 canvas.
+3. AESTHETIC LOCK: 
+   - IF style is BioRender: Use "Soft white ambient lighting", "Pastel clinical palette", "Modular 2.5D assets", "Flat clinical shading", and "Pure white background (#FFFFFF)".
+   - ELSE (NEJM): Use "Technical stippling", "Soft watercolor transitions", "Muted clinical palette on cream parchment", and "Traditional anatomical realism".
+4. ★ LAYER 5 — DIFFUSION SYNTHESIS (CRITICAL):
+   - master_prompt: Write a 190-230 word NATURAL LANGUAGE paragraph focusing ON ANATOMY, NON-DRAMATIC LIGHTING, and TEXTURE.
+   - STERN BAN: NO hex codes, NO SVG shapes (rectangle, circle), NO coordinates (x:100, etc.) in Layer 5. This causes engine failure. 
+   - AESTHETIC LAW (BioRender): Avoid dark backgrounds or cinematic glow. Use "bright textbook lighting", "clean modular assets", and "uniform clinical clarity".
+   - Instead of "teal rectangle", use "columnar epithelial cells with translucent teal membranes".
+5. NO CITATION: Leave metadata.citation empty or very minimal. No DOIs needed for images.`;
+        },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
         styleSuffix: "v31_DUAL-TRACK"
+    },
+    infographic: {
+        expansionRole: "Visual Abstract Architect (SVAE v3.0 - CJASN/NEJM Standards)",
+        expansionRules: [
+            "1. INFOGRAPHIC FOCUS: Convert clinical briefs into card-centric visual abstracts.",
+            "2. CARD LOGIC: Define discrete cards (PICO, Results, Conclusion).",
+            "3. STYLE LOCK: NEJM Dense Slab (Academic Grid) vs. CJASN Blue Standard (Electric Blue Cards).",
+            "4. IDENTITY: All human representations (Patients/Doctors) MUST be South Asian.",
+            "5. DATA VIZ: Propose specific charts (Forest Plots, Kaplan-Meier, etc.) for the results panel."
+        ],
+        jsonRole: "Lead Scholarly Plate Designer (Visual Abstract Engine)",
+        jsonInstructions: (style: string) => {
+            const isCjasn = style.toLowerCase().includes('cjasn');
+            return `### SVAE PROTOCOL (INFOGRAPHICS)
+1. GRID LAW: 680x840 canvas. Define distinct "Slabs" or "Cards" with header/body hierarchies.
+2. STYLE ENFORCEMENT:
+   - IF style is CJASN: Use Electric Navy (#03055B) headers, rounded white cards, and teal/slate accents.
+   - ELSE (NEJM): Use Dense academic grids, saturated left-rail metadata, and serif typography (implied).
+3. CONTENT: Map the brief to PICO (Population, Intervention, Comparator, Outcome) structure.
+4. RENDERING: Specify card bounds, colors, and font-weights clearly in layers 3-4.
+5. NO IMAGE ASSETS: Focus on iconography and layout, not complex anatomical paintings.`;
+        }
     },
     vector: {
         expansionRole: "Principal Brand Designer for Scalable Vector Illustrations",
@@ -165,29 +186,6 @@ const agentConfigs: any = {
         jsonRole: "Chief Storyboard Supervisor",
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert the brief into a detailed multi-scene Storyboard JSON Blueprint.`
     },
-    infographic: {
-        expansionRole: "Lead Publication Art Director & Scientific Illustrator (SOVEREIGN v31 DUAL-TRACK)",
-        expansionRules: [
-            "AESTHETIC LAW: ABANDON FLAT DIGITAL UI. Force the aesthetic of a HIGH-FIDELITY PHYSICAL SCHOLARLY PLATE.",
-            "1. LAYER SEPARATION: Maintain strict metadata/content/visual/rendering/diffusion_synthesis layers.",
-            "2. TEXTURE: Explicitly specify 'Heavy Paper Grain', 'Creamy Parchment Base', and 'Subtle Offset-Ink Bleed'.",
-            "3. COORDINATES: Define panel bounds and content positions using absolute coordinates for render stability.",
-            "4. NO VECTOR LOOK: Ban words like 'flat', 'clean', 'UI', 'minimalist'. Use 'Classical', 'High-Impact', 'Masterpiece', 'Filmic'.",
-            "5. COUPLED OUTCOMES: Every intervention MUST be coupled with its statistical result in the schematic.",
-            "6. DIFFUSION SYNTHESIS (MANDATORY): The diffusion_synthesis layer MUST be the last thing you write. Distill the trial results into a NATURAL LANGUAGE briefing for a diffusion model."
-        ],
-        jsonRole: "Ultimate Scholarly Plate Designer",
-        jsonInstructions: (style: string) => `### SOVEREIGN v31 INFOGRAPHIC PROTOCOL
-        1. HIERARCHY: metadata -> medical_content -> visual_specification -> rendering_instructions -> diffusion_synthesis (Layer 5).
-        2. CANVAS: 680x840 scholarly plate.
-        3. PANELS: Use absolute bounds. Couple the treatment and result in adjacent or integrated panels.
-        4. ★ LAYER 5 — DIFFUSION SYNTHESIS:
-           - master_prompt: 150-200 word NATURAL LANGUAGE paragraph. Describe the background (creamy parchment), the structured layout, and the primary clinical conclusion visually. Include "South Asian human subjects" for all clinical representations.
-           - NO hex codes, NO pixel x/y/w/h values in Layer 5.
-        5. STYLE AUTHORITY: Use "${style}".`,
-        subjectPath: "metadata.title",
-        stylePath: "metadata.journal_standard"
-    }
 };
 
 const getProtocol = (mode: string, style: string) => {
