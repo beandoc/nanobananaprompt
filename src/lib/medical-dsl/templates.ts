@@ -100,6 +100,45 @@ export const MEDICAL_MECHANISM_TEMPLATES = {
   sickle_cell_voc_adhesion: {
     required_primitives: ["rbc_sickled_crescent", "rbc_adhesion_cluster", "endothelial_lining_cell_chain"],
     required_relations: ["rbc_sickled_crescent -> adheres_and_blocks -> endothelium_lining_cell_chain"]
+  },
+  // --- INTERVENTIONAL & SURGICAL (Device MoA Library) ---
+  stent_deployment_sequence: {
+    required_primitives: [
+      "metallic_mesh_structure",
+      "angioplasty_balloon",
+      "polymer_tubing",
+      "radial_force_field",
+      "device_tissue_interface"
+    ],
+    required_relations: [
+      "angioplasty_balloon -> expands_to_deploy -> metallic_mesh_structure",
+      "metallic_mesh_structure -> exerts -> radial_force_field",
+      "radial_force_field -> restores -> lumen_tubular_corridor"
+    ]
+  },
+  robotic_tme_surgery: {
+    required_primitives: [
+      "robotic_arm_module",
+      "surgical_grasper",
+      "endoscopic_camera",
+      "device_tissue_interface"
+    ],
+    required_relations: [
+      "robotic_arm_module -> provides_precision_to -> surgical_grasper",
+      "surgical_grasper -> performs_traction_at -> device_tissue_interface"
+    ]
+  },
+  hollow_fiber_dialysis: {
+    required_primitives: [
+      "polymer_tubing",
+      "device_flow_stream",
+      "filtration_barrier",
+      "pressure_gradient_field"
+    ],
+    required_relations: [
+      "device_flow_stream -> undergoes_countercurrent_exchange -> filtration_barrier",
+      "pressure_gradient_field -> drives_ultrafiltration_at -> filtration_barrier"
+    ]
   }
 } as const;
 

@@ -82,6 +82,24 @@ export const MEDICAL_PRIMITIVES = {
     sarcomere_contraction_vector: "A mechanical force vector coupled to the electrical activation wavefront."
   },
 
+  // --- MECHANICAL & INTERVENTIONAL (Device Library v1.0) ---
+  MECHANICAL_DEVICES: {
+    // Structural Materials
+    metallic_mesh_structure: "Repeating lattice network (Nitinol/Cobalt-Chromium) with radial expandability and shape memory.",
+    polymer_tubing: "Flexible hollow cylinder with high bendability and pressure resistance for catheters and dialysis lines.",
+    angioplasty_balloon: "Expandable cylindrical membrane with primary states of inflation and deflation, applying radial force.",
+    
+    // Instrumentation
+    surgical_grasper: "Articulated clamp with multi-axis rotation for precise tissue manipulation.",
+    robotic_arm_module: "Multi-joint articulated link with precision rotation and remote actuation capabilities.",
+    endoscopic_camera: "Slender probe with an optical tip providing a real-time intra-luminal visual field.",
+    
+    // Mechanical-Biological Interface
+    device_tissue_interface: "Contact surface zone where compression, friction, and shear forces are exchanged.",
+    radial_force_field: "Outward directional vector field used to simulate lumen expansion during stent deployment.",
+    device_flow_stream: "Directed streamlines through a device showing velocity gradients and pressure drops."
+  },
+
   // --- IMMUNOLOGY (Signaling Fields v1.0) ---
   SIGNALING_PHYSICS: {
     cytokine_cloud: "A diffuse radial molecular field representing local IL-6 and TNF-alpha concentrations.",
