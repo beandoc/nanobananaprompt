@@ -54,31 +54,29 @@ const agentConfigs: any = {
     medical: {
         expansionRole: "Sovereign Medical Illustrator (SOVEREIGN v31 DUAL-TRACK PROTOCOL)",
         expansionRules: [
-            "1. IDENTITY: All human subjects MUST be of South Asian (Indian) descent.",
-            "2. TRACK 1 (SCIENTIFIC): Define complex tissue -> cellular -> molecular cascades.",
-            "3. TRACK 2 (VISUAL): Command specific rendering styles (BioRender 2.5D).",
-            "4. EXPLICIT GEOMETRY: Define shapes using biological terms (e.g., ellipsoid_cluster, multi-lobulated_contour).",
-            "5. NO CITATIONS: Do NOT generate DOIs or citations for image-only generation."
+            "1. IDENTITY: Use high-transparency (#CCCCCC, 0.2 opacity) South Asian / Indian male silhouettes for anatomical context.",
+            "2. HIERARCHY: Define Organ (Kidney) -> Structures (Cysts) -> Cells (Columnar Epithelium) -> Molecular (cAMP).",
+            "3. SELECTIVE REDUCTION: Focus on the 'Synchronous Pathophysiologic State'. Banish temporal/timeline data.",
+            "4. DIRECTIONAL FLOW: Express molecular signaling as directional vectors (Membrane -> Lumen).",
+            "5. NO CITATIONS: Do NOT generate DOIs for image-oriented generation."
         ],
         jsonRole: "Ultimate Medical Art Director and Clinical Strategist",
         jsonInstructions: (medicalBrief: string) => {
             const isBioRender = medicalBrief.toLowerCase().includes('biorender');
-            return `### SOVEREIGN v31 DUAL-TRACK PROTOCOL
-1. INSTANCE LAW: return JSON with FIVE top-level layers: metadata, medical_content, visual_specification, rendering_instructions, diffusion_synthesis.
-2. BIOLOGICAL FIDELITY: For PKD, prioritize canonical progression: Tubular Dilation -> Cyst Expansion -> Interstitial Fibrosis -> Nephron Loss. Avoid the non-canonical term 'cysts rupture'.
-3. STYLE UNIFICATION: 
-   - ${isBioRender ? 'BIORENDER MODE: NO WATERCOLOR. NO NEJM. Use: "Flat clinical modularity", "Internal volumetric gradients", "Smooth clinical polymer texture", "Pure white canvas (#FFFFFF)".' : 'NEJM MODE: Use "Watercolor stippling", "Soft organic transitions", "Muted clinical palette on parchment (#F5F2F0)".'}
-4. GEOMETRY & SHAPE LOCK: The 'shape' field MUST NOT be empty. Use: "ellipsoid_cluster", "multi-lobulated_contour", "columnar_array", or "biconcave_disc".
-5. SPATIAL HIERARCHY: Use discrete coordinates on 680x840 canvas. 
-   - Panel A (Macro): Top half [0,0,680,420]. 
-   - Panel B (Micro): Bottom half [0,440,680,400]. 
-   No overlapping (0,0,680,840) for distinct modular assets.
-6. CLINICAL PALETTE: 
-   - BioRender: Teal (#00796B), Clinical Magenta (#D81B60), Slate Grey (#455A64).
-   - NEJM: Deep Renal Red (#8B0000), Ochre (#B8860B), Indigo (#191970).
-7. LAYER 5 (DIFFUSION SYNTHESIS): Describe individual "Clinically-Accurate Modular Assets". 
-   - BAN: hex codes, SVG shapes, and coordinates in Layer 5. This causes engine failure. 
-   - AESTHETIC: Focus on 2.5D volumetric icons with zero external shadows on a pure white background. NO TEXT.`;
+            return `### SOVEREIGN v31.2 PERFECT-10 PROTOCOL
+1. STYLE LOCK: 
+   - ${isBioRender ? 'BIORENDER MODE: NO WATERCOLOR. NO PARCHMENT. Pure white (#FFFFFF) background. Flat internal volumetric shading. Matte clinical polymer textures.' : 'NEJM MODE: Organic stippling on cream parchment (#F5F2F0).'}
+2. ANATOMICAL HIERARCHY: The 'id' and 'type' must reflect: Organ (Kidney) -> Structure (Cysts). Cysts are NOT organs.
+3. GEOMETRY PURITY: 
+   - NO 'biconcave_disc' for fluid. Use: "amorphous_luminal_pool".
+   - USE: "ellipsoid_cyst_cluster", "columnar_epithelial_array".
+4. SIGNALING VISUALS: Mandate 'directional_arrows' or 'receptor_icons' in Layer 3. 
+5. COLOR DISCIPLINE (BioRender): 
+   - Normal Tissue/Cortex: Light Neutral (#E0E0E0).
+   - Pathology (Cysts): Bio-Teal (#00796B).
+   - Signaling (cAMP): Clinical Magenta (#D81B60).
+6. SPATIAL LOGIC: Discrete non-overlapping bounds (Macro: Top [0,0,680,400]; Micro: Bottom [0,420,680,420]).
+7. LAYER 5 (DIFFUSION): Describe 'High-Fidelity Modular BioRender Icons'. NO text. Focus on subsurface scattering and volumetric depth in a zero-shadow environment.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
