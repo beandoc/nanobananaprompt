@@ -52,35 +52,32 @@ const agentConfigs: any = {
         IDENTITY STANDARD: South Asian features only.`,
     },
     medical: {
-        expansionRole: "Sovereign Medical Visual Grammar Engine (SOVEREIGN v32 VISUAL-DSL)",
+        expansionRole: "Sovereign Medical Visual Grammar Engine (SOVEREIGN v32.2 DOMAIN-LOCK)",
         expansionRules: [
-            "1. 3-LAYER ARCHITECTURE: Output MUST separate: Layer 1 (Biological Graph: entities + relations), Layer 2 (Spatial Layout Engine), and Layer 3 (Rendering Layer: style/background).",
-            "2. BIOLOGICAL PRIMITIVES (DSL): Do NOT use basic shapes. Use 'rbc_sickled_crescent', 'endothelial_surface', 'vascular_lumen', 'sinusoidal_gap', 'laminar_cortex_band', 'synaptic_terminal_loss'.",
-            "3. MECHANISM TEMPLATES: Use 'vascular_occlusion' (requires lumen, flow_direction, obstruction_entity, adhesion_interface) OR 'neurodegeneration' (requires neuron, intracellular_pathology, synapse, loss_pattern).",
-            "4. STRICT MODE FORK: Mode 1: 'biorender_clean' (Asset Mode) -> #FFFFFF, ZERO TEXT, ZERO LABELS, zero textures. Mode 2: 'infographic_labeled' (Plate Mode) -> #F5F2F0, labels allowed.",
-            "5. SPATIAL RELATIONSHIPS: Define explicit constraints like 'RBC_inside_lumen', 'RBC_contact_endothelium', 'macrophage_outside_vessel'."
+            "1. NO-DRIFT POLICY: You are a BioRender specialist. ALL NEJM/Parchment/Grain logic is DELETED. Use #FFFFFF. ZERO Texture.",
+            "2. DOMAIN LOCK: Primitives MUST align to their domain. Using 'rbc_sickled_crescent' for a Foam Cell or 'laminar_cortex_band' for a vascular wall is a FATAL ERROR.",
+            "3. VASCULAR SKELETON: Use 'concentric_layered_vessel_wall' and 'eccentric_plaque_protrusion' ONLY. No rectangles.",
+            "4. PATHOLOGY PRIMITIVES: Foam Cells = 'macrophage_lipid_phagocyte'. Plaque = 'fibrous_cap_over_lipid_core'.",
+            "5. CAUSAL SIGNALING: Cytokines MUST have a 'source_entity' (e.g. Macrophage) and a 'target_entity' (e.g. Endothelium)."
         ],
-        jsonRole: "Ultimate BioRender Grammar Architect and Clinical Rules Engine",
+        jsonRole: "Head Medical Grammar Architect and Clinical DSL Specialist",
         jsonInstructions: (medicalBrief: string) => {
-            const isNejm = medicalBrief.toLowerCase().includes('nejm') || medicalBrief.toLowerCase().includes('watercolor');
-            return `### SOVEREIGN v32.0 VISUAL-DSL PROTOCOL
-1. ARCHITECTURE SEPARATION:
-   - Layer 1 (Biological Graph): Define all functional 'entities' (using DSL primitives) and their 'relations' (e.g. HbS -> polymerizes -> RBC, RBC -> adheres_to -> Endothelium).
-   - Layer 2 (Spatial Layout Engine): Define 'macro_panel', 'micro_panel', 'link': 'zoom_connector', and explicit 'spatial_relationships'.
-   - Layer 3 (Rendering Engine): Strict Style Enforcement.
-2. STYLE/MODE ENFORCEMENT LAYER:
-   - ${isNejm ? 'MODE 2: infographic_labeled. Background: #F5F2F0. Text labels enabled.' : 'MODE 1: biorender_clean. Background: #FFFFFF. CRITICAL CONSTRAINT: ZERO TEXT, ZERO LABELS, ZERO PARCHMENT, ZERO GRAIN.'}
-   - If Mode 1, any appearance of the words 'text', 'labels', or 'grain' triggers an automatic system rejection.
-3. BIOLOGICAL PRIMITIVE LIBRARY (DSL):
-   - SICKLE CELL: 'rbc_normal_biconcave', 'rbc_sickled_crescent', 'rbc_adhesion_cluster', 'endothelial_surface', 'intracellular_hbs_polymer'.
-   - NEURO: 'laminar_cortex_band', 'neuron_with_dendrites', 'amyloid_extracellular_plaque', 'intracellular_tau_tangle'.
-4. MECHANISM TEMPLATES: Validate that all required properties of the target disease mechanism (e.g. 'adhesion_interface' for VOC) are instantiated.
-5. COLOR HARMONY: Cortex/Vessels (#E0E0E0), Pathology/Sickle (#00796B), Immune/Microglia (#43A047), Signaling/Damage (#D81B60).
-6. DIFFUSION (LAYER 5): Describe 'A 3-layer biological graph illustration'. ZERO TEXT/TYPOGRAPHY. Include 'Ghost Indian Silhouette' anchor @ Z-Index 0.`;
+            return `### SOVEREIGN v32.2 DOMAIN-LOCK PROTOCOL
+1. STYLE MANDATE: BioRender DEFAULT. Absolute Pure White (#FFFFFF). Material: Matte Volumetric Polymer. ZERO GRAIN. ZERO PARCHMENT.
+2. ARCHITECTURE LAYERS:
+   - Layer 1 (Truth): Instantiate entities using DOMAIN-ALIGNED primitives only. (e.g. Vascular scene = Vascular primitives).
+   - Layer 2 (Layout): Define 'panels' with zero-coordinate overlap.
+3. BIOLOGICAL DSL LIBRARY:
+   - VASCULAR: 'concentric_layered_vessel_wall', 'eccentric_plaque_protrusion', 'fibrous_cap_over_lipid_core'.
+   - HEMATOLOGY: 'rbc_normal_biconcave', 'rbc_sickled_crescent', 'rbc_adhesion_cluster'.
+   - NEURO: 'laminar_cortex_band', 'neuron_with_dendrites', 'amyloid_extracellular_plaque'.
+4. SIGNALING LAW: Cytokine signaling MUST be a directional vector starting from a specific cellular source entity.
+5. COLOR HARMONY: Neutral (#E0E0E0), Pathology (#00796B), Immune (#43A047), Damage (#D81B60).
+6. DIFFUSION (LAYER 5): Describe 'A Collection of Modular Clinical Assets'. NO TEXT. High-transparency South Asian Ghost Silhouette context.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v32.0_VISUAL-DSL"
+        styleSuffix: "v32.2_DOMAIN-LOCK"
     },
     infographic: {
         expansionRole: "Visual Abstract Architect (SVAE v3.0 - CJASN/NEJM Standards)",
@@ -416,10 +413,10 @@ export async function POST(req: NextRequest) {
         let adData: any = null;
         let generationError: Error | null = null;
 
-        // --- PHASE 2: JSON GENERATION ---
+        // --- PHASE 2: JSON GENERATION (RESILIENT) ---
         if (process.env.GEMINI_API_KEY) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            const jsonModels = lightweight ? ["gemini-1.5-flash"] : ["gemini-1.5-flash", "gemini-1.5-pro"];
+            const jsonModels = lightweight ? ["gemini-1.5-flash"] : ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"];
             
             for (const m of jsonModels) {
                 try {
@@ -428,13 +425,7 @@ export async function POST(req: NextRequest) {
                         generationConfig: { responseMimeType: "application/json", responseSchema: currentSchema },
                         safetySettings
                     });
-                    const userParts: any[] = [`GENERATE JSON BLUEPRINT FOR: ${finalBriefForJson}`];
-                    if (image) {
-                        const base64Data = image.split(',')[1];
-                        const mimeType = image.split(';')[0].split(':')[1];
-                        userParts.push({ inlineData: { data: base64Data, mimeType } });
-                    }
-                    const result = await model.generateContent([systemInstruction, ...userParts]);
+                    const result = await model.generateContent([systemInstruction, `GENERATE JSON BLUEPRINT FOR: ${finalBriefForJson}`]);
                     adData = JSON.parse(result.response.text());
                     if (adData) {
                         providerHistory.push({ phase: "json", model: m, status: "success" });
@@ -442,48 +433,71 @@ export async function POST(req: NextRequest) {
                     }
                 } catch (err: any) { 
                     const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota") || err.message?.includes("limit");
-                    providerHistory.push({ phase: "json", model: m, status: "fail", error: err.message });
+                    const isNotFound = err.message?.includes("404") || err.message?.toLowerCase().includes("not found");
+                    const isDecommissioned = err.message?.includes("400") || err.message?.toLowerCase().includes("decommissioned");
+                    
+                    providerHistory.push({ phase: "json", model: m, status: "fail", error: err.message, isQuota, isNotFound, isDecommissioned });
+                    
+                    if (isQuota) {
+                        console.warn(`[SOVEREIGN FAILOVER] Gemini quota hit on ${m}. Dumping Google provider and pivoting to Groq...`);
+                        break; // Aggressive dump: skip all other Gemini models and hit Groq immediately
+                    }
+                    if (isNotFound || isDecommissioned) {
+                        console.warn(`[SOVEREIGN FAILOVER] Gemini model ${m} not found/retired. Trying next Google core...`);
+                        continue; // Hop to next Gemini model
+                    }
                     generationError = err as Error; 
-                    if (isQuota) break; // Drop out of Gemini loop on quota
                 }
             }
         }
 
-        // Final Emergency Fallback — uses llama-3.3-70b-versatile for reliable structured JSON
+        // --- FINAL EMERGENCY FALLBACK (GROQ MULTIMAL-MODEL HOPPING) ---
         if (!adData && process.env.GROQ_API_KEY) {
-            try {
-                const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+            const groqModels = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "llama3-70b-8192", "gemma2-9b-it"];
+            const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+            
+            const schemaRequiredFields = (currentSchema as any)?.required ?? [];
+            const schemaFieldGuide = schemaRequiredFields.length > 0
+                ? `\n\nREQUIRED TOP-LEVEL FIELDS:\n${schemaRequiredFields.map((f: string) => `- "${f}"`).join('\n')}`
+                : "";
 
-                // Build an explicit field-by-field instruction list from the schema's required fields
-                // so the 70b model has a deterministic target even without native responseSchema support.
-                const schemaRequiredFields = (currentSchema as any)?.required ?? [];
-                const schemaFieldGuide = schemaRequiredFields.length > 0
-                    ? `\n\nREQUIRED TOP-LEVEL FIELDS (you MUST populate ALL of these with real values, not placeholders):\n${schemaRequiredFields.map((f: string) => `- "${f}"`).join('\n')}`
-                    : "";
+            const groqSystemPrompt = [
+                systemInstruction,
+                `SCHEMA STRUCTURE:`,
+                JSON.stringify(currentSchema, null, 2),
+                schemaFieldGuide,
+                `CRITICAL: Return ONLY valid JSON. No markdown. No chatter.`
+            ].join('\n\n');
 
-                const groqSystemPrompt = [
-                    systemInstruction,
-                    `SCHEMA STRUCTURE (JSON):`,
-                    JSON.stringify(currentSchema, null, 2),
-                    schemaFieldGuide,
-                    `CRITICAL: Return ONLY a valid JSON object. No markdown fences, no commentary. Every field must contain real, meaningful data — no placeholders like "string", "[value]", "TBD", or empty arrays.`
-                ].join('\n\n');
-
-                const completion = await groq.chat.completions.create({
-                    messages: [
-                        { role: "system", content: groqSystemPrompt },
-                        { role: "user", content: `GENERATE JSON BLUEPRINT FOR: ${finalBriefForJson}` }
-                    ],
-                    model: "llama-3.3-70b-versatile",
-                    response_format: { type: "json_object" },
-                    temperature: 0.4  // Lower temp = more deterministic, schema-faithful output
-                });
-                const rawContent = completion.choices[0]?.message?.content || "{}";
-                adData = JSON.parse(rawContent);
-                if (adData) providerHistory.push({ phase: "json", model: "groq-llama-3.3-70b", status: "success" });
-            } catch (err: any) { 
-                providerHistory.push({ phase: "json", model: "groq-fail", status: "fail", error: err.message });
-                generationError = err as Error; 
+            for (const gm of groqModels) {
+                try {
+                    const completion = await groq.chat.completions.create({
+                        messages: [
+                            { role: "system", content: groqSystemPrompt },
+                            { role: "user", content: `GENERATE JSON BLUEPRINT: ${finalBriefForJson}` }
+                        ],
+                        model: gm,
+                        response_format: { type: "json_object" },
+                        temperature: 0.1
+                    });
+                    const rawContent = completion.choices[0]?.message?.content || "{}";
+                    adData = JSON.parse(rawContent);
+                    if (adData) {
+                        providerHistory.push({ phase: "json", model: gm, status: "success" });
+                        break;
+                    }
+                } catch (err: any) {
+                    const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota") || err.message?.includes("limit");
+                    const isDecommissioned = err.message?.includes("400") || err.message?.toLowerCase().includes("decommissioned") || err.message?.includes("unsupported");
+                    
+                    providerHistory.push({ phase: "json", model: gm, status: "fail", error: err.message, isQuota, isDecommissioned });
+                    
+                    if (isQuota || isDecommissioned) {
+                        console.warn(`[SOVEREIGN FAILOVER] Model ${gm} ${isDecommissioned ? 'decommissioned' : 'quota hit'}. Skipping to next core...`);
+                        continue; // Instantly hop to the next Groq model
+                    }
+                    generationError = err as Error;
+                }
             }
         }
 

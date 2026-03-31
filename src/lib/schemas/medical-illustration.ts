@@ -17,10 +17,74 @@ import { Schema, SchemaType } from "@google/generative-ai";
  *   Layers 1–4 into coherent natural-language descriptors. SVG numbers ≠ diffusion signal.
  */
 export const medicalIllustrationSchema: Schema = {
-    description: "SOVEREIGN v31 DUAL-TRACK - Academic Visual Abstract Protocol (NEJM/Nature Gold Standard)",
+    description: "SOVEREIGN v32.0 VISUAL-DSL Protocol - Deterministic 3-Layer Visual Grammar (Nature/NEJM Standards)",
     type: SchemaType.OBJECT,
     properties: {
-        // --- LAYER 1: METADATA ---
+        // --- LAYER 1: BIOLOGICAL GRAPH (Science Truth) ---
+        biological_graph: {
+            type: SchemaType.OBJECT,
+            description: "Layer 1: Deterministic mapping of biological entities and their functional relationships.",
+            properties: {
+                entities: {
+                    type: SchemaType.ARRAY,
+                    description: "List of biological primitives used in this scene.",
+                    items: {
+                        type: SchemaType.OBJECT,
+                        properties: {
+                            id: { type: SchemaType.STRING },
+                            primitive_id: { 
+                                type: SchemaType.STRING,
+                                description: "MUST map to the Medical Primitive Library (e.g., rbc_sickled_crescent, laminar_cortex_band)."
+                            },
+                            functional_state: { type: SchemaType.STRING, description: "e.g., activated, deoxygenated, fragmented" }
+                        }
+                    }
+                },
+                relations: {
+                    type: SchemaType.ARRAY,
+                    description: "Causal or physical relationships between entities.",
+                    items: {
+                        type: SchemaType.OBJECT,
+                        properties: {
+                            subject: { type: SchemaType.STRING, description: "entity_id of source" },
+                            predicate: { type: SchemaType.STRING, description: "e.g., adheres_to, polymerizes_inside, damages" },
+                            object: { type: SchemaType.STRING, description: "entity_id of target" }
+                        }
+                    }
+                }
+            },
+            required: ["entities", "relations"]
+        },
+
+        // --- LAYER 2: SPATIAL LAYOUT (Anatomical Geometry) ---
+        spatial_layout: {
+            type: SchemaType.OBJECT,
+            description: "Layer 2: Deterministic mapping of layout architecture and panel relationships.",
+            properties: {
+                panels: {
+                    type: SchemaType.ARRAY,
+                    items: {
+                        type: SchemaType.OBJECT,
+                        properties: {
+                            id: { type: SchemaType.STRING },
+                            semantic_focus: { type: SchemaType.STRING },
+                            visual_anchor: { type: SchemaType.STRING, description: "Primary entity anchoring this panel" }
+                        }
+                    }
+                },
+                panel_linkage: {
+                    type: SchemaType.OBJECT,
+                    properties: {
+                        transition_type: { type: SchemaType.STRING, description: "e.g., tapered_zoom_connector, sequential_flow" },
+                        source_id: { type: SchemaType.STRING },
+                        target_id: { type: SchemaType.STRING }
+                    }
+                }
+            },
+            required: ["panels"]
+        },
+
+        // --- LAYER 1 (Legacy Metadata Mapping) ---
         metadata: {
             type: SchemaType.OBJECT,
             properties: {
