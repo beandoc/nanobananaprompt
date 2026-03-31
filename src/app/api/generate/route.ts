@@ -455,6 +455,7 @@ export async function POST(req: NextRequest) {
 
         // --- FINAL EMERGENCY FALLBACK (GROQ MULTIMAL-MODEL HOPPING) ---
         if (!adData && process.env.GROQ_API_KEY) {
+            console.log("[SOVEREIGN RECOVERY] Gemini exhausted. Entering Groq Multi-Model Recovery...");
             const groqModels = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "llama3-70b-8192", "gemma2-9b-it"];
             const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
             
@@ -473,6 +474,7 @@ export async function POST(req: NextRequest) {
 
             for (const gm of groqModels) {
                 try {
+                    console.log(`[SOVEREIGN ATTEMPT] Trying Groq Core: ${gm}...`);
                     const completion = await groq.chat.completions.create({
                         messages: [
                             { role: "system", content: groqSystemPrompt },
@@ -486,19 +488,13 @@ export async function POST(req: NextRequest) {
                     adData = JSON.parse(rawContent);
                     if (adData) {
                         providerHistory.push({ phase: "json", model: gm, status: "success" });
+                        console.log(`[SOVEREIGN SUCCESS] Recovered with ${gm}.`);
                         break;
                     }
                 } catch (err: any) {
-                    const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota") || err.message?.includes("limit");
-                    const isDecommissioned = err.message?.includes("400") || err.message?.toLowerCase().includes("decommissioned") || err.message?.includes("unsupported");
-                    
-                    providerHistory.push({ phase: "json", model: gm, status: "fail", error: err.message, isQuota, isDecommissioned });
-                    
-                    if (isQuota || isDecommissioned) {
-                        console.warn(`[SOVEREIGN FAILOVER] Model ${gm} ${isDecommissioned ? 'decommissioned' : 'quota hit'}. Skipping to next core...`);
-                        continue; // Instantly hop to the next Groq model
-                    }
-                    generationError = err as Error;
+                    console.error(`[SOVEREIGN FAIL] ${gm} failed: ${err.message}`);
+                    providerHistory.push({ phase: "json", model: gm, status: "fail", error: err.message });
+                    continue; // Instantly hop to the next Groq model
                 }
             }
         }
