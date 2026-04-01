@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-
-export const maxDuration = 60; // Extend Vercel Serverless function timeout to 60s (Hobby max)
-
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { Groq } from "groq-sdk";
 import { ResponseManager } from "@/lib/api-response";
 import { atlasService } from "@/lib/atlas-service";
+
+export const maxDuration = 60; // Extend Vercel Serverless function timeout to 60s (Hobby max)
+
 import { adCreativeSchema } from "@/lib/schemas/ad-creative";
 import { medicalIllustrationSchema } from "@/lib/schemas/medical-illustration";
 import { vectorIllustrationSchema } from "@/lib/schemas/vector-branding";
