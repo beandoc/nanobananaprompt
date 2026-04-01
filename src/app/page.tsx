@@ -258,6 +258,7 @@ export default function Home() {
                   setRefinement={setRefinement}
                   handleRefine={onGenerate}
                   activeProvider={result.activeProvider}
+                  expansionText={result.refinedPrompt}
                 />
               )}
 

@@ -67,12 +67,11 @@ const agentConfigs: any = {
     infographic: {
         expansionRole: "Principal NEJM Scholarly Plate Architect (SVAE v3.50 - NEJM-COLUMNAR Standard)",
         expansionRules: [
-            "1. NEJM VERTICALITY: Strict 3-Column Layout: Left (Population/Sidebar) | Middle (Treatment/Intervention) | Right (Placebo/Comparator).",
-            "2. ENDPOINT ROWS: outcomes must be rendered as horizontal rows crossing the Middle and Right columns.",
-            "3. STATISTICAL SUB-TEXT: HR, 95% CI, and P-values must be placed immediately under the primary result in each cell.",
-            "4. COLUMNAR SHADING: Apply unique fill colors to Middle and Right columns for visual separation.",
-            "5. HEADER PRIMITIVES: Place primary clinical mechanism (Syringe, Pill, IV Bag) in the top-header of each column.",
-            "6. NO FLOATING CARDS: This is a single, integrated horizontal-vertical grid."
+            "1. MASTERCLASS COLUMNAR: Start with: 'Strictly adhere to this composition: A professional NEJM-style scholarly plate with a horizontal aspect ratio, divided into three vertical columns (Left: Population Sidebar, Middle: Intervention, Right: Control).'",
+            "2. DATA INTEGRITY: Every piece of clinical data (N-values, HR, p-values, CI) must be embedded within the descriptive sentences as focal information points.",
+            "3. STYLE INFUSION: Specify: 'The overall aesthetic is a clean, academic infographic style with thin grey borders, professional columnar shading, and high-contrast clinical headers.'",
+            "4. COLUMNAR LOGIC: Formulate content strictly into 'Left Column', 'Middle Column', and 'Right Column' fluid paragraphs. NO bullet points.",
+            "5. FINAL DIRECTIVE: Conclude with: 'Maintain clinical accuracy and data-centric visual hierarchy. Use South Asian patient silhouettes for population data.'"
         ],
         jsonRole: "Director of High-Impact Visual Abstracts",
         jsonInstructions: (style: string) => `### SVAE v3.50 NEJM-COLUMNAR PROTOCOL

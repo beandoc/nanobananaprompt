@@ -13,6 +13,7 @@ interface BlueprintConsoleProps {
     setRefinement: (val: string) => void;
     handleRefine: () => void;
     activeProvider?: string;
+    expansionText?: string;
 }
 
 export function BlueprintConsole({
@@ -22,7 +23,8 @@ export function BlueprintConsole({
     refinement,
     setRefinement,
     handleRefine,
-    activeProvider = "Gemini-Elite"
+    activeProvider = "Gemini-Elite",
+    expansionText
 }: BlueprintConsoleProps) {
     return (
         <div className="bg-white/80 backdrop-blur-xl border border-white rounded-3xl md:rounded-[2.5rem] p-5 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative overflow-hidden group/console">
@@ -44,6 +46,20 @@ export function BlueprintConsole({
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
+                    {expansionText && (
+                        <Tooltip content="Copy ONLY the Masterclass Refined Text (Phase 1). No JSON metadata.">
+                            <button
+                                onClick={() => {
+                                    navigator.clipboard.writeText(expansionText);
+                                    window.open("https://gemini.google.com/app", "_blank");
+                                }}
+                                className="bg-emerald-600 hover:bg-emerald-500 text-[10px] md:text-[11px] text-white font-black uppercase tracking-widest px-4 md:px-5 py-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
+                            >
+                                <Eye className="w-3.5 h-3.5" />
+                                Copy Refined Text
+                            </button>
+                        </Tooltip>
+                    )}
                     <Tooltip content="Copy exactly the targeted prompt designed for Imagen 3 (Gemini Web).">
                         <button
                             onClick={() => {
