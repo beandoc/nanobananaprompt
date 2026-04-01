@@ -58,7 +58,8 @@ const agentConfigs: any = {
 1. STYLE: Apply ${styleLock} aesthetic to the anatomical scene.
 2. IDENTITY: Mandate South Asian (Indian) descent in diffusion_synthesis.
 3. ANTI-LEAK: Explicitly ban JSON keys, IDs, and coordinates from the visual rendering.
-4. ARCHITECTURE: 3-Panel Sequential Narrative (Trigger -> Execution -> Systemic Result).`;
+4. ARCHITECTURE: 3-Panel Sequential Narrative (Trigger -> Execution -> Systemic Result).
+5. SENSORY DEPTH: When populating 'diffusion_synthesis.master_prompt', you MUST migrate 100% of the descriptive detail, visual textures, and spatial sections from the provided refined specification. Do NOT abbreviate or summarize. Maintain the 150-250 word density required for Imagen 3 synthesis.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",

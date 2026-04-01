@@ -63,10 +63,12 @@ export function BlueprintConsole({
                     <Tooltip content="Copy exactly the targeted prompt designed for Imagen 3 (Gemini Web).">
                         <button
                             onClick={() => {
-                                const masterPrompt = (data as any)?.diffusion_synthesis?.master_prompt || (data as any)?.prompt || "Failed to parse master prompt.";
+                                const jsonPrompt = (data as any)?.diffusion_synthesis?.master_prompt || (data as any)?.prompt || "";
+                                // If expansionText (Phase 1 Refinement) is available and longer/richer, prefer it as the master source.
+                                const masterPrompt = (expansionText && (expansionText.length > jsonPrompt.length)) ? expansionText : jsonPrompt;
                                 const negPrompt = (data as any)?.diffusion_synthesis?.negative_prompt || "no text, no 3d render";
                                 const finalPrompt = `Strictly follow this prompt:\n\n${masterPrompt}\n\nNegative Constraints:\n${negPrompt}`;
-                                navigator.clipboard.writeText(finalPrompt);
+                                navigator.clipboard.writeText(finalPrompt || "Failed to generate prompt.");
                                 window.open("https://gemini.google.com/app", "_blank");
                             }}
                             className="bg-indigo-600 hover:bg-indigo-500 text-[10px] md:text-[11px] text-white font-black uppercase tracking-widest px-4 md:px-5 py-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
