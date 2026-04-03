@@ -62,13 +62,13 @@ export function BlueprintConsole({
                         <h3 className="font-black uppercase tracking-[0.2em] text-[9px] md:text-[10px] text-slate-400">
                             {mode === "ad" ? "Art Direction" : 
                              mode === "medical" ? "Technical Blueprint" : 
-                             mode === "video" ? "Cinematic Engine v5.0" :
+                             mode === "video" ? "Sovereign Engine v9.4 [Masterclass]" :
                              mode === "manga" ? "Manga Grid Logic" :
                              mode === "comic" ? "Sequential Narrative" :
                              mode === "infographic" ? "Visual Abstract" :
                              "Vector Blueprint"}
                         </h3>
-                        <p className="text-[8px] md:text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Compiler: {activeProvider}</p>
+                        <p className="text-[8px] md:text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Compiler: {activeProvider} — Production 3.1 Ready</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">

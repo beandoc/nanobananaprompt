@@ -1,5 +1,5 @@
 export const APP_CONFIG = {
-    VERSION: "2.5 Pro",
+    VERSION: "3 Pro",
     NAME: "Nano Banana",
     SUBTITLE: "Intelligence Pipeline",
     MAX_BRIEF_LENGTH: 1000,

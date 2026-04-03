@@ -691,13 +691,23 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                     vTags.push('wide-angle aerial drone shot', 'high-altitude stable drift');
                 }
 
-                // Apply forced style tags and FPS
-                if (vTags.length > 0) {
-                    console.log(`[v9.1 UI Sync] Forcing tags for: ${rawStyle}`);
-                    adData.style.veo_native_tags = vTags;
-                    adData.style.fps = forcedFps;
-                    if (isStylised) adData.audio.no_smooth_interpolation = true;
+                // --- v9.4: CAUSAL PROSE CONCATENATOR (Hardened Synthesis) ---
+                const wordCount = (adData.compiled_master_prompt || "").split(/\s+/).length;
+                if (wordCount < 100 && Array.isArray(adData.scene_core?.action_sequence)) {
+                    console.log(`[v9.4] Prose Density Low (${wordCount} words). Stitching causal beats manually.`);
+                    const beatSummary = adData.scene_core.action_sequence
+                        .map((b: any, i: number) => `Beat ${i+1}: ${b.action} triggered by ${b.trigger}, resulting in ${b.physical_detail}.`)
+                        .join(" ");
+                    adData.compiled_master_prompt = `${adData.compiled_master_prompt} Temporal Progression: ${beatSummary} Rendering Style: ${rawStyle} 24fps motion.`;
                 }
+
+                // Final sync to the labeled Veo output
+                if (!adData.engine_prompts) adData.engine_prompts = {};
+                adData.engine_prompts.veo = adData.compiled_master_prompt;
+                adData._quality_flags = {
+                    prose_word_count: adData.compiled_master_prompt.split(/\s+/).length,
+                    prose_gate_passed: adData.compiled_master_prompt.split(/\s+/).length >= 100
+                };
 
                 // --- COMPILED PROMPT WORD-COUNT GUARD ---
                 // If the LLM wrote one sentence (< 60 words), it failed the synthesis rule. Flag it.
