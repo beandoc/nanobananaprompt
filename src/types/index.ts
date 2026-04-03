@@ -185,6 +185,11 @@ export interface BlueprintData {
     visual_style?: string;
     total_project_duration?: string;
     
+    // Video Master Specification
+    duration?: string;
+    frame_rate?: string;
+    resolution?: string;
+    
     // Pro Video (Nano Banana Pro / Veo 3)
     description?: string;
     style?: string;

@@ -43,27 +43,29 @@ const agentConfigs: any = {
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert brief into Ad JSON. Style: ${style}.`
     },
     medical: {
-        expansionRole: "Sovereign Medical Visual Grammar Engine (v32.50 - PATHODYNAMIC MASTER)",
+        expansionRole: "Sovereign Medical Visual Grammar Engine (v33.0 - SPATIO-LINGUISTIC MASTER)",
         expansionRules: [
-            "1. MASTERCLASS COMPOSITION: Start with: 'Strictly adhere to this composition: A highly detailed, professional medical illustration with a wide horizontal aspect ratio, divided perfectly into three distinct vertical sections arrayed from left to right.'",
-            "2. STYLE PROTOCOL: Specify: 'The overall aesthetic is a clean, matte plasticine 2.5D BioRender style with soft pastel clinical colors and simple, untextured off-white backgrounds in each section.'",
-            "3. SPATIAL ANCHORS: Formulate content strictly into 'Left Section', 'Center Section', and 'Right Section' paragraphs. NO bullet points. NO markdown.",
-            "4. DENSE SEMANTICS: Describe anatomical subjects using visual textures (e.g., 'pearlescent white cartilage', 'fleshy crimson pannus') combined with the Identity Lock (South Asian/Indian descent).",
-            "5. ABSOLUTE NEGATIVE PROMPT: Conclude with: 'Negative Constraints: Absolutely zero typography, no text, no alphabet characters, no written labels, no numeric markers, no photorealism, no dramatic cinematic shadows. Keep all lighting flat and scientific.'"
+            "1. SPATIAL COMPOSITION: Do NOT default to 3 panels. Use the most effective layout for the brief. If a single focused view is best, use it. If multiple perspectives are needed, describe them relative to each other (e.g., 'Inset', 'Adjacent', 'Foreground').",
+            "2. STYLE PROTOCOL: Specify a clean, matte plasticine 2.5D BioRender style with soft clinical colors and a clean scientific background.",
+            "3. SENSORY DEPTH: Describe anatomical subjects using visual textures (e.g., 'glistening myocardial tissue', 'pearlescent valves') combined with the Identity Lock (South Asian/Indian descent).",
+            "4. SPATIAL LANGUAGE: Replace all coordinates and x/y mentions with relative anatomical terms: Superior, Inferior, Lateral, Medial, Superficial, Deep, Anterior, Posterior, Foreground, Background.",
+            "5. ABSOLUTE NEGATIVE PROMPT: Conclude with: 'Negative Constraints: Absolutely zero typography, no text, no alphabet characters, no written labels, no numeric markers, no photorealism. Keep lighting scientific and clean.'"
         ],
         jsonRole: "Director of Dynamic Clinical Physics",
         jsonInstructions: (style: string) => {
             const styleLock = style.toLowerCase().includes('nejm') || style.toLowerCase().includes('journal') || style.toLowerCase().includes('scholarly') ? 'SCHOLARLY_NEJM' : 'BIORENDER_MODERN';
-            return `### SOVEREIGN v32.50 MEDICAL ILLUSTRATION PROTOCOL
-1. STYLE: Apply ${styleLock} aesthetic to the anatomical scene.
-2. IDENTITY: Mandate South Asian (Indian) descent in diffusion_synthesis.
-3. ANTI-LEAK: Explicitly ban JSON keys, IDs, and coordinates from the visual rendering.
-4. ARCHITECTURE: 3-Panel Sequential Narrative (Trigger -> Execution -> Systemic Result).
-5. SENSORY DEPTH: When populating 'diffusion_synthesis.master_prompt', you MUST migrate 100% of the descriptive detail, visual textures, and spatial sections from the provided refined specification. Do NOT abbreviate or summarize. Maintain the 150-250 word density required for Imagen 3 synthesis.`;
+            return `### SOVEREIGN v33.0 MEDICAL ILLUSTRATION PROTOCOL
+1. HERO LAYER: You MUST populate 'diffusion_synthesis' FIRST. It is the absolute authority for rendering.
+2. SPATIAL MAPPING: Use ONLY natural language for positioning. NO coordinates. Use terms like 'superior to', 'lateral to', 'floating within'.
+3. IDENTITY: Mandate South Asian (Indian) descent in diffusion_synthesis.
+4. ARCHITECTURE: Choose the layout (Unified vs Multi-panel) based ONLY on the brief. No hardcoded 3-section bias.
+5. SCALE-LOCK: Enforce single-scale consistency unless a zoom-inset is explicitly requested.
+6. GEOMETRIC FIDELITY: Use anatomically correct primitives described in words.
+7. SENSORY RICHNESS: Maintain 250-300 word density in 'diffusion_synthesis.master_prompt'. 100% descriptive migration required.`;
         },
         subjectPath: "metadata.subject",
         stylePath: "metadata.journal_standard",
-        styleSuffix: "v32.50_ILLUSTRATION"
+        styleSuffix: "v33.0_ILLUSTRATION"
     },
     infographic: {
         expansionRole: "Principal NEJM Scholarly Plate Architect (SVAE v3.50 - NEJM-COLUMNAR Standard)",
@@ -76,8 +78,8 @@ const agentConfigs: any = {
         ],
         jsonRole: "Director of High-Impact Visual Abstracts",
         jsonInstructions: (style: string) => `### SVAE v3.50 NEJM-COLUMNAR PROTOCOL
-1. ARCHITECTURE: Population (Sidebar) | Intervention (Col A) | Control (Col B).
-2. ENDPOINTS: Map clinical results horizontally across Col A and Col B.
+1. ARCHITECTURE: Design the layout to fit the data. While 3-column is standard, allow for focus panels if the trial has fewer arms.
+2. ENDPOINTS: Map clinical results horizontally across trial arms.
 3. STATISTICS: Pair every result with its (HR, 95% CI, P) block.
 4. PRIMITIVES: Header Mechanism Icons for each column.
 5. IDENTITY: South Asian patient silhouettes in the Population sidebar.`,
@@ -92,10 +94,30 @@ const agentConfigs: any = {
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert brief into Vector JSON. Style: ${style}.`
     },
     video: {
-        expansionRole: "Cinematic Director",
-        expansionRules: ["1. IDENTITY: South Asian heritage only.", "2. MOTION: Describe camera dolly/pan."],
-        jsonRole: "Chief Cinematic Engineer",
-        jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert brief into Video JSON. Style: ${style}.`
+        expansionRole: "Sovereign Cinematic Director & Motion Architect (v5.0 — MASTER_MOTION_ENGINE)",
+        expansionRules: [
+            "1. IDENTITY LOCK: All human subjects MUST be of South Asian/Indian descent with modern urban Indian styling. Describe skin tone, facial features, and clothing textures exhaustively.",
+            "2. TEMPORAL ARC: Structure the shot as a JOURNEY. Describe what happens at the opening (0-3s), midpoint (3-6s), and closing (6-8s+). Every frame must have purpose.",
+            "3. DURATION MAXIMIZATION: Default to the longest possible single-shot duration your target engine supports. Kling AI Pro: 10s. Seedance 2.0: 10s. Veo 3: 8s. Runway Gen-4: 10s. Push to maximum.",
+            "4. PHYSICS-BASED MOTION: Describe ALL motion using physical properties. Hair: strand-level wind reaction with 0.3s delay. Fabric: weight-appropriate draping and billowing. Liquid: viscosity-accurate splash crowns and surface tension. Particles: varied terminal velocity.",
+            "5. CAMERA CHOREOGRAPHY: Use professional camera language — Steadicam orbit, crane-up, dolly zoom (vertigo effect), rack focus, whip pan. Describe the camera's emotional intention (e.g., 'the camera slowly approaches, creating intimacy').",
+            "6. LIGHTING AS NARRATIVE: Describe lighting transitions over time (e.g., 'warm tungsten interior gives way to cold blue moonlight as the door opens'). Specify practical lights (lamps, screens, neon signs) vs ambient.",
+            "7. SENSORY DENSITY: Layer at least 4 sensory channels — visual texture, motion dynamics, sound design, and atmospheric particles. Each sentence should paint a micro-world.",
+            "8. VIDEO TYPE AWARENESS: If the brief suggests animation (2D, 3D, anime, motion graphics), adapt the style descriptors accordingly. Use animation-specific terms (cel-shading, motion smear, squash-and-stretch, parallax scrolling) instead of photorealistic terms.",
+            "9. ENGINE OPTIMIZATION: End with engine-friendly keywords: 'cinematic', 'temporal consistency', 'no morphing', 'no face distortion', 'professional', '4K', plus style-specific tags."
+        ],
+        jsonRole: "Chief Cinematic Engineer & Motion Architect (v5.0)",
+        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v5.0 — PRODUCTION PROTOCOL
+1. HERO LAYER FIRST: Populate 'diffusion_synthesis.master_prompt' BEFORE anything else. This is the ONLY text the video AI reads. 200-400 words of pure natural language.
+2. TEMPORAL ARC: You MUST provide at least 3 keyframes in 'temporal_arc.keyframes' showing how the shot evolves.
+3. DURATION: Set 'temporal_arc.duration' to the maximum supported (e.g., '10s' for Kling Pro, '8s' for Veo 3).
+4. RESOLUTION: Default '4K UHD'. Frame rate: '24fps' for cinematic drama, '60fps' for action, '120fps' for slow-motion.
+5. MOTION PHYSICS: Populate 'motion_physics' with dense physical descriptors. Every moving element needs weight, velocity, and reaction.
+6. VIDEO TYPE: Set 'video_type' appropriately — 'live-action-photorealistic' for real footage, '3d-animation' for Pixar/CGI, '2d-animation' for drawn/cel, 'anime' for Japanese animation style.
+7. ENGINE HINTS: Populate 'diffusion_synthesis.engine_hints' with per-engine optimization tags.
+8. IDENTITY: South Asian heritage is MANDATORY for all human subjects.
+9. NEGATIVE PROMPT: Always include 'no morphing, no face distortion, no text overlays, no watermarks, no sudden scene cuts'.
+10. STYLE: ${style || 'cinematic photorealistic'}.`
     },
     manga: {
         expansionRole: "Manga Concept Artist",
@@ -179,9 +201,9 @@ const validateMedicalOutput = (data: any): { valid: boolean; issues: string[] } 
     }
 
     // Check visual panels exist
-    const panels = data?.visual_specification?.panels;
-    if (!Array.isArray(panels) || panels.length < 2) {
-        issues.push("visual_specification.panels must have at least 2 panels (macro + micro)");
+    const panels = data?.spatial_layout?.panels;
+    if (!Array.isArray(panels) || panels.length < 1) {
+        issues.push("spatial_layout.panels must have at least 1 panel");
     }
 
     // Check diffusion_synthesis is populated (the critical Layer 5)
@@ -210,7 +232,12 @@ const validateMedicalOutput = (data: any): { valid: boolean; issues: string[] } 
         // Guard against ID/Property name leakage (e.g., 'ent_beta' or 'p1_micro' appearing in text)
         const idLeakPattern = /ent_|panel_|p1_|p2_|p3_|\w+_\w+/;
         if (idLeakPattern.test(ds.master_prompt || "")) {
-            issues.push("diffusion_synthesis.master_prompt contains internal JSON property names or IDs (e.g., 'ent_beta') — this causes 'ID Leakage' in the rendered image. Remove these technical markers.");
+            issues.push("diffusion_synthesis.master_prompt contains internal JSON property names or IDs — this causes 'ID Leakage' in the rendered image. Remove these technical markers.");
+        }
+
+        // Check for spatial language in master_prompt
+        if (!ds.spatial_narrative || ds.spatial_narrative.trim().length < 20) {
+            issues.push("diffusion_synthesis.spatial_narrative is missing or too short");
         }
     }
 
@@ -269,31 +296,78 @@ export async function POST(req: NextRequest) {
         ];
 
         // --- PHASE 1: EXPANSION (STABILIZED) ---
-        if (!lightweight) { 
+        if (!lightweight) {
             const atlasContext = (mode === 'medical' || mode === 'infographic') ? atlasService.getAtlasContext(brief) : "";
             const isInfographic = mode === 'infographic';
+            const isVideo = mode === 'video';
             const dynamicBlacklist = (mode === 'medical' || mode === 'infographic') ? getDynamicBlacklist(brief) : "";
-            const expansionSystemPrompt = isInfographic 
-                ? `### ROLE: Principal Visual Abstract Director
+
+            let expansionSystemPrompt: string;
+
+            if (isInfographic) {
+                expansionSystemPrompt = `### ROLE: Principal Visual Abstract Director
                 Refine the user's brief into a high-fidelity 'Visual Abstract Design Specification'.
                 1. EXTRACT ALL CLINICAL DATA: Identify N-values, p-values, HR, CI, and primary results.
-                2. NEJM ARCHITECTURE: Organize into Cohort, Interventions, and Results.
+                2. CLINICAL ARCHITECTURE: Organize the content logically (e.g., Cohort, Interventions, Results, or Primary/Secondary Analysis) to best represent the provided trial data. Use the most effective layout for the findings.
                 3. NO TEXT BAN EXEMPTION: This is a text-heavy infographic. Preserve all numbers and metrics.
                 ${dynamicBlacklist}
                 ${config.expansionRules.join('\n        ')}
                 STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
-                ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}`
-                : `RULE 0 (CRITICAL): MEMORY PURGE. Flush previous anatomy. Focus EXCLUSIVELY on: ${brief.substring(0, 50)}...
+                ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}`;
+            } else if (isVideo) {
+                // --- DEDICATED VIDEO EXPANSION BRANCH ---
+                // This ensures video briefs are NEVER contaminated by medical rules (ZERO-TEXT BAN, anatomy blacklist, single-panel, etc.)
+                expansionSystemPrompt = `### ROLE: ${config.expansionRole}
+
+You are the world's foremost cinematic prompt engineer. Your mission is to transform a simple video brief into an ultra-dense, production-grade 'Cinematic Design Specification' that will generate industry-leading video output from AI engines like Kling AI 2.0, Seedance 2.0, Google Veo 3, Runway Gen-4, and Sora.
+
+Your output must be a single, continuous block of rich natural language — NOT bullet points, NOT JSON, NOT a list. Write it as a professional cinematographer would describe a shot to their crew.
+
+### MANDATORY EXPANSION RULES:
+${config.expansionRules.join('\n')}
+
+### VIDEO TYPE DETECTION:
+Analyze the brief. If it describes:
+- Real-world scenes, people, products → Use PHOTOREALISTIC language (film grain, lens flare, skin pores, fabric weave).
+- Animated characters, fantasy worlds, stylized visuals → Use ANIMATION language (cel-shading, squash-and-stretch, parallax layers, motion smear, hand-painted backgrounds).
+- 3D/CGI renders, Pixar-style → Use CGI language (subsurface scattering, global illumination, PBR materials, volumetric caustics).
+- Abstract/motion graphics → Use DESIGN language (kinetic typography, geometric morphing, smooth easing curves, particle systems).
+
+### TEMPORAL STRUCTURE (CRITICAL):
+Your expanded text MUST describe the shot as a JOURNEY through time:
+- OPENING (0-3s): What does the viewer see first? Establish the world.
+- MIDPOINT (3-6s): What changes? What is the key action or transformation?
+- CLOSING (6-8s+): How does the shot resolve? What is the final image?
+
+### SENSORY LAYERING:
+Every sentence should layer multiple sensory channels:
+- VISUAL: Subject appearance, environment textures, lighting quality
+- MOTION: How things move, with physical weight and velocity
+- ATMOSPHERIC: Particles, weather, ambient elements
+- AUDIO (describe visually): What sounds would accompany this (for engines that generate audio)
+
+### STYLE PROTOCOL: ${normalizedStyle || 'Cinematic Photorealistic'}
+
+### OUTPUT FORMAT:
+Write 200-400 words of continuous, dense, cinematic prose. End with a line of comma-separated style tags (e.g., 'cinematic, 4K, temporal consistency, no morphing, photorealistic, volumetric lighting').
+
+Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write pure cinematographic prose.`;
+            } else {
+                // --- DEFAULT BRANCH (Medical, Ad, Vector, Comic, Manga, Food) ---
+                expansionSystemPrompt = `RULE 0 (CRITICAL): MEMORY PURGE. Flush previous anatomy. Focus EXCLUSIVELY on: ${brief.substring(0, 50)}...
+                RULE 1 (STRICT): If the user doesn't mention 'sections', 'panels', or 'stages', you MUST generate a SINGLE-PANEL composition. Do NOT mention Section 1, Left Section, etc. unless explicitly asked.
                 ${dynamicBlacklist}
                 You are a ${config.expansionRole}. Refine into high-fidelity scientific spec.
                 ${config.expansionRules.join('\n        ')}
                 STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
                 ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}
                 HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
+            }
+
 
             if (process.env.GEMINI_API_KEY) {
                 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-                const modelsToTry = ["gemini-1.5-flash", "gemini-2.0-flash"]; 
+                const modelsToTry = ["gemini-1.5-flash", "gemini-2.0-flash"];
                 for (const m of modelsToTry) {
                     try {
                         const model = genAI.getGenerativeModel({ model: m, safetySettings });
@@ -309,10 +383,10 @@ export async function POST(req: NextRequest) {
                             providerHistory.push({ phase: "expansion", model: m, status: "success" });
                             break;
                         }
-                    } catch (err: any) { 
+                    } catch (err: any) {
                         const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota");
                         providerHistory.push({ phase: "expansion", model: m, status: "fail", error: err.message, isQuota });
-                        
+
                         if (isQuota) {
                             console.warn(`[SOVEREIGN FAILOVER] Expansion quota hit on ${m}. Breaking Gemini loop and pivoting to Groq...`);
                             break; // Aggressively break out of the Google loop to reach Groq
@@ -335,7 +409,7 @@ export async function POST(req: NextRequest) {
                     });
                     refinedText = completion.choices[0]?.message?.content?.trim() || "";
                     if (refinedText) providerHistory.push({ phase: "expansion", model: "groq-llama-3", status: "success" });
-                } catch (err: any) { 
+                } catch (err: any) {
                     providerHistory.push({ phase: "expansion", model: "groq-error", status: "fail", error: err.message });
                     refinementError = err as Error;
                 }
@@ -345,7 +419,7 @@ export async function POST(req: NextRequest) {
         const finalBriefForJson = (lightweight ? brief : refinedText) || brief;
         const currentSchema = (mode === 'comic' && isStoryboard) ? comicStripSchema : (isStoryboard ? storyboardSchema : (schemaMap[mode] || medicalIllustrationSchema));
         const sanitizedStyleName = normalizedStyle.split(' ')[0].replace(/[-,]/g, '');
-        
+
         // --- SCHEMA MINIFICATION (v32.51) ---
         // Prevents Buffer Overflow errors for large schemas (e.g., medical-illustration 28KB)
         const minSchema = JSON.parse(JSON.stringify(currentSchema));
@@ -359,7 +433,7 @@ export async function POST(req: NextRequest) {
         pruneDescriptions(minSchema);
         const schemaStr = JSON.stringify(minSchema);
 
-        const systemInstruction = lightweight ? `Return ONLY valid JSON for: "${mode}". SCHEMA: ${schemaStr}` : 
+        const systemInstruction = lightweight ? `Return ONLY valid JSON for: "${mode}". SCHEMA: ${schemaStr}` :
             `### ROLE: ${config.jsonRole}
             ${config.jsonInstructions ? config.jsonInstructions(normalizedStyle) : ""}
             SCHEMA MANDATE: Return JSON strictly following schema: ${schemaStr}
@@ -373,11 +447,11 @@ export async function POST(req: NextRequest) {
             const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
             // Optimized models list: removed 1.5-pro bounds token exhaustion as it's heavily rate limited on free tier (2 RPM)
             const jsonModels = lightweight ? ["gemini-1.5-flash"] : ["gemini-1.5-flash", "gemini-2.0-flash"];
-            
+
             for (const m of jsonModels) {
                 try {
-                    const model = genAI.getGenerativeModel({ 
-                        model: m, 
+                    const model = genAI.getGenerativeModel({
+                        model: m,
                         // Removed responseSchema to prevent 400 Bad Request parameter mapping errors.
                         // We rely on responseMimeType and the system prompt structure.
                         generationConfig: { responseMimeType: "application/json" },
@@ -389,13 +463,13 @@ export async function POST(req: NextRequest) {
                         providerHistory.push({ phase: "json", model: m, status: "success" });
                         break;
                     }
-                } catch (err: any) { 
+                } catch (err: any) {
                     const isQuota = err.message?.includes("429") || err.message?.toLowerCase().includes("quota") || err.message?.includes("limit");
                     const isNotFound = err.message?.includes("404") || err.message?.toLowerCase().includes("not found");
                     const isDecommissioned = err.message?.includes("400") || err.message?.toLowerCase().includes("decommissioned");
-                    
+
                     providerHistory.push({ phase: "json", model: m, status: "fail", error: err.message, isQuota, isNotFound, isDecommissioned });
-                    
+
                     if (isQuota) {
                         console.warn(`[SOVEREIGN FAILOVER] Gemini quota hit on ${m}. Dumping Google provider and pivoting to Groq...`);
                         break; // Aggressive dump: skip all other Gemini models and hit Groq immediately
@@ -404,7 +478,7 @@ export async function POST(req: NextRequest) {
                         console.warn(`[SOVEREIGN FAILOVER] Gemini model ${m} not found/retired. Trying next Google core...`);
                         continue; // Hop to next Gemini model
                     }
-                    generationError = err as Error; 
+                    generationError = err as Error;
                 }
             }
         }
@@ -414,7 +488,7 @@ export async function POST(req: NextRequest) {
             console.log("[SOVEREIGN RECOVERY] Gemini exhausted or rejected schema. Entering Groq Multi-Model Recovery...");
             const groqModels = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "llama3-70b-8192", "gemma2-9b-it"];
             const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-            
+
             const schemaRequiredFields = (currentSchema as any)?.required ?? [];
             const schemaFieldGuide = schemaRequiredFields.length > 0
                 ? `\n\nREQUIRED TOP-LEVEL FIELDS:\n${schemaRequiredFields.map((f: string) => `- "${f}"`).join('\n')}`
@@ -465,16 +539,97 @@ export async function POST(req: NextRequest) {
             } else if (mode === 'infographic') {
                 validationResult = validateInfographicOutput(adData);
             }
-            
+
             if (validationResult && !validationResult.valid) {
-                 console.warn(`[SOVEREIGN VALIDATION] ${mode} output issue:`, validationResult.issues);
+                console.warn(`[SOVEREIGN VALIDATION] ${mode} output issue:`, validationResult.issues);
             }
         }
 
         const scrubSubject = (s: string) => s.replace(/^(create|generate|show|make|build|give me|render|draw|an)\s+(an|a|the|image of|illustration of|diagram of|blueprint of|map for)\s+/gi, "").trim();
         const finalSubject = scrubSubject(brief);
-        
+
         if (adData) {
+            // --- GENERATIVE COMPILER LAYER (Principles 2, 6, 8) ---
+            if (adData.diffusion_synthesis && typeof adData.diffusion_synthesis === 'object') {
+                console.log("[SOVEREIGN COMPILER] Compiling final prompt with Principle-based pruning...");
+                let cleanMaster = adData.diffusion_synthesis.master_prompt || "";
+                
+                // 1. Noise Pruning (Principle 8)
+                cleanMaster = cleanMaster.replace(/stroke_dasharray|stroke_width|z_index|opacity|#[0-9a-fA-F]{6}|\{\s*x:\s*\d.*?\}/g, "");
+                cleanMaster = cleanMaster.replace(/ent_\w+|panel_\w+|p1_\w+|p2_\w+|p3_\w+/g, "");
+
+                // 2. Structural/Compositional Normalization
+                const ds = adData.diffusion_synthesis;
+                let compiledBlocks = [];
+                
+                // Priority Weighting
+                if (ds.priority_weighting) {
+                    const pw = ds.priority_weighting;
+                    if (pw.primary_focus?.length) compiledBlocks.push(`[PRIMARY FOCUS]:\n${pw.primary_focus.join(", ")}`);
+                    if (pw.secondary_context?.length) compiledBlocks.push(`[SECONDARY CONTEXT]:\n${pw.secondary_context.join(", ")}`);
+                }
+
+                // Spatial Narrative (New Hero Signal)
+                if (ds.spatial_narrative) {
+                    compiledBlocks.push(`[SPATIAL ARRANGEMENT]:\n${ds.spatial_narrative}`);
+                }
+
+                compiledBlocks.push(`[DETAILED SPECIFICATION]:\n${cleanMaster.trim()}`);
+                if (ds.style_descriptors?.length) compiledBlocks.push(`[STYLE PROTOCOL]:\n${ds.style_descriptors.join(", ")}`);
+
+                adData.diffusion_synthesis.compiled_prompt = compiledBlocks.join("\n\n");
+            }
+
+            // --- VIDEO CINEMATIC COMPILER (v5.0) ---
+            // For video mode: compile all layers into engine-ready paste prompts
+            if (mode === 'video' && adData.diffusion_synthesis) {
+                console.log("[SOVEREIGN CINEMATIC COMPILER] Compiling video master prompt...");
+                const ds = adData.diffusion_synthesis;
+                const ta = adData.temporal_arc || {};
+                const mp = adData.motion_physics || {};
+                const sc = adData.scene_core || {};
+
+                // Build the compiled cinematic prompt from all layers
+                let cinematicBlocks = [];
+
+                // Master prompt is the hero
+                if (ds.master_prompt) {
+                    cinematicBlocks.push(ds.master_prompt.trim());
+                }
+
+                // Append temporal arc keyframes as a temporal sequence
+                if (ta.keyframes && Array.isArray(ta.keyframes) && ta.keyframes.length > 0) {
+                    const keyframeText = ta.keyframes
+                        .map((kf: any) => `[${kf.timestamp}]: ${kf.visual_state}${kf.camera_state ? `. Camera: ${kf.camera_state}` : ''}`)
+                        .join('. ');
+                    cinematicBlocks.push(`Temporal progression: ${keyframeText}`);
+                }
+
+                // Append style tags
+                if (ds.style_tags && Array.isArray(ds.style_tags)) {
+                    cinematicBlocks.push(`Style: ${ds.style_tags.join(', ')}`);
+                }
+
+                // Append audio design
+                if (ds.audio_design) {
+                    cinematicBlocks.push(`Audio: ${ds.audio_design}`);
+                }
+
+                // Compile the final prompt
+                ds.compiled_prompt = cinematicBlocks.join('\n\n');
+
+                // Build per-engine optimized prompts
+                const basePrompt = ds.compiled_prompt;
+                const negPrompt = ds.negative_prompt || 'no morphing, no face distortion, no text overlays, no watermarks';
+                ds.engine_prompts = {
+                    kling: `${basePrompt}\n\nDuration: ${ta.duration || '10s'}. Resolution: ${ta.resolution || '1080p'}. ${ds.engine_hints?.kling_ai || 'professional mode, high quality'}.\n\nNegative: ${negPrompt}`,
+                    seedance: `${basePrompt}\n\nDuration: ${ta.duration || '10s'}. ${ds.engine_hints?.seedance || 'motion intensity: high, keyframe guidance'}.\n\nNegative: ${negPrompt}`,
+                    veo: `${basePrompt}\n\nDuration: ${ta.duration || '8s'}. ${ds.engine_hints?.veo || 'photorealistic, high detail'}.\n\nNegative: ${negPrompt}`,
+                    runway: `${basePrompt}\n\nDuration: ${ta.duration || '10s'}. ${ds.engine_hints?.runway || 'motion brush: full frame'}.\n\nNegative: ${negPrompt}`,
+                    generic: `${basePrompt}\n\nDuration: ${ta.duration || '10s'}. Resolution: ${ta.resolution || '4K UHD'}. FPS: ${ta.frame_rate || '24fps'}.\n\nNegative: ${negPrompt}`
+                };
+            }
+
             // --- v32.44 CITATION-ERASER HOOK ---
             if (mode === 'medical' && adData.metadata) {
                 console.log("[SOVEREIGN SANITIZER] Stripping halluncinated citation artifacts...");

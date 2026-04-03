@@ -18,73 +18,61 @@ import { Schema, SchemaType } from "@google/generative-ai";
  */
 export const medicalIllustrationSchema: Schema = {
     description: "SOVEREIGN v32.0 VISUAL-DSL Protocol - Deterministic 3-Layer Visual Grammar (Nature/NEJM Standards)",
-    type: SchemaType.OBJECT,
-    properties: {
-        // --- LAYER 1: BIOLOGICAL GRAPH (Science Truth) ---
-        biological_graph: {
+    type: S    properties: {
+        // --- LAYER 5: DIFFUSION SYNTHESIS ★ (Natural Language — THE HERO LAYER) ---
+        // CRITICAL: This is the primary rendering signal for Gemini. It must be populated FIRST
+        // and with the highest degree of descriptive richness.
+        diffusion_synthesis: {
             type: SchemaType.OBJECT,
-            description: "Layer 1: Deterministic mapping of biological entities and their functional relationships.",
+            description: "CORE RENDERING SIGNAL: Natural language master-prompt and spatial narrative. This layer supersedes all others for image generation.",
             properties: {
-                entities: {
+                master_prompt: {
+                    type: SchemaType.STRING,
+                    description: "HERO FIELD: 150–250 word consolidated prompt. Open with anatomical subject, layer with pathophysiology, and close with journal style. Use ONLY natural language."
+                },
+                spatial_narrative: {
+                    type: SchemaType.STRING,
+                    description: "ANATOMICAL COMPOSITION: Describe the layout using spatial language (e.g., 'the glomerulus sits in the upper-left foreground, with the proximal tubule coiling inferiorly towards the center'). NO COORDINATES."
+                },
+                style_descriptors: {
                     type: SchemaType.ARRAY,
-                    description: "List of biological primitives used in this scene.",
+                    description: "Ordered list of 6–10 style tags (e.g., 'NEJM scholarly plate', 'BioRender matte plasticine', 'soft clinical lighting').",
+                    items: { type: SchemaType.STRING }
+                },
+                color_language: {
+                    type: SchemaType.ARRAY,
+                    description: "Semantic color descriptions (e.g., 'vibrant arterial crimson', 'pale ischemic grey').",
                     items: {
                         type: SchemaType.OBJECT,
                         properties: {
-                            id: { type: SchemaType.STRING },
-                            primitive_id: { 
-                                type: SchemaType.STRING,
-                                description: "MUST map to the Medical Primitive Library (e.g., rbc_sickled_crescent, laminar_cortex_band)."
-                            },
-                            functional_state: { type: SchemaType.STRING, description: "e.g., activated, deoxygenated, fragmented" }
+                            zone: { type: SchemaType.STRING },
+                            color_descriptor: { type: SchemaType.STRING }
                         }
                     }
                 },
-                relations: {
-                    type: SchemaType.ARRAY,
-                    description: "Causal or physical relationships between entities.",
-                    items: {
-                        type: SchemaType.OBJECT,
-                        properties: {
-                            subject: { type: SchemaType.STRING, description: "entity_id of source" },
-                            predicate: { type: SchemaType.STRING, description: "e.g., adheres_to, polymerizes_inside, damages" },
-                            object: { type: SchemaType.STRING, description: "entity_id of target" }
-                        }
-                    }
-                }
-            },
-            required: ["entities", "relations"]
-        },
-
-        // --- LAYER 2: SPATIAL LAYOUT (Anatomical Geometry) ---
-        spatial_layout: {
-            type: SchemaType.OBJECT,
-            description: "Layer 2: Deterministic mapping of layout architecture and panel relationships.",
-            properties: {
-                panels: {
-                    type: SchemaType.ARRAY,
-                    items: {
-                        type: SchemaType.OBJECT,
-                        properties: {
-                            id: { type: SchemaType.STRING },
-                            semantic_focus: { type: SchemaType.STRING },
-                            visual_anchor: { type: SchemaType.STRING, description: "Primary entity anchoring this panel" }
-                        }
-                    }
+                pathophysiology_visual_summary: {
+                    type: SchemaType.STRING,
+                    description: "2–3 sentence visual summary of the biological event (e.g., 'podocyte foot processes are seen flattening against the basement membrane')."
                 },
-                panel_linkage: {
+                negative_prompt: {
+                    type: SchemaType.STRING,
+                    description: "Negative constraints (e.g., 'no labels, no text, no tumors, no blur')."
+                },
+                priority_weighting: {
                     type: SchemaType.OBJECT,
+                    description: "Hierarchy of visual attention.",
                     properties: {
-                        transition_type: { type: SchemaType.STRING, description: "e.g., tapered_zoom_connector, sequential_flow" },
-                        source_id: { type: SchemaType.STRING },
-                        target_id: { type: SchemaType.STRING }
-                    }
+                        primary_focus: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING }, description: "Structures that must be generated perfectly." },
+                        secondary_context: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING }, description: "Supporting anatomical environment." },
+                        tertiary_background: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING }, description: "Atmospheric or paper texture cues." }
+                    },
+                    required: ["primary_focus", "secondary_context", "tertiary_background"]
                 }
             },
-            required: ["panels"]
+            required: ["master_prompt", "spatial_narrative", "style_descriptors", "color_language", "pathophysiology_visual_summary", "negative_prompt", "priority_weighting"]
         },
 
-        // --- LAYER 1 (Legacy Metadata Mapping) ---
+        // --- LAYER 1: METADATA ---
         metadata: {
             type: SchemaType.OBJECT,
             properties: {
@@ -95,19 +83,12 @@ export const medicalIllustrationSchema: Schema = {
                     format: "enum",
                     enum: ["NEJM_SCHOLARLY_v30_FINAL", "BioRender_Clinical", "Lancet_Minimalist", "Nature_Structural_Biology"],
                     description: "High-impact journal stylistic standard" 
-                },
-                citation: {
-                    type: SchemaType.OBJECT,
-                    properties: {
-                        authors_short: { type: SchemaType.STRING },
-                        doi: { type: SchemaType.STRING }
-                    }
                 }
             },
             required: ["title", "subject", "journal_standard"]
         },
 
-        // --- LAYER 2: MEDICAL CONTENT (What story to tell) ---
+        // --- LAYER 2: MEDICAL CONTENT ---
         medical_content: {
             type: SchemaType.OBJECT,
             properties: {
@@ -123,60 +104,7 @@ export const medicalIllustrationSchema: Schema = {
                                     step: { type: SchemaType.NUMBER },
                                     event: { type: SchemaType.STRING },
                                     mechanism: { type: SchemaType.STRING },
-                                    consequence: { type: SchemaType.STRING },
-                                    reversibility: { 
-                                        type: SchemaType.STRING, 
-                                        format: "enum",
-                                        enum: ["reversible", "irreversible", "time_dependent"],
-                                        description: "Physiological potential for recovery" 
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                temporal_cascade: {
-                    type: SchemaType.OBJECT,
-                    properties: {
-                        phase: { type: SchemaType.STRING },
-                        timebase_unit: { 
-                            type: SchemaType.STRING,
-                            format: "enum",
-                            enum: ["seconds", "minutes", "hours", "days", "months", "years"],
-                            description: "Unit of time for temporal progression"
-                        },
-                        phases: {
-                            type: SchemaType.ARRAY,
-                            items: {
-                                type: SchemaType.OBJECT,
-                                properties: {
-                                    phase_id: { type: SchemaType.NUMBER },
-                                    name: { type: SchemaType.STRING },
-                                    timepoint: { type: SchemaType.NUMBER },
-                                    duration: { type: SchemaType.NUMBER },
-                                    events: {
-                                        type: SchemaType.ARRAY,
-                                        items: {
-                                            type: SchemaType.OBJECT,
-                                            properties: {
-                                                event: { type: SchemaType.STRING },
-                                                consequence: { type: SchemaType.STRING },
-                                                molecular_change: { type: SchemaType.STRING },
-                                                visibility: { 
-                                                    type: SchemaType.STRING,
-                                                    format: "enum",
-                                                    enum: ["microscopic", "macroscopic", "molecular", "hidden"],
-                                                    description: "Scale of visual representation"
-                                                },
-                                                salvageability: { 
-                                                    type: SchemaType.STRING,
-                                                    format: "enum",
-                                                    enum: ["high", "moderate", "low", "none", "critical"],
-                                                    description: "Clinical priority for intervention"
-                                                }
-                                            }
-                                        }
-                                    }
+                                    consequence: { type: SchemaType.STRING }
                                 }
                             }
                         }
@@ -189,19 +117,7 @@ export const medicalIllustrationSchema: Schema = {
                         properties: {
                             zone_id: { type: SchemaType.STRING },
                             definition: { type: SchemaType.STRING },
-                            color_key: { type: SchemaType.STRING, description: "Reference to color_palette key" }
-                        }
-                    }
-                },
-                cellular_markers: {
-                    type: SchemaType.ARRAY,
-                    items: {
-                        type: SchemaType.OBJECT,
-                        properties: {
-                            cell_type: { type: SchemaType.STRING },
-                            compartment: { type: SchemaType.STRING },
-                            change: { type: SchemaType.STRING },
-                            driver: { type: SchemaType.STRING }
+                            spatial_orientation: { type: SchemaType.STRING, description: "Relative positioning (e.g., 'Upper-right quadrant, superficial to the cortex')" }
                         }
                     }
                 }
@@ -209,242 +125,49 @@ export const medicalIllustrationSchema: Schema = {
             required: ["pathophysiology", "anatomical_zones"]
         },
 
-        // --- LAYER 3: VISUAL SPECIFICATION ---
-        // RENDERER ROUTING:
-        //   canvas.*          → PROGRAMMATIC_ONLY (SVG canvas dimensions — ignored by diffusion)
-        //   panels[].bounds   → PROGRAMMATIC_ONLY (pixel coordinates — ignored by diffusion)
-        //   panels[].entities[].position → PROGRAMMATIC_ONLY (pixel coordinates — ignored by diffusion)
-        //   panels[].semantic_role       → ★ DIFFUSION SIGNAL: describe the panel's purpose in words
-        //   panels[].entities[].semantic_label → ★ DIFFUSION SIGNAL: describe what this entity IS
-        //   color_palette[].semantic_color_name → ★ DIFFUSION SIGNAL: natural language translation of hex
-        visual_specification: {
+        // --- LAYER 3: SPATIAL ARCHITECTURE (Language-Based) ---
+        spatial_layout: {
             type: SchemaType.OBJECT,
+            description: "Layer 3: Compositional arrangement using relative spatial language instead of coordinates.",
             properties: {
-                canvas: {
-                    type: SchemaType.OBJECT,
-                    description: "PROGRAMMATIC_ONLY: Canvas dimensions for SVG/code renderers. Diffusion models ignore these values.",
-                    properties: {
-                        width: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" },
-                        height: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" },
-                        background: { type: SchemaType.STRING, description: "Color token for SVG background. PROGRAMMATIC_ONLY." }
-                    }
-                },
                 panels: {
                     type: SchemaType.ARRAY,
-                    description: "Layout panels. Each MUST have a semantic_role (diffusion signal) in addition to coordinate bounds (SVG only).",
+                    items: {
+                        type: SchemaType.OBJECT,
+                        properties: {
+                            panel_id: { type: SchemaType.STRING },
+                            semantic_role: { type: SchemaType.STRING, description: "Purpose of this panel (e.g., 'Macro view of the entire organ')" },
+                            relative_placement: { type: SchemaType.STRING, description: "Where this panel sits in the scene (e.g., 'Left-most third of the frame')" },
+                            visual_anchor: { type: SchemaType.STRING, description: "The primary structure that anchors this section" }
+                        }
+                    }
+                }
+            },
+            required: ["panels"]
+        },
+
+        // --- LAYER 4: BIOLOGICAL ENTITIES ---
+        biological_graph: {
+            type: SchemaType.OBJECT,
+            description: "Layer 4: Primitives and their interactions.",
+            properties: {
+                entities: {
+                    type: SchemaType.ARRAY,
                     items: {
                         type: SchemaType.OBJECT,
                         properties: {
                             id: { type: SchemaType.STRING },
-                            // ★ DIFFUSION SIGNAL — describe the panel purpose in natural language
-                            semantic_role: {
-                                type: SchemaType.STRING,
-                                description: "★ DIFFUSION SIGNAL: Natural language description of what this panel shows and why (e.g. 'Macro cross-section of hypertrophied left ventricle showing asymmetric septal thickening and outflow tract obstruction'). This is the primary rendering cue for diffusion models."
-                            },
-                            // ★ DIFFUSION SIGNAL — macro or micro scale context
-                            scale: {
-                                type: SchemaType.STRING,
-                                format: "enum",
-                                enum: ["macro-organ", "micro-cellular", "molecular", "systemic"],
-                                description: "★ DIFFUSION SIGNAL: Visual scale of this panel. Tells diffusion model the magnification level and expected level of anatomical detail."
-                            },
-                            bounds: {
-                                type: SchemaType.OBJECT,
-                                description: "PROGRAMMATIC_ONLY: Pixel coordinates for SVG layout. Diffusion models ignore x/y/width/height values entirely.",
-                                properties: {
-                                    x: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" },
-                                    y: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" },
-                                    width: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" },
-                                    height: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" }
-                                }
-                            },
-                            entities: {
-                                type: SchemaType.ARRAY,
-                                items: {
-                                    type: SchemaType.OBJECT,
-                                    properties: {
-                                        id: { type: SchemaType.STRING },
-                                        type: { type: SchemaType.STRING },
-                                        // ★ DIFFUSION SIGNAL — what IS this entity?
-                                        semantic_label: {
-                                            type: SchemaType.STRING,
-                                            description: "★ DIFFUSION SIGNAL: Natural language description of this entity (e.g. 'densely packed disorganized myofibrils with chaotic sarcomere alignment', 'fibrotic interstitial collagen deposits appearing as pale white strands between cardiomyocytes'). Diffusion models read this; position values are ignored."
-                                        },
-                                        position: {
-                                            type: SchemaType.OBJECT,
-                                            description: "PROGRAMMATIC_ONLY: SVG position. Diffusion models cannot process x/y coordinates.",
-                                            properties: {
-                                                x: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" },
-                                                y: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" },
-                                                width: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" },
-                                                height: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" }
-                                            }
-                                        },
-                                        shape: { type: SchemaType.STRING, description: "PROGRAMMATIC_ONLY: SVG shape primitive." }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                color_palette: {
-                    type: SchemaType.ARRAY,
-                    description: "Color definitions. hex is PROGRAMMATIC_ONLY. semantic_color_name is ★ DIFFUSION SIGNAL.",
-                    items: {
-                        type: SchemaType.OBJECT,
-                        properties: {
-                            key: { type: SchemaType.STRING },
-                            hex: { type: SchemaType.STRING, description: "PROGRAMMATIC_ONLY: Hex code for SVG. Diffusion models cannot interpret hex values — use semantic_color_name instead." },
-                            // ★ DIFFUSION SIGNAL — translate hex to natural language
-                            semantic_color_name: {
-                                type: SchemaType.STRING,
-                                description: "★ DIFFUSION SIGNAL: Natural language color name that a painter or illustrator would use (e.g. 'muted arterial crimson', 'pale cerulean blue', 'deep necrotic charcoal', 'warm parchment ivory'). This is what diffusion models parse."
-                            },
-                            semantic: { type: SchemaType.STRING, description: "What physiological state this color encodes." },
-                            usage: { type: SchemaType.STRING }
+                            label: { type: SchemaType.STRING },
+                            anatomical_placement: { type: SchemaType.STRING, description: "Relative position (e.g., 'Internal to the basement membrane, clustered on the left')" },
+                            functional_state: { type: SchemaType.STRING }
                         }
                     }
                 }
             },
-            required: ["canvas", "panels", "color_palette"]
-        },
-
-        // --- LAYER 4: RENDERING INSTRUCTIONS ---
-        // RENDERER ROUTING:
-        //   stroke_specifications.*     → PROGRAMMATIC_ONLY (SVG stroke values — ignored by diffusion)
-        //   flow_visualization.origin/destination → PROGRAMMATIC_ONLY (pixel coords — ignored by diffusion)
-        //   flow_visualization.semantic_description → ★ DIFFUSION SIGNAL
-        //   flow_visualization.path_type → marginal diffusion signal (pulsatile/gradient_diffuse have semantic meaning)
-        //   layer_stack.z_index/opacity → PROGRAMMATIC_ONLY (depth is inferred semantically by diffusion)
-        //   layer_stack.depth_description → ★ DIFFUSION SIGNAL
-        //   diffusion_aesthetic.global_style → ★ DIFFUSION SIGNAL (preserved, superseded by Layer 5)
-        rendering_instructions: {
-            type: SchemaType.OBJECT,
-            properties: {
-                stroke_specifications: {
-                    type: SchemaType.ARRAY,
-                    description: "PROGRAMMATIC_ONLY: SVG stroke definitions (stroke_width, stroke_dasharray, opacity). These are CSS/SVG properties — diffusion models cannot interpret numerical stroke values. Populate for SVG renderers only.",
-                    items: {
-                        type: SchemaType.OBJECT,
-                        properties: {
-                            id: { type: SchemaType.STRING },
-                            stroke_width: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY: SVG stroke-width in px." },
-                            stroke_color: { type: SchemaType.STRING, description: "PROGRAMMATIC_ONLY: SVG stroke hex color." },
-                            stroke_dasharray: { type: SchemaType.STRING, description: "PROGRAMMATIC_ONLY: SVG dasharray pattern (e.g. '4,3'). Diffusion models ignore this; describe texture in entities[].semantic_label instead." },
-                            opacity: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY: SVG opacity 0–1." }
-                        }
-                    }
-                },
-                flow_visualization: {
-                    type: SchemaType.ARRAY,
-                    description: "Flow pathway definitions. origin/destination coordinates are PROGRAMMATIC_ONLY. semantic_description is ★ DIFFUSION SIGNAL.",
-                    items: {
-                        type: SchemaType.OBJECT,
-                        properties: {
-                            entity_id: { type: SchemaType.STRING },
-                            // ★ DIFFUSION SIGNAL — describe the flow in words
-                            semantic_description: {
-                                type: SchemaType.STRING,
-                                description: "★ DIFFUSION SIGNAL: Natural language description of what is flowing, from where to where, and what it signifies visually (e.g. 'turbulent blood flow ejected from hypertrophied left ventricle through narrowed outflow tract, visualized as swirling crimson arrows indicating high-velocity obstruction'). path_type enum has marginal influence; this field is primary."
-                            },
-                            origin: {
-                                type: SchemaType.OBJECT,
-                                description: "PROGRAMMATIC_ONLY: SVG coordinate of flow source. Diffusion models ignore x/y pairs.",
-                                properties: {
-                                    x: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" },
-                                    y: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" }
-                                }
-                            },
-                            destination: {
-                                type: SchemaType.OBJECT,
-                                description: "PROGRAMMATIC_ONLY: SVG coordinate of flow destination. Diffusion models ignore x/y pairs.",
-                                properties: {
-                                    x: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" },
-                                    y: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY" }
-                                }
-                            },
-                            path_type: { 
-                                type: SchemaType.STRING,
-                                format: "enum",
-                                enum: ["curved", "straight", "pulsatile", "gradient_diffuse"],
-                                description: "Marginal diffusion signal: 'pulsatile' and 'gradient_diffuse' carry semantic meaning for diffusion (rhythmic arterial pulse, concentration gradient spread). 'curved'/'straight' are SVG-only. Describe the full flow visually in semantic_description."
-                            },
-                            marker_end: { type: SchemaType.STRING, description: "PROGRAMMATIC_ONLY: SVG arrowhead marker ID." }
-                        }
-                    }
-                },
-                layer_stack: {
-                    type: SchemaType.ARRAY,
-                    description: "Depth/compositing stack. z_index and opacity are PROGRAMMATIC_ONLY. depth_description is ★ DIFFUSION SIGNAL — Gemini infers depth from spatial and semantic cues, not numerical z-values.",
-                    items: {
-                        type: SchemaType.OBJECT,
-                        properties: {
-                            z_index: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY: CSS z-index for SVG compositing. Diffusion models infer depth from semantic context, not z-values." },
-                            name: { type: SchemaType.STRING },
-                            opacity: { type: SchemaType.NUMBER, description: "PROGRAMMATIC_ONLY: SVG opacity 0–1. Diffusion infers transparency from semantic descriptions like 'ghost underlay', 'translucent membrane', 'faded background'." },
-                            // ★ DIFFUSION SIGNAL — describe depth/layering in words
-                            depth_description: {
-                                type: SchemaType.STRING,
-                                description: "★ DIFFUSION SIGNAL: Natural language description of this layer's visual depth and relationship to other layers (e.g. 'background parchment texture layer, slightly grainy, sits behind all anatomical content', 'foreground molecular pathway overlay, semi-transparent to reveal cellular layer behind it'). This is the primary compositing cue for diffusion."
-                            }
-                        }
-                    }
-                },
-                diffusion_aesthetic: {
-                    type: SchemaType.OBJECT,
-                    description: "Legacy diffusion style block. global_style is a ★ DIFFUSION SIGNAL. Superseded by diffusion_synthesis (Layer 5) but preserved for backward compatibility.",
-                    properties: {
-                        global_style: { type: SchemaType.STRING, description: "★ DIFFUSION SIGNAL: Global style descriptor for the entire illustration (e.g. 'NEJM scholarly medical plate on cream parchment, BioRender-style clinical accuracy, muted academic color palette, subtle paper grain texture')." },
-                        negative_prompt: { type: SchemaType.STRING, description: "★ DIFFUSION SIGNAL: Negative prompt for diffusion model." }
-                    }
-                }
-            },
-            required: ["stroke_specifications", "layer_stack", "diffusion_aesthetic"]
-        },
-
-        // --- LAYER 5: DIFFUSION SYNTHESIS ★ (Natural Language — Diffusion-Optimized) ---
-        // This layer is the PRIMARY signal for Gemini Imagen, Flux, and Stable Diffusion.
-        // It MUST be populated by synthesizing the semantic richness of Layers 1–2
-        // into coherent natural-language descriptors. SVG coordinates and stroke values
-        // from Layers 3–4 are IGNORED by diffusion models and MUST NOT appear here.
-        diffusion_synthesis: {
-            type: SchemaType.OBJECT,
-            description: "Diffusion-model master prompt layer. Natural language ONLY. No SVG values, no coordinates, no hex codes.",
-            properties: {
-                master_prompt: {
-                    type: SchemaType.STRING,
-                    description: "150–220 word consolidated prompt for diffusion. Opens with anatomical subject, layered with pathophysiology narrative, closes with journal aesthetic descriptors. Must be a single coherent paragraph."
-                },
-                anatomical_narrative: {
-                    type: SchemaType.STRING,
-                    description: "Spatial description of how structures are arranged. Use compass/anatomical terminology (superior, subendothelial, lateral) — NOT pixel coordinates."
-                },
-                style_descriptors: {
-                    type: SchemaType.ARRAY,
-                    description: "Ordered list of 6–10 diffusion-friendly style tags. Use terms like 'NEJM scholarly plate', 'BioRender aesthetic', 'heavy paper grain', 'muted clinical palette'. NO hex codes.",
-                    items: { type: SchemaType.STRING }
-                },
-                color_language: {
-                    type: SchemaType.ARRAY,
-                    description: "Semantic color descriptions for each anatomical zone. Translate hex codes into natural descriptors (e.g. 'deep arterial crimson for ischemic zones', 'pale cerulean for healthy myocardium').",
-                    items: {
-                        type: SchemaType.OBJECT,
-                        properties: {
-                            zone: { type: SchemaType.STRING },
-                            color_descriptor: { type: SchemaType.STRING }
-                        }
-                    }
-                },
-                pathophysiology_visual_summary: {
-                    type: SchemaType.STRING,
-                    description: "2–3 sentence natural-language summary of the key visual story (e.g. 'Sarcomere disarray seen as irregular fibril bundles in the hypertrophied left ventricle wall...'). This directly maps to what a diffusion model renders."
-                },
-                negative_prompt: {
-                    type: SchemaType.STRING,
-                    description: "Diffusion negative prompt. Explicitly ban non-anatomical or cross-domain hallucinations relevant to this brief (e.g. 'no glomeruli, no tumor masses, no IV lines, no text labels, no photorealism, no decorative borders')."
-                }
-            },
-            required: ["master_prompt", "anatomical_narrative", "style_descriptors", "color_language", "pathophysiology_visual_summary", "negative_prompt"]
+            required: ["entities"]
+        }
+    },
+    required: ["metadata", "medical_content", "spatial_layout", "biological_graph", "diffusion_synthesis"]ts"]
         }
     },
     required: ["metadata", "medical_content", "visual_specification", "rendering_instructions", "diffusion_synthesis"]
