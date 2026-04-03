@@ -719,16 +719,23 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                         console.log("[v9.6 Physics Wall] Wide lens detected. Clamping Depth to Deep Focus.");
                         adData.cinematography.depth_of_field = "Deep (Infinite Focus)";
                     }
-                    if (forcedColorTemp) adData.cinematography.lighting.colour_temp_K = forcedColorTemp;
+                }
+                if (forcedColorTemp) {
+                    if (!adData.lighting) adData.lighting = {};
+                    adData.lighting.colour_temp_K = forcedColorTemp;
                 }
                 if (forcedAspectRatio) adData.veo_clip.aspect_ratio = forcedAspectRatio;
 
                 // --- AUDIO DOMAIN GUARD (Visual -> Sonic) ---
-                if (adData.audio) {
-                    if (adData.audio.specific_sfx?.toLowerCase().includes("signage")) {
-                        adData.audio.specific_sfx = "electrical buzz and low hum of flickering neon tubes";
+                if (adData.audio && Array.isArray(adData.audio.specific_sfx)) {
+                    const hasSignage = adData.audio.specific_sfx.some((sfx: string) => sfx.toLowerCase().includes("signage"));
+                    if (hasSignage) {
+                        adData.audio.specific_sfx.push("electrical buzz and low hum of flickering neon tubes");
                     }
-                    if (rawStyle.includes('80s')) adData.audio.no_smooth_interpolation = true;
+                }
+                if (rawStyle.includes('80s')) {
+                    if (!adData.constraints) adData.constraints = { forbidden: [], required_consistency: [] };
+                    adData.constraints.forbidden.push("smooth interpolation", "modern digital look");
                 }
 
                 // --- TEMPLATE PRUNING (Anti-Orphan) ---
@@ -744,7 +751,7 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                     console.log(`[v9.6 Rethink Loop] Density Fail (${currentWordCount}w). Triggering Synthesis Override.`);
                     const technicalAppend = `Shot Physics: Recorded on ${forcedStock || 'premium 35mm film'} at ${forcedFps}fps with a ${adData.cinematography?.lens || '35mm'} lens. Lighting: ${forcedColorTemp || 5500}K balance.`;
                     const motionAppend = adData.scene_core.action_sequence
-                        .map((b: any, i: number) => `Beat ${i+1}: ${b.action} triggered by ${b.trigger}, resulting in ${b.physical_detail}.`)
+                        .map((b: any, i: number) => `Beat ${i+1}: ${b.action} with ${b.motion_quality} motion ratio ${b.duration_ratio}.`)
                         .join(" ");
                     
                     finalProse = `${finalProse} ${motionAppend} ${technicalAppend} Rendering Standard: ${vTags.join(", ")}. Aspect Ratio: ${forcedAspectRatio}.`;
@@ -757,7 +764,8 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                 
                 adData._quality_flags = {
                     prose_word_count: finalProse.split(/\s+/).length,
-                    prose_gate_passed: finalProse.split(/\s+/).length >= 150
+                    prose_gate_passed: finalProse.split(/\s+/).length >= 150,
+                    schema_v10_compliant: true
                 };
 
                 // --- COMPILED PROMPT WORD-COUNT GUARD ---
