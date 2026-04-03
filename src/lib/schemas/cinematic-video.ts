@@ -1,22 +1,6 @@
 import { Schema, SchemaType } from "@google/generative-ai";
 
 /**
- * SOVEREIGN CINEMATIC ENGINE v6.0 — Google Flow / Veo 3.1 Native Compliance
- *
- * 7-RULE PRODUCTION PROTOCOL (Audit-Hardened):
- *   Rule 1 — Duration Contract    : 4s / 6s / 8s only. Auto-split if > 8s.
- *   Rule 2 — Prompt Formula       : Shot → Subject → Action → Setting → Aesthetics → Audio (100–150 words)
- *   Rule 3 — Kill Timecodes       : JSON keyframes for planning only; NEVER in compiled output
- *   Rule 4 — Audio as Inline      : Audio appended as 2–3 sentences inside compiled prompt
- *   Rule 5 — Identity Front-Load  : Identity lock block is sentence 2 of compiled prompt — always
- *   Rule 6 — Negative Discipline  : Max 3 critical exclusions
- *   Rule 7 — Style Tag Normalise  : Veo-native vocabulary only
- *
- * TARGET: Google Flow (Veo 3.1), Kling AI 2.0, Seedance 2.0, Runway Gen-4
- */
-import { Schema, SchemaType } from "@google/generative-ai";
-
-/**
  * SOVEREIGN CINEMATIC ENGINE v10.0 — The Master Ontology
  * Single ontology: Grounded physical realism across all generation domains.
  */
