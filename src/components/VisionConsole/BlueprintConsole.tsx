@@ -33,9 +33,9 @@ export function BlueprintConsole({
     activeProvider = "Gemini-Elite",
     expansionText
 }: BlueprintConsoleProps) {
+    const isVideo = mode === 'video';
     const [copiedEngine, setCopiedEngine] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'prose' | 'json'>(isVideo ? 'prose' : 'json');
-    const isVideo = mode === 'video';
     const videoData = data as any;
 
     const copyEnginePrompt = (engine: VideoEngine) => {
