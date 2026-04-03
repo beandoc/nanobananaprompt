@@ -621,7 +621,7 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                 ds.engine_prompts = {
                     kling: `--stylize 8 --motion 7 --quality high\n\n${basePrompt}\n\n[Technical Specs: ${ta.resolution || '1080p'}, ${ta.duration || '10s'}]`,
                     seedance: `[Motion Vector Guidance: High Magnitude]\n\n${basePrompt}\n\nMasterpiece, 8K, Seedance-2.0, detailed material physics.`,
-                    veo: `[Google Flow / Veo 3 Protocol]\n\n${basePrompt.replace(/\[\d+s-\d+s\]/g, (match) => `\n[SCENE BREAK] ${match}`)}\n\nStyle: Cinematic Photorealism, Length: 8s`,
+                    veo: `[Google Flow / Veo 3 Protocol]\n\n${basePrompt.replace(/\[\d+s-\d+s\]/g, (match: string) => `\n[SCENE BREAK] ${match}`)}\n\nStyle: Cinematic Photorealism, Length: 8s`,
                     runway: `Camera: ${mp.camera_spec || 'Locked tripod'}. Motion: ${mp.motion_magnitude || 5}.\n\n${basePrompt}\n\nGen-3 Alpha, hyper-realistic.`,
                     generic: `${basePrompt}\n\nSpecs: ${ta.duration || '10s'}, ${ta.frame_rate || '24fps'}.`
                 };
