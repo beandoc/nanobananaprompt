@@ -655,9 +655,9 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
 
                 adData.engine_prompts = {
                     veo: veoPrompt,
-                    kling: `--stylize 8 --motion 7 --quality high\n\n${veoPrompt.replace(/Exclude:.*$/s, '').trim()}\n\nResolution: ${veoClip.resolution || '1080p'}, Duration: ${veoClip.duration_seconds || 8}s.`,
-                    seedance: `[Motion Vector Guidance: High Magnitude]\n\n${veoPrompt.replace(/Exclude:.*$/s, '').trim()}\n\nMasterpiece, 8K, Seedance-2.0, detailed material physics.`,
-                    runway: `Camera: ${cin.camera_movement || 'slow dolly-in'}.\n\n${veoPrompt.replace(/Exclude:.*$/s, '').trim()}\n\nRunway Gen-4, hyper-realistic, temporal consistency.`,
+                    kling: `--stylize 8 --motion 7 --quality high\n\n${veoPrompt.replace(/Exclude:[\s\S]*$/g, '').trim()}\n\nResolution: ${veoClip.resolution || '1080p'}, Duration: ${veoClip.duration_seconds || 8}s.`,
+                    seedance: `[Motion Vector Guidance: High Magnitude]\n\n${veoPrompt.replace(/Exclude:[\s\S]*$/g, '').trim()}\n\nMasterpiece, 8K, Seedance-2.0, detailed material physics.`,
+                    runway: `Camera: ${cin.camera_movement || 'slow dolly-in'}.\n\n${veoPrompt.replace(/Exclude:[\s\S]*$/g, '').trim()}\n\nRunway Gen-4, hyper-realistic, temporal consistency.`,
                     generic: `${veoPrompt}\n\nDuration: ${veoClip.duration_seconds || 8}s, ${fps}fps, ${veoClip.resolution || '1080p'}.`
                 };
             }
