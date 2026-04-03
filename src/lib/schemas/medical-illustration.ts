@@ -18,7 +18,8 @@ import { Schema, SchemaType } from "@google/generative-ai";
  */
 export const medicalIllustrationSchema: Schema = {
     description: "SOVEREIGN v32.0 VISUAL-DSL Protocol - Deterministic 3-Layer Visual Grammar (Nature/NEJM Standards)",
-    type: S    properties: {
+    type: SchemaType.OBJECT,
+    properties: {
         // --- LAYER 5: DIFFUSION SYNTHESIS ★ (Natural Language — THE HERO LAYER) ---
         // CRITICAL: This is the primary rendering signal for Gemini. It must be populated FIRST
         // and with the highest degree of descriptive richness.
