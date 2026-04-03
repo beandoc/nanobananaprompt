@@ -670,17 +670,46 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
 
                 if (rawStyle.includes('80s') || rawStyle.includes('vintage')) {
                     vTags.push('Kodak 5247 film stock', 'heavy 35mm grain', 'analog gate weave', 'magenta/cyan neon practicals');
-                    forcedFps = 24;
-                    forcedAspectRatio = "4:3"; // Authenticity check
-                    forcedColorTemp = 3200; // Tungsten Night
-                    forcedStock = "Kodak 5247 color negative";
+                    forcedFps = 24; forcedAspectRatio = "4:3"; forcedColorTemp = 3200; forcedStock = "Kodak 5247 color negative";
                 } else if (rawStyle.includes('noir') || rawStyle.includes('cinematic')) {
                     vTags.push('high-contrast Chiaroscuro lighting', 'anamorphic lens flares', 'deep blacks');
-                    forcedAspectRatio = "2.39:1";
-                    forcedColorTemp = 4500;
+                    forcedAspectRatio = "2.39:1"; forcedColorTemp = 4500; forcedStock = "ARRI Alexa 65";
                 } else if (rawStyle.includes('ghibli') || rawStyle.includes('skytale')) {
                     vTags.push('Studio Ghibli hand-painted style', 'watercolor textures');
-                    forcedFps = 12; isStylised = true;
+                    forcedFps = 12; isStylised = true; forcedAspectRatio = "16:9";
+                } else if (rawStyle.includes('photorealistic')) {
+                    vTags.push('clean ultra-realistic 8k', 'sharp optical focus', 'global illumination');
+                    forcedFps = 24; forcedAspectRatio = "16:9"; forcedStock = "RED Monstro 8K VV";
+                } else if (rawStyle.includes('picture book')) {
+                    vTags.push('soft watercolor painting', 'pastel tones', 'paper texture');
+                    forcedFps = 12; isStylised = true; forcedAspectRatio = "4:3";
+                } else if (rawStyle.includes('3d cartoon') || rawStyle.includes('hyper cartoon')) {
+                    vTags.push('Pixar-like 3D CGI', 'subsurface scattering', 'squash-and-stretch motion');
+                    forcedFps = 24; isStylised = true; forcedAspectRatio = "16:9";
+                } else if (rawStyle.includes('retro comics')) {
+                    vTags.push('vintage comic book cel-shading', 'Ben-Day dot halftone', 'heavy ink contours');
+                    forcedFps = 12; isStylised = true; forcedAspectRatio = "4:3";
+                } else if (rawStyle.includes('anime')) {
+                    vTags.push('high-energy anime style', 'dynamic action smears', 'flat shading');
+                    forcedFps = 24; isStylised = true; forcedAspectRatio = "16:9";
+                } else if (rawStyle.includes('pixel art')) {
+                    vTags.push('16-bit pixel art', 'crisp square pixels', 'retro gaming aesthetic');
+                    forcedFps = 8; isStylised = true; forcedAspectRatio = "4:3";
+                } else if (rawStyle.includes('illustration') || rawStyle.includes('minimalist')) {
+                    vTags.push('flat vector illustration', 'clean minimalist linework', 'high negative space');
+                    forcedFps = 12; isStylised = true; forcedAspectRatio = "16:9";
+                } else if (rawStyle.includes('dreamtale')) {
+                    vTags.push('ethereal bloom', 'soft focus magical glowing particles', 'pastel volumetric lighting');
+                    forcedFps = 24; forcedColorTemp = 4500; forcedAspectRatio = "16:9";
+                } else if (rawStyle.includes('horror')) {
+                    vTags.push('underexposed moody rim lighting', 'eerie volumetric fog', 'cold desaturated shadows');
+                    forcedFps = 24; forcedColorTemp = 3200; forcedAspectRatio = "2.39:1";
+                } else if (rawStyle.includes('sketchbook')) {
+                    vTags.push('raw charcoal pencil sketch', 'rough hand-drawn motion', 'visible parchment grain');
+                    forcedFps = 8; isStylised = true; forcedAspectRatio = "1:1";
+                } else if (rawStyle.includes('drone')) {
+                    vTags.push('aerial drone cinematography', 'hyper-smooth gimbal stabilization', 'sweeping landscape view');
+                    forcedFps = 24; forcedAspectRatio = "16:9"; forcedStock = "DJI Inspire 3 ProRes Raw";
                 }
 
                 // --- v9.6: CROSS-FIELD PHYSICS VALIDATION (POST-COMPILE WALL) ---
