@@ -62,29 +62,26 @@ export const videoIllustrationSchema: Schema = {
                     type: SchemaType.STRING,
                     description: "One-line subject description (used for planning only, NOT compiled output). E.g., 'Indian male craftsman carving clay elephant'."
                 },
-                identity_lock: {
-                    type: SchemaType.OBJECT,
-                    description: "Rule 5: Front-loaded identity block. Placed as sentence 2 of compiled_master_prompt. Provides stable SSS/material anchor for multi-frame rendering.",
-                    properties: {
-                        age_descriptor: { type: SchemaType.STRING, description: "E.g., 'Senior', 'Young adult', 'Middle-aged'." },
-                        ethnicity: { type: SchemaType.STRING, description: "MANDATORY: 'Indian' or 'South Asian'. Must appear verbatim." },
-                        gender: { type: SchemaType.STRING },
-                        physical_features: {
-                            type: SchemaType.ARRAY,
-                            description: "2–3 specific facial/physical features. E.g., 'silver stubble', 'deep-set brown eyes', 'calloused hands'.",
-                            items: { type: SchemaType.STRING }
+                identity_locks: {
+                    type: SchemaType.ARRAY,
+                    description: "Rule 5: Front-loaded identity blocks. Every co-subject with more than 2 seconds of screen time needs its own lock. These are woven into sentence 2 of compiled_master_prompt.",
+                    items: {
+                        type: SchemaType.OBJECT,
+                        properties: {
+                            age_descriptor: { type: SchemaType.STRING, description: "E.g., 'Senior', 'Young adult', 'Approx 5-8 years old'." },
+                            ethnicity: { type: SchemaType.STRING, description: "MANDATORY: 'Indian' or 'South Asian'. Must appear verbatim." },
+                            gender: { type: SchemaType.STRING },
+                            physical_features: {
+                                type: SchemaType.ARRAY,
+                                description: "Specific facial/physical features.",
+                                items: { type: SchemaType.STRING }
+                            },
+                            skin_descriptor: { type: SchemaType.STRING },
+                            garment: { type: SchemaType.STRING, description: "E.g., 'hand-woven cotton sari', 'simple cotton kurtas'." },
+                            material_cue: { type: SchemaType.STRING }
                         },
-                        skin_descriptor: {
-                            type: SchemaType.STRING,
-                            description: "E.g., 'warm brown skin with 15% subsurface warmth'."
-                        },
-                        garment: { type: SchemaType.STRING, description: "E.g., 'hand-woven khadi vest'." },
-                        material_cue: {
-                            type: SchemaType.STRING,
-                            description: "Material property that gives Veo a light-reflection profile. E.g., 'high-denier matte fabric with visible warp texture'."
-                        }
-                    },
-                    required: ["age_descriptor", "ethnicity", "physical_features", "skin_descriptor", "garment"]
+                        required: ["age_descriptor", "ethnicity", "gender", "garment"]
+                    }
                 },
                 action_sequence: {
                     type: SchemaType.ARRAY,
@@ -103,7 +100,7 @@ export const videoIllustrationSchema: Schema = {
                     description: "What everything is made of (especially critical for stop-motion). E.g., 'The entire world is matte clay: thumbprint impressions on every surface'."
                 }
             },
-            required: ["subject", "identity_lock", "action_sequence", "environment"]
+            required: ["subject", "identity_locks", "action_sequence", "environment"]
         },
 
         // --- CINEMATOGRAPHY ---
@@ -242,14 +239,14 @@ export const videoIllustrationSchema: Schema = {
         // --- NEGATIVE PROMPTS (Rule 6) ---
         negative_prompts: {
             type: SchemaType.ARRAY,
-            description: "Rule 6: MAX 3 critical exclusions only. Never add aesthetic negatives. Stop-motion standard: ['No smooth motion interpolation', 'No morphing', 'No subtitles'].",
+            description: "Rule 6: Stop-motion failure-mode prevention only. ALWAYS output exactly these 3 for claymation/stop-motion: ['No smooth motion interpolation', 'No morphing between frames', 'No subtitles or text on screen']. ZERO aesthetic negatives.",
             items: { type: SchemaType.STRING }
         },
 
         // --- COMPILED MASTER PROMPT ★ (THE HERO — Rules 2, 3, 4, 5) ---
         compiled_master_prompt: {
             type: SchemaType.STRING,
-            description: "HERO FIELD: 100–150 words enforced. Formula: [SHOT] + [SUBJECT with identity_lock] + [ACTION as sequential prose — no timecodes] + [SETTING/world_material] + [AESTHETICS/veo_native_tags/fps] + [2–3 audio sentences]. This is the ONLY text sent to Google Flow."
+            description: "HERO FIELD: Synthesis Layer. 100–150 words of FLUID CINEMATIC PROSE. DO NOT dump tags. Convert all keyframes and beats into a continuous story paragraph with cause-and-effect transitions. Formula: [SHOT] + [SUBJECTS + identity_locks woven] + [ACTION as causal prose] + [SETTING/world_material] + [AESTHETICS] + [AUDIO]. This is the ONLY text sent to Google Flow."
         },
 
         video_type: {

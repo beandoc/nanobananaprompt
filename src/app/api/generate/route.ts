@@ -94,28 +94,23 @@ const agentConfigs: any = {
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert brief into Vector JSON. Style: ${style}.`
     },
     video: {
-        expansionRole: "Sovereign Cinematic Director — Google Flow / Veo 3.1 Native Protocol (v6.0)",
+        expansionRole: "Sovereign Cinematic Director — Google Flow / Veo 3.1 Native Protocol (v6.1)",
         expansionRules: [
             "RULE 1 — DURATION CONTRACT: Veo only accepts 4s, 6s, or 8s per clip. Always set veo_clip.duration_seconds to 8. If the brief needs more than 8s, populate clip_2 with first-frame handoff instructions.",
-            "RULE 2 — PROMPT FORMULA: compiled_master_prompt MUST follow this 5-part order: [SHOT composition + camera + lens] → [SUBJECT: identity_lock as a single rich sentence] → [ACTION: sequential prose of all beats, no timecodes] → [SETTING + world_material] → [AESTHETICS: veo_native_tags + fps + color_grade]. Then append 2–3 audio sentences. Target: 100–150 words. Hard minimum: 80 words. Hard maximum: 180 words.",
-            "RULE 3 — KILL TIMECODES: temporal_arc.keyframes are for internal planning ONLY. NEVER include [0s-3s] or any timecode bracket in compiled_master_prompt. Convert all temporal structure into sequential prose action beats.",
-            "RULE 4 — AUDIO INLINE: Audio is NOT a separate metadata field. The compiler appends 3 audio sentences at the END of compiled_master_prompt: Sentence 1: 'Audio: {ambient_bed}.' Sentence 2: '{specific_sfx}.' Sentence 3: 'No dialogue. No subtitles.' For stop-motion add: 'No smooth motion interpolation.'",
-            "RULE 5 — IDENTITY FRONT-LOAD: The second sentence of compiled_master_prompt is ALWAYS the identity_lock block. Formula: '{age_descriptor} {ethnicity} {gender}, {physical_features}, {skin_descriptor}, wearing {garment} — {material_cue}.'",
-            "RULE 6 — NEGATIVE DISCIPLINE: negative_prompts array MUST contain exactly 1–3 entries. Stop-motion standard: ['No smooth motion interpolation', 'No morphing', 'No subtitles']. Never add aesthetic negatives like 'no noise'.",
-            "RULE 7 — VEO STYLE VOCABULARY: Only use Veo-native trained strings in veo_native_tags. MAP: stop-motion claymation → 'claymation style, stop-motion animation'. Pixar CGI → 'Pixar-like 3D animation'. Hand-drawn → 'cel-shaded animation'. Vintage → 'shot on 16mm film, film grain'. NEVER invent custom style tags."
+            "RULE 2 — PROMPT SYNTHESIS (CRITICAL): The AI MUST synthesize the scene into flowing, causal 100-150 word prose in compiled_master_prompt. DO NOT dump tags or use bullet fragments. Weave the shot, subject, action, setting, and aesthetics into a continuous cinematic narrative paragraph.",
+            "RULE 3 — KILL TIMECODES: temporal_arc.keyframes are for internal planning ONLY. NEVER include [0s-3s] or any timecode bracket in compiled_master_prompt.",
+            "RULE 4 — AUDIO INLINE: At the END of compiled_master_prompt, append 3 audio sentences: 'Audio: {ambient_bed}. {specific_sfx}. No dialogue. No subtitles.'",
+            "RULE 5 — IDENTITY FRONT-LOAD: The identity_locks details MUST be woven into the very second sentence of compiled_master_prompt. Describe ALL main subjects (including children, with ages and clothing).",
+            "RULE 6 — NEGATIVE DISCIPLINE: Stop-motion standard ONLY: 'No smooth motion interpolation. No morphing. No subtitles'. Aesthetic negatives are strictly forbidden.",
+            "RULE 7 — VEO STYLE VOCABULARY: Stop-motion claymation → 'claymation style, stop-motion animation'. Pixar CGI → 'Pixar-like 3D animation'. Hand-drawn → 'cel-shaded animation'."
         ],
-        jsonRole: "Chief Cinematic Engineer — Google Flow / Veo 3.1 Protocol (v6.0)",
-        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v6.0 — VEO 3.1 PRODUCTION PROTOCOL
+        jsonRole: "Chief Cinematic Engineer — Google Flow / Veo 3.1 Protocol (v6.1)",
+        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v6.1 — PROSE SYNTHESIS PROTOCOL
 1. SCHEMA: Populate veo_clip.duration_seconds as 4, 6, or 8 ONLY.
-2. IDENTITY: scene_core.identity_lock is MANDATORY. Include age, ethnicity, physical_features, skin_descriptor, garment, material_cue.
-3. ACTION BEATS: scene_core.action_sequence must be an array of prose beats — NO timecodes.
-4. TEMPORAL ARC: temporal_arc.keyframes are planning data only. Set phase to 'Opening', 'Mid Action', 'Resolution'.
-5. STYLE: style.veo_native_tags MUST use exact Veo strings (claymation style, stop-motion animation, Pixar-like 3D animation, etc).
-6. AUDIO: audio.ambient_bed and audio.specific_sfx are REQUIRED — they compile into inline sentences.
-7. NEGATIVES: negative_prompts array max 3 entries.
-8. HERO: compiled_master_prompt is the OUTPUT. 100–150 words. Shot→Subject→Action→Setting→Aesthetics→Audio. ZERO timecodes.
-9. IDENTITY: South Asian/Indian subject MANDATORY.
-10. STYLE APPLIED: ${style || 'claymation style, stop-motion animation'}.`
+2. IDENTITY: scene_core.identity_locks MUST be an array containing details for EVERY subject (e.g., Grandmother AND Children).
+3. ACTION BEATS: scene_core.action_sequence must be an array of prose beats.
+4. HERO: compiled_master_prompt is the OUTPUT. Write 100–150 words of fluid, cinematic PROSE. Shot→Subject(s)→Causal Action→Setting→Aesthetics→Audio. ZERO timecodes. NO TAG DUMPS. Write a story paragraph.
+5. STYLE APPLIED: ${style || 'claymation style, stop-motion animation'}.`
     },
     manga: {
         expansionRole: "Manga Concept Artist",
@@ -581,14 +576,12 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
             // --- VIDEO CINEMATIC COMPILER (v5.0) ---
             // For video mode: compile all layers into engine-ready paste prompts
             if (mode === 'video') {
-                console.log("[SOVEREIGN CINEMATIC COMPILER v6.0] Veo 3.1 Native Compliance...");
-                const sc = adData.scene_core || {};
+                console.log("[SOVEREIGN CINEMATIC COMPILER v6.1] Prose Synthesis Layer...");
                 const cin = adData.cinematography || {};
                 const style = adData.style || {};
-                const audio = adData.audio || {};
                 const negatives: string[] = (adData.negative_prompts || []).slice(0, 3);
-                const ta = adData.temporal_arc || {};
                 const veoClip = adData.veo_clip || {};
+                const fps = style.fps || 24;
 
                 // --- RULE 1: Duration enforcement (4 / 6 / 8 only) ---
                 const ALLOWED_DURATIONS = [4, 6, 8];
@@ -596,57 +589,19 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                     adData.veo_clip = { ...veoClip, duration_seconds: 8 };
                 }
 
-                // --- RULE 5: Build front-loaded identity sentence ---
-                const idLock = sc.identity_lock || {};
-                const features = Array.isArray(idLock.physical_features) ? idLock.physical_features.join(', ') : '';
-                const identitySentence = `${idLock.age_descriptor || 'Senior'} ${idLock.ethnicity || 'Indian'} ${idLock.gender || 'male'}, ${features}, ${idLock.skin_descriptor || 'warm brown skin'}, wearing ${idLock.garment || 'traditional attire'}${idLock.material_cue ? ` — ${idLock.material_cue}` : ''}.`;
+                // --- v6.1 SYNTHESIS LAYER ---
+                // We rely on the LLM's fluid prose in adData.compiled_master_prompt.
+                let compiledPrompt = adData.compiled_master_prompt || "";
 
-                // --- RULE 3: Convert keyframes → sequential prose (strip timecodes) ---
-                const beats: string[] = Array.isArray(sc.action_sequence) && sc.action_sequence.length > 0
-                    ? sc.action_sequence
-                    : (Array.isArray(ta.keyframes) ? ta.keyframes.map((kf: any) => kf.visual_state || '') : []);
-                const actionProse = beats.filter((b: string) => b.trim()).join('. ');
-
-                // --- RULE 7: Veo-native style tags ---
-                const styleTags = Array.isArray(style.veo_native_tags) && style.veo_native_tags.length > 0
-                    ? style.veo_native_tags.join(', ')
-                    : 'claymation style, stop-motion animation';
-                const fps = style.fps || 24;
-                const colorGrade = cin.color_grade || 'warm cinematic';
-                const dof = cin.depth_of_field || 'shallow depth of field';
-                const lightTemp = cin.lighting?.colour_temp_K || 3200;
-                const lightType = cin.lighting?.type || 'practical candle light';
-                const flickerHz = cin.lighting?.flicker_hz || 0;
-
-                // --- RULES 2 + 5: Assemble the 5-part formula ---
-                const shotBlock = `${cin.shot_type || 'Medium shot'}, ${cin.camera_movement || 'slow dolly-in'}, ${cin.lens || 'macro lens'}.`;
-                const settingBlock = `${sc.environment || ''}${sc.world_material ? '. ' + sc.world_material : ''}.`;
-                const aestheticsBlock = `${styleTags}, ${fps}fps${style.motion_quality ? ', ' + style.motion_quality : ''}, ${colorGrade} colour grade, ${dof}. ${lightType}, ${lightTemp}K${flickerHz > 0 ? `, ${flickerHz}Hz flicker` : ''}.`;
-
-                // --- RULE 4: Audio as inline sentences ---
-                const audioLine1 = `Audio: ${audio.ambient_bed || 'natural ambient sound'}.`;
-                const audioLine2 = audio.specific_sfx ? `${audio.specific_sfx}.` : '';
-                const audioLine3 = `No dialogue. No subtitles.${audio.no_smooth_interpolation ? ' No smooth motion interpolation.' : ''}`;
-                const audioBlock = [audioLine1, audioLine2, audioLine3].filter(Boolean).join(' ');
-
-                // --- RULE 6: Negative prompt (max 3) ---
-                const negBlock = negatives.length > 0 ? negatives.join('. ') + '.' : 'No morphing. No subtitles.';
-
-                // Assemble full compiled prompt
-                let compiledPrompt = `${shotBlock} ${identitySentence} ${actionProse}. ${settingBlock} ${aestheticsBlock} ${audioBlock} Exclude: ${negBlock}`;
-
-                // --- RULE 2: Word count gate (80–180 words) ---
-                const wordCount = compiledPrompt.trim().split(/\s+/).length;
-                if (wordCount < 80) {
-                    compiledPrompt += ` High production quality, photorealistic material textures, temporal consistency across all frames.`;
-                } else if (wordCount > 180) {
-                    // Trim aesthetics block to compress
-                    compiledPrompt = `${shotBlock} ${identitySentence} ${actionProse}. ${settingBlock} ${styleTags}, ${fps}fps, ${colorGrade}. ${audioBlock} Exclude: ${negBlock}`;
+                // --- RULE 6: Negative prompt enforcement ---
+                // If the LLM missed 'Exclude:' in the prose, we inject it based on negative_prompts
+                if (compiledPrompt && !compiledPrompt.includes("Exclude:")) {
+                    const negBlock = negatives.length > 0 ? negatives.join('. ') + '.' : 'No morphing. No subtitles.';
+                    compiledPrompt = `${compiledPrompt.trim()} Exclude: ${negBlock}`;
+                    adData.compiled_master_prompt = compiledPrompt;
                 }
 
-                adData.compiled_master_prompt = compiledPrompt.trim();
-
-                // --- ENGINE-SPECIFIC COMPILER (v6.0) ---
+                // --- ENGINE-SPECIFIC COMPILER (v6.1) ---
                 // Veo: clean prose only (no params)
                 // Kling: --stylize params
                 // Seedance: [Motion Vector] header
