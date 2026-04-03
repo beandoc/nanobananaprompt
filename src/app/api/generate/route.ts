@@ -659,54 +659,76 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                     adData.compiled_master_prompt = compiledPrompt;
                 }
 
-                // --- v9.3: UI-SYNC STYLE POST-PROCESSOR (Hardened Type Guard) ---
+                // --- v9.5: CINEMASTER TECHNICAL LOOKUP & PHYSICS VALIDATOR ---
                 const rawStyle = typeof style === 'string' ? style.toLowerCase() : '';
                 const vTags: string[] = [];
                 let forcedFps = 24;
                 let isStylised = false;
+                let forcedAspectRatio = "16:9";
+                let forcedColorTemp = 5500;
+                let forcedStock = "";
 
-                if (rawStyle.includes('noir')) { 
-                    vTags.push('high-contrast 35mm film look', 'crushed blacks', 'noir atmosphere');
-                } else if (rawStyle.includes('editorial')) {
-                    vTags.push('8k editorial photography', 'high-gloss materials', '85mm portrait lens');
-                } else if (rawStyle.includes('cyberpunk')) {
-                    vTags.push('neon lights', 'saturated secondary colors', 'wet rain-lashed pavement');
-                } else if (rawStyle.includes('documentary')) {
-                    vTags.push('shot on 16mm film', 'handheld documentary camera shake');
-                } else if (rawStyle.includes('anamorphic')) {
-                    vTags.push('anamorphic widescreen flare', 'ultra-wide cinematic aspect ratio');
-                } else if (rawStyle.includes('wellness')) {
-                    vTags.push('bright airy lighting', 'low contrast', 'stable gimbal-smooth motion');
-                } else if (rawStyle.includes('pixar')) {
-                    vTags.push('Pixar-like 3D animation', 'subsurface scattering skin textures'); isStylised = true;
-                } else if (rawStyle.includes('ghibli')) {
-                    vTags.push('Ghibli-inspired aesthetic', 'hand-painted watercolor textures'); forcedFps = 12; isStylised = true;
-                } else if (rawStyle.includes('anime')) {
-                    vTags.push('Japanese anime style', 'dynamic motion lines'); isStylised = true;
-                } else if (rawStyle.includes('motion graphics')) {
-                    vTags.push('clean motion graphics', 'kinetic typography', 'infographic elements'); isStylised = true;
-                } else if (rawStyle.includes('claymation')) {
-                    vTags.push('claymation style', 'stop-motion animation'); forcedFps = 12; isStylised = true;
-                } else if (rawStyle.includes('drone')) {
-                    vTags.push('wide-angle aerial drone shot', 'high-altitude stable drift');
+                if (rawStyle.includes('80s') || rawStyle.includes('vintage')) {
+                    vTags.push('Kodak 5247 film stock', 'heavy 35mm grain', 'analog gate weave', 'magenta/cyan neon practicals');
+                    forcedFps = 24;
+                    forcedAspectRatio = "4:3"; // Authenticity check
+                    forcedColorTemp = 3200; // Tungsten Night
+                    forcedStock = "Kodak 5247 color negative";
+                } else if (rawStyle.includes('noir') || rawStyle.includes('cinematic')) {
+                    vTags.push('high-contrast Chiaroscuro lighting', 'anamorphic lens flares', 'deep blacks');
+                    forcedAspectRatio = "2.39:1";
+                    forcedColorTemp = 4500;
+                } else if (rawStyle.includes('ghibli') || rawStyle.includes('skytale')) {
+                    vTags.push('Studio Ghibli hand-painted style', 'watercolor textures');
+                    forcedFps = 12; isStylised = true;
                 }
 
-                // --- v9.4: CAUSAL PROSE CONCATENATOR (Hardened Synthesis) ---
-                const wordCount = (adData.compiled_master_prompt || "").split(/\s+/).length;
-                if (wordCount < 100 && Array.isArray(adData.scene_core?.action_sequence)) {
-                    console.log(`[v9.4] Prose Density Low (${wordCount} words). Stitching causal beats manually.`);
-                    const beatSummary = adData.scene_core.action_sequence
+                // --- v9.6: CROSS-FIELD PHYSICS VALIDATION (POST-COMPILE WALL) ---
+                if (adData.cinematography) {
+                    const lens = (adData.cinematography.lens || "").toLowerCase();
+                    if (lens.includes("wide") || lens.includes("14mm")) {
+                        console.log("[v9.6 Physics Wall] Wide lens detected. Clamping Depth to Deep Focus.");
+                        adData.cinematography.depth_of_field = "Deep (Infinite Focus)";
+                    }
+                    if (forcedColorTemp) adData.cinematography.lighting.colour_temp_K = forcedColorTemp;
+                }
+                if (forcedAspectRatio) adData.veo_clip.aspect_ratio = forcedAspectRatio;
+
+                // --- AUDIO DOMAIN GUARD (Visual -> Sonic) ---
+                if (adData.audio) {
+                    if (adData.audio.specific_sfx?.toLowerCase().includes("signage")) {
+                        adData.audio.specific_sfx = "electrical buzz and low hum of flickering neon tubes";
+                    }
+                    if (rawStyle.includes('80s')) adData.audio.no_smooth_interpolation = true;
+                }
+
+                // --- TEMPLATE PRUNING (Anti-Orphan) ---
+                if (adData.clip_strategy?.clip_count === 1) {
+                    delete adData.veo_clip.clip_2;
+                }
+
+                // --- THE RETHINK LOOP: RECURSIVE SYNTHESIS ---
+                let finalProse = adData.compiled_master_prompt || "";
+                const currentWordCount = finalProse.split(/\s+/).length;
+                
+                if (currentWordCount < 150 && Array.isArray(adData.scene_core?.action_sequence)) {
+                    console.log(`[v9.6 Rethink Loop] Density Fail (${currentWordCount}w). Triggering Synthesis Override.`);
+                    const technicalAppend = `Shot Physics: Recorded on ${forcedStock || 'premium 35mm film'} at ${forcedFps}fps with a ${adData.cinematography?.lens || '35mm'} lens. Lighting: ${forcedColorTemp || 5500}K balance.`;
+                    const motionAppend = adData.scene_core.action_sequence
                         .map((b: any, i: number) => `Beat ${i+1}: ${b.action} triggered by ${b.trigger}, resulting in ${b.physical_detail}.`)
                         .join(" ");
-                    adData.compiled_master_prompt = `${adData.compiled_master_prompt} Temporal Progression: ${beatSummary} Rendering Style: ${rawStyle} 24fps motion.`;
+                    
+                    finalProse = `${finalProse} ${motionAppend} ${technicalAppend} Rendering Standard: ${vTags.join(", ")}. Aspect Ratio: ${forcedAspectRatio}.`;
                 }
 
-                // Final sync to the labeled Veo output
+                // Push to output
+                adData.compiled_master_prompt = finalProse;
                 if (!adData.engine_prompts) adData.engine_prompts = {};
-                adData.engine_prompts.veo = adData.compiled_master_prompt;
+                adData.engine_prompts.veo = finalProse;
+                
                 adData._quality_flags = {
-                    prose_word_count: adData.compiled_master_prompt.split(/\s+/).length,
-                    prose_gate_passed: adData.compiled_master_prompt.split(/\s+/).length >= 100
+                    prose_word_count: finalProse.split(/\s+/).length,
+                    prose_gate_passed: finalProse.split(/\s+/).length >= 150
                 };
 
                 // --- COMPILED PROMPT WORD-COUNT GUARD ---
