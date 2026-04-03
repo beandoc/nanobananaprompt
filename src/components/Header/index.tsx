@@ -13,6 +13,8 @@ interface HeaderProps {
     onLogout?: () => void;
 }
 
+import { AUTH_CONSTANTS, APP_CONFIG, UI_CONSTANTS } from "@/lib/constants";
+
 export function Header({ mode, setMode, setShowLibrary, onLogout }: HeaderProps) {
     return (
         <header className="sticky top-0 z-[60] bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_1px_10px_rgba(0,0,0,0.02)]">
@@ -35,11 +37,11 @@ export function Header({ mode, setMode, setShowLibrary, onLogout }: HeaderProps)
                                         <Camera className="w-5 h-5 md:w-6 md:h-6 text-white" />}
                     </motion.div>
                     <div className="hidden sm:block">
-                        <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 leading-none mb-1">Nano Banana</h1>
+                        <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 leading-none mb-1">{APP_CONFIG.NAME}</h1>
                         <div className="flex items-center gap-2">
-                            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Intelligence Pipeline</span>
+                            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">{APP_CONFIG.SUBTITLE}</span>
                             <span className="w-1 h-1 rounded-full bg-slate-300" />
-                            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-indigo-500 animate-pulse">v2.5 Pro</span>
+                            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-indigo-500 animate-pulse">v{APP_CONFIG.VERSION}</span>
                         </div>
                     </div>
                 </div>

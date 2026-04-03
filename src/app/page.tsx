@@ -175,7 +175,7 @@ export default function Home() {
               <Lock className="w-8 h-8 md:w-10 md:h-10 text-white" />
             </div>
             <div>
-              <h1 className="text-xl md:text-2xl font-black text-white uppercase tracking-[0.2em] mb-2 leading-none italic">Security Access</h1>
+              <h1 className="text-xl md:text-2xl font-black text-white uppercase tracking-[0.2em] mb-2 leading-none italic">{APP_CONFIG.NAME} Access</h1>
               <p className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest">{APP_CONFIG.NAME} {APP_CONFIG.SUBTITLE} v{APP_CONFIG.VERSION}</p>
             </div>
             <form onSubmit={handleLogin} className="w-full space-y-4">
