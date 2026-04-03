@@ -1,201 +1,261 @@
 import { Schema, SchemaType } from "@google/generative-ai";
 
 /**
- * SOVEREIGN CINEMATIC ENGINE v5.0 — Production-Grade Video Blueprint
+ * SOVEREIGN CINEMATIC ENGINE v6.0 — Google Flow / Veo 3.1 Native Compliance
  *
- * FIVE-LAYER ARCHITECTURE (mirrors the medical engine's rigor):
- *   Layer 1 — scene_core        : Subject, environment, narrative action
- *   Layer 2 — cinematography    : Camera, lens, lighting, color grade
- *   Layer 3 — motion_physics    : Subject motion, environmental dynamics, physics simulation
- *   Layer 4 — temporal_arc      : How the shot evolves over its duration (start → mid → end)
- *   Layer 5 — diffusion_synthesis : ★ The compiled natural-language master prompt for the engine
+ * 7-RULE PRODUCTION PROTOCOL (Audit-Hardened):
+ *   Rule 1 — Duration Contract    : 4s / 6s / 8s only. Auto-split if > 8s.
+ *   Rule 2 — Prompt Formula       : Shot → Subject → Action → Setting → Aesthetics → Audio (100–150 words)
+ *   Rule 3 — Kill Timecodes       : JSON keyframes for planning only; NEVER in compiled output
+ *   Rule 4 — Audio as Inline      : Audio appended as 2–3 sentences inside compiled prompt
+ *   Rule 5 — Identity Front-Load  : Identity lock block is sentence 2 of compiled prompt — always
+ *   Rule 6 — Negative Discipline  : Max 3 critical exclusions
+ *   Rule 7 — Style Tag Normalise  : Veo-native vocabulary only
  *
- * TARGET ENGINES: Google Veo 3, Kling AI 2.0, ByteDance Seedance 2.0,
- *                 Runway Gen-4, OpenAI Sora, Pika 2.0, Luma Dream Machine
- *
- * DESIGN PRINCIPLE:
- *   The JSON gives the AI structured data to reason about.
- *   Layer 5 (diffusion_synthesis) distills ALL layers into engine-ready natural language.
- *   Video models respond to dense, temporally-sequenced natural language — not JSON keys.
+ * TARGET: Google Flow (Veo 3.1), Kling AI 2.0, Seedance 2.0, Runway Gen-4
  */
 export const videoIllustrationSchema: Schema = {
-    description: "Sovereign Cinematic Engine v5.0 — Industry-Grade Video Prompt Blueprint",
+    description: "Sovereign Cinematic Engine v6.0 — Google Flow / Veo 3.1 Native Compliance",
     type: SchemaType.OBJECT,
     properties: {
 
-        // --- LAYER 1: SCENE CORE ---
-        scene_core: {
+        // --- VEO CLIP SPEC ---
+        veo_clip: {
             type: SchemaType.OBJECT,
-            description: "Layer 1: The fundamental scene — who, what, where.",
+            description: "Rule 1: Duration contract. Flow only accepts 4s, 6s, or 8s. Default is 8s for single clip.",
             properties: {
-                subject: {
-                    type: SchemaType.STRING,
-                    description: "Primary subject with hyper-detailed appearance. MUST be Indian/South Asian if human. Include clothing, expression, body language, and distinguishing features."
-                },
-                action: {
-                    type: SchemaType.STRING,
-                    description: "What the subject is doing — described as a continuous verb phrase (e.g., 'slowly turning to face the camera while rain streaks down her face')."
-                },
-                environment: {
-                    type: SchemaType.STRING,
-                    description: "Exhaustive scene location with atmospheric details (e.g., 'a rain-soaked Mumbai alleyway at 2AM, neon signs reflecting in puddles, steam rising from a chai stall')."
-                },
-                secondary_elements: {
-                    type: SchemaType.ARRAY,
-                    description: "Background subjects, props, or environmental details that must appear.",
-                    items: { type: SchemaType.STRING }
-                },
-                narrative_context: {
-                    type: SchemaType.STRING,
-                    description: "The emotional or narrative beat of this moment (e.g., 'reunion after years apart', 'the calm before the storm')."
-                }
-            },
-            required: ["subject", "action", "environment"]
-        },
-
-        // --- LAYER 2: CINEMATOGRAPHY ---
-        cinematography: {
-            type: SchemaType.OBJECT,
-            description: "Layer 2: Professional camera, lens, and lighting specifications.",
-            properties: {
-                camera_movement: {
-                    type: SchemaType.STRING,
-                    description: "Complex camera choreography (e.g., 'Steadicam orbiting 180° around subject, then crane-up to bird's-eye', 'locked-off tripod with subtle breathing')."
-                },
-                lens: {
-                    type: SchemaType.STRING,
-                    description: "Lens specification (e.g., '85mm f/1.4 portrait', '24mm anamorphic with barrel distortion', 'probe-lens macro')."
-                },
-                shot_type: {
-                    type: SchemaType.STRING,
-                    description: "Framing (e.g., 'extreme close-up on eyes', 'wide establishing shot', 'medium over-the-shoulder')."
-                },
-                depth_of_field: {
-                    type: SchemaType.STRING,
-                    description: "Focus strategy (e.g., 'shallow DoF with bokeh orbs', 'deep focus sharp foreground-to-background', 'rack focus from subject to background')."
-                },
-                lighting: {
-                    type: SchemaType.STRING,
-                    description: "Primary light source and quality (e.g., 'golden-hour backlight with lens flare', 'harsh top-down fluorescent with green cast', 'volumetric god-rays through dust')."
-                },
-                color_grade: {
-                    type: SchemaType.STRING,
-                    description: "Post-production color treatment (e.g., 'teal-and-orange blockbuster grade', 'desaturated Fincher noir', 'warm Kodak Vision3 500T film emulation')."
-                },
-                aspect_ratio: {
-                    type: SchemaType.STRING,
-                    description: "Frame ratio (e.g., '16:9', '2.39:1 anamorphic widescreen', '9:16 vertical', '1:1 square')."
-                }
-            },
-            required: ["camera_movement", "lens", "shot_type", "lighting", "color_grade"]
-        },
-
-        // --- LAYER 3: MOTION PHYSICS ---
-        motion_physics: {
-            type: SchemaType.OBJECT,
-            description: "Layer 3: Physics-based motion description for temporal consistency.",
-            properties: {
-                subject_motion: {
-                    type: SchemaType.STRING,
-                    description: "How the subject moves with physical realism (e.g., 'hair catches crosswind with 0.5s delay, silk dupatta billows with weight, footsteps splash in 2cm puddles')."
-                },
-                environmental_dynamics: {
-                    type: SchemaType.STRING,
-                    description: "How the world moves around the subject (e.g., 'rain falls at 45° angle driven by wind, neon signs flicker at 2Hz, steam curls upward in turbulent wisps')."
-                },
-                particle_effects: {
-                    type: SchemaType.STRING,
-                    description: "Atmospheric particles (e.g., 'dust motes in volumetric light', 'embers floating upward', 'snowflakes with varied fall speeds')."
-                },
-                speed_ramp: {
-                    type: SchemaType.STRING,
-                    description: "Speed changes over the shot (e.g., 'begins at 120fps slow-motion, ramps to real-time at the 6s mark', 'constant 24fps')."
-                }
-            },
-            required: ["subject_motion", "environmental_dynamics"]
-        },
-
-        // --- LAYER 4: TEMPORAL ARC ---
-        temporal_arc: {
-            type: SchemaType.OBJECT,
-            description: "Layer 4: How the shot evolves over its duration — the keyframe blueprint.",
-            properties: {
-                duration: {
-                    type: SchemaType.STRING,
-                    description: "Target duration for a single generation (e.g., '8s', '15s', '30s'). Push to the maximum supported by the target engine."
-                },
-                frame_rate: {
-                    type: SchemaType.STRING,
-                    description: "Target FPS (e.g., '24fps cinematic', '60fps smooth', '120fps slow-motion source')."
+                duration_seconds: {
+                    type: SchemaType.NUMBER,
+                    description: "Hard constraint: 4, 6, or 8 only. If the brief needs >8s, set this to 8 and populate clip_2."
                 },
                 resolution: {
                     type: SchemaType.STRING,
-                    description: "Target resolution (e.g., '1080p', '4K UHD', '720p draft')."
+                    description: "Target resolution: '1080p' or '720p'. Default '1080p'."
+                },
+                aspect_ratio: {
+                    type: SchemaType.STRING,
+                    description: "Frame ratio: '16:9' (default), '9:16' (vertical), '1:1' (square)."
+                },
+                audio_enabled: {
+                    type: SchemaType.BOOLEAN,
+                    description: "Always true for Google Flow. Set to false only if the engine is Kling (no native audio)."
+                },
+                clip_2: {
+                    type: SchemaType.OBJECT,
+                    description: "Rule 1 Multi-Clip: Populated ONLY if brief duration > 8s. Contains 4s or 6s resolution clip with first/last frame handoff instructions.",
+                    properties: {
+                        duration_seconds: { type: SchemaType.NUMBER },
+                        first_frame_handoff: { type: SchemaType.STRING, description: "Description of the LAST frame of Clip 1 to use as first-frame of Clip 2." },
+                        action: { type: SchemaType.STRING, description: "Action sequence for this clip." }
+                    }
+                }
+            },
+            required: ["duration_seconds", "resolution", "aspect_ratio", "audio_enabled"]
+        },
+
+        // --- SCENE CORE ---
+        scene_core: {
+            type: SchemaType.OBJECT,
+            description: "Layer 1: Who, what, where — the structural foundation.",
+            properties: {
+                subject: {
+                    type: SchemaType.STRING,
+                    description: "One-line subject description (used for planning only, NOT compiled output). E.g., 'Indian male craftsman carving clay elephant'."
+                },
+                identity_lock: {
+                    type: SchemaType.OBJECT,
+                    description: "Rule 5: Front-loaded identity block. Placed as sentence 2 of compiled_master_prompt. Provides stable SSS/material anchor for multi-frame rendering.",
+                    properties: {
+                        age_descriptor: { type: SchemaType.STRING, description: "E.g., 'Senior', 'Young adult', 'Middle-aged'." },
+                        ethnicity: { type: SchemaType.STRING, description: "MANDATORY: 'Indian' or 'South Asian'. Must appear verbatim." },
+                        gender: { type: SchemaType.STRING },
+                        physical_features: {
+                            type: SchemaType.ARRAY,
+                            description: "2–3 specific facial/physical features. E.g., 'silver stubble', 'deep-set brown eyes', 'calloused hands'.",
+                            items: { type: SchemaType.STRING }
+                        },
+                        skin_descriptor: {
+                            type: SchemaType.STRING,
+                            description: "E.g., 'warm brown skin with 15% subsurface warmth'."
+                        },
+                        garment: { type: SchemaType.STRING, description: "E.g., 'hand-woven khadi vest'." },
+                        material_cue: {
+                            type: SchemaType.STRING,
+                            description: "Material property that gives Veo a light-reflection profile. E.g., 'high-denier matte fabric with visible warp texture'."
+                        }
+                    },
+                    required: ["age_descriptor", "ethnicity", "physical_features", "skin_descriptor", "garment"]
+                },
+                action_sequence: {
+                    type: SchemaType.ARRAY,
+                    description: "Rule 3: Sequential action beats in plain prose. NO timecodes. These are converted to a flowing action paragraph in compiled_master_prompt.",
+                    items: {
+                        type: SchemaType.STRING,
+                        description: "One action beat (e.g., 'He carves a miniature wooden elephant with deliberate strokes')."
+                    }
+                },
+                environment: {
+                    type: SchemaType.STRING,
+                    description: "Scene location and atmospheric context."
+                },
+                world_material: {
+                    type: SchemaType.STRING,
+                    description: "What everything is made of (especially critical for stop-motion). E.g., 'The entire world is matte clay: thumbprint impressions on every surface'."
+                }
+            },
+            required: ["subject", "identity_lock", "action_sequence", "environment"]
+        },
+
+        // --- CINEMATOGRAPHY ---
+        cinematography: {
+            type: SchemaType.OBJECT,
+            description: "Layer 2: Camera and lighting specifications.",
+            properties: {
+                shot_type: {
+                    type: SchemaType.STRING,
+                    description: "E.g., 'Extreme close-up', 'Wide establishing shot', 'Medium over-the-shoulder'."
+                },
+                camera_movement: {
+                    type: SchemaType.STRING,
+                    description: "E.g., 'Slow dolly-in', 'Locked tripod', '360-degree orbit'. Avoid complex multi-move rigs for 8s clips."
+                },
+                lens: {
+                    type: SchemaType.STRING,
+                    description: "E.g., 'Macro lens', '85mm portrait', '24mm anamorphic'."
+                },
+                depth_of_field: {
+                    type: SchemaType.STRING,
+                    description: "E.g., 'Shallow depth of field', 'Rack focus from hands to face'."
+                },
+                lighting: {
+                    type: SchemaType.OBJECT,
+                    description: "Rule 2: Technical lighting spec with Kelvin and Hz values.",
+                    properties: {
+                        type: { type: SchemaType.STRING, description: "E.g., 'Single point candle', 'Three-point studio', 'Natural window'." },
+                        colour_temp_K: { type: SchemaType.NUMBER, description: "Colour temperature in Kelvin. E.g., 3200 for tungsten, 5600 for daylight." },
+                        intensity: { type: SchemaType.STRING, description: "E.g., 'Low', 'Medium-high', 'Harsh direct'." },
+                        flicker_hz: { type: SchemaType.NUMBER, description: "For candle/fire: 0.8. For neon: 2.0. For steady: 0." }
+                    },
+                    required: ["type", "colour_temp_K"]
+                },
+                color_grade: {
+                    type: SchemaType.STRING,
+                    description: "E.g., 'Warm honey-toned', 'Teal-orange cinematic', 'Desaturated Fincher noir'."
+                }
+            },
+            required: ["shot_type", "camera_movement", "lens", "lighting", "color_grade"]
+        },
+
+        // --- MOTION PHYSICS ---
+        motion_physics: {
+            type: SchemaType.OBJECT,
+            description: "Layer 3: Physics-based motion for temporal consistency.",
+            properties: {
+                subject_motion: {
+                    type: SchemaType.STRING,
+                    description: "PBR material motion. E.g., 'Clay surface PBR matte diffuse, specular: 0.1, sub-millimeter tool-mark displacement'."
+                },
+                environmental_dynamics: {
+                    type: SchemaType.STRING,
+                    description: "How the world reacts. E.g., 'Candle flame animated at 0.8Hz, casting hard-edge shadow at 15° falloff'."
+                },
+                speed_ramp: {
+                    type: SchemaType.STRING,
+                    description: "FPS changes. E.g., 'Constant 12fps stutter throughout', '24fps standard'."
+                }
+            },
+            required: ["subject_motion"]
+        },
+
+        // --- TEMPORAL ARC (Internal only — Rule 3) ---
+        temporal_arc: {
+            type: SchemaType.OBJECT,
+            description: "Rule 3: INTERNAL planning structure only. Keyframes are converted to prose in compiled_master_prompt. NEVER include timecodes in compiled output.",
+            properties: {
+                total_duration_seconds: {
+                    type: SchemaType.NUMBER,
+                    description: "Total intended duration. If > 8, the compiler will auto-split into veo_clip + clip_2."
                 },
                 keyframes: {
                     type: SchemaType.ARRAY,
-                    description: "Ordered temporal keyframes describing what happens at each phase of the shot. Minimum 3 keyframes (opening, midpoint, closing).",
+                    description: "Planning keyframes — used by the compiler to generate the sequential action prose. NOT directly included in compiled output.",
                     items: {
                         type: SchemaType.OBJECT,
                         properties: {
-                            timestamp: { type: SchemaType.STRING, description: "Approximate time mark (e.g., '0s - 3s', '3s - 6s', '6s - 8s')." },
-                            visual_state: { type: SchemaType.STRING, description: "What the viewer sees at this moment." },
-                            camera_state: { type: SchemaType.STRING, description: "Camera position/movement at this moment." },
-                            audio_state: { type: SchemaType.STRING, description: "Sound design or music at this moment." }
+                            phase: { type: SchemaType.STRING, description: "E.g., 'Opening', 'Mid Action', 'Resolution'." },
+                            beat_index: { type: SchemaType.NUMBER, description: "1, 2, 3 — maps to action_sequence beats." },
+                            visual_state: { type: SchemaType.STRING },
+                            camera_state: { type: SchemaType.STRING }
                         },
-                        required: ["timestamp", "visual_state"]
+                        required: ["phase", "visual_state"]
                     }
                 }
             },
-            required: ["duration", "frame_rate", "resolution", "keyframes"]
+            required: ["total_duration_seconds", "keyframes"]
         },
 
-        // --- LAYER 5: DIFFUSION SYNTHESIS ★ (THE HERO LAYER) ---
-        diffusion_synthesis: {
+        // --- STYLE ---
+        style: {
             type: SchemaType.OBJECT,
-            description: "CORE RENDERING SIGNAL: The compiled natural-language master prompt. This is the ONLY layer video AI models actually read. Must be populated FIRST with the highest descriptive density.",
+            description: "Rule 7: Veo-native style vocabulary only.",
             properties: {
-                master_prompt: {
-                    type: SchemaType.STRING,
-                    description: "HERO FIELD: 200-400 word consolidated prompt. Open with the subject and action, layer with environment and cinematography, close with motion physics and temporal progression. Use ONLY natural language — no JSON keys, no technical IDs."
-                },
-                style_tags: {
+                veo_native_tags: {
                     type: SchemaType.ARRAY,
-                    description: "8-15 engine-optimization tags (e.g., 'cinematic', '4K', 'temporal consistency', 'no morphing', 'photorealistic', 'volumetric lighting').",
+                    description: "MUST use exact Veo-trained strings: 'claymation style', 'stop-motion animation', 'Pixar-like 3D animation', 'cel-shaded animation', 'shot on 16mm film, film grain'. No invented tags.",
                     items: { type: SchemaType.STRING }
                 },
-                negative_prompt: {
-                    type: SchemaType.STRING,
-                    description: "Strict exclusions (e.g., 'no morphing, no face distortion, no text overlays, no watermarks, no sudden cuts, no 3D render aesthetic, no cartoonish proportions')."
+                fps: {
+                    type: SchemaType.NUMBER,
+                    description: "12 for stop-motion/claymation stutter. 24 for cinematic. 60 for smooth action."
                 },
-                audio_design: {
+                motion_quality: {
                     type: SchemaType.STRING,
-                    description: "Sound and music specification (e.g., '3D spatial rain, distant thunder, melancholic sarangi melody, muffled city traffic')."
-                },
-                engine_hints: {
-                    type: SchemaType.OBJECT,
-                    description: "Engine-specific optimization hints.",
-                    properties: {
-                        kling_ai: { type: SchemaType.STRING, description: "Kling-specific tags (e.g., 'professional mode, 1080p, 10s, high quality')." },
-                        seedance: { type: SchemaType.STRING, description: "Seedance-specific tags (e.g., 'keyframe guidance, motion intensity: high')." },
-                        veo: { type: SchemaType.STRING, description: "Google Veo-specific tags (e.g., 'photorealistic, 8s, 720p')." },
-                        runway: { type: SchemaType.STRING, description: "Runway Gen-4 tags (e.g., 'motion brush: full frame, 10s extend')." }
-                    }
+                    description: "E.g., 'stuttered 12fps kinetics', 'smooth hyperrealistic', 'hand-drawn motion smear'."
                 }
             },
-            required: ["master_prompt", "style_tags", "negative_prompt", "audio_design"]
+            required: ["veo_native_tags", "fps"]
         },
 
-        // --- METADATA ---
+        // --- AUDIO (Rule 4) ---
+        audio: {
+            type: SchemaType.OBJECT,
+            description: "Rule 4: Audio spec. The compiler will convert this into 2–3 inline sentences INSIDE compiled_master_prompt — non-optional.",
+            properties: {
+                ambient_bed: {
+                    type: SchemaType.STRING,
+                    description: "Primary ambient sound. E.g., 'rhythmic clay scraping', 'city traffic rain'."
+                },
+                specific_sfx: {
+                    type: SchemaType.STRING,
+                    description: "Specific sound effect with timing. E.g., 'soft candlewick crackle, intermittent', 'slow exhale at end'."
+                },
+                no_dialogue: { type: SchemaType.BOOLEAN, description: "Always true." },
+                no_subtitles: { type: SchemaType.BOOLEAN, description: "Always true." },
+                no_smooth_interpolation: {
+                    type: SchemaType.BOOLEAN,
+                    description: "Rule 4: For stop-motion — replaces 'no morphing' tag. Must be true for claymation/stop-motion briefs."
+                }
+            },
+            required: ["ambient_bed", "specific_sfx", "no_dialogue", "no_subtitles"]
+        },
+
+        // --- NEGATIVE PROMPTS (Rule 6) ---
+        negative_prompts: {
+            type: SchemaType.ARRAY,
+            description: "Rule 6: MAX 3 critical exclusions only. Never add aesthetic negatives. Stop-motion standard: ['No smooth motion interpolation', 'No morphing', 'No subtitles'].",
+            items: { type: SchemaType.STRING }
+        },
+
+        // --- COMPILED MASTER PROMPT ★ (THE HERO — Rules 2, 3, 4, 5) ---
+        compiled_master_prompt: {
+            type: SchemaType.STRING,
+            description: "HERO FIELD: 100–150 words enforced. Formula: [SHOT] + [SUBJECT with identity_lock] + [ACTION as sequential prose — no timecodes] + [SETTING/world_material] + [AESTHETICS/veo_native_tags/fps] + [2–3 audio sentences]. This is the ONLY text sent to Google Flow."
+        },
+
         video_type: {
             type: SchemaType.STRING,
-            description: "Classification: 'live-action-photorealistic', '3d-animation', '2d-animation', 'anime', 'stop-motion', 'mixed-media'."
-        },
-        keywords: {
-            type: SchemaType.ARRAY,
-            description: "15-25 descriptive tags for discoverability and engine optimization.",
-            items: { type: SchemaType.STRING }
+            description: "Classification: 'live-action-photorealistic', '3d-animation', '2d-animation', 'anime', 'stop-motion-claymation', 'mixed-media'."
         }
     },
-    required: ["scene_core", "cinematography", "motion_physics", "temporal_arc", "diffusion_synthesis", "video_type", "keywords"]
+    required: ["veo_clip", "scene_core", "cinematography", "motion_physics", "temporal_arc", "style", "audio", "negative_prompts", "compiled_master_prompt", "video_type"]
 };
