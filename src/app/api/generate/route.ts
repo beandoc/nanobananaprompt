@@ -264,7 +264,7 @@ const validateMedicalOutput = (data: any): { valid: boolean; issues: string[] } 
 const validateInfographicOutput = (data: any, selectedStyle: string): { valid: boolean; issues: string[] } => {
     const issues: string[] = [];
     const js = data?.metadata?.journal_standard;
-    const style = (selectedStyle || "").toLowerCase();
+    const style = typeof selectedStyle === 'string' ? selectedStyle.toLowerCase() : '';
 
     // Check medical content
     const interventions = data?.medical_content?.interventions;
@@ -659,8 +659,8 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                     adData.compiled_master_prompt = compiledPrompt;
                 }
 
-                // --- v9.1: UI-SYNC STYLE POST-PROCESSOR ---
-                const rawStyle = (style as string || '').toLowerCase();
+                // --- v9.3: UI-SYNC STYLE POST-PROCESSOR (Hardened Type Guard) ---
+                const rawStyle = typeof style === 'string' ? style.toLowerCase() : '';
                 const vTags: string[] = [];
                 let forcedFps = 24;
                 let isStylised = false;
