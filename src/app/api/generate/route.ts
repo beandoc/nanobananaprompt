@@ -102,15 +102,16 @@ const agentConfigs: any = {
             "RULE 4 — AUDIO INLINE: At the END of compiled_master_prompt, append 3 audio sentences: 'Audio: {ambient_bed}. {specific_sfx}. No dialogue. No subtitles.'",
             "RULE 5 — IDENTITY FRONT-LOAD: The identity_locks details MUST be woven into the very second sentence of compiled_master_prompt. Describe ALL main subjects (including children, with ages and clothing).",
             "RULE 6 — NEGATIVE DISCIPLINE: Stop-motion standard ONLY: 'No smooth motion interpolation. No morphing. No subtitles'. Aesthetic negatives are strictly forbidden.",
-            "RULE 7 — VEO STYLE VOCABULARY: Stop-motion claymation → 'claymation style, stop-motion animation'. Pixar CGI → 'Pixar-like 3D animation'. Hand-drawn → 'cel-shaded animation'."
+            "RULE 7 — VEO STYLE VOCABULARY (MANDATORY EXACT MATCH): stop-motion → 'stop-motion animation'. claymation → 'claymation style'. Pixar CGI → 'Pixar-like 3D animation'. hand-drawn → 'cel-shaded animation'. vintage → 'shot on 16mm film, film grain'. photorealism → 'cinematic film look'. widescreen epic → 'anamorphic widescreen'. watercolour → 'watercolor painting coming to life'. sketch → 'charcoal sketch animation'."
         ],
-        jsonRole: "Chief Cinematic Engineer — Google Flow / Veo 3.1 Protocol (v6.1)",
+        jsonRole: "Chief Cinematic Engineer — Google Flow / Veo 3.1 Protocol (v7.0)",
         jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v6.1 — PROSE SYNTHESIS PROTOCOL
 1. SCHEMA: Populate veo_clip.duration_seconds as 4, 6, or 8 ONLY.
 2. IDENTITY: scene_core.identity_locks MUST be an array containing details for EVERY subject (e.g., Grandmother AND Children).
 3. ACTION BEATS: scene_core.action_sequence must be an array of prose beats.
 4. HERO: compiled_master_prompt is the OUTPUT. Write 100–150 words of fluid, cinematic PROSE. Shot→Subject(s)→Causal Action→Setting→Aesthetics→Audio. ZERO timecodes. NO TAG DUMPS. Write a story paragraph.
-5. STYLE APPLIED: ${style || 'claymation style, stop-motion animation'}.`
+5. CLIP STRATEGY: Plan exactly 1 clip if < 8s. Explicitly map beat_count.
+6. STYLE APPLIED: ${style || 'claymation style, stop-motion animation'}.`
     },
     manga: {
         expansionRole: "Manga Concept Artist",
@@ -576,7 +577,7 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
             // --- VIDEO CINEMATIC COMPILER (v5.0) ---
             // For video mode: compile all layers into engine-ready paste prompts
             if (mode === 'video') {
-                console.log("[SOVEREIGN CINEMATIC COMPILER v6.1] Prose Synthesis Layer...");
+                console.log("[SOVEREIGN CINEMATIC COMPILER v7.0] Hard Constraints & Prose Synthesis Layer...");
                 const cin = adData.cinematography || {};
                 const style = adData.style || {};
                 const negatives: string[] = (adData.negative_prompts || []).slice(0, 3);
@@ -589,6 +590,25 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                     adData.veo_clip = { ...veoClip, duration_seconds: 8 };
                 }
 
+                // --- v7.0: Resolution Constraint Validator ---
+                if (veoClip.resolution === '4K UHD' || veoClip.resolution === '4K') {
+                    console.log("[v7.0 Validator] 4K not supported by Veo 3.1. Capping to 1080p.");
+                    adData.veo_clip.resolution = '1080p';
+                    veoClip.resolution = '1080p';
+                }
+
+                // --- v7.0: Negative Prompt Validator ---
+                let processedNegatives = negatives.map((neg: string) => {
+                    const lower = neg.toLowerCase();
+                    if (lower.startsWith('no urban') || lower.includes('no modern')) {
+                        return 'natural rural elements only';
+                    }
+                    if (lower.match(/^no [a-zA-Z]+$/)) { // simple adjective block
+                        return neg.replace(/^no /i, 'exclude ');
+                    }
+                    return neg;
+                });
+
                 // --- v6.1 SYNTHESIS LAYER ---
                 // We rely on the LLM's fluid prose in adData.compiled_master_prompt.
                 let compiledPrompt = adData.compiled_master_prompt || "";
@@ -596,7 +616,7 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                 // --- RULE 6: Negative prompt enforcement ---
                 // If the LLM missed 'Exclude:' in the prose, we inject it based on negative_prompts
                 if (compiledPrompt && !compiledPrompt.includes("Exclude:")) {
-                    const negBlock = negatives.length > 0 ? negatives.join('. ') + '.' : 'No morphing. No subtitles.';
+                    const negBlock = processedNegatives.length > 0 ? processedNegatives.join('. ') + '.' : 'No morphing. No subtitles.';
                     compiledPrompt = `${compiledPrompt.trim()} Exclude: ${negBlock}`;
                     adData.compiled_master_prompt = compiledPrompt;
                 }

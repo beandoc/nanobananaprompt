@@ -53,6 +53,22 @@ export const videoIllustrationSchema: Schema = {
             required: ["duration_seconds", "resolution", "aspect_ratio", "audio_enabled"]
         },
 
+        // --- CLIP STRATEGY (v7.0) ---
+        clip_strategy: {
+            type: SchemaType.OBJECT,
+            description: "Explicit shot-planning. One major action per shot is optimal. If beat_count > 3, set split_recommended: true.",
+            properties: {
+                mode: { type: SchemaType.STRING, description: "'single' or 'multi-clip'" },
+                clip_count: { type: SchemaType.NUMBER },
+                duration_seconds: { type: SchemaType.NUMBER, description: "Total duration of the strategy." },
+                beat_count: { type: SchemaType.NUMBER, description: "Number of causal action beats to cover." },
+                handoff_method: { type: SchemaType.STRING, description: "E.g., 'first_last_frame', or null if single." },
+                split_recommended: { type: SchemaType.BOOLEAN },
+                split_reason: { type: SchemaType.STRING }
+            },
+            required: ["mode", "clip_count", "duration_seconds", "beat_count", "split_recommended"]
+        },
+
         // --- SCENE CORE ---
         scene_core: {
             type: SchemaType.OBJECT,
@@ -85,10 +101,16 @@ export const videoIllustrationSchema: Schema = {
                 },
                 action_sequence: {
                     type: SchemaType.ARRAY,
-                    description: "Rule 3: Sequential action beats in plain prose. NO timecodes. These are converted to a flowing action paragraph in compiled_master_prompt.",
+                    description: "Rule 8: Causal Action Beats. Each beat MUST have a trigger (cause) and a physical consequence.",
                     items: {
-                        type: SchemaType.STRING,
-                        description: "One action beat (e.g., 'He carves a miniature wooden elephant with deliberate strokes')."
+                        type: SchemaType.OBJECT,
+                        properties: {
+                            beat: { type: SchemaType.NUMBER },
+                            action: { type: SchemaType.STRING, description: "E.g., 'grandmother opens large clay book'." },
+                            trigger: { type: SchemaType.STRING, description: "Why it happens. E.g., 'in response to child asking a question'." },
+                            physical_detail: { type: SchemaType.STRING, description: "Physical consequence. E.g., 'clay pages fan with visible weight'." }
+                        },
+                        required: ["beat", "action", "trigger", "physical_detail"]
                     }
                 },
                 environment: {
@@ -254,5 +276,5 @@ export const videoIllustrationSchema: Schema = {
             description: "Classification: 'live-action-photorealistic', '3d-animation', '2d-animation', 'anime', 'stop-motion-claymation', 'mixed-media'."
         }
     },
-    required: ["veo_clip", "scene_core", "cinematography", "motion_physics", "temporal_arc", "style", "audio", "negative_prompts", "compiled_master_prompt", "video_type"]
+    required: ["veo_clip", "clip_strategy", "scene_core", "cinematography", "motion_physics", "temporal_arc", "style", "audio", "negative_prompts", "compiled_master_prompt", "video_type"]
 };
