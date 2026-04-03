@@ -4,8 +4,6 @@ import { Groq } from "groq-sdk";
 import { ResponseManager } from "@/lib/api-response";
 import { atlasService } from "@/lib/atlas-service";
 
-export const maxDuration = 60; // Extend Vercel Serverless function timeout to 60s (Hobby max)
-
 import { adCreativeSchema } from "@/lib/schemas/ad-creative";
 import { medicalIllustrationSchema } from "@/lib/schemas/medical-illustration";
 import { vectorIllustrationSchema } from "@/lib/schemas/vector-branding";
@@ -796,7 +794,9 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                 if (styleStr.includes("animated style") && styleStr.includes("photorealistic mode")) {
                     validation_results.push({ rule: "R1", status: "fail", severity: "blocker", action: "reject", detail: "Hard Style Conflict Detected." });
                     hard_reject = true;
-                }                // --- THE LOMBARDI SYNTHESIS (v20.0 — Gold Standard Final) ---
+                }
+                
+                // --- THE LOMBARDI SYNTHESIS (v20.0 — Gold Standard Final) ---
                 const prose_word_count = (adData.compiled_master_prompt || "").split(/\s+/).length;
                 if (prose_word_count < 140 && Array.isArray(adData.scene_core?.action_sequence)) {
                     console.log("[v20.0 Lombardi Synthesis] Final Gold Standard Synthesis.");
@@ -943,4 +943,6 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
         return ResponseManager.error(error.message, 500);
     }
 }
+
+export const maxDuration = 60; // Extend Vercel Serverless function timeout to 60s (Hobby max)
 

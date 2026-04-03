@@ -1,6 +1,13 @@
 export type Mode = 'ad' | 'medical' | 'vector' | 'video' | 'storyboard' | 'manga' | 'comic' | 'food' | 'infographic';
 export type AssetType = 'style' | 'subject' | 'structure';
 
+export type ApiResponse<T = any> = {
+    success: boolean;
+    data?: T;
+    error?: string;
+    details?: any;
+};
+
 export interface StylePreset {
     label: string;
     value: string;

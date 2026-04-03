@@ -1,11 +1,5 @@
 import { NextResponse } from "next/server";
-
-export type ApiResponse<T = any> = {
-    success: boolean;
-    data?: T;
-    error?: string;
-    details?: any;
-};
+import { ApiResponse } from "@/types";
 
 export class ResponseManager {
     static success<T>(data: T, status = 200) {

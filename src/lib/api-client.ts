@@ -4,10 +4,10 @@ import {
     LibraryItem,
     GenerateRequest,
     RenderRequest,
-    RefineRequest
+    RefineRequest,
+    ApiResponse
 } from "@/types";
 import { AUTH_CONSTANTS } from "./constants";
-import { ApiResponse } from "./api-response";
 
 const getHeaders = () => {
     const secret = typeof window !== 'undefined' ? localStorage.getItem(AUTH_CONSTANTS.LOCAL_STORAGE_KEY) : null;
