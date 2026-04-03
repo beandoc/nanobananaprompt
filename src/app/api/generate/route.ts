@@ -751,11 +751,14 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                 }
 
                 if (hard_reject) {
-                    console.error("[v12.1 Sovereign Relief] HARD REJECT TRIGGERED.");
+                    const blockers = validation_results.filter(r => r.severity === "blocker");
+                    console.error("[v12.2 Sovereign Debug] HARD REJECT:", blockers);
                     return Response.json({ 
                         status: "REJECTED", 
-                        errors: validation_results.filter(r => r.severity === "blocker"),
-                        _metadata: { engine: "Sovereign v12.1 [Relief]", build: "Cybernetic Balanced" }
+                        validation_errors: blockers,
+                        error_type: "INTELLIGENCE_GATE_FAILURE",
+                        message: `The Sovereign Engine rejected this generation due to Rule Violations: ${blockers.map(b => b.rule).join(", ")}.`,
+                        _metadata: { engine: "Sovereign v12.2 [Debug]", build: "Diagnostic High-Fidelity" }
                     }, { status: 422 });
                 }
 
