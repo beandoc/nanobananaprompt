@@ -311,9 +311,18 @@ export default function Home() {
             </Suspense>
 
             {(error || authError) && (
-              <div className="p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-xs font-bold uppercase flex items-center justify-between">
-                <span>{error || "Authentication Session Invalid"}</span>
-                <button onClick={handleLogout} className="underline">Re-Auth</button>
+              <div className="p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-xs font-bold uppercase flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <span className="flex-1 pr-4">{error || "Authentication Session Invalid"}</span>
+                  {(authError || (error && (error.toLowerCase().includes('auth') || error.includes('401')))) && (
+                    <button onClick={handleLogout} className="underline shrink-0 font-black hover:text-rose-800 transition-colors">Re-Auth</button>
+                  )}
+                </div>
+                {error && error.includes("Quality Failure") && (
+                  <div className="text-[10px] bg-rose-100/50 p-2 rounded-lg font-medium normal-case">
+                    The engine rejected the output due to insufficient detail. Please try refining your brief with more descriptive language.
+                  </div>
+                )}
               </div>
             )}
           </div>

@@ -796,30 +796,11 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                 if (styleStr.includes("animated style") && styleStr.includes("photorealistic mode")) {
                     validation_results.push({ rule: "R1", status: "fail", severity: "blocker", action: "reject", detail: "Hard Style Conflict Detected." });
                     hard_reject = true;
-                }
-
-                // R9: Quality Gate (Safety Valve)
+                }                // --- THE LOMBARDI SYNTHESIS (v20.0 — Gold Standard Final) ---
                 const prose_word_count = (adData.compiled_master_prompt || "").split(/\s+/).length;
-                if (prose_word_count < 80) {
-                    validation_results.push({ rule: "R9", status: "fail", severity: "blocker", action: "reject", detail: `Insufficient Prose Density (${prose_word_count} words). 120+ words required for Sovereign status.` });
-                    hard_reject = true;
-                }
-
-                if (hard_reject) {
-                    const blockers = validation_results.filter(r => r.severity === "blocker" || r.status === "fail");
-                    return Response.json({ 
-                        status: "REJECTED", 
-                        validation_errors: blockers,
-                        error_type: "INTELLIGENCE_GATE_FAILURE",
-                        message: `The Sovereign Engine rejected this generation due to quality failures: ${blockers.map(b => b.rule + ": " + b.detail).join(" | ")}.`,
-                        _metadata: { engine: "Sovereign v12.5 [Master Key]", build: "High-Fidelity Robust" }
-                    }, { status: 422 });
-                }
-
-                // --- THE LOMBARDI SYNTHESIS (v20.0 — Gold Standard Final) ---
-                if (prose_word_count < 160 && Array.isArray(adData.scene_core?.action_sequence)) {
+                if (prose_word_count < 140 && Array.isArray(adData.scene_core?.action_sequence)) {
                     console.log("[v20.0 Lombardi Synthesis] Final Gold Standard Synthesis.");
-
+                    
                     const isAnimated = rawStyle.includes('animated') || rawStyle.includes('pixar') || rawStyle.includes('ghibli') || rawStyle.includes('anime') || rawStyle.includes('3d cartoon') || rawStyle.includes('illustration') || rawStyle.includes('manga');
                     const isCyberpunk = rawStyle.includes('cyberpunk') || rawStyle.includes('neon') || rawStyle.includes('futuristic');
                     const isDrone = rawStyle.includes('drone') || rawStyle.includes('aerial');
@@ -880,54 +861,33 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                     adData.compiled_master_prompt = `${finalProse} ${negatives} The ${finalDuration}-second shot maintains absolute visual coherence.`.replace(/[{}[\]"]/g, "");
                 }
 
-                // Final Clean & Sanitation Pass (v20.0)
-                let master = adData.compiled_master_prompt
-                    .replace(/([a-zA-Z]+)\s+\1/g, "$1") // remove double words
-                    .replace(/\s+/g, ' ')
-                    .trim();
+                // --- v20.5 SOVEREIGN QUALITY GATE (FINAL) ---
+                const final_prose = adData.compiled_master_prompt || "";
+                const final_word_count = final_prose.trim().split(/\s+/).length;
                 
-                adData.compiled_master_prompt = master;
-                adData.engine_prompts = { veo: master };
-                
-                // Add traceable validation report (v20.0)
-                adData.validation_report = {
-                    style_check: {
-                        status: rawStyle.includes('noir') && adData.veo_clip?.aspect_ratio === '2.39:1' ? "passed" : "verified",
-                        rule_id: "S1-STYLE-ONTOLOGY-LOCK"
-                    },
-                    physics_check: {
-                        status: adData.motion_physics?.rain_interaction?.tire_spray || adData.motion_physics?.dust_dynamics?.behavior ? "passed" : "verified",
-                        rule_id: "P5-PARTICULATE-DYNAMICS-RECONCILER"
-                    },
-                    conflict_check: {
-                        status: conflictResolved === "none" ? "passed" : "resolved",
-                        rule_id: "C3-CINEMATOGRAPHIC-CONTRADICTION-HANDLER"
-                    }
-                };
-
-                adData._quality_flags = {
-                    validation_status: "PASSED",
-                    engine: "Sovereign v20.0 [Gold Standard Final]",
-                    prose_word_count: master.split(/\s+/).length,
-                };
-
-
-
-                // --- COMPILED PROMPT WORD-COUNT GUARD ---
-                // If the LLM wrote one sentence (< 60 words), it failed the synthesis rule. Flag it.
-                const compiledWordCount = compiledPrompt.trim().split(/\s+/).length;
-                if (compiledWordCount < 60) {
-                    console.warn(`[v8.0 QUALITY GATE] compiled_master_prompt FAILED word count: ${compiledWordCount} words (min: 120). Flagging.`);
-                    // Append a warning tag to signal failure — do not silently pass through a bad prompt
-                    adData._quality_flags = { prose_word_count: compiledWordCount, prose_gate_passed: false };
-                } else {
-                    adData._quality_flags = { prose_word_count: compiledWordCount, prose_gate_passed: true };
+                // R1: Integrity check
+                if (final_word_count < 80) {
+                    validation_results.push({ rule: "R9", status: "fail", severity: "blocker", detail: `Insufficient Prose Density (${final_word_count} words). 120+ words required for Sovereign status.` });
+                    hard_reject = true;
                 }
 
-                const veoPrompt = compiledPrompt.trim();
+                // R10: Identity Lock
+                if (!final_prose.toLowerCase().includes("indian") && !final_prose.toLowerCase().includes("south asian")) {
+                    adData.compiled_master_prompt = `[MANDATORY IDENTITY: Indian/South Asian descent] ${final_prose}`;
+                }
 
-                adData.engine_prompts = {
-                    veo: veoPrompt
+                if (hard_reject) {
+                    const blockers = validation_results.filter(r => r.severity === "blocker" || r.status === "fail");
+                    const errorMessage = `Quality Failure: ${blockers.map(b => b.rule + ": " + b.detail).join(" | ")}`;
+                    return ResponseManager.error(errorMessage, 422, { validation_errors: blockers });
+                }
+
+                adData.engine_prompts = { veo: adData.compiled_master_prompt };
+                adData._quality_flags = {
+                    validation_status: "PASSED",
+                    engine: "Sovereign v20.5 [Gold Standard Final]",
+                    prose_word_count: final_word_count,
+                    prose_gate_passed: true
                 };
             }
 
