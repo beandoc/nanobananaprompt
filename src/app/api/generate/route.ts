@@ -94,30 +94,26 @@ const agentConfigs: any = {
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert brief into Vector JSON. Style: ${style}.`
     },
     video: {
-        expansionRole: "Sovereign Cinematic Director & Motion Architect (v5.0 — MASTER_MOTION_ENGINE)",
+        expansionRole: "Sovereign Cinematic Director & Motion Architect (v5.1 — PRODUCTION_MOTION_ENGINE)",
         expansionRules: [
-            "1. IDENTITY LOCK: All human subjects MUST be of South Asian/Indian descent with modern urban Indian styling. Describe skin tone, facial features, and clothing textures exhaustively.",
-            "2. TEMPORAL ARC: Structure the shot as a JOURNEY. Describe what happens at the opening (0-3s), midpoint (3-6s), and closing (6-8s+). Every frame must have purpose.",
-            "3. DURATION MAXIMIZATION: Default to the longest possible single-shot duration your target engine supports. Kling AI Pro: 10s. Seedance 2.0: 10s. Veo 3: 8s. Runway Gen-4: 10s. Push to maximum.",
-            "4. PHYSICS-BASED MOTION: Describe ALL motion using physical properties. Hair: strand-level wind reaction with 0.3s delay. Fabric: weight-appropriate draping and billowing. Liquid: viscosity-accurate splash crowns and surface tension. Particles: varied terminal velocity.",
-            "5. CAMERA CHOREOGRAPHY: Use professional camera language — Steadicam orbit, crane-up, dolly zoom (vertigo effect), rack focus, whip pan. Describe the camera's emotional intention (e.g., 'the camera slowly approaches, creating intimacy').",
-            "6. LIGHTING AS NARRATIVE: Describe lighting transitions over time (e.g., 'warm tungsten interior gives way to cold blue moonlight as the door opens'). Specify practical lights (lamps, screens, neon signs) vs ambient.",
-            "7. SENSORY DENSITY: Layer at least 4 sensory channels — visual texture, motion dynamics, sound design, and atmospheric particles. Each sentence should paint a micro-world.",
-            "8. VIDEO TYPE AWARENESS: If the brief suggests animation (2D, 3D, anime, motion graphics), adapt the style descriptors accordingly. Use animation-specific terms (cel-shading, motion smear, squash-and-stretch, parallax scrolling) instead of photorealistic terms.",
-            "9. ENGINE OPTIMIZATION: End with engine-friendly keywords: 'cinematic', 'temporal consistency', 'no morphing', 'no face distortion', 'professional', '4K', plus style-specific tags."
+            "1. IDENTITY LOCK: All human subjects MUST be of South Asian/Indian descent. Explicitly define: deep-set brown eyes, silver/black stubble, warm brown skin with 15% subsurface scattering (SSS) warmth. Clothing: high-denier matte fabric or authentic silk with visible weave normal maps.",
+            "2. TEMPORAL ANCHORS: You MUST structure the master prompt with explicit timestamp anchors: '[0s-3s]: [Action 1]', '[4s-7s]: [Action 2]', '[8s-10s]: [Action 3]'. This is the spinal cord of the video generation. No vague transitions.",
+            "3. DURATION MAXIMIZATION: Default to 10s for Kling/Seedance/Runway, 8s for Google Flow (Veo). Push all shots to the terminal duration limit.",
+            "4. PBR RIGOR (PHYSICS): Do NOT use literary words. Use rendering terms: 'PBR matte diffuse', 'specular: 0.1', 'tangent-space normal maps', 'sub-millimeter surface displacement', 'micro-jitter at 12fps (if stop-motion)'. All motion must have mass, velocity (m/s), and inertia.",
+            "5. CAMERA CHOREOGRAPHY: Use cinematic tokens: 'Locked tripod', '360-degree orbit', 'Slow Dolly-In (2m range)', 'Rack Focus (Iris: f/1.8)'. Describe the focal shift technically.",
+            "6. LIGHTING VOLUMETRICS: Define lighting by source and temp: 'Main Key: 3200K Tungsten Point Light, Radius 0.5, 0.8Hz flicker flicker'. 'Fill: 5600K indirect ambient daylight'. 'Rim: High-contrast 6500K blue edge light'.",
+            "7. ZERO-FLUFF MANDATE: Ban all 'feelings' prose. Delete words like 'lingering', 'drinking in', 'beautiful', 'captivating', 'atmospheric'. Every sentence must provide a RENDERABLE SIGNAL (What, How, When).",
+            "8. VIDEO TYPE ADAPTATION: If 'stop-motion', use 'handcrafted clay textures, visible fingerprints, stuttered 12fps kinetics'. If 'anime', use 'cel-shading, impact frames, motion smears'.",
+            "9. ENGINE-SENSITIVE COMPILING: The response MUST contain differentiated signals for Kling, Seedance, Veo, and Runway. Do not reuse the same block for all."
         ],
-        jsonRole: "Chief Cinematic Engineer & Motion Architect (v5.0)",
-        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v5.0 — PRODUCTION PROTOCOL
-1. HERO LAYER FIRST: Populate 'diffusion_synthesis.master_prompt' BEFORE anything else. This is the ONLY text the video AI reads. 200-400 words of pure natural language.
-2. TEMPORAL ARC: You MUST provide at least 3 keyframes in 'temporal_arc.keyframes' showing how the shot evolves.
-3. DURATION: Set 'temporal_arc.duration' to the maximum supported (e.g., '10s' for Kling Pro, '8s' for Veo 3).
-4. RESOLUTION: Default '4K UHD'. Frame rate: '24fps' for cinematic drama, '60fps' for action, '120fps' for slow-motion.
-5. MOTION PHYSICS: Populate 'motion_physics' with dense physical descriptors. Every moving element needs weight, velocity, and reaction.
-6. VIDEO TYPE: Set 'video_type' appropriately — 'live-action-photorealistic' for real footage, '3d-animation' for Pixar/CGI, '2d-animation' for drawn/cel, 'anime' for Japanese animation style.
-7. ENGINE HINTS: Populate 'diffusion_synthesis.engine_hints' with per-engine optimization tags.
-8. IDENTITY: South Asian heritage is MANDATORY for all human subjects.
-9. NEGATIVE PROMPT: Always include 'no morphing, no face distortion, no text overlays, no watermarks, no sudden scene cuts'.
-10. STYLE: ${style || 'cinematic photorealistic'}.`
+        jsonRole: "Chief Cinematic Engineer & Motion Architect (v5.1)",
+        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v5.1 — PRODUCTION PROTOCOL
+1. HERO LAYER: Populate 'diffusion_synthesis.master_prompt' with the [0s/5s/10s] timestamped anchor prose. (300+ words).
+2. HARD TEMPORAL ARC: 'temporal_arc.keyframes' must match the timestamps in the master prompt exactly.
+3. MOTION PHYSICS: Populate with technical PBR values (specularity, roughness, displacement).
+4. IDENTITY: Enforce the 'South Asian Identity Lock' facial descriptors.
+5. ENGINE HINTS: Map specific tags: Kling (--stylize), Seedance (motion_magnitude), Veo (scene_break), Runway (camera_tokens).
+6. STYLE: ${style || 'cinematic photorealistic'}.`
     },
     manga: {
         expansionRole: "Manga Concept Artist",
@@ -618,15 +614,16 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                 // Compile the final prompt
                 ds.compiled_prompt = cinematicBlocks.join('\n\n');
 
-                // Build per-engine optimized prompts
-                const basePrompt = ds.compiled_prompt;
-                const negPrompt = ds.negative_prompt || 'no morphing, no face distortion, no text overlays, no watermarks';
+                // --- ENGINE-SPECIFIC COMPILER (v5.1 Hardened) ---
+                const basePrompt = ds.master_prompt || "";
+                const negPrompt = ds.negative_prompt || "no morphing, no distortion";
+
                 ds.engine_prompts = {
-                    kling: `${basePrompt}\n\nDuration: ${ta.duration || '10s'}. Resolution: ${ta.resolution || '1080p'}. ${ds.engine_hints?.kling_ai || 'professional mode, high quality'}.\n\nNegative: ${negPrompt}`,
-                    seedance: `${basePrompt}\n\nDuration: ${ta.duration || '10s'}. ${ds.engine_hints?.seedance || 'motion intensity: high, keyframe guidance'}.\n\nNegative: ${negPrompt}`,
-                    veo: `[Google Flow / Veo 3 Protocol]: ${basePrompt}\n\nDuration: ${ta.duration || '8s'}. ${ds.engine_hints?.veo || 'photorealistic, high detail'}.\n\nNegative: ${negPrompt}`,
-                    runway: `${basePrompt}\n\nDuration: ${ta.duration || '10s'}. ${ds.engine_hints?.runway || 'motion brush: full frame'}.\n\nNegative: ${negPrompt}`,
-                    generic: `${basePrompt}\n\nDuration: ${ta.duration || '10s'}. Resolution: ${ta.resolution || '4K UHD'}. FPS: ${ta.frame_rate || '24fps'}.\n\nNegative: ${negPrompt}`
+                    kling: `--stylize 8 --motion 7 --quality high\n\n${basePrompt}\n\n[Technical Specs: ${ta.resolution || '1080p'}, ${ta.duration || '10s'}]`,
+                    seedance: `[Motion Vector Guidance: High Magnitude]\n\n${basePrompt}\n\nMasterpiece, 8K, Seedance-2.0, detailed material physics.`,
+                    veo: `[Google Flow / Veo 3 Protocol]\n\n${basePrompt.replace(/\[\d+s-\d+s\]/g, (match) => `\n[SCENE BREAK] ${match}`)}\n\nStyle: Cinematic Photorealism, Length: 8s`,
+                    runway: `Camera: ${mp.camera_spec || 'Locked tripod'}. Motion: ${mp.motion_magnitude || 5}.\n\n${basePrompt}\n\nGen-3 Alpha, hyper-realistic.`,
+                    generic: `${basePrompt}\n\nSpecs: ${ta.duration || '10s'}, ${ta.frame_rate || '24fps'}.`
                 };
             }
 
