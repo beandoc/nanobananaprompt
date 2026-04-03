@@ -115,7 +115,7 @@ export const videoIllustrationSchema: Schema = {
                 },
                 environment: {
                     type: SchemaType.STRING,
-                    description: "Scene location and atmospheric context."
+                    description: "Scene location and atmospheric context. Include 'crowd_density' (e.g., 'high-traffic', 'isolated', 'sparse background players')."
                 },
                 world_material: {
                     type: SchemaType.STRING,
@@ -159,7 +159,7 @@ export const videoIllustrationSchema: Schema = {
                 },
                 color_grade: {
                     type: SchemaType.STRING,
-                    description: "E.g., 'Warm honey-toned', 'Teal-orange cinematic', 'Desaturated Fincher noir'."
+                    description: "Color strategy. Include LUT reference (e.g., 'Teal-orange LUT applied over Rec.709 base', 'High-contrast Technicolor Process 4')."
                 }
             },
             required: ["shot_type", "camera_movement", "lens", "lighting", "color_grade"]

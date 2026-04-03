@@ -110,33 +110,20 @@ STYLE SELECTED: ${style}
             "RULE 9 — FPS BY STYLE: Pixar CGI → 24fps. Stop-motion/Claymation → 12fps. Anime → 24fps. Cel-shaded → 24fps. Vintage film → 24fps. NEVER use 60fps for animation — that is slow-motion live-action.",
             "RULE 10 — no_smooth_interpolation FLAG: Set TRUE for ALL animation styles (CGI, Claymation, Anime, Cel-shaded). Set FALSE for live-action photorealism ONLY.",
             "RULE 11 — RENDER LANGUAGE: CGI briefs MUST populate style.render_language array with: SSS descriptors, PBR material specs, volumetric lighting, and the hero visual's emissive/specular properties.",
-            "RULE 12 — STYLE TAG MAP (EXACT MATCH MANDATORY): 'Pixar' or 'Disney' → 'Pixar-like 3D animation'. 'claymation' or 'clay' → 'claymation style'. 'stop-motion' → 'stop-motion animation'. 'anime' or 'Ghibli' → 'Japanese anime style'. 'hand-drawn' or '2D' → 'cel-shaded animation'. 'vintage' or 'retro' → 'shot on 16mm film, film grain'. 'watercolour' → 'watercolor painting coming to life'. 'sketch' → 'charcoal sketch animation'. SETTING WORDS LIKE 'cyberpunk', 'Mumbai', 'street food' ARE NOT STYLE TAGS."
+            "RULE 12 — STYLE TAG MAP (EXACT MATCH MANDATORY): 'Pixar' or 'Disney' → 'Pixar-like 3D animation'. 'claymation' or 'clay' → 'claymation style'. 'stop-motion' → 'stop-motion animation'. 'anime' or 'Ghibli' → 'Japanese anime style'. 'hand-drawn' or '2D' → 'cel-shaded animation'. 'vintage' or 'retro' → 'shot on 16mm film, film grain'. 'watercolour' → 'watercolor painting coming to life'. 'sketch' → 'charcoal sketch animation'. SETTING WORDS LIKE 'cyberpunk', 'Mumbai', 'street food' ARE NOT STYLE TAGS.",
+            "RULE 13 — THE 3-BEAT ARC (CRITICAL): Every 8s clip MUST have 3 causal beats (Start, Middle, End). If you only provide 2 beats, the model will improvise in the middle-third. Explicitly define the transition from Beat 1 to Beat 2 to Beat 3."
         ],
-        jsonRole: "Chief Cinematic Engineer — Google Flow / Veo 3.1 Protocol (v8.0)",
-        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v8.0 — STYLE-AWARE EXTRACTION PROTOCOL
+        jsonRole: "Chief Cinematic Engineer — Google Flow / Veo 3.1 Protocol (v8.5)",
+        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v8.5 — PRECISION CONTROL PROTOCOL
 
-STYLE APPLIED: ${style}
+STYLE SELECTED: ${style}
 
-Mandatory Pre-Generation Checklist (complete in this order):
-STEP 1 — STYLE EXTRACTION: What animation style is this brief? Map it to the EXACT Veo native tag.
-  Pixar/Disney CGI → veo_native_tags: ["Pixar-like 3D animation"], fps: 24, negative_prompts: ["no photorealistic rendering","no live-action footage style","no morphing or texture instability"]
-  Claymation/Stop-motion → veo_native_tags: ["claymation style","stop-motion animation"], fps: 12, negative_prompts: ["No smooth motion interpolation","No morphing between frames","No subtitles"]
-  Anime/Ghibli → veo_native_tags: ["Japanese anime style"], fps: 24, negative_prompts: ["no photorealistic rendering","no 3D CGI look","no morphing"]
-  Cel-shaded → veo_native_tags: ["cel-shaded animation"], fps: 24, negative_prompts: ["no photorealistic rendering","no smooth gradients","no morphing"]
-  Live-action → veo_native_tags: ["cinematic film look"], fps: 24, negative_prompts: ["no text","no subtitles","no morphing"]
-
-STEP 2 — HERO VISUAL: Identify the single most visually striking moment in the brief. Write it down. This MUST appear in compiled_master_prompt.
-
-STEP 3 — IDENTITY LOCK: Fill identity_locks for every subject. For CGI: add 'pixar_design_notes' with proportions. Physical features ≠ costume props.
-
-STEP 4 — ACTION ARC: Exactly 3 causal beats. FORMAT: Beat→Trigger→Physical Consequence. Max 4 beats only if the brief explicitly needs it.
-
-STEP 5 — COMPILED PROMPT: Write 120-160 words of fluid prose. STRUCTURE:
-  Sentence 1: [SHOT TYPE + CAMERA MOVEMENT + LENS]
-  Sentence 2-3: [ALL SUBJECTS with full identity — NOT just one word]
-  Paragraph 2: [ACTION ARC — 3 beats with 'As...', 'When...', 'In response...' connectors]
-  Paragraph 3: [SETTING as unified material reality + HERO VISUAL]
-  Final lines: [STYLE TAG] + [fps] stuttered/smooth + [colour grade]. Ambient: [...]. SFX: [...]. No dialogue. No subtitles. Exclude: [negatives].`
+Mandatory Polish Points (based on 9.1/10 Audit):
+1. **THE 3-BEAT MANDATE**: You MUST define 3 distinct action beats. No 2-beat 'lazy arcs'.
+2. **ENVIRONMENTAL DENSITY**: Clearly define the background player count (e.g., 'heavy-traffic crowd with 20+ background blurred figures').
+3. **COLOR & LUT**: Specify the LUT applied (e.g., 'Cinematic high-contrast LUT over Rec.709 base').
+4. **LIGHT ANGLE**: Define the light source position (e.g., 'Single key light at 45° angle high-camera-left').
+5. **HERO SYNTHESIS**: The compiled_master_prompt must be 150-200 words. Describe the shot as a spatial-temporal journey.`
     },
     manga: {
         expansionRole: "Manga Concept Artist",
