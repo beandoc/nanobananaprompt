@@ -624,7 +624,7 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                 ds.engine_prompts = {
                     kling: `${basePrompt}\n\nDuration: ${ta.duration || '10s'}. Resolution: ${ta.resolution || '1080p'}. ${ds.engine_hints?.kling_ai || 'professional mode, high quality'}.\n\nNegative: ${negPrompt}`,
                     seedance: `${basePrompt}\n\nDuration: ${ta.duration || '10s'}. ${ds.engine_hints?.seedance || 'motion intensity: high, keyframe guidance'}.\n\nNegative: ${negPrompt}`,
-                    veo: `${basePrompt}\n\nDuration: ${ta.duration || '8s'}. ${ds.engine_hints?.veo || 'photorealistic, high detail'}.\n\nNegative: ${negPrompt}`,
+                    veo: `[Google Flow / Veo 3 Protocol]: ${basePrompt}\n\nDuration: ${ta.duration || '8s'}. ${ds.engine_hints?.veo || 'photorealistic, high detail'}.\n\nNegative: ${negPrompt}`,
                     runway: `${basePrompt}\n\nDuration: ${ta.duration || '10s'}. ${ds.engine_hints?.runway || 'motion brush: full frame'}.\n\nNegative: ${negPrompt}`,
                     generic: `${basePrompt}\n\nDuration: ${ta.duration || '10s'}. Resolution: ${ta.resolution || '4K UHD'}. FPS: ${ta.frame_rate || '24fps'}.\n\nNegative: ${negPrompt}`
                 };
