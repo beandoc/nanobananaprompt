@@ -22,7 +22,7 @@ type VideoEngine = 'kling' | 'seedance' | 'veo' | 'runway' | 'generic';
 const ENGINE_META: Record<VideoEngine, { label: string; color: string; url?: string }> = {
     kling: { label: "Kling AI", color: "bg-violet-500", url: "https://klingai.com" },
     seedance: { label: "Seedance", color: "bg-rose-500", url: "https://seedance.ai" },
-    veo: { label: "Google Flow (Veo)", color: "bg-blue-600", url: "https://videofx.google/" },
+    veo: { label: "Google Flow (Veo)", color: "bg-blue-600", url: "https://labs.google/fx/tools/flow" },
     runway: { label: "Runway", color: "bg-emerald-500", url: "https://app.runwayml.com" },
     generic: { label: "Universal", color: "bg-slate-600" }
 };
