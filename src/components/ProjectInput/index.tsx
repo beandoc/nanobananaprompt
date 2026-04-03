@@ -63,18 +63,22 @@ const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
         { label: "[PRO] Miniature Brand Storefront", value: "Macro-Isometric Retail: A high-detail miniature 3D architectural model of a [BRAND] store on a solid color baseplate. PBR Toy-aesthetic.", description: "A cute, highly detailed miniature 'toy' version of a retail building." }
     ],
     video: [
-        { label: "Cinematic Noir (Photorealistic)", value: "Cinematic Noir, gritty hyperrealism, 35mm Anamorphic, Neo-Mumbai aesthetic, rain-slicked surfaces, volumetric fog", description: "Gritty, rainy cyberpunk atmosphere with high-contrast shadows and neon reflections." },
-        { label: "High-Fashion Editorial", value: "High-fashion editorial, clean golden-hour desert landscape, flowing silk fabrics, Vogue India aesthetic, soft bokeh", description: "Soft golden light across desert vistas with elegant, flowing fabrics." },
-        { label: "Cyberpunk Neon Burst", value: "Vibrant Cyberpunk, harsh pink/cyan neon rim lighting, motion-blurred high-speed action, metallic textures, temporal consistency", description: "High-energy action style with intense neon glow and motion blur." },
-        { label: "Handheld Documentary 16mm", value: "Raw 16mm handheld documentary style, natural film grain, organic camera shake, realistic focus pulling, Indian street life", description: "Authentic 16mm film look with grain and organic camera movement." },
-        { label: "Anamorphic 8K Widescreen", value: "Anamorphic 2.39:1 widescreen, global illumination, 8K RED Helium look, deep depth of field, production grade", description: "Wide-screen cinematic CGI look with professional lighting and depth." },
-        { label: "[PRO] Luxury Wellness", value: "Ultra-luxury spa portrait. Volumetric steam, dewy skin micro-texture, warm diffused 3200K lighting, macro on water droplets.", description: "Ultra-high-end spa aesthetic with volumetric steam and dewy skin." },
-        { label: "[ANIMATED] Pixar/Disney CGI", value: "Pixar-quality 3D CGI animation, subsurface scattering on skin, global illumination, PBR materials, warm saturated colors, squash-and-stretch motion principles", description: "High-end 3D animation in the style of modern Pixar/Disney films." },
-        { label: "[ANIMATED] Studio Ghibli", value: "Studio Ghibli hand-painted watercolor backgrounds, soft cel-shading, gentle parallax scrolling, warm pastoral lighting, delicate motion smear on action", description: "Beautiful hand-painted anime aesthetic inspired by Miyazaki films." },
-        { label: "[ANIMATED] Anime Action (Shonen)", value: "High-energy shonen anime, bold G-Pen linework, dynamic action speed lines, dramatic cel-shading, aura effects, impact frames", description: "Intense action anime with speed lines, impact frames, and bold inking." },
-        { label: "[ANIMATED] Motion Graphics", value: "Clean motion graphics, kinetic typography, geometric shape morphing, smooth cubic-bezier easing, gradient backgrounds, particle systems", description: "Professional motion design with smooth transitions and typography." },
-        { label: "[ANIMATED] Claymation/Stop Motion", value: "Stop-motion claymation, visible finger impressions, warm practical lighting, miniature sets, 12fps stuttered motion, handcrafted textures", description: "Charming stop-motion look with handcrafted textures and 12fps motion." },
-        { label: "[PRO] Drone Cinematic", value: "DJI Inspire 3 aerial cinematography, smooth gimbal tracking, 120fps overcranked slow motion, sunrise golden hour, sweeping Indian landscapes", description: "Breathtaking aerial drone footage with smooth gimbal movements." }
+        { label: "Photorealistic", value: "photorealistic", description: "Cinematic hyperrealism, 35mm film stock, crisp physical textures, and realistic lighting signatures." },
+        { label: "Picture book", value: "picture-book", description: "Soft watercolor painting, whimsical atmosphere, hand-drawn edges, and gentle pastel lighting." },
+        { label: "3D cartoon", value: "3D-cartoon", description: "Pixar-style 3D CGI animation, subsurface scattering, global illumination, and vibrant saturated colors." },
+        { label: "Retro comics", value: "retro-comics", description: "Vintage cel-shaded aesthetic with Ben-Day dot halftone textures and bold ink outlines." },
+        { label: "Anime", value: "anime", description: "Japanese anime style with dynamic motion smears, high-energy action, and dramatic cel-shading." },
+        { label: "Pixel art", value: "pixel-art", description: "8-bit crisp pixel art animation with a restricted color palette and retro gaming physics." },
+        { label: "Cinematic", value: "cinematic", description: "Anamorphic 2.39:1 widescreen, high-contrast film lighting, and professional production-grade depth." },
+        { label: "Hyper cartoon", value: "hyper-cartoon", description: "Disney-style exaggerated motion, squash-and-stretch principles, and ultra-vibrant dreamlike colors." },
+        { label: "Illustration", value: "illustration", description: "Clean flat vector illustration animation, uniform stroke weights, and minimalist color palettes." },
+        { label: "Dreamtale", value: "dreamtale", description: "Ethereal highlights, soft-focus dreamlike atmosphere, and magical glowing particles." },
+        { label: "Skytale", value: "skytale", description: "Studio Ghibli aesthetic, hand-painted watercolor backgrounds, and soft-focus pastoral nostalgia." },
+        { label: "80s film", value: "80s-film", description: "Vintage VHS analog aesthetic, heavy film grain, light leaks, and desaturated nostalgic tones." },
+        { label: "Minimalist", value: "minimalist", description: "Clean lines, high negative space, monochrome palettes, and essentialist visual storytelling." },
+        { label: "Horror", value: "horror", description: "Moody rim lighting, deep crushing shadows, eerie volumetric fog, and cold desaturated tones." },
+        { label: "Sketchbook", value: "sketchbook", description: "Charcoal and pencil sketch animation on visible paper grain with raw hand-drawn motion." },
+        { label: "[PRO] Drone Cinematic", value: "drone-cinematic", description: "Smooth high-altitude aerial gimbal tracking with sweeping landscape focus." }
     ],
 
     medical: [
