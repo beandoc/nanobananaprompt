@@ -34,6 +34,7 @@ export function BlueprintConsole({
     expansionText
 }: BlueprintConsoleProps) {
     const [copiedEngine, setCopiedEngine] = useState<string | null>(null);
+    const [viewMode, setViewMode] = useState<'prose' | 'json'>(isVideo ? 'prose' : 'json');
     const isVideo = mode === 'video';
     const videoData = data as any;
 
@@ -192,11 +193,48 @@ export function BlueprintConsole({
                 </div>
             )}
 
-            {/* JSON Preview */}
-            <div className="bg-slate-900 rounded-2xl md:rounded-[2rem] p-5 md:p-8 border border-white/5 max-h-[250px] overflow-auto mb-6 md:mb-8 shadow-2xl relative group/code">
-                <pre className="text-[10px] md:text-[11px] text-indigo-300 font-mono leading-relaxed whitespace-pre-wrap">
-                    {JSON.stringify(data, null, 2)}
-                </pre>
+            {/* --- CONSOLE TABS (v7.2) --- */}
+            <div className="flex items-center gap-1 mb-4 p-1 bg-slate-100 rounded-xl w-fit">
+                <button
+                    onClick={() => setViewMode('prose')}
+                    className={cn(
+                        "px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
+                        viewMode === 'prose' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400 hover:text-slate-600"
+                    )}
+                >
+                    Masterclass Prose
+                </button>
+                <button
+                    onClick={() => setViewMode('json')}
+                    className={cn(
+                        "px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
+                        viewMode === 'json' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400 hover:text-slate-600"
+                    )}
+                >
+                    JSON Blueprint
+                </button>
+            </div>
+
+            {/* CONSOLE DISPLAY */}
+            <div className="bg-slate-900 rounded-2xl md:rounded-[2rem] p-5 md:p-8 border border-white/5 max-h-[300px] overflow-auto mb-6 md:mb-8 shadow-2xl relative group/code">
+                {viewMode === 'json' ? (
+                    <pre className="text-[10px] md:text-[11px] text-indigo-300 font-mono leading-relaxed whitespace-pre-wrap">
+                        {JSON.stringify(data, null, 2)}
+                    </pre>
+                ) : (
+                    <div className="space-y-4">
+                        <p className="text-[11px] md:text-xs text-slate-300 font-medium leading-relaxed italic border-l-2 border-indigo-500/30 pl-4 py-2 bg-white/5 rounded-r-xl">
+                            {isVideo 
+                                ? (videoData?.diffusion_synthesis?.engine_prompts?.veo || videoData?.compiled_master_prompt || "Generating masterclass prose...")
+                                : (expansionText || (data as any)?.diffusion_synthesis?.compiled_prompt || (data as any)?.prompt || "Generating refined text...")
+                            }
+                        </p>
+                        <div className="pt-4 border-t border-white/5">
+                            <span className="text-[8px] font-black text-slate-500 uppercase tracking-[0.2em]">Engine Signal Density: High</span>
+                        </div>
+                    </div>
+                )}
+                
                 <div className="absolute top-4 right-4 items-center gap-2 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 hidden sm:flex">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest">Validated</span>
