@@ -110,20 +110,32 @@ STYLE SELECTED: ${style}
             "RULE 9 — FPS BY STYLE: Pixar CGI → 24fps. Stop-motion/Claymation → 12fps. Anime → 24fps. Cel-shaded → 24fps. Vintage film → 24fps. NEVER use 60fps for animation — that is slow-motion live-action.",
             "RULE 10 — no_smooth_interpolation FLAG: Set TRUE for ALL animation styles (CGI, Claymation, Anime, Cel-shaded). Set FALSE for live-action photorealism ONLY.",
             "RULE 11 — RENDER LANGUAGE: CGI briefs MUST populate style.render_language array with: SSS descriptors, PBR material specs, volumetric lighting, and the hero visual's emissive/specular properties.",
-            "RULE 12 — STYLE TAG MAP (EXACT MATCH MANDATORY): 'Pixar' or 'Disney' → 'Pixar-like 3D animation'. 'claymation' or 'clay' → 'claymation style'. 'stop-motion' → 'stop-motion animation'. 'anime' or 'Ghibli' → 'Japanese anime style'. 'hand-drawn' or '2D' → 'cel-shaded animation'. 'vintage' or 'retro' → 'shot on 16mm film, film grain'. 'watercolour' → 'watercolor painting coming to life'. 'sketch' → 'charcoal sketch animation'. SETTING WORDS LIKE 'cyberpunk', 'Mumbai', 'street food' ARE NOT STYLE TAGS.",
+            "RULE 12 — THE STYLE MATRIX (V9.0 MANDATORY): You MUST identify the selected UI style and map it EXACTLY to these Veo native tags:",
+            "  - Photorealistic → 'cinematic film look, detailed physical textures'.",
+            "  - Picture book → 'watercolor painting coming to life, soft edges'.",
+            "  - 3D cartoon → 'Pixar-like 3D animation, subsurface scattering'.",
+            "  - Retro comics → 'cel-shaded animation, ben-day dot halftone'.",
+            "  - Anime → 'Japanese anime style, dynamic motion smear'.",
+            "  - Pixel art → '8-bit pixel art animation, crisp square pixels'.",
+            "  - Cinematic → 'high-contrast 35mm film, anamorphic widescreen'.",
+            "  - Hyper cartoon → 'Disney CGI style, squash-and-stretch motion'.",
+            "  - Illustration → 'hand-drawn technical illustration, flat colors'.",
+            "  - Dreamtale → 'ethereal glow, soft focus, dreamlike pastel grade'.",
+            "  - Skytale → 'Studio Ghibli aesthetic, hand-painted textures'.",
+            "  - 80s film → 'vintage 80s VHS look, heavy film grain, light leaks'.",
+            "  - Minimalist → 'clean minimalist design, high negative space'.",
+            "  - Horror → 'moody rim lighting, low-key lighting, eerie atmosphere'.",
+            "  - Sketchbook → 'charcoal sketch animation, visible paper grain'.",
             "RULE 13 — THE 3-BEAT ARC (CRITICAL): Every 8s clip MUST have 3 causal beats (Start, Middle, End). If you only provide 2 beats, the model will improvise in the middle-third. Explicitly define the transition from Beat 1 to Beat 2 to Beat 3."
         ],
-        jsonRole: "Chief Cinematic Engineer — Google Flow / Veo 3.1 Protocol (v8.5)",
-        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v8.5 — PRECISION CONTROL PROTOCOL
-
+        jsonRole: "Chief Cinematic Engineer — Google Flow / Veo 3.1 Protocol (v9.0)",
+        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v9.0 — STYLE MATRIX PROTOCOL
 STYLE SELECTED: ${style}
 
-Mandatory Polish Points (based on 9.1/10 Audit):
-1. **THE 3-BEAT MANDATE**: You MUST define 3 distinct action beats. No 2-beat 'lazy arcs'.
-2. **ENVIRONMENTAL DENSITY**: Clearly define the background player count (e.g., 'heavy-traffic crowd with 20+ background blurred figures').
-3. **COLOR & LUT**: Specify the LUT applied (e.g., 'Cinematic high-contrast LUT over Rec.709 base').
-4. **LIGHT ANGLE**: Define the light source position (e.g., 'Single key light at 45° angle high-camera-left').
-5. **HERO SYNTHESIS**: The compiled_master_prompt must be 150-200 words. Describe the shot as a spatial-temporal journey.`
+1. STYLE LOCK: Use exactly the Veo native tags mapped to ${style}.
+2. FPS SYNC: Photoreal/Cinematic=24fps. 3D Cartoon=24fps. Anime/Picture-book=12fps. Sketchbook=8fps.
+3. 3-BEAT ARC: Plan action for [0-3s], [3-6s], and [6-8s].
+4. NEGATIVES: If style is 'Pixel art' → negative: 'no 3D render, no smooth gradients'. If '80s film' → negative: 'no modern digital look'.`
     },
     manga: {
         expansionRole: "Manga Concept Artist",
@@ -651,67 +663,40 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                     adData.compiled_master_prompt = compiledPrompt;
                 }
 
-                // --- v8.0: STYLE-AWARE POST-PROCESSOR ---
-                // This is the hard-enforcement layer that catches LLM style failures.
-                const veoNativeTags: string[] = Array.isArray(adData.style?.veo_native_tags) ? adData.style.veo_native_tags : [];
+                // --- v9.0: THE STYLE MATRIX POST-PROCESSOR ---
                 const rawStyle = (style as string || '').toLowerCase();
+                const vTags: string[] = [];
+                let forcedFps = 24;
+                let isStylised = true;
 
-                // Detect animation style from tags or the style passed in from the UI
-                const isPixarCGI = veoNativeTags.some((t: string) => t.toLowerCase().includes('pixar') || t.toLowerCase().includes('disney')) ||
-                    rawStyle.includes('pixar') || rawStyle.includes('disney') || rawStyle.includes('cgi');
-                const isClaymation = veoNativeTags.some((t: string) => t.toLowerCase().includes('claymation') || t.toLowerCase().includes('stop-motion')) ||
-                    rawStyle.includes('clay') || rawStyle.includes('stop');
-                const isAnime = veoNativeTags.some((t: string) => t.toLowerCase().includes('anime') || t.toLowerCase().includes('ghibli')) ||
-                    rawStyle.includes('anime') || rawStyle.includes('ghibli');
-                const isCelShaded = veoNativeTags.some((t: string) => t.toLowerCase().includes('cel-shaded')) ||
-                    rawStyle.includes('cel-shaded') || rawStyle.includes('hand-drawn');
-                const isAnimation = isPixarCGI || isClaymation || isAnime || isCelShaded;
-
-                // --- STYLE TAG ENFORCEMENT ---
-                if (isPixarCGI && !veoNativeTags.some((t: string) => t.toLowerCase().includes('pixar'))) {
-                    console.log('[v8.0] Enforcing Pixar-style tags — LLM missed style extraction');
-                    adData.style.veo_native_tags = ['Pixar-like 3D animation', 'Disney CGI animation style', 'cinematic 3D animation'];
-                    adData.style.fps = 24;
-                }
-                if (isClaymation && !veoNativeTags.some((t: string) => t.toLowerCase().includes('claymation'))) {
-                    console.log('[v8.0] Enforcing Claymation tags');
-                    adData.style.veo_native_tags = ['claymation style', 'stop-motion animation'];
-                    adData.style.fps = 12;
-                }
-                if (isAnime && !veoNativeTags.some((t: string) => t.toLowerCase().includes('anime'))) {
-                    console.log('[v8.0] Enforcing Anime tags');
-                    adData.style.veo_native_tags = ['Japanese anime style'];
-                    adData.style.fps = 24;
+                if (rawStyle.includes('photorealistic')) { 
+                    vTags.push('cinematic film look', 'detailed physical textures'); forcedFps = 24; isStylised = false;
+                } else if (rawStyle.includes('picture book')) {
+                    vTags.push('watercolor painting coming to life', 'soft edges'); forcedFps = 12;
+                } else if (rawStyle.includes('3d cartoon')) {
+                    vTags.push('Pixar-like 3D animation', 'subsurface scattering'); forcedFps = 24;
+                } else if (rawStyle.includes('retro comics')) {
+                    vTags.push('cel-shaded animation', 'ben-day dot halftone'); forcedFps = 12;
+                } else if (rawStyle.includes('anime')) {
+                    vTags.push('Japanese anime style', 'dynamic motion smear'); forcedFps = 24;
+                } else if (rawStyle.includes('pixel art')) {
+                    vTags.push('8-bit pixel art animation', 'crisp square pixels'); forcedFps = 12;
+                } else if (rawStyle.includes('cinematic')) {
+                    vTags.push('high-contrast 35mm film', 'anamorphic widescreen'); forcedFps = 24; isStylised = false;
+                } else if (rawStyle.includes('skytale')) {
+                    vTags.push('Studio Ghibli aesthetic', 'hand-painted textures'); forcedFps = 12;
+                } else if (rawStyle.includes('80s film')) {
+                    vTags.push('vintage 80s VHS look', 'heavy film grain'); forcedFps = 24;
+                } else if (rawStyle.includes('sketchbook')) {
+                    vTags.push('charcoal sketch animation', 'visible paper grain'); forcedFps = 8;
                 }
 
-                // --- FPS ENFORCEMENT ---
-                // 60fps is NEVER correct for animation — hard-cap it
-                if (isAnimation && adData.style?.fps === 60) {
-                    console.log('[v8.0] FPS 60 overridden for animation — setting to 24fps');
-                    adData.style.fps = isPixarCGI ? 24 : isClaymation ? 12 : 24;
-                }
-
-                // --- NO_SMOOTH_INTERPOLATION ENFORCEMENT ---
-                // Must be TRUE for all animation styles
-                if (isAnimation && adData.audio?.no_smooth_interpolation === false) {
-                    console.log('[v8.0] Enforcing no_smooth_interpolation: true for animation style');
-                    adData.audio.no_smooth_interpolation = true;
-                }
-
-                // --- NEGATIVE PROMPT AUTO-INJECTOR ---
-                // If negative_prompts is empty for animation, inject the correct failure-mode guards
-                if (isAnimation && (!adData.negative_prompts || adData.negative_prompts.length === 0)) {
-                    console.log('[v8.0] Injecting animation negative prompts — LLM left array empty');
-                    if (isPixarCGI) {
-                        adData.negative_prompts = ['no photorealistic rendering', 'no live-action footage style', 'no morphing or texture instability'];
-                        processedNegatives = adData.negative_prompts;
-                    } else if (isClaymation) {
-                        adData.negative_prompts = ['No smooth motion interpolation', 'No morphing between frames', 'No subtitles or text on screen'];
-                        processedNegatives = adData.negative_prompts;
-                    } else {
-                        adData.negative_prompts = ['no photorealistic rendering', 'no morphing', 'no subtitles'];
-                        processedNegatives = adData.negative_prompts;
-                    }
+                // Apply forced style tags and FPS
+                if (vTags.length > 0) {
+                    console.log(`[v9.0 Style Matrix] Forcing tags for: ${rawStyle}`);
+                    adData.style.veo_native_tags = vTags;
+                    adData.style.fps = forcedFps;
+                    if (isStylised) adData.audio.no_smooth_interpolation = true;
                 }
 
                 // --- COMPILED PROMPT WORD-COUNT GUARD ---
