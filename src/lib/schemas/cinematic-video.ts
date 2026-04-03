@@ -104,7 +104,21 @@ export const videoIllustrationSchema: Schema = {
             properties: {
                 wind_source: { type: SchemaType.STRING },
                 cloth_simulation: { type: SchemaType.STRING },
-                dust_dynamics: { type: SchemaType.STRING },
+                dust_dynamics: {
+                    type: SchemaType.OBJECT,
+                    properties: {
+                        behavior: { type: SchemaType.STRING },
+                        particle_size: { type: SchemaType.STRING }
+                    }
+                },
+                rain_interaction: {
+                    type: SchemaType.OBJECT,
+                    properties: {
+                        tire_spray: { type: SchemaType.STRING },
+                        surface_response: { type: SchemaType.STRING },
+                        impact_pattern: { type: SchemaType.STRING }
+                    }
+                },
                 consistency_rules: {
                     type: SchemaType.ARRAY,
                     items: { type: SchemaType.STRING }
@@ -161,10 +175,36 @@ export const videoIllustrationSchema: Schema = {
                 }
             }
         },
+        validation_report: {
+            type: SchemaType.OBJECT,
+            properties: {
+                style_check: { 
+                    type: SchemaType.OBJECT,
+                    properties: {
+                        status: { type: SchemaType.STRING },
+                        rule_id: { type: SchemaType.STRING }
+                    }
+                },
+                physics_check: { 
+                    type: SchemaType.OBJECT,
+                    properties: {
+                        status: { type: SchemaType.STRING },
+                        rule_id: { type: SchemaType.STRING }
+                    }
+                },
+                conflict_check: { 
+                    type: SchemaType.OBJECT,
+                    properties: {
+                        status: { type: SchemaType.STRING },
+                        rule_id: { type: SchemaType.STRING }
+                    }
+                }
+            }
+        },
         compiled_master_prompt: {
             type: SchemaType.STRING,
             description: "HERO FIELD: The final dense 150-word synthesis."
         }
     },
-    required: ["veo_clip", "clip_strategy", "scene_core", "cinematography", "lighting", "motion_physics", "temporal_arc", "style", "audio", "constraints", "compiled_master_prompt"]
+    required: ["veo_clip", "clip_strategy", "scene_core", "cinematography", "lighting", "motion_physics", "temporal_arc", "style", "audio", "constraints", "validation_report", "compiled_master_prompt"]
 };
