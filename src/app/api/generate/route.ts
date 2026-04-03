@@ -68,24 +68,27 @@ const agentConfigs: any = {
         styleSuffix: "v33.0_ILLUSTRATION"
     },
     infographic: {
-        expansionRole: "Principal NEJM Scholarly Plate Architect (SVAE v3.50 - NEJM-COLUMNAR Standard)",
+        expansionRole: "Principal Visual Abstract Director — Scholarly Plate Protocol v4.0",
         expansionRules: [
-            "1. MASTERCLASS COLUMNAR: Start with: 'Strictly adhere to this composition: A professional NEJM-style scholarly plate with a horizontal aspect ratio, divided into three vertical columns (Left: Population Sidebar, Middle: Intervention, Right: Control).'",
-            "2. DATA INTEGRITY: Every piece of clinical data (N-values, HR, p-values, CI) must be embedded within the descriptive sentences as focal information points.",
-            "3. STYLE INFUSION: Specify: 'The overall aesthetic is a clean, academic infographic style with thin grey borders, professional columnar shading, and high-contrast clinical headers.'",
-            "4. COLUMNAR LOGIC: Formulate content strictly into 'Left Column', 'Middle Column', and 'Right Column' fluid paragraphs. NO bullet points.",
-            "5. FINAL DIRECTIVE: Conclude with: 'Maintain clinical accuracy and data-centric visual hierarchy. Use South Asian patient silhouettes for population data.'"
+            "RULE 1 — STYLE DISPATCH (P0): Identify the journal standard first: CJASN, NEJM, or Nature Flow.",
+            "RULE 2 — CJASN BLUE STANDARD: Use 'Cobalt Blue' primary color, 'high-contrast vector icons', 'academic serifs', and a 'linear 3-stage vertical flow'. Muted grey borders.",
+            "RULE 3 — NEJM DENSE SLAB: Use 'Navy and Muted Gold', 'heavy slab typography headers', 'dense columnar layout (3 columns)', and 'South Asian patient silhouettes' specifically in the population sidebar.",
+            "RULE 4 — NATURE FLOW / WCN: Use 'Mint and Emerald gradients', 'curved flow pathways', 'modern minimalist glyphs', and 'ultra-wide aspect ratio' with a focal center mechanism icon.",
+            "RULE 5 — DATA DENSITY: Every clinical statistic (HR, 95% CI, p-value) MUST be woven into the descriptive prose using specific data markers.",
+            "RULE 6 — PROSE SYNTHESIS (MIN 150 WORDS): master_prompt must be a continuous scholarly narrative. DO NOT dump tags. Describe the panels as a spatially arranged visual journey.",
+            "RULE 7 — NO HEX CODES: Use descriptive color language like 'Dusky Cobalt', 'Burnished Gold', or 'Clinical Mint'."
         ],
-        jsonRole: "Director of High-Impact Visual Abstracts",
-        jsonInstructions: (style: string) => `### SVAE v3.50 NEJM-COLUMNAR PROTOCOL
-1. ARCHITECTURE: Design the layout to fit the data. While 3-column is standard, allow for focus panels if the trial has fewer arms.
-2. ENDPOINTS: Map clinical results horizontally across trial arms.
-3. STATISTICS: Pair every result with its (HR, 95% CI, P) block.
-4. PRIMITIVES: Header Mechanism Icons for each column.
-5. IDENTITY: South Asian patient silhouettes in the Population sidebar.`,
-        subjectPath: "metadata.subject",
-        stylePath: "metadata.journal_standard",
-        styleSuffix: "v3.50_NEJM_COLUMNAR"
+        jsonRole: "Director of High-Impact Visual Abstracts (v4.0)",
+        jsonInstructions: (style: string) => `### SVAE v4.0 STYLE-AWARE PROTOCOL
+STYLE SELECTED: ${style}
+
+1. SCHEMA: Populate journal_standard as: "CJASN_Blue_Standard", "NEJM_Dense_Slab", or "Nature_Flow_WCN".
+2. RENDER LANGUAGE: Add style-specific cues to render_language.
+  CJASN: ["Cobalt Blue theme", "high-contrast lines", "linear flow"]
+  NEJM: ["Dense slab typography", "Navy and Gold", "columnar slabs"]
+  Nature: ["Minimalist glyphs", "Mint/Emerald accents", "curved pathways"]
+3. HERO: master_prompt must be 150-250 words of scholarly prose. ZERO bullet points.
+4. IDENTITY: South Asian patient silhouettes for all population data.`
     },
     vector: {
         expansionRole: "Principal Brand Designer",
@@ -263,8 +266,10 @@ const validateMedicalOutput = (data: any): { valid: boolean; issues: string[] } 
 /**
  * Post-generation validator for infographic JSON output.
  */
-const validateInfographicOutput = (data: any): { valid: boolean; issues: string[] } => {
+const validateInfographicOutput = (data: any, selectedStyle: string): { valid: boolean; issues: string[] } => {
     const issues: string[] = [];
+    const js = data?.metadata?.journal_standard;
+    const style = (selectedStyle || "").toLowerCase();
 
     // Check medical content
     const interventions = data?.medical_content?.interventions;
@@ -272,13 +277,29 @@ const validateInfographicOutput = (data: any): { valid: boolean; issues: string[
         issues.push("medical_content.interventions is missing trial arms");
     }
 
+    // --- STYLE LOCK VALIDATION (P0) ---
+    // Enforce that the output journal matches the UI selection
+    if (style.includes('cjasn') && js !== 'CJASN_Blue_Standard') {
+        console.log("[v2.0 Validator] Forcing CJASN Blue Standard alignment");
+        data.metadata.journal_standard = 'CJASN_Blue_Standard';
+    }
+    if (style.includes('nejm') && js !== 'NEJM_Dense_Slab') {
+        console.log("[v2.0 Validator] Forcing NEJM Dense Slab alignment");
+        data.metadata.journal_standard = 'NEJM_Dense_Slab';
+    }
+    if (style.includes('nature') && js !== 'Nature_Flow_WCN') {
+        console.log("[v2.0 Validator] Forcing Nature Flow alignment");
+        data.metadata.journal_standard = 'Nature_Flow_WCN';
+    }
+
     // Check for Layer 5
     const ds = data?.diffusion_synthesis;
     if (!ds) {
         issues.push("diffusion_synthesis (Layer 5) is missing");
     } else {
-        if (!ds.master_prompt || ds.master_prompt.trim().length < 50) {
-            issues.push("diffusion_synthesis.master_prompt is too short");
+        const wordCount = (ds.master_prompt || "").split(/\s+/).length;
+        if (wordCount < 100) {
+            issues.push(`diffusion_synthesis.master_prompt too short: ${wordCount} words (min: 150)`);
         }
         const svgLeakPattern = /stroke_dasharray|stroke_width|z_index|\{\s*x:\s*\d|\{\s*y:\s*\d|#[0-9a-fA-F]{6}/;
         if (svgLeakPattern.test(ds.master_prompt || "")) {
@@ -553,7 +574,7 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
             if (mode === 'medical') {
                 validationResult = validateMedicalOutput(adData);
             } else if (mode === 'infographic') {
-                validationResult = validateInfographicOutput(adData);
+                validationResult = validateInfographicOutput(adData, normalizedStyle);
             }
 
             if (validationResult && !validationResult.valid) {

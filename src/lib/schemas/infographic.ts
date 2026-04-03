@@ -16,11 +16,16 @@ export const infographicSchema = {
       properties: {
         master_prompt: { 
           type: "string", 
-          description: "HERO FIELD: 150-250 word summary of the scholarly plate. Describe the structured panels, the clinical subjects (Indian heritage), and the trial conclusion. NO HEX CODES, NO PIXEL COORDINATES." 
+          description: "HERO FIELD: 150-250 word summary of the scholarly plate. Describe the structured panels, the clinical subjects (South Asian heritage), and the trial conclusion. NO HEX CODES, NO PIXEL COORDINATES." 
         },
         spatial_narrative: {
             type: "string",
             description: "ANATOMICAL COMPOSITION: Describe the layout using spatial language (e.g., 'a wide population sidebar on the left with two outcome panels arranged vertically on the right'). NO COORDINATES."
+        },
+        render_language: {
+            type: "array",
+            items: { type: "string" },
+            description: "Style-specific rendering cues: e.g. ['high-contrast vector icons', 'academic serifs', 'clean flat UI', 'muted clinical palette']."
         },
         style_descriptors: {
           type: "array",
@@ -34,7 +39,7 @@ export const infographicSchema = {
         },
         negative_prompt: { type: "string" }
       },
-      required: ["master_prompt", "spatial_narrative", "style_descriptors", "color_language", "negative_prompt"]
+      required: ["master_prompt", "spatial_narrative", "render_language", "style_descriptors", "color_language", "negative_prompt"]
     },
 
     // --- LAYER 1: METADATA ---
@@ -43,7 +48,7 @@ export const infographicSchema = {
       properties: {
         title: { type: "string", description: "Verbatim title (Max 15 words)." },
         subject: { type: "string", description: "Primary clinical trial / pathophysiologic focus." },
-        journal_standard: { enum: ["NEJM_visual_abstract", "Nature_Methodology", "Lancet_Minimalist"] }
+        journal_standard: { enum: ["CJASN_Blue_Standard", "NEJM_Dense_Slab", "Nature_Flow_WCN"] }
       },
       required: ["title", "journal_standard"]
     },
