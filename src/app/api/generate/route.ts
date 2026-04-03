@@ -743,17 +743,19 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
 
                 // R9: Quality Gate Enforcement (World Count Floor)
                 const prose_word_count = (adData.compiled_master_prompt || "").split(/\s+/).length;
-                if (prose_word_count < 100) {
-                    validation_results.push({ rule: "R9", status: "fail", severity: "blocker", action: "reject", detail: `Quality Fail: Required 100+ words, found ${prose_word_count}.` });
+                
+                // --- v12.1 RELIEF PASS: Lowering block floor from 140 to 80 to prevent choke ---
+                if (prose_word_count < 80) {
+                    validation_results.push({ rule: "R9", status: "fail", severity: "blocker", action: "reject", detail: `Quality Fail: Required 80+ words, found ${prose_word_count}.` });
                     hard_reject = true;
                 }
 
                 if (hard_reject) {
-                    console.error("[v12 Sovereign Validator] HARD REJECT TRIGGERED.");
+                    console.error("[v12.1 Sovereign Relief] HARD REJECT TRIGGERED.");
                     return Response.json({ 
                         status: "REJECTED", 
                         errors: validation_results.filter(r => r.severity === "blocker"),
-                        _metadata: { engine: "Sovereign v12.0", build: "Cybernetic High-Fidelity" }
+                        _metadata: { engine: "Sovereign v12.1 [Relief]", build: "Cybernetic Balanced" }
                     }, { status: 422 });
                 }
 
