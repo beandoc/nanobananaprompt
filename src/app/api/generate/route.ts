@@ -94,24 +94,46 @@ const agentConfigs: any = {
         jsonInstructions: (style: string) => `CORE DIRECTIVE: Convert brief into Vector JSON. Style: ${style}.`
     },
     video: {
-        expansionRole: "Sovereign Cinematic Director — Google Flow / Veo 3.1 Native Protocol (v6.1)",
+        expansionRole: "Sovereign Cinematic Director — Google Flow / Veo 3.1 Native Protocol (v8.0)",
         expansionRules: [
-            "RULE 1 — DURATION CONTRACT: Veo only accepts 4s, 6s, or 8s per clip. Always set veo_clip.duration_seconds to 8. If the brief needs more than 8s, populate clip_2 with first-frame handoff instructions.",
-            "RULE 2 — PROMPT SYNTHESIS (CRITICAL): The AI MUST synthesize the scene into flowing, causal 100-150 word prose in compiled_master_prompt. DO NOT dump tags or use bullet fragments. Weave the shot, subject, action, setting, and aesthetics into a continuous cinematic narrative paragraph.",
-            "RULE 3 — KILL TIMECODES: temporal_arc.keyframes are for internal planning ONLY. NEVER include [0s-3s] or any timecode bracket in compiled_master_prompt.",
-            "RULE 4 — AUDIO INLINE: At the END of compiled_master_prompt, append 3 audio sentences: 'Audio: {ambient_bed}. {specific_sfx}. No dialogue. No subtitles.'",
-            "RULE 5 — IDENTITY FRONT-LOAD: The identity_locks details MUST be woven into the very second sentence of compiled_master_prompt. Describe ALL main subjects (including children, with ages and clothing).",
-            "RULE 6 — NEGATIVE DISCIPLINE: Stop-motion standard ONLY: 'No smooth motion interpolation. No morphing. No subtitles'. Aesthetic negatives are strictly forbidden.",
-            "RULE 7 — VEO STYLE VOCABULARY (MANDATORY EXACT MATCH): stop-motion → 'stop-motion animation'. claymation → 'claymation style'. Pixar CGI → 'Pixar-like 3D animation'. hand-drawn → 'cel-shaded animation'. vintage → 'shot on 16mm film, film grain'. photorealism → 'cinematic film look'. widescreen epic → 'anamorphic widescreen'. watercolour → 'watercolor painting coming to life'. sketch → 'charcoal sketch animation'."
+            "RULE 1 — DURATION CONTRACT: Veo only accepts 4s, 6s, or 8s. Always default to 8s.",
+            "RULE 2 — STYLE EXTRACTION (CRITICAL ❌ P0): Read the brief. Identify the animation style FIRST before touching any other field. Map it EXACTLY using the Style Table below. If the brief says 'Pixar' or 'Disney CGI' → veo_native_tags MUST include 'Pixar-like 3D animation'. WRONG STYLE = DISQUALIFIED OUTPUT.",
+            "RULE 3 — HERO VISUAL EXTRACTION: Find the single most visually distinctive moment in the brief (e.g., 'batter sizzles into blue light'). This MUST become the climax beat and MUST appear verbatim in the compiled prompt.",
+            "RULE 4 — PROSE SYNTHESIS (100-150 words): compiled_master_prompt MUST be a single flowing cinematic paragraph. Formula: [SHOT + CAMERA] → [SUBJECT with identity] → [ACTION ARC — 3 beats with causal connectors] → [SETTING + HERO VISUAL] → [STYLE TAGS] → [AUDIO]. NOT a list. NOT one sentence. A directed story paragraph.",
+            "RULE 5 — IDENTITY LOCK WITH RENDER VOCABULARY: For CGI/Animation briefs, identity descriptions MUST include: proportions (e.g., 'Pixar oversized eyes'), material cues (e.g., 'wet synthetic nylon, high specular sheen'), and SSS descriptors.",
+            "RULE 6 — KILL TIMECODES: NEVER include [0s] [3s] brackets in the compiled prompt.",
+            "RULE 7 — AUDIO REGISTER MATCH: For Pixar/CGI → audio must be 'orchestral, heightened, emotionally tuned'. For stop-motion → 'natural, ambient, diegetic'. For live-action → 'photorealistic, cinematic'. Match the audio register to the ANIMATION STYLE, not the setting.",
+            "RULE 8 — NEGATIVE PROMPTS ARE MANDATORY for animation: Pixar/CGI MUST include: ['no photorealistic rendering', 'no live-action footage style', 'no morphing or texture instability']. Stop-motion MUST include: ['No smooth motion interpolation', 'No morphing between frames', 'No subtitles']. NEVER leave negative_prompts empty for an animation brief.",
+            "RULE 9 — FPS BY STYLE: Pixar CGI → 24fps. Stop-motion/Claymation → 12fps. Anime → 24fps. Cel-shaded → 24fps. Vintage film → 24fps. NEVER use 60fps for animation — that is slow-motion live-action.",
+            "RULE 10 — no_smooth_interpolation FLAG: Set TRUE for ALL animation styles (CGI, Claymation, Anime, Cel-shaded). Set FALSE for live-action photorealism ONLY.",
+            "RULE 11 — RENDER LANGUAGE: CGI briefs MUST populate style.render_language array with: SSS descriptors, PBR material specs, volumetric lighting, and the hero visual's emissive/specular properties.",
+            "RULE 12 — STYLE TAG MAP (EXACT MATCH MANDATORY): 'Pixar' or 'Disney' → 'Pixar-like 3D animation'. 'claymation' or 'clay' → 'claymation style'. 'stop-motion' → 'stop-motion animation'. 'anime' or 'Ghibli' → 'Japanese anime style'. 'hand-drawn' or '2D' → 'cel-shaded animation'. 'vintage' or 'retro' → 'shot on 16mm film, film grain'. 'watercolour' → 'watercolor painting coming to life'. 'sketch' → 'charcoal sketch animation'. SETTING WORDS LIKE 'cyberpunk', 'Mumbai', 'street food' ARE NOT STYLE TAGS."
         ],
-        jsonRole: "Chief Cinematic Engineer — Google Flow / Veo 3.1 Protocol (v7.0)",
-        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v6.1 — PROSE SYNTHESIS PROTOCOL
-1. SCHEMA: Populate veo_clip.duration_seconds as 4, 6, or 8 ONLY.
-2. IDENTITY: scene_core.identity_locks MUST be an array containing details for EVERY subject (e.g., Grandmother AND Children).
-3. ACTION BEATS: scene_core.action_sequence must be an array of prose beats.
-4. HERO: compiled_master_prompt is the OUTPUT. Write 100–150 words of fluid, cinematic PROSE. Shot→Subject(s)→Causal Action→Setting→Aesthetics→Audio. ZERO timecodes. NO TAG DUMPS. Write a story paragraph.
-5. CLIP STRATEGY: Plan exactly 1 clip if < 8s. Explicitly map beat_count.
-6. STYLE APPLIED: ${style || 'claymation style, stop-motion animation'}.`
+        jsonRole: "Chief Cinematic Engineer — Google Flow / Veo 3.1 Protocol (v8.0)",
+        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v8.0 — STYLE-AWARE EXTRACTION PROTOCOL
+
+STYLE APPLIED: ${style}
+
+Mandatory Pre-Generation Checklist (complete in this order):
+STEP 1 — STYLE EXTRACTION: What animation style is this brief? Map it to the EXACT Veo native tag.
+  Pixar/Disney CGI → veo_native_tags: ["Pixar-like 3D animation"], fps: 24, negative_prompts: ["no photorealistic rendering","no live-action footage style","no morphing or texture instability"]
+  Claymation/Stop-motion → veo_native_tags: ["claymation style","stop-motion animation"], fps: 12, negative_prompts: ["No smooth motion interpolation","No morphing between frames","No subtitles"]
+  Anime/Ghibli → veo_native_tags: ["Japanese anime style"], fps: 24, negative_prompts: ["no photorealistic rendering","no 3D CGI look","no morphing"]
+  Cel-shaded → veo_native_tags: ["cel-shaded animation"], fps: 24, negative_prompts: ["no photorealistic rendering","no smooth gradients","no morphing"]
+  Live-action → veo_native_tags: ["cinematic film look"], fps: 24, negative_prompts: ["no text","no subtitles","no morphing"]
+
+STEP 2 — HERO VISUAL: Identify the single most visually striking moment in the brief. Write it down. This MUST appear in compiled_master_prompt.
+
+STEP 3 — IDENTITY LOCK: Fill identity_locks for every subject. For CGI: add 'pixar_design_notes' with proportions. Physical features ≠ costume props.
+
+STEP 4 — ACTION ARC: Exactly 3 causal beats. FORMAT: Beat→Trigger→Physical Consequence. Max 4 beats only if the brief explicitly needs it.
+
+STEP 5 — COMPILED PROMPT: Write 120-160 words of fluid prose. STRUCTURE:
+  Sentence 1: [SHOT TYPE + CAMERA MOVEMENT + LENS]
+  Sentence 2-3: [ALL SUBJECTS with full identity — NOT just one word]
+  Paragraph 2: [ACTION ARC — 3 beats with 'As...', 'When...', 'In response...' connectors]
+  Paragraph 3: [SETTING as unified material reality + HERO VISUAL]
+  Final lines: [STYLE TAG] + [fps] stuttered/smooth + [colour grade]. Ambient: [...]. SFX: [...]. No dialogue. No subtitles. Exclude: [negatives].`
     },
     manga: {
         expansionRole: "Manga Concept Artist",
@@ -621,11 +643,80 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                     adData.compiled_master_prompt = compiledPrompt;
                 }
 
-                // --- ENGINE-SPECIFIC COMPILER (v6.1) ---
-                // Veo: clean prose only (no params)
-                // Kling: --stylize params
-                // Seedance: [Motion Vector] header
-                // Runway: camera token prefix
+                // --- v8.0: STYLE-AWARE POST-PROCESSOR ---
+                // This is the hard-enforcement layer that catches LLM style failures.
+                const veoNativeTags: string[] = Array.isArray(adData.style?.veo_native_tags) ? adData.style.veo_native_tags : [];
+                const rawStyle = (style as string || '').toLowerCase();
+
+                // Detect animation style from tags or the style passed in from the UI
+                const isPixarCGI = veoNativeTags.some((t: string) => t.toLowerCase().includes('pixar') || t.toLowerCase().includes('disney')) ||
+                    rawStyle.includes('pixar') || rawStyle.includes('disney') || rawStyle.includes('cgi');
+                const isClaymation = veoNativeTags.some((t: string) => t.toLowerCase().includes('claymation') || t.toLowerCase().includes('stop-motion')) ||
+                    rawStyle.includes('clay') || rawStyle.includes('stop');
+                const isAnime = veoNativeTags.some((t: string) => t.toLowerCase().includes('anime') || t.toLowerCase().includes('ghibli')) ||
+                    rawStyle.includes('anime') || rawStyle.includes('ghibli');
+                const isCelShaded = veoNativeTags.some((t: string) => t.toLowerCase().includes('cel-shaded')) ||
+                    rawStyle.includes('cel-shaded') || rawStyle.includes('hand-drawn');
+                const isAnimation = isPixarCGI || isClaymation || isAnime || isCelShaded;
+
+                // --- STYLE TAG ENFORCEMENT ---
+                if (isPixarCGI && !veoNativeTags.some((t: string) => t.toLowerCase().includes('pixar'))) {
+                    console.log('[v8.0] Enforcing Pixar-style tags — LLM missed style extraction');
+                    adData.style.veo_native_tags = ['Pixar-like 3D animation', 'Disney CGI animation style', 'cinematic 3D animation'];
+                    adData.style.fps = 24;
+                }
+                if (isClaymation && !veoNativeTags.some((t: string) => t.toLowerCase().includes('claymation'))) {
+                    console.log('[v8.0] Enforcing Claymation tags');
+                    adData.style.veo_native_tags = ['claymation style', 'stop-motion animation'];
+                    adData.style.fps = 12;
+                }
+                if (isAnime && !veoNativeTags.some((t: string) => t.toLowerCase().includes('anime'))) {
+                    console.log('[v8.0] Enforcing Anime tags');
+                    adData.style.veo_native_tags = ['Japanese anime style'];
+                    adData.style.fps = 24;
+                }
+
+                // --- FPS ENFORCEMENT ---
+                // 60fps is NEVER correct for animation — hard-cap it
+                if (isAnimation && adData.style?.fps === 60) {
+                    console.log('[v8.0] FPS 60 overridden for animation — setting to 24fps');
+                    adData.style.fps = isPixarCGI ? 24 : isClaymation ? 12 : 24;
+                }
+
+                // --- NO_SMOOTH_INTERPOLATION ENFORCEMENT ---
+                // Must be TRUE for all animation styles
+                if (isAnimation && adData.audio?.no_smooth_interpolation === false) {
+                    console.log('[v8.0] Enforcing no_smooth_interpolation: true for animation style');
+                    adData.audio.no_smooth_interpolation = true;
+                }
+
+                // --- NEGATIVE PROMPT AUTO-INJECTOR ---
+                // If negative_prompts is empty for animation, inject the correct failure-mode guards
+                if (isAnimation && (!adData.negative_prompts || adData.negative_prompts.length === 0)) {
+                    console.log('[v8.0] Injecting animation negative prompts — LLM left array empty');
+                    if (isPixarCGI) {
+                        adData.negative_prompts = ['no photorealistic rendering', 'no live-action footage style', 'no morphing or texture instability'];
+                        processedNegatives = adData.negative_prompts;
+                    } else if (isClaymation) {
+                        adData.negative_prompts = ['No smooth motion interpolation', 'No morphing between frames', 'No subtitles or text on screen'];
+                        processedNegatives = adData.negative_prompts;
+                    } else {
+                        adData.negative_prompts = ['no photorealistic rendering', 'no morphing', 'no subtitles'];
+                        processedNegatives = adData.negative_prompts;
+                    }
+                }
+
+                // --- COMPILED PROMPT WORD-COUNT GUARD ---
+                // If the LLM wrote one sentence (< 60 words), it failed the synthesis rule. Flag it.
+                const compiledWordCount = compiledPrompt.trim().split(/\s+/).length;
+                if (compiledWordCount < 60) {
+                    console.warn(`[v8.0 QUALITY GATE] compiled_master_prompt FAILED word count: ${compiledWordCount} words (min: 120). Flagging.`);
+                    // Append a warning tag to signal failure — do not silently pass through a bad prompt
+                    adData._quality_flags = { prose_word_count: compiledWordCount, prose_gate_passed: false };
+                } else {
+                    adData._quality_flags = { prose_word_count: compiledWordCount, prose_gate_passed: true };
+                }
+
                 const veoPrompt = compiledPrompt.trim();
 
                 adData.engine_prompts = {
