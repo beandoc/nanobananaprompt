@@ -110,32 +110,28 @@ STYLE SELECTED: ${style}
             "RULE 9 — FPS BY STYLE: Pixar CGI → 24fps. Stop-motion/Claymation → 12fps. Anime → 24fps. Cel-shaded → 24fps. Vintage film → 24fps. NEVER use 60fps for animation — that is slow-motion live-action.",
             "RULE 10 — no_smooth_interpolation FLAG: Set TRUE for ALL animation styles (CGI, Claymation, Anime, Cel-shaded). Set FALSE for live-action photorealism ONLY.",
             "RULE 11 — RENDER LANGUAGE: CGI briefs MUST populate style.render_language array with: SSS descriptors, PBR material specs, volumetric lighting, and the hero visual's emissive/specular properties.",
-            "RULE 12 — THE STYLE MATRIX (V9.0 MANDATORY): You MUST identify the selected UI style and map it EXACTLY to these Veo native tags:",
-            "  - Photorealistic → 'cinematic film look, detailed physical textures'.",
-            "  - Picture book → 'watercolor painting coming to life, soft edges'.",
-            "  - 3D cartoon → 'Pixar-like 3D animation, subsurface scattering'.",
-            "  - Retro comics → 'cel-shaded animation, ben-day dot halftone'.",
-            "  - Anime → 'Japanese anime style, dynamic motion smear'.",
-            "  - Pixel art → '8-bit pixel art animation, crisp square pixels'.",
-            "  - Cinematic → 'high-contrast 35mm film, anamorphic widescreen'.",
-            "  - Hyper cartoon → 'Disney CGI style, squash-and-stretch motion'.",
-            "  - Illustration → 'hand-drawn technical illustration, flat colors'.",
-            "  - Dreamtale → 'ethereal glow, soft focus, dreamlike pastel grade'.",
-            "  - Skytale → 'Studio Ghibli aesthetic, hand-painted textures'.",
-            "  - 80s film → 'vintage 80s VHS look, heavy film grain, light leaks'.",
-            "  - Minimalist → 'clean minimalist design, high negative space'.",
-            "  - Horror → 'moody rim lighting, low-key lighting, eerie atmosphere'.",
-            "  - Sketchbook → 'charcoal sketch animation, visible paper grain'.",
+            "RULE 12 — THE STYLE MATRIX (V9.1 — UI SYNC): You MUST map these specific UI labels to their Veo native equivalents:",
+            "  - Cinematic Noir → 'high-contrast 35mm film look, crushed blacks, noir atmosphere'.",
+            "  - High-Fashion Editorial → '8k editorial photography, high-gloss materials, 85mm portrait lens'.",
+            "  - Cyberpunk Neon Burst → 'neon lights, saturated secondary colors, wet rain-lashed pavement'.",
+            "  - Handheld Documentary 16mm → 'shot on 16mm film, handheld documentary camera shake'.",
+            "  - Anamorphic 8K Widescreen → 'anamorphic widescreen flare, ultra-wide cinematic aspect ratio'.",
+            "  - [PRO] Luxury Wellness → 'bright airy lighting, low contrast, stable gimbal-smooth motion'.",
+            "  - [ANIMATED] Pixar/Disney CGI → 'Pixar-like 3D animation, subsurface scattering skin textures'.",
+            "  - [ANIMATED] Studio Ghibli → 'Ghibli-inspired aesthetic, hand-painted watercolor textures'.",
+            "  - [ANIMATED] Anime Action (Shonen) → 'Japanese anime style, dynamic motion lines, high-intensity'.",
+            "  - [ANIMATED] Claymation/Stop Motion → 'claymation style, stop-motion animation, 12fps stuttered motion'.",
+            "  - [PRO] Drone Cinematic → 'wide-angle aerial drone shot, high-altitude stable drift'.",
             "RULE 13 — THE 3-BEAT ARC (CRITICAL): Every 8s clip MUST have 3 causal beats (Start, Middle, End). If you only provide 2 beats, the model will improvise in the middle-third. Explicitly define the transition from Beat 1 to Beat 2 to Beat 3."
         ],
-        jsonRole: "Chief Cinematic Engineer — Google Flow / Veo 3.1 Protocol (v9.0)",
-        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v9.0 — STYLE MATRIX PROTOCOL
+        jsonRole: "Chief Cinematic Engineer — Google Flow / Veo 3.1 Protocol (v9.1 — UI Synced)",
+        jsonInstructions: (style: string) => `### SOVEREIGN CINEMATIC ENGINE v9.1 — UI-SYNCED PROTOCOL
 STYLE SELECTED: ${style}
 
-1. STYLE LOCK: Use exactly the Veo native tags mapped to ${style}.
-2. FPS SYNC: Photoreal/Cinematic=24fps. 3D Cartoon=24fps. Anime/Picture-book=12fps. Sketchbook=8fps.
+1. STYLE LOCK: Use verbatim tags for the UI preset: ${style}.
+2. FPS SYNC: Animated = 12fps/24fps. Documentary = 24fps. Drone/Wellness = 24fps.
 3. 3-BEAT ARC: Plan action for [0-3s], [3-6s], and [6-8s].
-4. NEGATIVES: If style is 'Pixel art' → negative: 'no 3D render, no smooth gradients'. If '80s film' → negative: 'no modern digital look'.`
+4. NEGATIVES: If animated → 'no photorealistic render'. If documentary → 'no digital cleaning, no 3D look'.`
     },
     manga: {
         expansionRole: "Manga Concept Artist",
@@ -663,37 +659,41 @@ Do NOT output JSON. Do NOT use markdown headers. Do NOT use bullet points. Write
                     adData.compiled_master_prompt = compiledPrompt;
                 }
 
-                // --- v9.0: THE STYLE MATRIX POST-PROCESSOR ---
+                // --- v9.1: UI-SYNC STYLE POST-PROCESSOR ---
                 const rawStyle = (style as string || '').toLowerCase();
                 const vTags: string[] = [];
                 let forcedFps = 24;
-                let isStylised = true;
+                let isStylised = false;
 
-                if (rawStyle.includes('photorealistic')) { 
-                    vTags.push('cinematic film look', 'detailed physical textures'); forcedFps = 24; isStylised = false;
-                } else if (rawStyle.includes('picture book')) {
-                    vTags.push('watercolor painting coming to life', 'soft edges'); forcedFps = 12;
-                } else if (rawStyle.includes('3d cartoon')) {
-                    vTags.push('Pixar-like 3D animation', 'subsurface scattering'); forcedFps = 24;
-                } else if (rawStyle.includes('retro comics')) {
-                    vTags.push('cel-shaded animation', 'ben-day dot halftone'); forcedFps = 12;
+                if (rawStyle.includes('noir')) { 
+                    vTags.push('high-contrast 35mm film look', 'crushed blacks', 'noir atmosphere');
+                } else if (rawStyle.includes('editorial')) {
+                    vTags.push('8k editorial photography', 'high-gloss materials', '85mm portrait lens');
+                } else if (rawStyle.includes('cyberpunk')) {
+                    vTags.push('neon lights', 'saturated secondary colors', 'wet rain-lashed pavement');
+                } else if (rawStyle.includes('documentary')) {
+                    vTags.push('shot on 16mm film', 'handheld documentary camera shake');
+                } else if (rawStyle.includes('anamorphic')) {
+                    vTags.push('anamorphic widescreen flare', 'ultra-wide cinematic aspect ratio');
+                } else if (rawStyle.includes('wellness')) {
+                    vTags.push('bright airy lighting', 'low contrast', 'stable gimbal-smooth motion');
+                } else if (rawStyle.includes('pixar')) {
+                    vTags.push('Pixar-like 3D animation', 'subsurface scattering skin textures'); isStylised = true;
+                } else if (rawStyle.includes('ghibli')) {
+                    vTags.push('Ghibli-inspired aesthetic', 'hand-painted watercolor textures'); forcedFps = 12; isStylised = true;
                 } else if (rawStyle.includes('anime')) {
-                    vTags.push('Japanese anime style', 'dynamic motion smear'); forcedFps = 24;
-                } else if (rawStyle.includes('pixel art')) {
-                    vTags.push('8-bit pixel art animation', 'crisp square pixels'); forcedFps = 12;
-                } else if (rawStyle.includes('cinematic')) {
-                    vTags.push('high-contrast 35mm film', 'anamorphic widescreen'); forcedFps = 24; isStylised = false;
-                } else if (rawStyle.includes('skytale')) {
-                    vTags.push('Studio Ghibli aesthetic', 'hand-painted textures'); forcedFps = 12;
-                } else if (rawStyle.includes('80s film')) {
-                    vTags.push('vintage 80s VHS look', 'heavy film grain'); forcedFps = 24;
-                } else if (rawStyle.includes('sketchbook')) {
-                    vTags.push('charcoal sketch animation', 'visible paper grain'); forcedFps = 8;
+                    vTags.push('Japanese anime style', 'dynamic motion lines'); isStylised = true;
+                } else if (rawStyle.includes('motion graphics')) {
+                    vTags.push('clean motion graphics', 'kinetic typography', 'infographic elements'); isStylised = true;
+                } else if (rawStyle.includes('claymation')) {
+                    vTags.push('claymation style', 'stop-motion animation'); forcedFps = 12; isStylised = true;
+                } else if (rawStyle.includes('drone')) {
+                    vTags.push('wide-angle aerial drone shot', 'high-altitude stable drift');
                 }
 
                 // Apply forced style tags and FPS
                 if (vTags.length > 0) {
-                    console.log(`[v9.0 Style Matrix] Forcing tags for: ${rawStyle}`);
+                    console.log(`[v9.1 UI Sync] Forcing tags for: ${rawStyle}`);
                     adData.style.veo_native_tags = vTags;
                     adData.style.fps = forcedFps;
                     if (isStylised) adData.audio.no_smooth_interpolation = true;
