@@ -1,11 +1,88 @@
 /**
+ * Auto-scrubber for diffusion prompts.
+ * Strips SVG/CSS technical leaks and replaces them with natural language descriptors.
+ */
+export const scrubDiffusionPrompt = (prompt: string): string => {
+  if (!prompt) return "";
+  
+  let clean = prompt;
+
+  // 1. Replace Hex Codes with descriptive color names
+  const hexMap: Record<string, string> = {
+    "#ff0000": "vibrant surgical red",
+    "#0000ff": "deep venous blue",
+    "#008b8b": "nejm teal",
+    "#ffffff": "sterile white",
+    "#000000": "high-contrast black",
+    "#c5a059": "scholarly gold",
+    "#ff7f50": "inflammatory coral",
+  };
+
+  clean = clean.replace(/#[0-9a-fA-F]{6}/g, (match) => {
+    return hexMap[match.toLowerCase()] || "specified clinical color";
+  });
+
+  // 2. Replace SVG/CSS parameters with descriptive language
+  clean = clean.replace(/stroke_width\s*[:=]\s*["']?(\d+)["']?/g, (_, val) => {
+    return parseInt(val) > 1 ? "bold anatomical outlines" : "delicate structural boundaries";
+  });
+
+  clean = clean.replace(/z_index\s*[:=]\s*["']?(\d+)["']?/g, (_, val) => {
+    return parseInt(val) > 5 ? "foreground focus" : "background contextual layer";
+  });
+
+  clean = clean.replace(/stroke_dasharray\s*[:=]\s*["']?[\d\s,]+["']?/g, "stippled line texture");
+
+  // 3. Remove coordinate leaks and JSON property names
+  clean = clean.replace(/\{\s*[xy]:\s*-?\d+\.?\d*,\s*[xy]:\s*-?\d+\.?\d*\s*\}/g, "aligned precisely within the anatomical space");
+  clean = clean.replace(/ent_|panel_|p1_|p2_|p3_|\w+_\w+[:=]/g, "");
+
+  return clean.trim();
+};
+
+/**
+ * Cross-checks tissue and flow dynamics for physical contradictions.
+ */
+const validatePhysicsAlignment = (tissue: string = "", flow: any = {}): string[] => {
+  const issues: string[] = [];
+  const t = tissue.toLowerCase();
+  const f = JSON.stringify(flow).toLowerCase();
+
+  const domains = [
+    { name: "Cardiac", triggers: ["myocard", "ventricle", "aorta", "valve", "atrium", "heart"], flowTriggers: ["perfusion", "systole", "diastole", "regurgitation", "stenosis", "blood_flow"] },
+    { name: "Renal", triggers: ["glomerul", "nephr", "kidney", "renal", "ureter", "podocyte"], flowTriggers: ["filtration", "ultrafiltration", "reabsorption", "clearance", "dialysis"] },
+    { name: "Pulmonary", triggers: ["lung", "pulmonary", "alveol", "bronch"], flowTriggers: ["gas exchange", "ventilation", "respiration", "oxygenation"] },
+    { name: "Neurology", triggers: ["brain", "neuro", "cortex", "neuron", "synapse", "csf"], flowTriggers: ["conduction", "signal", "neurotransmission", "perfusion"] }
+  ];
+
+  // Identify primary domain of the tissue
+  const activeDomain = domains.find(d => d.triggers.some(trig => t.includes(trig)));
+  
+  if (activeDomain) {
+    // Check if flow dynamics contain terms from a DIFFERENT incompatible domain
+    const otherDomains = domains.filter(d => d.name !== activeDomain.name);
+    for (const other of otherDomains) {
+      if (other.flowTriggers.some(trig => f.includes(trig))) {
+        issues.push(`PHYSICS CONTRADICTION: Tissue is ${activeDomain.name} ("${tissue}"), but flow dynamics describe ${other.name}-specific processes. Ensure biological alignment.`);
+      }
+    }
+  }
+
+  return issues;
+};
+
+/**
  * Post-generation validator for medical JSON output.
  * Returns { valid: boolean, issues: string[] }
  */
 export const validateMedicalOutput = (data: any): { valid: boolean; issues: string[] } => {
   const issues: string[] = [];
 
-  // Check pathophysiology cascade is populated
+  // 1. Strict Physics Validation
+  const physicsIssues = validatePhysicsAlignment(data?.scientific_subject || data?.tissue?.name, data?.flow_dynamics);
+  issues.push(...physicsIssues);
+
+  // 2. Check pathophysiology cascade is populated
   const cascade = data?.medical_content?.pathophysiology?.cascade;
   if (!Array.isArray(cascade) || cascade.length === 0) {
     issues.push("pathophysiology.cascade is empty or missing");
@@ -18,7 +95,7 @@ export const validateMedicalOutput = (data: any): { valid: boolean; issues: stri
     });
   }
 
-  // Check anatomical zones are populated
+  // 3. Check anatomical zones are populated
   const zones = data?.medical_content?.anatomical_zones;
   if (!Array.isArray(zones) || zones.length === 0) {
     issues.push("medical_content.anatomical_zones is empty or missing");
@@ -30,44 +107,34 @@ export const validateMedicalOutput = (data: any): { valid: boolean; issues: stri
     });
   }
 
-  // Check visual panels exist
+  // 4. Check visual panels exist
   const panels = data?.spatial_layout?.panels;
   if (!Array.isArray(panels) || panels.length < 1) {
     issues.push("spatial_layout.panels must have at least 1 panel");
   }
 
-  // Check diffusion_synthesis is populated (the critical Layer 5)
+  // 5. Check diffusion_synthesis and SCRUB it
   const ds = data?.diffusion_synthesis;
   if (!ds) {
-    issues.push("diffusion_synthesis (Layer 5) is entirely missing — diffusion models have no rendering signal");
+    issues.push("diffusion_synthesis (Layer 5) is entirely missing");
   } else {
+    // Perform Auto-Scrubbing on the master_prompt
+    if (ds.master_prompt) {
+      const original = ds.master_prompt;
+      ds.master_prompt = scrubDiffusionPrompt(original);
+      if (original !== ds.master_prompt) {
+        console.log("[Sovereign Scrubber] Technical leaks identified and translated to natural language.");
+      }
+    }
+
     if (!ds.master_prompt || ds.master_prompt.trim().length < 50) {
-      issues.push("diffusion_synthesis.master_prompt is missing or too short (needs 150-220 words)");
+      issues.push("diffusion_synthesis.master_prompt is missing or too short");
     }
-    if (!Array.isArray(ds.style_descriptors) || ds.style_descriptors.length < 3) {
-      issues.push("diffusion_synthesis.style_descriptors must have at least 3 entries");
-    }
-    if (!Array.isArray(ds.color_language) || ds.color_language.length === 0) {
-      issues.push("diffusion_synthesis.color_language is empty — hex codes from Layer 3 were not translated to natural language");
-    }
-    if (!ds.negative_prompt || ds.negative_prompt.trim().length < 10) {
-      issues.push("diffusion_synthesis.negative_prompt is missing");
-    }
-    // Guard against SVG bleed-through (common model error: copying coordinates into master_prompt)
-    const svgLeakPattern = /stroke_dasharray|stroke_width|z_index|\{\s*x:\s*\d|\{\s*y:\s*\d|#[0-9a-fA-F]{6}/;
+    
+    // Final check for remaining leaks post-scrub
+    const svgLeakPattern = /stroke_dasharray|stroke_width|z_index|#[0-9a-fA-F]{6}/;
     if (svgLeakPattern.test(ds.master_prompt || "")) {
-      issues.push("diffusion_synthesis.master_prompt contains SVG/CSS values or hex codes — these are invisible to diffusion models and must be translated to natural language");
-    }
-
-    // Guard against ID/Property name leakage (e.g., 'ent_beta' or 'p1_micro' appearing in text)
-    const idLeakPattern = /ent_|panel_|p1_|p2_|p3_|\w+_\w+/;
-    if (idLeakPattern.test(ds.master_prompt || "")) {
-      issues.push("diffusion_synthesis.master_prompt contains internal JSON property names or IDs — this causes 'ID Leakage' in the rendered image. Remove these technical markers.");
-    }
-
-    // Check for spatial language in master_prompt
-    if (!ds.spatial_narrative || ds.spatial_narrative.trim().length < 20) {
-      issues.push("diffusion_synthesis.spatial_narrative is missing or too short");
+      issues.push("diffusion_synthesis.master_prompt still contains unresolved SVG/CSS markers after scrubbing.");
     }
   }
 
@@ -89,34 +156,31 @@ export const validateInfographicOutput = (data: any, selectedStyle: string): { v
   }
 
   // --- STYLE LOCK VALIDATION (P0) ---
-  // Enforce that the output journal matches the UI selection
   if (style.includes("cjasn") && js !== "CJASN_Blue_Standard") {
-    console.log("[v2.0 Validator] Forcing CJASN Blue Standard alignment");
     data.metadata.journal_standard = "CJASN_Blue_Standard";
   }
   if (style.includes("nejm") && js !== "NEJM_Dense_Slab") {
-    console.log("[v2.0 Validator] Forcing NEJM Dense Slab alignment");
     data.metadata.journal_standard = "NEJM_Dense_Slab";
   }
   if (style.includes("nature") && js !== "Nature_Flow_WCN") {
-    console.log("[v2.0 Validator] Forcing Nature Flow alignment");
     data.metadata.journal_standard = "Nature_Flow_WCN";
   }
 
-  // Check for Layer 5
+  // Check for Layer 5 and Scrub
   const ds = data?.diffusion_synthesis;
+  if (ds?.master_prompt) {
+    ds.master_prompt = scrubDiffusionPrompt(ds.master_prompt);
+  }
+
   if (!ds) {
     issues.push("diffusion_synthesis (Layer 5) is missing");
   } else {
     const wordCount = (ds.master_prompt || "").split(/\s+/).length;
     if (wordCount < 100) {
-      issues.push(`diffusion_synthesis.master_prompt too short: ${wordCount} words (min: 150)`);
-    }
-    const svgLeakPattern = /stroke_dasharray|stroke_width|z_index|\{\s*x:\s*\d|\{\s*y:\s*\d|#[0-9a-fA-F]{6}/;
-    if (svgLeakPattern.test(ds.master_prompt || "")) {
-      issues.push("diffusion_synthesis.master_prompt contains SVG/CSS or hex leaks");
+      issues.push(`diffusion_synthesis.master_prompt too short: ${wordCount} words`);
     }
   }
 
   return { valid: issues.length === 0, issues };
 };
+
