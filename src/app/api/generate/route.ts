@@ -41,22 +41,39 @@ export async function POST(req: NextRequest) {
                 ${config.expansionRules.join("\n        ")}
                 STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
                 ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}`;
-      } else if (mode === "video") {
-        expansionSystemPrompt = `### ROLE: ${config.expansionRole}
-You are the world's foremost cinematic prompt engineer. Your mission is to transform a simple video brief into an ultra-dense, production-grade 'Cinematic Design Specification'.
-Your output must be a single, continuous block of rich natural language.
-### MANDATORY EXPANSION RULES:
+      } else if (mode === "video" || mode === "comic") {
+        expansionSystemPrompt = `### ROLE: ELITE CINEMATIC DIRECTOR
+Refine the user's brief into a 'Masterclass Cinematic Specification' using the CINEMATIC ONTOLOGY:
+1. OPTICS: 35mm/50mm anamorphic, shallow depth-of-field, cinematic bokeh.
+2. LIGHTING: Chiaroscuro shadows, volumetric lighting, dramatic rim-lighting.
+3. CAUSALITY: Emotional weight and narrative pacing.
+4. IDENTITY: Strict South Asian character lock (skin tone, modern urban Indian styling).
+
+### MANDATORY RULES:
+- Word Count: 180-250 words.
+- Resolve all visual contradictions.
 ${config.expansionRules.join("\n")}
-### STYLE PROTOCOL: ${normalizedStyle || "Cinematic Photorealistic"}`;
+### STYLE PROTOCOL: ${normalizedStyle}`;
       } else {
-        expansionSystemPrompt = `RULE 0 (CRITICAL): MEMORY PURGE. Flush previous anatomy. Focus EXCLUSIVELY on: ${brief.substring(0, 50)}...
-                RULE 1 (STRICT): SINGLE-PANEL composition unless 'sections' asked.
-                ${dynamicBlacklist}
-                You are a ${config.expansionRole}. Refine into high-fidelity scientific spec.
-                ${config.expansionRules.join("\n        ")}
-                STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
-                ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}
-                HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
+        const isSurgical = brief.toLowerCase().match(/surgery|resection|dissection|laparoscop|robotic|endoscop|incision/);
+        expansionSystemPrompt = `### ROLE: PRINCIPAL MEDICAL ILLUSTRATOR (SVSP v1.1 - PRUNING MODE)
+Refine into a 'Surgical Specification' using STRASBERG'S CRITICAL VIEW logic:
+1. IMAGING: Stereoscopic 30° endoscopy, uniform surgical illumination, no chiaroscuro, no bokeh.
+2. ANATOMICAL RELATIONS: Identify structures by their COURSE and RELATION to landmarks, NOT by visual artifacts like 'pulsation'.
+3. PRUNING MANDATE (CRITICAL): 
+   - ZERO-OUT the 'cellular' and 'molecular' layers. They provide NO visual payoff in macro-surgical views.
+   - Focus 100% on TISSUE PLANES, TENSION, and OPERATIVE ANATOMY.
+4. IDENTITY: Neutral/Achromatic. Inside the surgical site, skin-tone is non-visible.
+
+### MANDATORY RULES:
+- Word Count: 180-250 words.
+- Visual Payoff: If it can't be seen on a 4K surgical monitor, don't describe it.
+- STYLE: NEJM-Style clarity. Reduce detail by 30% to favor diagrammatic photorealism over simulation-density.
+${dynamicBlacklist}
+${config.expansionRules.join("\n        ")}
+STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
+${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}
+HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
       }
 
       const { refinedText, providerHistory: expHistory } = await GenerationService.expandBrief(brief, expansionSystemPrompt, image || "");

@@ -77,6 +77,47 @@ const validatePhysicsAlignment = (tissue: string = "", flow: any = {}): string[]
  */
 export const validateMedicalOutput = (data: any): { valid: boolean; issues: string[] } => {
   const issues: string[] = [];
+  const subject = (data?.scientific_subject || "").toLowerCase();
+  const isSurgical = subject.match(/surgery|resection|dissection|laparoscop|robotic|endoscop|incision/);
+
+  // 0. SVSP v1.0 BLOCKERS (Hard Rejects)
+  const masterPrompt = (data?.diffusion_synthesis?.master_prompt || "").toLowerCase();
+  
+  if (isSurgical) {
+    if (masterPrompt.includes("anamorphic") || masterPrompt.includes("35mm") || masterPrompt.includes("cinematic lens")) {
+      issues.push("SVSP BLOCKER: Cinematic optics detected in surgical view (anamorphic/35mm). These are prohibited for endoscopy.");
+    }
+    if (masterPrompt.includes("chiaroscuro") || masterPrompt.includes("dramatic shadows")) {
+      issues.push("SVSP BLOCKER: Cinematic lighting detected in surgical view (chiaroscuro). Use fiber-optic uniform illumination.");
+    }
+    if (masterPrompt.includes("bokeh") || masterPrompt.includes("shallow cinematic")) {
+      issues.push("SVSP BLOCKER: Cinematic Depth-of-Field (bokeh) prohibited in surgical view.");
+    }
+    
+    // Internal View Ethnicity Check
+    const ethnicityKeywords = ["indian", "south asian", "ethnic", "character", "age", "male", "female"];
+    if (ethnicityKeywords.some(kw => masterPrompt.includes(kw))) {
+      issues.push("SVSP FLAG: Ethnicity or character descriptors in internal surgical view. Removing conceptual leakage—internal tissue is identity-neutral.");
+      // Auto-scrub internal identity
+      ethnicityKeywords.forEach(kw => {
+        data.diffusion_synthesis.master_prompt = data.diffusion_synthesis.master_prompt.replace(new RegExp(kw, "gi"), "");
+      });
+    }
+
+    // 🔬 SVSP Complexity Guard (Surgical Pruning)
+    if (data.cellular && data.cellular.length > 0 && isSurgical) {
+      issues.push("SVSP WARNING: Redundant 'cellular' layer detected in macro-surgical view. These add noise without visual payoff. Suggest pruning for NEJM-level clarity.");
+    }
+    if (data.molecular && Object.keys(data.molecular).length > 0 && isSurgical) {
+      issues.push("SVSP WARNING: Redundant 'molecular' layer detected. These are non-visual in operative endoscopy. Suggest pruning.");
+    }
+    
+    // Heuristic Correction
+    const cysticHeuristic = masterPrompt.match(/pulsation|pulsing|beat/i);
+    if (cysticHeuristic && subject.includes("cholecystectomy")) {
+      issues.push("SVSP ERROR: Cystic artery identified by 'pulsation' (incorrect). Correct identification must rely on anatomical course and relation within Calot’s triangle.");
+    }
+  }
 
   // 1. Strict Physics Validation
   const physicsIssues = validatePhysicsAlignment(data?.scientific_subject || data?.tissue?.name, data?.flow_dynamics);

@@ -16,16 +16,33 @@ export class GenerationService {
       for (const m of modelsToTry) {
         try {
           const model = this.genAI.getGenerativeModel({ model: m, safetySettings });
-          const userParts: any[] = [`EXPAND THIS BRIEF: ${brief}`];
+          const userParts: any[] = [`CONVERT TO MASTERCLASS SPEC: ${brief}`];
           if (image) {
             const base64Data = image.split(",")[1];
             const mimeType = image.split(";")[0].split(":")[1];
             userParts.push({ inlineData: { data: base64Data, mimeType } });
           }
-          const result = await model.generateContent([systemPrompt, ...userParts]);
-          refinedText = result.response.text().trim();
+          
+          let result = await model.generateContent([systemPrompt, ...userParts]);
+          let firstDraft = result.response.text().trim();
+          
+          // --- SOVEREIGN RECURSIVE HARDENER ---
+          const lexicalDensity = (firstDraft.match(/texture|lighting|optics|refraction|scattering|detailed|anatomy|clinical|specular/gi) || []).length;
+          const wordCount = firstDraft.split(/\s+/).length;
+
+          if (wordCount < 120 || lexicalDensity < 4) {
+            console.log(`[Sovereign Hardener] Up-sampling thin prompt (Words: ${wordCount}, Density: ${lexicalDensity})...`);
+            const reworkResult = await model.generateContent([
+                systemPrompt,
+                { text: `EXISTING DRAFT: ${firstDraft}\n\nCRITICAL FEEDBACK: This draft is too thin. Increase prose density by 2x. Add highly specific detail about subsurface scattering, fluid visosity, and clinical micro-textures.` }
+            ]);
+            refinedText = reworkResult.response.text().trim();
+          } else {
+            refinedText = firstDraft;
+          }
+
           if (refinedText) {
-            providerHistory.push({ phase: "expansion", model: m, status: "success" });
+            providerHistory.push({ phase: "expansion", model: m, status: "success", stats: { words: wordCount, density: lexicalDensity } });
             break;
           }
         } catch (err: any) {
