@@ -1,0 +1,133 @@
+{
+  "engine_name": "ENT Sovereign Engine",
+  "version": "1.0.0",
+  "base_identity": "South_Asian_Clinical_Standard",
+
+  "ear_anatomy": {
+    "external_ear": {
+      "auricle": {
+        "landmarks": ["Helix", "Antihelix", "Tragus", "Antitragus", "Concha", "Lobule", "Triangular_fossa", "Scapha"],
+        "blood_supply": "Posterior_auricular_and_superficial_temporal_arteries",
+        "visual_rule": "Detailed_anatomical_diagram_of_auricle_with_all_landmarks_labelled_on_Indian_patient"
+      },
+      "external_auditory_canal": {
+        "length": "2.5_to_3_cm",
+        "outer_third": "Cartilaginous_with_ceruminous_glands_and_hair_follicles",
+        "inner_two_thirds": "Bony_lined_with_thin_skin",
+        "angle": "Canal_curves_infero_anteriorly_pinna_pulled_supero_posteriorly_to_straighten_for_examination"
+      }
+    },
+    "middle_ear": {
+      "tympanic_membrane": {
+        "layers": ["Outer_epidermis", "Middle_fibrous_lamina_propria_radial_and_circular_fibers", "Inner_mucosal_layer"],
+        "landmarks": ["Pars_tensa_largest_portion", "Pars_flaccida_Shrapnells_membrane_superior", "Umbo", "Light_reflex_cone_of_light_anteroinferior", "Handle_of_malleus", "Lateral_process_of_malleus"],
+        "visual_rule": "Otoscopic_view_of_right_TM_showing_all_landmarks_pearl_grey_translucent_intact_membrane_with_cone_of_light_at_5_oclock"
+      },
+      "ossicles": [
+        { "bone": "Malleus", "parts": ["Head", "Neck", "Handle_Manubrium", "Anterior_process", "Lateral_process"], "attachment": "Handle_attached_to_TM" },
+        { "bone": "Incus", "parts": ["Body", "Short_process", "Long_process", "Lenticular_process"], "articulates": "Malleus_and_Stapes" },
+        { "bone": "Stapes", "parts": ["Head", "Neck", "Anterior_crus", "Posterior_crus", "Footplate"], "attachment": "Footplate_in_oval_window" }
+      ],
+      "sound_transmission_physics": {
+        "mechanical_advantage": "22x_from_TM_to_stapes_footplate_area_ratio_plus_lever_ratio",
+        "impedance_matching": "Middle_ear_overcomes_air_water_impedance_mismatch_at_cochlea",
+        "visual_rule": "Linked_ossicle_chain_with_motion_vectors_showing_amplification_from_TM_to_oval_window"
+      },
+      "muscles": [
+        { "muscle": "Tensor_Tympani", "supply": "Medial_pterygoid_nerve_from_V3", "action": "Pulls_handle_medially_stiffens_TM" },
+        { "muscle": "Stapedius", "supply": "Facial_nerve_CN_VII", "action": "Pulls_stapes_posteriorly_acoustic_reflex_protects_from_loud_sounds" }
+      ]
+    },
+    "inner_ear": {
+      "cochlea": {
+        "turns": "2.5_turns",
+        "scalae": ["Scala_Vestibuli_perilymph", "Scala_Media_endolymph_cochlear_duct", "Scala_Tympani_perilymph"],
+        "organ_of_Corti": {
+          "location": "Basilar_membrane_within_scala_media",
+          "hair_cells": ["Inner_Hair_Cells_IHC_3500_primary_sensory", "Outer_Hair_Cells_OHC_12000_amplification"],
+          "tonotopy": "High_frequencies_base_of_cochlea_low_frequencies_apex"
+        },
+        "visual_rule": "Unrolled_cochlea_showing_gradient_from_high_frequency_base_to_low_frequency_apex_with_OHC_and_IHC_rows"
+      },
+      "vestibular_system": {
+        "otolith_organs": [
+          { "organ": "Utricle", "plane": "Horizontal", "function": "Linear_acceleration_and_gravity_sensing" },
+          { "organ": "Saccule", "plane": "Vertical", "function": "Vertical_linear_acceleration" }
+        ],
+        "semicircular_canals": ["Horizontal_lateral", "Anterior_superior", "Posterior_inferior"],
+        "endolymph_flow": "Cupula_deflected_by_endolymph_movement_during_angular_acceleration"
+      }
+    }
+  },
+
+  "nose_and_paranasal_sinuses": {
+    "nasal_anatomy": {
+      "external_nose_landmarks": ["Nasal_root_Nasion", "Nasal_dorsum", "Nasal_tip", "Columella", "Ala"],
+      "internal_nasal_septum": {
+        "cartilaginous": "Quadrilateral_cartilage_septal_cartilage_anterior",
+        "bony": ["Perpendicular_plate_of_ethmoid", "Vomer_posterior_inferior"]
+      },
+      "turbinates_conchae": [
+        { "turbinate": "Inferior", "size": "Largest_main_airway_resistance", "function": "Humidification_and_filtration" },
+        { "turbinate": "Middle", "significance": "Key_landmark_for_sinus_surgery_ostiomeatal_complex_drainage" },
+        { "turbinate": "Superior", "significance": "Adjacent_to_olfactory_recess" }
+      ],
+      "vascular_supply": {
+        "littles_area_kiesselbach_plexus": "Convergence_of_five_arteries_on_anterior_septum_common_nosebleed_site",
+        "arteries": ["Anterior_ethmoidal", "Posterior_ethmoidal", "Sphenopalatine", "Greater_palatine", "Superior_labial"]
+      }
+    },
+    "paranasal_sinuses": [
+      { "sinus": "Maxillary", "drainage": "Ostiomeatal_complex_in_middle_meatus", "size": "Largest_sinus_15_to_20_mL" },
+      { "sinus": "Frontal", "drainage": "Frontal_recess_in_middle_meatus", "note": "Absent_at_birth_develops_after_age_2" },
+      { "sinus": "Ethmoid_anterior", "drainage": "Middle_meatus" },
+      { "sinus": "Ethmoid_posterior", "drainage": "Superior_meatus" },
+      { "sinus": "Sphenoid", "drainage": "Sphenoethmoidal_recess_superior_to_superior_turbinate", "relations": "Optic_nerve_and_ICA_in_lateral_wall" }
+    ]
+  },
+
+  "larynx_and_pharynx": {
+    "laryngeal_anatomy": {
+      "cartilages": ["Thyroid_cartilage_largest", "Cricoid_cartilage_only_complete_ring", "Epiglottis", "Arytenoid_paired", "Corniculate_paired", "Cuneiform_paired"],
+      "glottis": {
+        "true_vocal_cords": "Located_at_level_of_glottis_pearly_white_avascular",
+        "false_vocal_cords": "Vestibular_folds_above_true_cords_with_mucous_glands",
+        "visual_rule": "Laryngoscopic_view_showing_white_true_cords_opening_in_V_on_inspiration_with_arytenoids_posteriorly"
+      },
+      "rln_path_to_larynx": "Enters_larynx_via_cricothyroid_joint_posterior_to_it_innervates_all_intrinsic_laryngeal_muscles_except_cricothyroid"
+    },
+    "pharynx": {
+      "nasopharynx": {
+        "contents": ["Adenoids_pharyngeal_tonsil", "Eustachian_tube_openings", "Fossa_of_Rosenmuller_common_NPC_site"],
+        "visual_rule": "Lateral_view_with_relation_to_skull_base"
+      },
+      "waldeyers_ring": ["Pharyngeal_tonsil_adenoid", "Tubal_tonsils_bilateral", "Palatine_tonsils_bilateral", "Lingual_tonsil"],
+      "piriform_fossa": "Bilateral_recesses_lateral_to_larynx_common_site_for_food_bolus_and_foreign_body_impaction"
+    }
+  },
+
+  "ent_pathologies_and_procedures": {
+    "otitis_media_cascade": [
+      "Eustachian_tube_dysfunction_from_URTI_or_allergy",
+      "Middle_ear_negative_pressure",
+      "Serous_fluid_accumulation_OME",
+      "Bacterial_superinfection_AOM",
+      "Pus_under_pressure_bulging_TM",
+      "TM_perforation_or_spread_to_mastoid"
+    ],
+    "cholesteatoma": {
+      "mechanism": "Keratinizing_squamous_epithelium_invades_middle_ear_from_pars_flaccida_retraction_pocket",
+      "visual_rule": "White_pearly_mass_behind_TM_eroding_ossicles_and_adjacent_bone_visible_on_otoscopy"
+    },
+    "tonsillectomy_anatomy": {
+      "surgical_plane": "Between_tonsillar_capsule_and_superior_pharyngeal_constrictor",
+      "bleeding_risk": "Tonsillar_branch_of_dorsalis_linguae_artery_and_ascending_palatine_artery_at_lower_pole",
+      "visual_rule": "Open_mouth_with_bilateral_cryptic_tonsils_and_right_peritonsillar_abscess_pushing_uvula_to_left"
+    },
+    "functional_endoscopic_sinus_surgery_fess": {
+      "principles": "Restoring_natural_mucociliary_drainage_pathways_via_keyhole_endoscopic_approach",
+      "key_landmarks": ["Uncinate_process_first_structure_removed", "Maxillary_ostium_opened", "Ethmoid_bullae_removed", "Frontal_recess_addressed"],
+      "visual_rule": "Endoscopic_view_into_nasal_cavity_showing_middle_turbinate_and_inflamed_opacified_ethmoidal_mucosa"
+    }
+  }
+}

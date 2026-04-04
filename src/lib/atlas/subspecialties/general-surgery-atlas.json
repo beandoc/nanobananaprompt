@@ -1,0 +1,115 @@
+{
+  "engine_name": "General Surgery Sovereign Engine",
+  "version": "1.0.0",
+  "base_identity": "South_Asian_Clinical_Standard",
+
+  "abdominal_surgical_anatomy": {
+    "peritoneal_spaces": {
+      "greater_omentum": "Fatty_apron_hanging_from_greater_curvature_of_stomach",
+      "lesser_sac_omental_bursa": {
+        "boundaries": ["Anterior_lesser_omentum_and_stomach", "Posterior_pancreas_and_retroperitoneum", "Right_Foramen_of_Winslow", "Left_hilum_spleen"],
+        "significance": "Site_of_fluid_collection_in_pancreatitis"
+      },
+      "paracolic_gutters": ["Right_paracolic_gutter_communicates_with_Morrison_pouch", "Left_paracolic_gutter"],
+      "morrison_pouch": "Hepatorenal_space_most_dependent_in_supine_patient_first_site_of_free_fluid"
+    },
+    "abdominal_wall_layers": {
+      "midline": ["Skin", "Subcutaneous_fat", "Linea_alba", "Transversalis_fascia", "Preperitoneal_fat", "Peritoneum"],
+      "paramedian": ["Skin", "Subcutaneous_fat", "Anterior_rectus_sheath", "Rectus_abdominis", "Posterior_rectus_sheath", "Transversalis_fascia", "Preperitoneal_fat", "Peritoneum"],
+      "inguinal_region": {
+        "inguinal_canal": ["Internal_inguinal_ring", "Inguinal_canal", "External_inguinal_ring"],
+        "hernia_types": [
+          { "type": "Indirect_Inguinal", "path": "Through_internal_ring_into_canal_and_potentially_scrotum", "relation": "Lateral_to_inferior_epigastric_vessels" },
+          { "type": "Direct_Inguinal", "path": "Through_Hasselbach_triangle_floor_of_canal", "relation": "Medial_to_inferior_epigastric_vessels" },
+          { "type": "Femoral", "path": "Through_femoral_canal_below_inguinal_ligament", "note": "More_common_in_females_highest_strangulation_risk" }
+        ]
+      }
+    }
+  },
+
+  "appendix_and_colorectal": {
+    "appendicular_anatomy": {
+      "location": "Base_at_McBurneys_point_1_3_from_ASIS_to_umbilicus",
+      "blood_supply": "Appendicular_artery_from_ileocolic_artery",
+      "acute_appendicitis_cascade": [
+        "Luminal_obstruction_faecolith_or_lymphoid_hyperplasia",
+        "Mucus_secretion_continues_intraluminal_pressure_rises",
+        "Venous_congestion_then_arterial_ischemia",
+        "Bacterial_translocation_and_transmural_inflammation",
+        "Perforation_if_untreated_peritonitis"
+      ],
+      "visual_rule": "Dilated_thick_walled_appendix_with_periappendiceal_fat_stranding_and_faecolith_at_base_in_RIF"
+    },
+    "colorectal_surgical_anatomy": {
+      "blood_supply_zones": [
+        { "segment": "Cecum_to_splenic_flexure", "supply": "Superior_Mesenteric_Artery_SMA" },
+        { "segment": "Splenic_flexure_to_rectum", "supply": "Inferior_Mesenteric_Artery_IMA" },
+        { "segment": "Rectum_distal", "supply": "Middle_and_inferior_rectal_arteries_from_internal_iliac" }
+      ],
+      "watershed_zone": "Griffiths_point_at_splenic_flexure_most_vulnerable_to_ischemia",
+      "mesorectal_fascia": "Total_mesorectal_excision_TME_plane_for_rectal_cancer_sharp_dissection_preserving_autonomic_nerves"
+    }
+  },
+
+  "hepatobiliary_surgery": {
+    "liver_surgical_segments_couinaud": {
+      "segments": ["I_Caudate", "IIa_IIb_Left_lateral_section", "III_Left_lateral", "IV_Left_medial", "V_Right_anterior_inferior", "VI_Right_posterior_inferior", "VII_Right_posterior_superior", "VIII_Right_anterior_superior"],
+      "surgical_relevance": "Each_segment_is_independently_resectable_with_its_own_portal_pedicle_and_hepatic_venous_drainage",
+      "visual_rule": "Colour_coded_liver_map_showing_8_segments_numbered_systematically"
+    },
+    "biliary_anatomy": {
+      "extrahepatic_bile_ducts": ["Right_hepatic_duct", "Left_hepatic_duct", "Common_hepatic_duct", "Cystic_duct_junction", "Common_bile_duct_CBD"],
+      "triangle_of_calot": {
+        "boundaries": ["Cystic_duct", "Common_hepatic_duct", "Inferior_surface_of_liver"],
+        "contents": "Cystic_artery_right_hepatic_artery_lymph_node_of_Lund",
+        "significance": "Critical_safe_dissection_zone_in_laparoscopic_cholecystectomy"
+      },
+      "cholecystitis_cascade": [
+        "Gallstone_impacts_at_Hartmanns_pouch_or_cystic_duct",
+        "Bile_stasis_and_bacterial_superinfection",
+        "Mucosal_edema_and_wall_thickening",
+        "Pericholecystic_fluid",
+        "Empyema_or_gangrenous_cholecystitis",
+        "Perforation_Mirizzi_syndrome_or_cholecystoenteric_fistula"
+      ],
+      "visual_rule": "Thickened_walled_gallbladder_with_impacted_stone_at_neck_pericholecystic_fluid_and_gallbladder_fundus_hyperemia"
+    },
+    "whipple_procedure_pancreaticoduodenectomy": {
+      "resection_extent": ["Head_of_pancreas", "Duodenum_entirely", "Proximal_jejunum", "Gallbladder", "Distal_common_bile_duct", "Distal_stomach_in_classical_Whipple"],
+      "reconstruction_anastomoses": ["Pancreaticojejunostomy", "Hepaticojejunostomy", "Gastrojejunostomy"],
+      "visual_rule": "Pre_resection_anatomy_highlighted_in_red_and_post_reconstruction_anastomotic_connections_in_blue_arrows_on_a_Roux_en_Y_limb"
+    }
+  },
+
+  "laparoscopic_and_minimally_invasive": {
+    "trocar_placement_principles": {
+      "hasson_technique": "Open_umbilical_entry_direct_vision_safest_in_prior_surgery",
+      "veress_needle": "Blind_CO2_insufflation_through_umbilicus_contraindicated_in_adhesions",
+      "triangulation_rule": "Ports_triangulate_toward_target_organ_camera_between_working_ports",
+      "visual_rule": "Anterior_abdominal_wall_with_trocar_sites_marked_and_triangulation_arrows_converging_on_operative_target"
+    },
+    "pneumoperitoneum_physiology": {
+      "gas": "CO2_12_to_15_mmHg_insufflation_pressure",
+      "hemodynamic_effects": "Increased_SVR_decreased_venous_return_CO2_absorption_causing_hypercarbia",
+      "visual_rule": "Dome_shaped_anterior_abdominal_wall_elevation_with_bowel_displaced_inferiorly_providing_working_space"
+    }
+  },
+
+  "thyroid_and_neck_surgery": {
+    "thyroid_surgical_anatomy": {
+      "recurrent_laryngeal_nerve": {
+        "course_right": "Loops_around_right_subclavian_artery_ascends_in_tracheoesophageal_groove",
+        "course_left": "Loops_around_aortic_arch_longer_course_ascending_in_tracheoesophageal_groove",
+        "injury_consequence": "Unilateral_hoarseness_bilateral_RLN_injury_causes_stridor_and_airway_compromise",
+        "visual_rule": "CRITICAL_nerve_must_be_visualized_and_preserved_shown_in_yellow_running_beneath_thyroid_lobe"
+      },
+      "parathyroid_glands": {
+        "number": 4,
+        "weight": "30_to_60_mg_each",
+        "superior_pair": "Posterior_to_upper_third_of_thyroid_lobe_near_superior_thyroid_artery",
+        "inferior_pair": "Variable_within_3_cm_of_inferior_thyroid_pole",
+        "blood_supply": "Inferior_thyroid_artery_for_both_pairs_in_most_cases"
+      }
+    }
+  }
+}

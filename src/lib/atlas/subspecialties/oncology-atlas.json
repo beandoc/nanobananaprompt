@@ -1,0 +1,176 @@
+{
+  "engine_name": "Oncology Sovereign Engine",
+  "version": "1.0.0",
+  "base_identity": "South_Asian_Clinical_Standard",
+
+  "tumor_microenvironment": {
+    "cellular_composition": {
+      "malignant_cells": {
+        "characteristics": ["Uncontrolled_proliferation", "Genomic_instability", "Immune_evasion", "Metabolic_reprogramming_Warburg_Effect"],
+        "heterogeneity": "Hierarchical_clonal_structure_with_cancer_stem_cells_at_apex"
+      },
+      "stromal_cells": [
+        { "cell": "Cancer_Associated_Fibroblasts_CAF", "function": "Secrete_TGF_beta_and_VEGF_promoting_desmoplasis_and_angiogenesis", "visual": "Dense_spindle_shaped_cells_surrounding_tumor_nests" },
+        { "cell": "Tumor_Associated_Macrophages_TAM", "polarization": "M2_pro_tumoral", "function": "IL_10_and_TGF_beta_secretion_suppressing_anti_tumor_immunity", "visual": "Large_foamy_macrophages_within_tumor_stroma" },
+        { "cell": "Myeloid_Derived_Suppressor_Cells_MDSC", "function": "Suppress_T_cell_and_NK_cell_activity_via_Arginase_1_and_ROS" },
+        { "cell": "Regulatory_T_cells_Treg", "marker": "CD4_CD25_FOXP3", "function": "Suppress_cytotoxic_CD8_T_cells_via_IL_10_and_IL_35" }
+      ],
+      "tumor_vasculature": {
+        "characteristics": ["Abnormal_vessel_morphology", "Leaky_irregular_walls", "High_interstitial_fluid_pressure", "Hypoxic_gradients"],
+        "angiogenesis_drivers": ["VEGF_A", "PDGF_B", "FGF_2", "Angiopoietin_2"],
+        "visual_rule": "Chaotic_tortuous_vessel_network_with_dead_ends_and_dilated_sinusoids_unlike_normal_organized_vasculature"
+      },
+      "extracellular_matrix": {
+        "composition": ["Type_I_Collagen_dense_desmoplastic_stroma", "Fibronectin", "Laminin", "Hyaluronan", "Matrix_Metalloproteinases_MMP"],
+        "physical_consequence": "High_stiffness_and_compressive_forces_activating_mechanosensing_pathways"
+      }
+    },
+    "immunosuppressive_gradient": {
+      "tumor_center": "Maximum_immunosuppression_Tregs_and_exhausted_CD8_T_cells",
+      "tumor_margin": "Active_immune_infiltration_CD8_cytotoxic_T_cells",
+      "invasive_front": "EMT_driven_cells_with_N_cadherin_upregulation",
+      "visual_rule": "Concentric_zone_diagram_cold_immunosuppressed_core_transitioning_to_hot_immune_margin"
+    },
+    "hypoxia_and_warburg_effect": {
+      "mechanism": [
+        "Rapid_proliferation_outpaces_oxygen_delivery",
+        "HIF_1_alpha_stabilized_in_hypoxic_conditions",
+        "HIF_1_alpha_transactivates_VEGF_GLUT1_LDHA_PDK1",
+        "Aerobic_glycolysis_favored_despite_oxygen_presence_Warburg_Effect",
+        "Lactate_secreted_into_TME_acidifying_environment",
+        "Acidic_pH_suppresses_T_cell_function_and_enhances_invasion"
+      ],
+      "visual_rule": "Hypoxia_gradient_visualized_as_purple_oxygen_depleted_core_transitioning_to_pink_normoxic_periphery"
+    }
+  },
+
+  "cancer_hallmarks": {
+    "six_core_hallmarks": [
+      { "hallmark": "Sustaining_Proliferative_Signaling", "mechanism": "Gain_of_function_KRAS_BRAF_EGFR_mutations_driving_constitutive_RAS_MAPK_and_PI3K_AKT_signaling" },
+      { "hallmark": "Evading_Growth_Suppressors", "mechanism": "Loss_of_TP53_RB1_CDKN2A_tumor_suppressors" },
+      { "hallmark": "Resisting_Cell_Death", "mechanism": "BCL_2_upregulation_BAX_downregulation_anti_apoptotic_cascade" },
+      { "hallmark": "Enabling_Replicative_Immortality", "mechanism": "Telomerase_TERT_reactivation_preventing_telomere_shortening" },
+      { "hallmark": "Inducing_Angiogenesis", "mechanism": "VEGF_secretion_recruiting_endothelial_cells_to_form_new_vessels" },
+      { "hallmark": "Activating_Invasion_and_Metastasis", "mechanism": "EMT_E_cadherin_loss_N_cadherin_gain_MMP_secretion_degrading_basement_membrane" }
+    ],
+    "emerging_hallmarks": [
+      { "hallmark": "Reprogramming_Energy_Metabolism", "mechanism": "Warburg_Effect_aerobic_glycolysis" },
+      { "hallmark": "Evading_Immune_Destruction", "mechanism": "PD_L1_upregulation_and_MHC_I_downregulation" }
+    ]
+  },
+
+  "metastatic_cascade": {
+    "steps": [
+      { "step": "1_Local_Invasion", "event": "EMT_and_MMP_driven_basement_membrane_degradation", "visual": "Tumor_cells_with_spindle_morphology_extending_pseudopods_through_matrix" },
+      { "step": "2_Intravasation", "event": "Entry_into_blood_or_lymphatic_vessel", "visual": "Single_tumor_cell_squeezing_through_endothelial_junction" },
+      { "step": "3_Circulation", "event": "Circulating_Tumor_Cells_CTC_form_clusters_with_platelets", "visual": "CTC_surrounded_by_platelet_armor_evading_NK_cell_attack" },
+      { "step": "4_Extravasation", "event": "Adhesion_to_endothelium_and_transendothelial_migration", "visual": "CTC_rolling_and_adhering_to_capillary_endothelium_via_selectins" },
+      { "step": "5_Micrometastasis", "event": "Dormancy_phase_single_cell_or_small_cluster", "visual": "Dormant_cell_surrounded_by_quiescent_niche_cells" },
+      { "step": "6_Macrometastasis", "event": "Colonization_angiogenesis_and_immune_evasion_at_distant_site", "visual": "Established_metastatic_nodule_with_own_vasculature" }
+    ],
+    "organ_tropism": {
+      "breast_to_bone": "CXCR4_CXCL12_axis_and_osteoblast_derived_factors",
+      "colorectal_to_liver": "Portal_venous_drainage_direct_anatomical_seeding",
+      "lung_to_brain": "Blood_brain_barrier_penetration_via_serpins_and_COX_2",
+      "prostate_to_bone": "Osteoblastic_metastases_via_Wnt_and_BMP_signaling"
+    }
+  },
+
+  "immunotherapy_mechanisms": {
+    "checkpoint_inhibitors": {
+      "pd1_pdl1_axis": {
+        "normal_function": "PD_1_on_T_cell_binds_PD_L1_on_healthy_cells_preventing_autoimmunity",
+        "tumor_exploitation": "Tumor_cells_upregulate_PD_L1_to_inhibit_anti_tumor_T_cells",
+        "therapeutic_blockade": [
+          "Anti_PD_1_Nivolumab_Pembrolizumab_block_PD_1_receptor_on_T_cell",
+          "Anti_PD_L1_Atezolizumab_Durvalumab_block_PD_L1_on_tumor_cell",
+          "Restores_cytotoxic_T_cell_activation_and_tumor_killing"
+        ],
+        "visual_rule": "T_cell_with_blocked_PD_1_receptor_forming_immunological_synapse_with_tumor_cell_releasing_perforin_and_granzyme"
+      },
+      "ctla4_axis": {
+        "normal_function": "CTLA_4_competes_with_CD28_for_B7_ligand_dampening_T_cell_priming",
+        "therapeutic_blockade": "Ipilimumab_blocks_CTLA_4_amplifying_early_T_cell_activation_in_lymph_nodes",
+        "visual_rule": "Dendritic_cell_presenting_tumor_antigen_via_MHC_II_to_CD4_T_cell_with_full_co_stimulation_via_CD28_B7"
+      }
+    },
+    "car_t_cell_therapy": {
+      "engineering_steps": [
+        "Patient_T_cells_collected_via_leukapheresis",
+        "Gene_engineering_with_viral_vector_encoding_Chimeric_Antigen_Receptor",
+        "CAR_structure_scFv_antibody_domain_plus_CD3_zeta_plus_co_stimulatory_4_1BB_or_CD28",
+        "Ex_vivo_expansion_of_CAR_T_cells",
+        "Infusion_back_into_lymphodepleted_patient"
+      ],
+      "mechanism_of_action": [
+        "CAR_recognizes_tumor_antigen_CD19_or_BCMA_or_HER2_independent_of_MHC",
+        "Dual_signal_activation_zeta_chain_and_co_stimulator",
+        "T_cell_proliferation_and_cytokine_storm_risk",
+        "Serial_killing_of_tumor_cells_via_perforin_granzyme_and_FASL"
+      ],
+      "visual_rule": "Engineered_South_Asian_T_cell_with_antenna_like_CAR_receptor_docking_onto_tumor_cell_surface_antigen"
+    },
+    "tumor_antigen_presentation": {
+      "mhc_class_I_pathway": {
+        "steps": [
+          "Tumor_mutated_protein_degraded_by_Proteasome",
+          "Peptide_transported_into_ER_by_TAP_transporter",
+          "Loaded_onto_MHC_I_molecule",
+          "Presented_on_tumor_cell_surface_to_CD8_T_cells"
+        ],
+        "tumor_evasion": "Downregulation_of_MHC_I_or_TAP_or_beta_2_microglobulin"
+      },
+      "mhc_class_II_pathway": {
+        "steps": [
+          "Dendritic_cell_phagocytoses_tumor_debris",
+          "Endosomal_processing_of_tumor_proteins",
+          "Loading_onto_MHC_II_molecule",
+          "Presented_to_CD4_helper_T_cells",
+          "CD4_T_cells_support_CD8_cytotoxic_response"
+        ]
+      }
+    },
+    "cytokine_signaling_in_tmf": {
+      "pro_tumor_cytokines": [
+        { "cytokine": "TGF_beta", "source": "CAFs_and_Tregs", "effect": "Suppresses_CD8_T_cells_and_promotes_EMT" },
+        { "cytokine": "IL_10", "source": "TAMs_M2", "effect": "Anergizes_T_cells_and_reduces_MHC_expression" },
+        { "cytokine": "IL_6", "source": "CAFs", "effect": "STAT3_activation_promoting_survival_and_proliferation" }
+      ],
+      "anti_tumor_cytokines": [
+        { "cytokine": "IFN_gamma", "source": "CD8_T_cells_and_NK_cells", "effect": "Upregulates_MHC_I_and_activates_macrophages" },
+        { "cytokine": "TNF_alpha", "source": "Macrophages_and_T_cells", "effect": "Direct_tumor_cell_apoptosis_via_TNFR1" },
+        { "cytokine": "IL_2", "source": "CD4_T_cells", "effect": "T_cell_proliferation_and_NK_cell_activation" }
+      ]
+    }
+  },
+
+  "targeted_therapy_mechanisms": {
+    "kinase_inhibitors": [
+      { "drug": "Imatinib", "target": "BCR_ABL_fusion_kinase", "cancer": "CML_Chronic_Myeloid_Leukemia" },
+      { "drug": "Erlotinib_Gefitinib", "target": "EGFR_tyrosine_kinase", "cancer": "EGFR_mutant_NSCLC" },
+      { "drug": "Vemurafenib", "target": "BRAF_V600E_mutant", "cancer": "Melanoma" },
+      { "drug": "Palbociclib", "target": "CDK4_CDK6_kinases", "cancer": "HR_positive_HER2_negative_breast_cancer" }
+    ],
+    "antibody_drug_conjugates": {
+      "mechanism": [
+        "Antibody_binds_tumor_surface_antigen_HER2_or_TROP2",
+        "ADC_internalized_via_receptor_mediated_endocytosis",
+        "Lysosomal_cleavage_releases_cytotoxic_payload",
+        "Payload_kills_tumor_cell_and_bystander_cells_via_bystander_effect"
+      ],
+      "visual_rule": "Antibody_with_dangling_cytotoxic_warhead_chain_docking_onto_tumor_antigen"
+    }
+  },
+
+  "pathology_visual_standards": {
+    "tumor_grading_visual_rules": {
+      "grade_1_well_differentiated": "Glandular_structures_clearly_visible_resembling_normal_tissue",
+      "grade_2_moderately_differentiated": "Partial_gland_formation_with_nuclear_pleomorphism",
+      "grade_3_poorly_differentiated": "Solid_sheets_of_cells_no_glandular_formation_high_mitotic_rate"
+    },
+    "invasion_markers": {
+      "lymphovascular_invasion": "Tumor_emboli_within_lymphatic_channels_or_blood_vessels_surrounded_by_endothelial_lining",
+      "perineural_invasion": "Tumor_cells_encircling_nerve_fibers_like_wrapping_around_a_cylinder"
+    }
+  }
+}

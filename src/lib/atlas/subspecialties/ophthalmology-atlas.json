@@ -1,0 +1,147 @@
+{
+  "engine_name": "Ophthalmology Sovereign Engine",
+  "version": "1.0.0",
+  "base_identity": "South_Asian_Clinical_Standard",
+
+  "ocular_anatomy": {
+    "globe_dimensions": {
+      "axial_length": "24_mm_average",
+      "layers": ["Fibrous_outer_Sclera_and_Cornea", "Uveal_vascular_Choroid_Ciliary_body_Iris", "Neural_inner_Retina"],
+      "anterior_segment": ["Cornea", "Aqueous_humor", "Iris", "Lens", "Ciliary_body"],
+      "posterior_segment": ["Vitreous_humor", "Retina", "Choroid", "Optic_nerve_head"]
+    },
+    "cornea": {
+      "layers_anterior_to_posterior": ["Epithelium_5_layers", "Bowmans_layer", "Stroma_90%_thickness_collagen_lamellae", "Descemets_membrane", "Endothelium_single_layer_pump_function"],
+      "dimensions": "11_to_12_mm_diameter_0.5_to_0.6_mm_central_thickness",
+      "transparency": "Maintained_by_endothelial_pump_cellular_dehydration_and_regular_collagen_fibril_spacing",
+      "visual_rule": "Cross_section_showing_concentric_arched_layers_with_endothelium_as_brightest_innermost_layer"
+    },
+    "lens": {
+      "structure": ["Anterior_capsule", "Subcapsular_epithelium", "Cortex", "Nucleus"],
+      "accommodation": "Ciliary_muscle_contraction_relaxes_zonules_lens_becomes_more_spherical_for_near_vision",
+      "transparency": "Maintained_by_avascular_nature_and_crystallin_proteins"
+    },
+    "retina": {
+      "layers_vitreous_to_choroid": [
+        "Inner_Limiting_Membrane_ILM",
+        "Nerve_Fiber_Layer_NFL",
+        "Ganglion_Cell_Layer",
+        "Inner_Plexiform_Layer",
+        "Inner_Nuclear_Layer_bipolar_horizontal_amacrine",
+        "Outer_Plexiform_Layer",
+        "Outer_Nuclear_Layer_photoreceptor_nuclei",
+        "Outer_Segments_rods_and_cones",
+        "Retinal_Pigment_Epithelium_RPE",
+        "Bruchs_Membrane",
+        "Choriocapillaris"
+      ],
+      "fovea_centralis": {
+        "location": "Center_of_macula_3mm_temporal_to_optic_disc",
+        "composition": "Pure_cones_highest_visual_acuity_zone_no_overlying_cells_avascular",
+        "visual_rule": "Depression_pit_in_center_of_macula_with_reflex_highlight"
+      },
+      "optic_disc": {
+        "diameter": "1.5_mm",
+        "cup_disc_ratio_normal": "Less_than_0.5",
+        "visual_rule": "Pink_oval_disc_with_central_pale_cup_and_nerve_fiber_radiating_outward"
+      }
+    },
+    "aqueous_humor_circulation": {
+      "production": "Ciliary_epithelium_active_secretion_and_ultrafiltration",
+      "pathway": ["Posterior_chamber", "Through_pupil", "Anterior_chamber", "Trabecular_meshwork", "Canal_of_Schlemm", "Episcleral_veins"],
+      "pressure": "Normal_IOP_10_to_21_mmHg",
+      "visual_rule": "Fluid_flow_arrows_from_ciliary_body_posterior_to_anterior_chamber_through_pupil_and_exiting_trabecular_meshwork"
+    }
+  },
+
+  "ophthalmic_pathologies": {
+    "glaucoma": {
+      "primary_open_angle": {
+        "mechanism": [
+          "Increased_resistance_at_trabecular_meshwork",
+          "IOP_elevation_gradual",
+          "Optic_nerve_head_mechanical_and_vascular_damage",
+          "Retinal_ganglion_cell_loss",
+          "Peripheral_then_central_visual_field_loss"
+        ],
+        "disc_changes": ["Cup_disc_ratio_increase_>0.7", "Rim_thinning_inferior_superior_nasal_temporal_rule", "Disc_haemorrhages", "Retinal_nerve_fiber_layer_defects"],
+        "visual_rule": "Fundus_showing_large_cup_with_nasal_displacement_of_vessels_and_inferior_rim_thinning"
+      },
+      "angle_closure": {
+        "mechanism": "Pupil_block_relative_or_absolute_bowing_of_iris_into_angle",
+        "presentation_acute": "Sudden_pain_red_eye_steamy_cornea_mid_dilated_fixed_pupil_markedly_elevated_IOP",
+        "visual_rule": "Gonioscopy_image_showing_closed_angle_with_iris_touching_trabecular_meshwork"
+      }
+    },
+    "age_related_macular_degeneration": {
+      "dry_amd": {
+        "features": ["Drusen_extracellular_deposits_under_RPE", "RPE_atrophy_geographic_atrophy"],
+        "visual_rule": "Fundus_photograph_showing_scattered_yellow_white_drusen_around_fovea_with_hyperpigmented_and_hypopigmented_areas"
+      },
+      "wet_neovascular_amd": {
+        "mechanism": [
+          "VEGF_driven_choroidal_neovascularization_CNV",
+          "New_vessels_infiltrate_through_Bruchs_membrane",
+          "Subretinal_fluid_and_blood_accumulation",
+          "Rapid_central_vision_loss"
+        ],
+        "oct_appearance": "Subretinal_fluid_and_pigment_epithelial_detachment_on_OCT_cross_section",
+        "visual_rule": "OCT_B_scan_showing_dome_shaped_PED_and_subretinal_fluid_pockets_between_RPE_and_neurosensory_retina"
+      }
+    },
+    "diabetic_retinopathy": {
+      "non_proliferative_npdr": {
+        "features": ["Microaneurysms_first_sign", "Dot_blot_hemorrhages", "Hard_exudates_lipid_deposits", "Cotton_wool_spots_NFL_infarcts"],
+        "visual_rule": "Fundus_with_scattered_red_dots_microaneurysms_and_blots_with_waxy_yellow_exudates_around_fovea"
+      },
+      "proliferative_pdr": {
+        "mechanism": [
+          "Extended_retinal_ischemia",
+          "VEGF_upregulation",
+          "Neovascularization_from_disc_NVD_or_elsewhere_NVE",
+          "Vitreous_hemorrhage_risk",
+          "Tractional_retinal_detachment"
+        ],
+        "visual_rule": "Frond_like_new_vessels_growing_on_optic_disc_surface_extending_into_vitreous"
+      }
+    },
+    "retinal_detachment": {
+      "rhegmatogenous": {
+        "mechanism": "Full_thickness_retinal_break_allows_fluid_to_enter_subretinal_space_separating_neurosensory_retina_from_RPE",
+        "predisposing": ["Posterior_vitreous_detachment_PVD", "Lattice_degeneration", "High_myopia"],
+        "visual_rule": "Elevated_grey_rippled_retina_with_break_visible_and_underlying_subretinal_fluid"
+      }
+    },
+    "cataract": {
+      "types": [
+        { "type": "Nuclear_sclerosis", "appearance": "Brown_amber_hardening_of_nucleus_myopic_shift", "visual_rule": "Slit_lamp_graded_amber_nucleus" },
+        { "type": "Posterior_subcapsular", "appearance": "Plaque_at_posterior_pole_of_lens_worst_glare_and_near_vision", "visual_rule": "Bright_posterior_plaque_on_retro_illumination" },
+        { "type": "Cortical", "appearance": "Spoke_like_wedge_opacities_from_periphery", "visual_rule": "Wheel_spoke_pattern_on_slit_lamp" }
+      ]
+    }
+  },
+
+  "ophthalmic_procedures": {
+    "phacoemulsification_cataract_surgery": {
+      "steps": [
+        "Corneal_incision_2_4_to_2_8_mm_temporal",
+        "Capsulorhexis_circular_anterior_capsule_opening",
+        "Hydrodissection_fluid_wave_behind_nucleus",
+        "Phacoemulsification_of_nucleus_with_ultrasound_probe",
+        "Irrigation_aspiration_of_cortex",
+        "IOL_Intraocular_Lens_implantation_into_capsular_bag",
+        "Wound_hydration"
+      ],
+      "visual_rule": "Cross_section_of_eye_showing_probe_fragmenting_nucleus_within_capsular_bag_with_irrigation_and_aspiration_ports"
+    },
+    "vitrectomy": {
+      "indications": ["Vitreous_hemorrhage", "Tractional_RD", "Macular_hole", "Endophthalmitis"],
+      "steps": ["3_port_pars_plana_entry", "Core_vitrectomy", "Peripheral_shaving", "Membrane_peeling_with_forceps", "Endo_laser_if_required", "Tamponade_gas_or_silicone_oil"],
+      "visual_rule": "Three_trocar_ports_at_pars_plana_with_vitrectomy_cutter_and_light_pipe_and_infusion_cannula"
+    },
+    "trabeculectomy_glaucoma": {
+      "mechanism": "Create_partial_thickness_scleral_flap_and_full_thickness_sclerostomy_with_iridectomy_allowing_aqueous_to_drain_into_subconjunctival_bleb",
+      "visual_rule": "Elevated_conjunctival_bleb_superiorly_representing_functioning_drainage_site"
+    }
+  }
+}

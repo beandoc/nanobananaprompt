@@ -1,0 +1,208 @@
+{
+  "engine_name": "Pulmonology Sovereign Engine",
+  "version": "1.0.0",
+  "base_identity": "South_Asian_Clinical_Standard",
+
+  "airway_architecture": {
+    "upper_airway": {
+      "segments_in_order": ["Nasopharynx", "Oropharynx", "Laryngopharynx", "Larynx", "Vocal_cords"],
+      "key_landmarks": ["Epiglottis", "Thyroid_cartilage", "Cricoid_cartilage", "Arytenoid_cartilages"],
+      "physics": {
+        "flow_type": "Turbulent_flow_at_larynx_and_bifurcations",
+        "resistance": "60_percent_of_total_airway_resistance_in_upper_airway"
+      }
+    },
+    "lower_airway_tracheobronchial_tree": {
+      "trachea": {
+        "diameter": "1.5_to_2.5_cm",
+        "length": "10_to_12_cm",
+        "support": "C_shaped_hyaline_cartilage_rings_with_posterior_membranous_wall",
+        "bifurcation": "Carina_at_T4_T5_vertebral_level"
+      },
+      "bronchial_generations": [
+        { "generation": "1", "label": "Main_Bronchi", "count": 2, "cartilage": "Complete_ring" },
+        { "generation": "2_to_10", "label": "Lobar_and_Segmental_Bronchi", "cartilage": "Irregular_plates" },
+        { "generation": "11_to_16", "label": "Bronchioles", "diameter_mm": "< 1mm", "cartilage": "Absent" },
+        { "generation": "17_to_19", "label": "Respiratory_Bronchioles", "note": "First_site_of_gas_exchange" },
+        { "generation": "20_to_22", "label": "Alveolar_Ducts" },
+        { "generation": "23", "label": "Alveolar_Sacs_and_Alveoli", "count_per_lung": "300_million" }
+      ],
+      "lung_lobes": {
+        "right_lung": ["Right_Upper_Lobe_RUL", "Right_Middle_Lobe_RML", "Right_Lower_Lobe_RLL"],
+        "left_lung": ["Left_Upper_Lobe_LUL", "Left_Lower_Lobe_LLL", "Lingula_subsegment_of_LUL"]
+      }
+    },
+    "pulmonary_vasculature": {
+      "arterial_supply": {
+        "pulmonary_arteries": {
+          "origin": "Right_Ventricle",
+          "bifurcation": "Main_Pulmonary_Artery_at_T5",
+          "branches": ["Right_Pulmonary_Artery", "Left_Pulmonary_Artery", "Lobar_and_Segmental_Branches"],
+          "pressure": "Systolic_25_mmHg_Diastolic_10_mmHg_Mean_15_mmHg"
+        },
+        "bronchial_arteries": {
+          "origin": "Descending_Thoracic_Aorta",
+          "function": "Nutritive_supply_to_airway_walls"
+        }
+      },
+      "venous_drainage": {
+        "pulmonary_veins": {
+          "count": 4,
+          "destination": "Left_Atrium",
+          "content": "Oxygenated_blood_PaO2_100_mmHg"
+        }
+      }
+    }
+  },
+
+  "alveolar_mechanisms": {
+    "alveolar_microarchitecture": {
+      "components": [
+        { "cell": "Type_I_Pneumocyte", "proportion": "95%_of_alveolar_surface", "function": "Gas_exchange_barrier_thin_squamous" },
+        { "cell": "Type_II_Pneumocyte", "proportion": "5%_of_surface_60%_of_cells", "function": "Surfactant_synthesis_and_secretion_and_stem_cell_regeneration" },
+        { "cell": "Alveolar_Macrophage", "location": "Alveolar_lumen", "function": "Phagocytosis_of_inhaled_particles_and_pathogens" },
+        { "cell": "Capillary_Endothelium", "note": "Forms_the_blood_air_barrier_with_Type_I_cells" }
+      ],
+      "surfactant": {
+        "composition": "90%_phospholipids_DPPC_10%_proteins_SP_A_B_C_D",
+        "function": "Reduces_surface_tension_prevents_alveolar_collapse_at_end_expiration",
+        "physics": "Laplace_equation: Pressure_inversely_proportional_to_radius"
+      },
+      "blood_air_barrier": {
+        "layers": ["Alveolar_fluid_layer", "Type_I_Pneumocyte_cytoplasm", "Fused_basement_membranes", "Capillary_Endothelium"],
+        "thickness": "0.2_to_0.6_micrometers",
+        "visual_rule": "Extremely_thin_interface_almost_invisible_under_microscopy_only_visible_at_TEM_magnification"
+      }
+    },
+    "gas_exchange_physics": {
+      "mechanism": "Passive_diffusion_governed_by_Fick_Law",
+      "driving_force": "Partial_pressure_gradient",
+      "oxygen_cascade": [
+        { "location": "Atmospheric_air", "PO2_mmHg": 160 },
+        { "location": "Trachea_humidified", "PO2_mmHg": 150 },
+        { "location": "Alveolus_PAO2", "PO2_mmHg": 100 },
+        { "location": "Arterial_blood_PaO2", "PO2_mmHg": 95 },
+        { "location": "Mixed_venous_PvO2", "PO2_mmHg": 40 }
+      ],
+      "co2_elimination": {
+        "direction": "Venous_blood_to_alveolus",
+        "PvCO2": "45_mmHg", "PaCO2": "40_mmHg", "PACO2": "40_mmHg",
+        "visual_rule": "CO2 flows OPPOSITE to O2 simultaneously in counter-current pattern"
+      },
+      "ventilation_perfusion_ratio": {
+        "ideal_VQ": 0.8,
+        "apex_VQ": "3.3_ventilation_exceeds_perfusion",
+        "base_VQ": "0.63_perfusion_exceeds_ventilation",
+        "visual_rule": "Gradient_from_apex_to_base_lung_tilted_with_apex_brighter"
+      }
+    },
+    "respiratory_mechanics": {
+      "inspiration": {
+        "muscles": ["Diaphragm_primary_80%_of_tidal_volume", "External_intercostals", "Scalene_accessory", "Sternocleidomastoid_accessory"],
+        "physics": "Diaphragm_contracts_moves_downward_increasing_thoracic_volume_decreasing_intrapleural_pressure"
+      },
+      "expiration": {
+        "rest": "Passive_elastic_recoil_of_lungs",
+        "forced": "Internal_intercostals_and_Abdominal_muscles",
+        "intrapleural_pressure": "-5_cmH2O_at_rest_to_30_cmH2O_during_forced_expiration"
+      },
+      "lung_compliance": {
+        "normal": "200_mL_per_cmH2O",
+        "reduced_in": ["Pulmonary_fibrosis", "ARDS", "Pulmonary_edema"],
+        "increased_in": ["Emphysema"]
+      }
+    }
+  },
+
+  "pulmonary_embolism_pathway": {
+    "thrombus_origin_and_migration": {
+      "dvt_genesis_sites": [
+        { "vein": "Calf_Deep_Veins", "risk": "Low_proximal_migration" },
+        { "vein": "Popliteal_Vein", "risk": "Moderate" },
+        { "vein": "Femoral_Vein", "risk": "High" },
+        { "vein": "Iliac_Vein_and_IVC", "risk": "Massive_PE_risk" }
+      ],
+      "embolus_trajectory": {
+        "path": ["Deep_Vein_of_Lower_Extremity", "Inferior_Vena_Cava", "Right_Atrium", "Tricuspid_Valve", "Right_Ventricle", "Pulmonary_Valve", "Main_Pulmonary_Artery", "Left_or_Right_Pulmonary_Artery", "Lobar_Branches", "Segmental_Arteries"],
+        "lodgement_sites": ["Pulmonary_Artery_Bifurcation_Saddle_PE", "Lobar_Artery", "Segmental_Artery"],
+        "visual_rule": "Embolus_visualized_as_dark_filling_defect_within_contrast_enhanced_pulmonary_artery_lumen"
+      }
+    },
+    "hemodynamic_consequences": {
+      "acute_right_heart_failure_sequence": [
+        "Embolus_occludes_pulmonary_artery",
+        "Sudden_increase_in_RV_afterload",
+        "RV_pressure_overload_and_dilation",
+        "Interventricular_septum_shifts_leftward_D_sign",
+        "LV_filling_compromised",
+        "Cardiac_output_drops",
+        "Systemic_hypotension_and_shock"
+      ],
+      "physiological_dead_space": {
+        "definition": "Ventilated_but_unperfused_alveoli",
+        "effect": "Increased_VQ_mismatch_and_hypoxemia"
+      },
+      "pulmonary_hypertension_threshold": "Mean_PAP_exceeding_25_mmHg_acute"
+    },
+    "classifications": {
+      "massive_PE": "Hemodynamic_instability_SBP_<90_mmHg",
+      "submassive_PE": "RV_dysfunction_without_hemodynamic_collapse",
+      "low_risk_PE": "No_RV_dysfunction_no_troponin_elevation"
+    }
+  },
+
+  "copd_pathophysiology": {
+    "emphysema_component": {
+      "mechanism": [
+        "Cigarette_smoke_particulates_activate_Macrophages_and_Neutrophils",
+        "Release_of_Elastases_MMP_9_and_MMP_12_and_Neutrophil_Elastase",
+        "Destruction_of_Alveolar_walls_and_Elastic_fibers",
+        "Permanent_Airspace_Enlargement"
+      ],
+      "spatial_types": [
+        { "type": "Centrilobular", "location": "Respiratory_bronchioles_apex_predominant", "association": "Smoking" },
+        { "type": "Panlobular", "location": "Entire_acinus_base_predominant", "association": "Alpha_1_Antitrypsin_Deficiency" }
+      ],
+      "visual_rule": "Swiss_cheese_appearance_of_lung_parenchyma_with_enlarged_airspaces_and_minimal_intervening_tissue"
+    },
+    "chronic_bronchitis_component": {
+      "definition": "Productive_cough_for_3_months_per_year_for_2_consecutive_years",
+      "mechanism": [
+        "Chronic_irritant_exposure",
+        "Goblet_cell_hyperplasia",
+        "Mucus_gland_hypertrophy_Reid_Index_>0.5",
+        "Airway_wall_thickening_and_lumen_narrowing"
+      ],
+      "visual_rule": "Airway_cross_section_shows_thickened_walls_excess_mucus_and_narrowed_lumen_tram_track_sign_on_imaging"
+    },
+    "air_trapping_physics": {
+      "mechanism": "Dynamic_airway_collapse_during_expiration_due_to_loss_of_elastic_recoil",
+      "visual_rule": "Barrel_chest_flattened_diaphragm_and_hyperinflated_lungs_classic_pattern"
+    }
+  },
+
+  "acute_respiratory_distress_syndrome_ards": {
+    "phases": [
+      {
+        "phase": "Exudative_Day_1_to_7",
+        "events": ["Neutrophil_activation", "Alveolar_capillary_barrier_disruption", "Protein_rich_exudate_in_alveolus", "Hyaline_membrane_formation"],
+        "visual_rule": "Bilateral_ground_glass_opacities_on_CT_with_preserved_lung_architecture"
+      },
+      {
+        "phase": "Proliferative_Day_7_to_21",
+        "events": ["Type_II_Pneumocyte_proliferation", "Fibroblast_infiltration", "Early_fibrosis"],
+        "visual_rule": "Consolidation_with_air_bronchograms_and_early_interstitial_thickening"
+      },
+      {
+        "phase": "Fibrotic_Day_21_plus",
+        "events": ["Dense_collagen_deposition", "Honeycombing_pattern", "Lung_remodeling"],
+        "visual_rule": "Honeycombing_and_traction_bronchiectasis_in_recovered_patients"
+      }
+    ],
+    "Berlin_criteria": {
+      "mild": "PaO2_FiO2_201_to_300",
+      "moderate": "PaO2_FiO2_101_to_200",
+      "severe": "PaO2_FiO2_less_than_100"
+    }
+  }
+}

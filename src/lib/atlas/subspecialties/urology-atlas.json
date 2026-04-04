@@ -1,0 +1,122 @@
+{
+  "engine_name": "Urology Sovereign Engine",
+  "version": "1.0.0",
+  "base_identity": "South_Asian_Clinical_Standard",
+
+  "urinary_tract_architecture": {
+    "upper_urinary_tract": {
+      "kidneys": {
+        "location": "Retroperitoneal_T12_to_L3_Right_slightly_lower_due_to_liver",
+        "dimensions": "10_to_12_cm_long_5_to_6_cm_wide_3_to_4_cm_thick",
+        "cortex": "Outer_zone_containing_glomeruli_and_convoluted_tubules",
+        "medulla": "Inner_zone_with_pyramids_and_loops_of_Henle",
+        "collecting_system": ["Renal_Papillae", "Minor_Calyces_8_to_12", "Major_Calyces_2_to_3", "Renal_Pelvis"],
+        "blood_supply": {
+          "arteries": "Renal_Artery_directly_from_Abdominal_Aorta_at_L1",
+          "segmental_branches": ["Superior", "Anterosuperior", "Anteroinferior", "Inferior", "Posterior"],
+          "veins": "Renal_Vein_drains_to_IVC_Left_longer_crosses_aorta"
+        }
+      },
+      "ureters": {
+        "length": "25_to_30_cm",
+        "course": ["Renal_Pelvis", "Retroperitoneal_descent", "Crosses_pelvic_brim_at_bifurcation_of_common_iliac", "Enters_posterolateral_bladder_wall"],
+        "narrowings": ["Pelviureteric_Junction_PUJ", "Pelvic_brim_crossing", "Vesicoureteric_Junction_VUJ_most_common_stone_impaction_site"],
+        "peristalsis": "Urothelial_pacemaker_cells_generate_peristaltic_waves_3_to_5_per_minute"
+      }
+    },
+    "lower_urinary_tract": {
+      "bladder": {
+        "capacity": "300_to_500_mL_functional_150_to_250_mL_first_urge",
+        "layers": ["Urothelium_transitional_epithelium", "Lamina_propria", "Detrusor_muscle_smooth_muscle_three_layers", "Adventitia"],
+        "trigone": "Triangular_smooth_region_between_ureteric_orifices_and_internal_urethral_meatus",
+        "vasculature": "Superior_and_Inferior_Vesical_arteries_from_Internal_Iliac"
+      },
+      "urethra": {
+        "male": {
+          "length": "20_cm",
+          "segments": ["Prostatic_urethra_3cm_passes_through_prostate", "Membranous_urethra_1_to_2cm_through_external_sphincter", "Bulbar_urethra_15cm", "Penile_urethra"],
+          "sphincters": ["Internal_urethral_sphincter_smooth_muscle_involuntary", "External_urethral_sphincter_striated_voluntary"]
+        },
+        "female": {
+          "length": "4_cm",
+          "sphincters": ["Internal_urethral_sphincter", "External_urethral_sphincter"]
+        }
+      },
+      "prostate": {
+        "zones": [
+          { "zone": "Peripheral_Zone", "proportion": "70%", "significance": "Common_site_of_prostate_cancer" },
+          { "zone": "Transition_Zone", "proportion": "5%", "significance": "Site_of_BPH" },
+          { "zone": "Central_Zone", "proportion": "25%", "significance": "Surrounds_ejaculatory_ducts" }
+        ],
+        "relations": "Anterior_to_rectum_inferior_to_bladder_neck_surrounds_proximal_urethra"
+      }
+    }
+  },
+
+  "urological_pathologies": {
+    "urolithiasis_stone_disease": {
+      "stone_compositions": [
+        { "type": "Calcium_Oxalate", "frequency": "70%", "appearance": "Hard_spiculated_black_on_plain_xray", "visual_rule": "Dense_opaque_calculus_within_collecting_system" },
+        { "type": "Struvite_Staghorn", "frequency": "15%", "appearance": "Fills_entire_collecting_system", "visual_rule": "Coral_like_stone_casting_the_renal_pelvis_and_calyces" },
+        { "type": "Uric_Acid", "frequency": "8%", "appearance": "Radiolucent_invisible_on_plain_xray_visible_on_CT", "visual_rule": "Filling_defect_on_IVP_confirmed_only_on_non_contrast_CT" }
+      ],
+      "stone_passage_physiology": {
+        "obstruction_cascade": [
+          "Stone_impacts_at_VUJ_or_PUJ",
+          "Hydrostatic_pressure_builds_proximal_to_obstruction",
+          "Ureteral_spasm_and_peristaltic_waves_against_obstruction_causes_colic",
+          "If_unresolved_Hydronephrosis_develops",
+          "Prolonged_obstruction_causes_renal_cortical_thinning_and_atrophy"
+        ],
+        "visual_rule": "Dilated_calyceal_system_thinned_cortex_and_dilated_ureter_down_to_point_of_obstruction"
+      }
+    },
+    "benign_prostatic_hyperplasia": {
+      "mechanism": [
+        "Transition_zone_nodular_hyperplasia_of_stromal_and_glandular_elements",
+        "DHT_driven_via_5_alpha_reductase_action_on_testosterone",
+        "Enlarged_prostate_compresses_prostatic_urethra",
+        "Increased_outlet_resistance_detrusor_hypertrophy",
+        "Trabeculation_cellule_diverticula_formation",
+        "Chronic_retention_back_pressure_hydronephrosis"
+      ],
+      "visual_rule": "Sagittal_section_showing_enlarged_median_lobe_intravesical_protrusion_compressed_urethra_and_hypertrophied_trabeculated_bladder_wall"
+    },
+    "prostate_cancer": {
+      "location": "Peripheral_zone_posterolateral_palpable_on_DRE",
+      "gleason_grading": {
+        "pattern_3": "Well_formed_small_glands",
+        "pattern_4": "Poorly_formed_fused_glands",
+        "pattern_5": "No_gland_formation_single_cells_or_cords",
+        "visual_rule": "Histological_cross_section_showing_loss_of_glandular_architecture_with_nuclear_pleomorphism"
+      },
+      "metastatic_pattern": "Osteoblastic_vertebral_metastases_sclerotic_lesions_on_bone_scan"
+    },
+    "renal_cell_carcinoma": {
+      "types": [
+        { "subtype": "Clear_Cell_RCC", "proportion": "75%", "features": "Lipid_and_glycogen_rich_golden_yellow_tumor", "visual_rule": "Solid_enhancing_renal_mass_with_central_necrosis_and_satellite_nodules" },
+        { "subtype": "Papillary_RCC", "proportion": "15%", "features": "Brown_hemorrhagic_bilateral_multifocal" },
+        { "subtype": "Chromophobe_RCC", "proportion": "5%", "features": "Pale_pink_best_prognosis" }
+      ],
+      "vascular_invasion": "Tumor_thrombus_can_extend_into_Renal_Vein_and_IVC_and_right_atrium",
+      "visual_rule": "Renal_vein_filled_with_tumor_extending_up_into_IVC_surgical_resection_challenge"
+    }
+  },
+
+  "urological_procedures": {
+    "ureteroscopy_laser_lithotripsy": {
+      "instrument_path": ["Urethra", "Bladder", "Ureteric_Orifice", "Ureter", "Stone"],
+      "laser_mechanism": "Holmium_YAG_laser_2100nm_vaporizes_stone_into_dust_and_fragments_via_photothermal_effect",
+      "visual_rule": "Scope_tip_with_laser_fiber_emerging_directed_at_glistening_stone_in_ureter_lumen"
+    },
+    "radical_prostatectomy": {
+      "approach": "Robotic_assisted_laparoscopic_RP_RALRP_da_Vinci",
+      "anatomical_landmarks": ["Endopelvic_Fascia_incised", "Dorsal_Venous_Complex_ligated", "Bladder_Neck_divided", "Seminal_Vesicles_dissected", "Neurovascular_Bundles_preserved_if_nerve_sparing", "Urethra_divided_at_apex"],
+      "visual_rule": "Robotic_arms_in_pelvis_prostate_dissected_away_showing_rectum_posteriorly_and_neurovascular_bundles_laterally"
+    },
+    "cystoscopy": {
+      "indications": ["Hematuria_evaluation", "Bladder_tumor_surveillance", "Ureteral_stent_placement"],
+      "visual_rule": "Scope_within_bladder_showing_urothelial_surface_with_vascular_pattern_and_ureteric_orifices_at_trigone_corners"
+    }
+  }
+}

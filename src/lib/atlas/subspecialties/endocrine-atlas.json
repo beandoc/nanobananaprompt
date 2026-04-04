@@ -1,0 +1,218 @@
+{
+  "engine_name": "Endocrinology Sovereign Engine",
+  "version": "1.0.0",
+  "base_identity": "South_Asian_Clinical_Standard",
+
+  "hpa_axis": {
+    "hypothalamic_pituitary_adrenal_architecture": {
+      "anatomical_hierarchy": [
+        { "structure": "Hypothalamus", "location": "Diencephalon_floor_of_third_ventricle", "output": "CRH_Corticotropin_Releasing_Hormone" },
+        { "structure": "Anterior_Pituitary_Adenohypophysis", "location": "Sella_turcica", "input": "CRH_via_hypothalamo_hypophyseal_portal_system", "output": "ACTH_Adrenocorticotropic_Hormone" },
+        { "structure": "Adrenal_Cortex", "location": "Superior_pole_of_each_kidney", "input": "ACTH", "output": "Cortisol_and_Aldosterone_and_Androgens" }
+      ],
+      "negative_feedback_loops": [
+        { "mediator": "Cortisol", "inhibits": "Hypothalamus_CRH_release", "mechanism": "GR_nuclear_receptor_binding_suppressing_CRH_gene_transcription" },
+        { "mediator": "Cortisol", "inhibits": "Anterior_Pituitary_ACTH_release", "mechanism": "Short_loop_feedback" }
+      ],
+      "visual_rule": "Descending_cascade_of_arrows_from_hypothalamus_to_pituitary_to_adrenal_with_upward_negative_feedback_arrows"
+    },
+    "adrenal_gland_zones": [
+      { "zone": "Zona_Glomerulosa", "layer": "Outer", "product": "Aldosterone", "regulator": "Angiotensin_II_and_Potassium", "function": "Sodium_retention_and_potassium_excretion" },
+      { "zone": "Zona_Fasciculata", "layer": "Middle_largest", "product": "Cortisol", "regulator": "ACTH", "function": "Gluconeogenesis_immunosuppression_stress_response" },
+      { "zone": "Zona_Reticularis", "layer": "Inner", "product": "Dehydroepiandrosterone_DHEA_and_Androgens", "regulator": "ACTH" },
+      { "zone": "Adrenal_Medulla", "layer": "Core_not_cortex", "product": "Adrenaline_Epinephrine_and_Noradrenaline", "regulator": "Sympathetic_preganglionic_neurons", "function": "Fight_or_Flight_catecholamine_surge" }
+    ],
+    "cortisol_physiology": {
+      "circadian_pattern": "Peak_at_8AM_trough_at_midnight_pulsatile_secretion",
+      "effects": [
+        "Hepatic_gluconeogenesis_via_PEPCK_and_G6Pase_upregulation",
+        "Peripheral_lipolysis_in_subcutaneous_fat",
+        "Muscle_protein_catabolism",
+        "Immunosuppression_via_NF_kB_inhibition",
+        "Sodium_retention_and_potassium_wasting"
+      ],
+      "hypercortisolism_cushing_features": {
+        "truncal_obesity": "Central_fat_deposition_moon_face_buffalo_hump",
+        "skin_changes": "Purple_striae_bruising_thin_skin_hirsutism",
+        "metabolic": "Hyperglycemia_hypertension_osteoporosis",
+        "visual_rule": "Indian_patient_with_moon_face_centrally_obese_with_purple_striae_on_abdomen"
+      }
+    },
+    "renin_angiotensin_aldosterone_interaction": {
+      "cascade": [
+        "Juxtaglomerular_cells_of_kidney_release_Renin",
+        "Renin_cleaves_Angiotensinogen_to_Angiotensin_I",
+        "ACE_in_pulmonary_capillaries_converts_Angiotensin_I_to_Angiotensin_II",
+        "Angiotensin_II_stimulates_Zona_Glomerulosa_to_release_Aldosterone",
+        "Aldosterone_acts_on_principal_cells_of_collecting_duct_to_retain_sodium"
+      ],
+      "visual_rule": "Kidney_to_lung_to_adrenal_to_kidney_loop_arrows_showing_RAAS_circuit"
+    }
+  },
+
+  "insulin_glucagon_cascade": {
+    "pancreatic_islet_architecture": {
+      "islets_of_langerhans": {
+        "total_number": "Approximately_1_million_islets",
+        "beta_cells": { "proportion": "70%", "product": "Insulin", "location": "Center_of_islet" },
+        "alpha_cells": { "proportion": "20%", "product": "Glucagon", "location": "Periphery_of_islet" },
+        "delta_cells": { "proportion": "10%", "product": "Somatostatin", "function": "Paracrine_inhibition_of_both_alpha_and_beta_cells" }
+      },
+      "blood_supply": "Islets_are_richly_vascularized_receiving_10_to_15%_of_pancreatic_blood_flow"
+    },
+    "insulin_secretion_mechanism": {
+      "glucose_stimulated_steps": [
+        "Glucose_enters_beta_cell_via_GLUT2_transporter",
+        "Glucokinase_phosphorylates_glucose_to_G6P_acting_as_glucose_sensor",
+        "Glycolysis_and_TCA_cycle_increase_ATP_to_ADP_ratio",
+        "ATP_sensitive_K_channels_KATP_close",
+        "Membrane_depolarization",
+        "Voltage_gated_Ca2+_channels_open",
+        "Calcium_influx_triggers_exocytosis_of_insulin_granules_biphasic_release"
+      ],
+      "first_phase": "Rapid_spike_within_2_to_5_minutes_pre_formed_granule_release",
+      "second_phase": "Sustained_release_from_newly_synthesized_insulin_new_granule_production"
+    },
+    "insulin_signaling_cascade": {
+      "steps": [
+        "Insulin_binds_alpha_subunit_of_Insulin_Receptor_IR_tyrosine_kinase",
+        "Autophosphorylation_of_beta_subunit_tyrosine_residues",
+        "IRS_1_and_IRS_2_phosphorylation",
+        "PI3K_p85_p110_recruitment_and_activation",
+        "PIP3_generation_recruits_PDK1",
+        "AKT_PKB_phosphorylation",
+        "GLUT4_vesicles_translocate_to_plasma_membrane_in_muscle_and_adipose"
+      ],
+      "downstream_effects": {
+        "liver": "Glycogen_synthesis_via_GSK_3_inhibition_and_Gluconeogenesis_suppression",
+        "muscle": "GLUT4_mediated_glucose_uptake_and_glycogen_synthesis",
+        "adipose": "Lipoprotein_lipase_activation_and_lipogenesis_and_anti_lipolysis"
+      }
+    },
+    "glucagon_counterregulation": {
+      "stimulus": "Hypoglycemia_and_amino_acids_and_sympathetic_activation",
+      "receptor": "Gs_coupled_GPCR_in_hepatocytes",
+      "cascade": [
+        "Glucagon_binds_hepatocyte_receptor",
+        "Adenylyl_cyclase_activation_and_cAMP_elevation",
+        "PKA_activation",
+        "Phosphorylase_kinase_phosphorylates_glycogen_phosphorylase",
+        "Glycogenolysis_releasing_glucose_1_phosphate",
+        "G6Pase_releases_free_glucose_to_blood",
+        "Gluconeogenesis_from_amino_acids_and_lactate_and_glycerol"
+      ]
+    },
+    "type_1_diabetes_pathophysiology": {
+      "mechanism": "T_cell_mediated_autoimmune_destruction_of_beta_cells",
+      "key_autoantigens": ["Insulin_itself", "GAD65_Glutamic_Acid_Decarboxylase", "IA_2_Islet_Antigen_2", "ZnT8"],
+      "immunological_cascade": [
+        "Molecular_mimicry_or_viral_trigger",
+        "CD4_Th1_cells_activate_cytotoxic_CD8_T_cells",
+        "CD8_CTL_infiltrate_islets_Insulitis",
+        "Perforin_and_granzyme_B_mediated_beta_cell_apoptosis",
+        "Progressive_beta_cell_mass_loss_clinical_onset_when_80_to_90%_destroyed"
+      ],
+      "visual_rule": "Histology_showing_lymphocytic_infiltration_of_islets_with_normal_appearing_alpha_cells_surrounding_destroyed_beta_cells"
+    },
+    "type_2_diabetes_pathophysiology": {
+      "primary_defects": [
+        "Insulin_Resistance_in_Liver_Muscle_Adipose",
+        "Progressive_beta_cell_dysfunction_and_apoptosis"
+      ],
+      "insulin_resistance_mechanism": [
+        "Excess_free_fatty_acids_from_dysfunctional_adipocytes",
+        "Ectopic_lipid_in_liver_and_muscle_causing_DAG_accumulation",
+        "PKC_theta_activation_in_muscle_serine_phosphorylates_IRS_1",
+        "IRS_1_unable_to_activate_PI3K_pathway",
+        "GLUT4_fails_to_translocate",
+        "Compensatory_hyperinsulinemia"
+      ],
+      "beta_cell_exhaustion": "Chronic_hyperglycemia_and_lipotoxicity_causes_ER_stress_and_oxidative_stress_and_amyloid_IAPP_deposition_in_islets"
+    }
+  },
+
+  "thyroid_axis": {
+    "thyroid_gland_anatomy": {
+      "location": "Anterior_neck_C5_to_T1_level_below_cricoid_cartilage",
+      "lobes": ["Right_lobe", "Left_lobe", "Pyramidal_lobe_25%_of_population"],
+      "isthmus": "Connects_both_lobes_at_second_to_fourth_tracheal_ring",
+      "blood_supply": {
+        "arteries": ["Superior_thyroid_artery_from_ECA", "Inferior_thyroid_artery_from_thyrocervical_trunk"],
+        "veins": ["Superior_thyroid_veins_to_IJV", "Middle_thyroid_veins_to_IJV", "Inferior_thyroid_veins_to_brachiocephalic_veins"]
+      },
+      "histology": {
+        "follicles": "Spherical_structures_lined_by_follicular_cells_filled_with_colloid_thyroglobulin",
+        "parafollicular_C_cells": "Produce_Calcitonin_calcium_lowering_hormone"
+      }
+    },
+    "thyroid_hormone_synthesis_cascade": {
+      "steps": [
+        "TSH_binds_TSH_receptor_on_follicular_cell_basal_membrane",
+        "Iodide_trapping_via_Sodium_Iodide_Symporter_NIS",
+        "Iodide_oxidized_to_Iodine_by_Thyroid_Peroxidase_TPO",
+        "Thyroglobulin_synthesized_and_secreted_into_follicular_lumen",
+        "TPO_organifies_iodine_attaches_to_tyrosine_residues_on_Tg",
+        "Monoiodotyrosine_MIT_and_Diiodotyrosine_DIT_formed",
+        "MIT_and_DIT_coupled_to_form_T3_and_T4",
+        "Follicular_cell_pinocytoses_colloid",
+        "Lysosomes_cleave_T3_and_T4_from_Thyroglobulin",
+        "T4_released_into_blood_in_20_to_1_ratio_to_T3"
+      ],
+      "peripheral_conversion": "D1_deiodinase_in_liver_and_kidney_converts_T4_to_active_T3"
+    },
+    "hypothyroidism_cascade": {
+      "causes": ["Hashimoto_thyroiditis_most_common", "Iodine_deficiency", "Post_ablative"],
+      "hashimoto_mechanism": [
+        "Molecular_mimicry_triggers_autoreactive_lymphocytes",
+        "CD4_T_cells_activate_B_cells_producing_anti_TPO_and_anti_Tg_antibodies",
+        "Lymphocytic_infiltration_and_germinal_center_formation_within_thyroid",
+        "Progressive_follicular_destruction",
+        "Compensatory_TSH_rise",
+        "Goiter_formation_then_eventual_atrophy"
+      ],
+      "clinical_visual_rule": "Indian_patient_myxedema_face_periorbital_puffiness_lateral_eyebrow_loss_dull_expression_dry_coarse_skin"
+    },
+    "hyperthyroidism_graves_disease": {
+      "mechanism": [
+        "TSH_receptor_stimulating_antibodies_TRAb_bind_TSH_receptor",
+        "Mimics_TSH_action_continuously_stimulating_thyroid",
+        "Unregulated_high_T3_and_T4_production",
+        "TSH_suppressed_by_negative_feedback"
+      ],
+      "clinical_features": {
+        "eye_disease": "Proptosis_from_retro_orbital_fibroblast_activation_and_GAG_deposition",
+        "visual_rule": "Indian_patient_exophthalmos_lid_lag_goiter_tachycardia_sweating_tremor"
+      }
+    },
+    "calcitonin_and_parathyroid_interaction": {
+      "calcitonin": {
+        "source": "Parafollicular_C_cells",
+        "trigger": "Hypercalcemia",
+        "effect": "Inhibits_osteoclasts_lowers_serum_calcium"
+      },
+      "parathyroid_hormone": {
+        "source": "Chief_cells_of_parathyroid_glands_4_glands",
+        "trigger": "Hypocalcemia",
+        "effects": [
+          "Increases_osteoclast_activity",
+          "Increases_renal_calcium_reabsorption_in_DCT",
+          "Activates_1_alpha_hydroxylase_to_produce_active_Vitamin_D_Calcitriol",
+          "Net_effect_raises_serum_calcium"
+        ]
+      }
+    }
+  },
+
+  "growth_hormone_axis": {
+    "gh_igf1_axis": {
+      "cascade": [
+        "GHRH_from_hypothalamus_stimulates_somatotrophs_in_anterior_pituitary",
+        "GH_released_in_pulsatile_fashion_peak_during_slow_wave_sleep",
+        "GH_binds_JAK2_coupled_receptor_in_liver",
+        "IGF_1_Insulin_like_Growth_Factor_1_produced",
+        "IGF_1_acts_on_growth_plates_and_muscle_and_bone"
+      ],
+      "acromegaly_giglantism_visual_rule": "Enlarged_hands_feet_prognathism_macroglossia_orbital_ridge_prominence_in_South_Asian_patient"
+    }
+  }
+}

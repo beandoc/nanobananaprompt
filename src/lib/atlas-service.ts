@@ -6,6 +6,15 @@ import nephroData from "./atlas/subspecialties/nephrology-atlas.json";
 import cardioData from "./atlas/subspecialties/cardiology-atlas.json";
 import gastroData from "./atlas/subspecialties/gastroenterology-atlas.json";
 import neuroData from "./atlas/subspecialties/neurology-atlas.json";
+import pulmoData from "./atlas/subspecialties/pulmonology-atlas.json";
+import endoData from "./atlas/subspecialties/endocrine-atlas.json";
+import oncoData from "./atlas/subspecialties/oncology-atlas.json";
+import orthoData from "./atlas/subspecialties/orthopedics-atlas.json";
+import urologyData from "./atlas/subspecialties/urology-atlas.json";
+import genSurgData from "./atlas/subspecialties/general-surgery-atlas.json";
+import ophthoData from "./atlas/subspecialties/ophthalmology-atlas.json";
+import entData from "./atlas/subspecialties/ent-atlas.json";
+import dermSurgData from "./atlas/subspecialties/dermatology-surgery-atlas.json";
 
 const MEDICAL_SYNONYMS: Record<string, string[]> = {
     "mi": ["myocardial_infarction", "heart_attack", "coronary_occlusion"],
@@ -28,10 +37,19 @@ const MEDICAL_SYNONYMS: Record<string, string[]> = {
 
 // Subspecialty Trigger Keywords
 const SUBSPECIALTY_TRIGGERS: Record<string, string[]> = {
-    "nephrology": ["kidney", "renal", "glomerul", "nephr", "dialysis", "creatinine", "ureter", "fistula", "urology"],
-    "cardiology": ["heart", "cardiac", "mi", "myocard", "ventricle", "aorta", "valve", "ecg", "stent", "coronary", "st segment"],
-    "gastroenterology": ["liver", "stomach", "portal", "gastro", "intestinal", "colon", "hepatic", "appendix", "esophagus"],
-    "neurology": ["brain", "neuro", "cortex", "neuron", "synapse", "csf", "meninges", "stroke", "aneurysm", "cranial"]
+    "nephrology":          ["kidney", "renal", "glomerul", "nephr", "dialysis", "creatinine", "ureter", "fistula"],
+    "cardiology":          ["heart", "cardiac", "mi", "myocard", "ventricle", "aorta", "valve", "ecg", "stent", "coronary"],
+    "gastroenterology":    ["liver", "stomach", "portal", "gastro", "intestinal", "colon", "hepatic", "appendix", "esophagus"],
+    "neurology":           ["brain", "neuro", "cortex", "neuron", "synapse", "csf", "meninges", "stroke", "aneurysm", "cranial"],
+    "pulmonology":         ["lung", "pulmonary", "alveol", "bronch", "copd", "embolism", "trachea", "pneumo", "respir", "ards", "surfactant"],
+    "endocrinology":       ["diabetes", "insulin", "thyroid", "cortisol", "adrenal", "pituitary", "hypothalamus", "glucagon", "hpa", "hormone"],
+    "oncology":            ["tumor", "cancer", "oncol", "metastas", "carcinoma", "lymphoma", "immunotherapy", "checkpoint", "malignant", "tmf"],
+    "orthopedics":         ["spine", "disc", "vertebra", "lumbar", "cervical", "fracture", "orthopedic"],
+    "urology":             ["prostate", "bladder", "urology", "urinary", "cystoscopy", "nephrectomy", "rcc", "bph", "calculi", "stone", "penile"],
+    "general_surgery":     ["appendix", "cholecystitis", "hernia", "laparoscopy", "thyroidectomy", "whipple", "bowel", "peritoneum", "gallbladder"],
+    "ophthalmology":       ["eye", "retina", "glaucoma", "cornea", "cataract", "macula", "vitreous", "fundus", "optic", "laser_eye", "iop"],
+    "ent":                 ["ear", "nose", "throat", "sinus", "tonsil", "cochlea", "larynx", "pharynx", "auditory", "tympanic", "otitis"],
+    "dermatology_surgery": ["excision", "mohs", "flap", "graft", "laser", "melanoma", "bcc", "scc", "skin surgery", "wound healing", "dermis"]
 };
 
 interface AtlasEntry {
@@ -125,8 +143,22 @@ class AtlasServiceSingleton {
             Object.entries(structures).forEach(([key, data]) => addToIndex(cat, key, data));
         });
 
-        // 2. Subspecialties
-        const subData = { nephrology: nephroData, cardiology: cardioData, gastroenterology: gastroData, neurology: neuroData };
+        // 2. Subspecialties (all 13 domains)
+        const subData: Record<string, any> = {
+            nephrology:          nephroData,
+            cardiology:          cardioData,
+            gastroenterology:    gastroData,
+            neurology:           neuroData,
+            pulmonology:         pulmoData,
+            endocrinology:       endoData,
+            oncology:            oncoData,
+            orthopedics:         orthoData,
+            urology:             urologyData,
+            general_surgery:     genSurgData,
+            ophthalmology:       ophthoData,
+            ent:                 entData,
+            dermatology_surgery: dermSurgData
+        };
         Object.entries(subData).forEach(([sub, data]) => {
             Object.entries(data).forEach(([key, val]) => {
                 if (typeof val === 'object' && val !== null) {

@@ -1,0 +1,135 @@
+{
+  "engine_name": "Dermatology Surgery Sovereign Engine",
+  "version": "1.0.0",
+  "base_identity": "South_Asian_Clinical_Standard",
+  "note": "This atlas covers SURGICAL and PROCEDURAL dermatology. Lesion morphology and pathology are documented in medical-ai-glossary.json",
+
+  "skin_anatomy": {
+    "layers_superficial_to_deep": [
+      { "layer": "Epidermis", "thickness_mm": "0.05_to_1.5", "strata": ["Stratum_Corneum", "Stratum_Granulosum", "Stratum_Spinosum", "Stratum_Basale"] },
+      { "layer": "Dermal_Epidermal_Junction", "structure": "Basement_membrane_undulating_rete_ridges_and_dermal_papillae" },
+      { "layer": "Papillary_Dermis", "content": "Fine_collagen_capillary_loops_Meissner_corpuscles" },
+      { "layer": "Reticular_Dermis", "content": "Dense_coarse_collagen_bundles_elastin_Pacinian_corpuscles_adnexal_structures" },
+      { "layer": "Subcutaneous_fat_Hypodermis", "function": "Insulation_energy_storage_mechanical_cushioning" }
+    ],
+    "adnexal_structures": {
+      "hair_follicle_unit": {
+        "components": ["Hair_shaft", "Inner_root_sheath", "Outer_root_sheath", "Arrector_pili_muscle", "Associated_sebaceous_gland"],
+        "bulge_region": "Site_of_follicular_stem_cells_for_wound_healing",
+        "cycle_phases": ["Anagen_growth_2_to_6_years", "Catagen_transition_2_weeks", "Telogen_rest_3_months"]
+      },
+      "eccrine_sweat_glands": "Coiled_secretory_portion_deep_dermis_straight_duct_spirals_through_epidermis",
+      "sebaceous_glands": "Multilobular_holocrine_glands_opening_into_hair_follicle_or_directly"
+    },
+    "skin_tension_lines": {
+      "langer_lines": "Lines_of_minimal_tension_parallel_to_relaxed_skin_tension_lines_RSTL",
+      "surgical_principle": "Incisions_parallel_to_Langer_lines_produce_minimal_scar_wider_incisions_cause_hypertrophic_scars",
+      "facial_zones": {
+        "forehead": "Horizontal_lines",
+        "periorbital": "Radiating_from_canthus",
+        "nasolabial": "Oblique_inferolateral",
+        "lip": "Vertical_around_mouth"
+      }
+    },
+    "cutaneous_vasculature": {
+      "supply": ["Subdermal_plexus_between_dermis_and_subcutis", "Mid_dermal_plexus", "Subpapillary_plexus"],
+      "angiosomes": "Territories_of_skin_supplied_by_named_perforator_vessels_basis_for_flap_design",
+      "visual_rule": "Layered_cross_section_showing_ascending_vascular_loops_from_subdermal_to_papillary_plexus"
+    }
+  },
+
+  "dermatological_surgery": {
+    "excision_principles": {
+      "elliptical_excision": {
+        "ratio": "3_to_1_length_to_width_minimizes_dog_ears",
+        "margin_guidelines": {
+          "BCC_nodular_low_risk": "4_mm_margin",
+          "SCC_well_differentiated": "4_to_6_mm_margin",
+          "Melanoma_in_situ": "5_mm_margin",
+          "Melanoma_T1_less_1mm": "10_mm_margin",
+          "Melanoma_T2_1_to_2mm": "10_to_20_mm_margin",
+          "Melanoma_T3_2_to_4mm": "20_mm_margin"
+        },
+        "visual_rule": "Ellipse_marked_on_skin_with_surgical_pen_aligned_to_RSTL_with_lesion_centred_and_margins_shown"
+      },
+      "mohs_micrographic_surgery": {
+        "indication": "High_risk_recurrent_or_large_BCC_and_SCC_anatomically_sensitive_sites",
+        "steps": [
+          "Tumour_debulked_curette",
+          "Layer_1_excised_with_45_degree_bevelled_margins",
+          "Tissue_mapped_and_marked_for_orientation",
+          "Frozen_section_processed_full_peripheral_and_deep_margin_assessment",
+          "If_positive_re_excision_targeted_to_positive_quadrant_only",
+          "Repeat_until_clear_margins"
+        ],
+        "advantage": "Maximum_tissue_conservation_while_ensuring_complete_removal",
+        "visual_rule": "Concentric_ring_diagram_showing_progressive_layer_excision_with_map_orientation_markers"
+      }
+    },
+    "flap_principles": {
+      "bilobed_flap": {
+        "indication": "Nasal_tip_and_alar_defects",
+        "anatomy": "Double_rotation_flap_first_lobe_fills_defect_second_lobe_fills_donor_site",
+        "visual_rule": "Two_overlapping_circles_of_flap_tissue_rotating_in_Z_pattern_on_South_Asian_nose"
+      },
+      "rhomboid_flap": {
+        "indication": "Cheek_and_temple_defects",
+        "geometry": "60_degree_and_120_degree_angles_strict_geometric_design",
+        "visual_rule": "Geometric_diamond_shape_with_pivot_arm_showing_rotation_direction"
+      },
+      "advancement_flap": {
+        "types": ["V_Y_advancement", "H_plasty", "Unipedicle"],
+        "physics": "Tissue_slides_linearly_toward_defect_without_rotation"
+      },
+      "flap_classification": {
+        "by_movement": ["Advancement", "Rotation", "Transposition", "Interpolation"],
+        "by_vascularity": ["Random_pattern_subdermal_plexus", "Axial_named_vessel", "Free_microvascular"]
+      }
+    },
+    "grafts": {
+      "split_thickness_skin_graft_STSG": {
+        "donor_sites": ["Thigh", "Buttock", "Upper_arm"],
+        "harvested_layers": "Epidermis_and_partial_dermis",
+        "take_phases": ["Imbibition_0_to_48hrs_absorbed_nutrition", "Inosculation_48_to_72hrs_anastomosis_with_recipient_bed", "Revascularization_beyond_72hrs"]
+      },
+      "full_thickness_skin_graft_FTSG": {
+        "donor_sites": ["Post_auricular", "Pre_auricular", "Supraclavicular", "Inner_arm"],
+        "properties": "Better_color_match_less_contraction_no_meshing"
+      }
+    },
+    "laser_dermatology": {
+      "chromophore_targets": {
+        "melanin": "755nm_Alexandrite_694nm_Ruby_for_pigmented_lesions_and_laser_hair_removal",
+        "haemoglobin": "532nm_KTP_585_to_595nm_PDL_for_vascular_lesions_rosacea_port_wine_stain",
+        "water": "CO2_10600nm_Er_YAG_2940nm_for_ablative_resurfacing"
+      },
+      "selective_photothermolysis": "Laser_wavelength_selectively_absorbed_by_chromophore_thermal_damage_confined_to_target",
+      "visual_rule": "Cross_section_showing_laser_beam_converging_on_melanin_granules_in_follicle_or_haemoglobin_in_vessel"
+    }
+  },
+
+  "wound_healing_cascade": {
+    "phases": [
+      {
+        "phase": "Haemostasis_0_to_24h",
+        "events": ["Vasoconstriction", "Platelet_plug_formation_GPIb_vWF", "Fibrin_clot_formation_thrombin_cascade", "Growth_factor_release_PDGF_TGF_beta"],
+        "visual_rule": "Fibrin_mesh_with_entrapped_red_cells_and_platelets_at_wound_edge"
+      },
+      {
+        "phase": "Inflammation_1_to_5_days",
+        "events": ["Neutrophil_migration_within_6_hours", "Macrophage_dominance_day_2_to_3", "Phagocytosis_of_debris", "Cytokine_and_growth_factor_milieu"],
+        "visual_rule": "Wound_edge_with_neutrophil_and_macrophage_infiltration_vessel_dilation_erythema_edema"
+      },
+      {
+        "phase": "Proliferation_5_to_21_days",
+        "events": ["Fibroblast_migration_and_collagen_III_synthesis", "Angiogenesis_granulation_tissue", "Wound_contraction_myofibroblasts", "Epithelialization_from_margins"],
+        "visual_rule": "Granulation_tissue_red_bumpy_surface_with_new_vessels_and_epithelium_advancing_from_edges"
+      },
+      {
+        "phase": "Remodelling_21_days_to_2_years",
+        "events": ["Collagen_III_replaced_by_collagen_I", "Scar_maturation_and_cross_linking", "Scar_strength_reaches_80%_of_normal"],
+        "visual_rule": "Mature_flat_pale_scar_versus_hypertrophic_red_raised_scar_comparison_on_South_Asian_skin"
+      }
+    ]
+  }
+}
