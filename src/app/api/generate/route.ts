@@ -56,7 +56,10 @@ ${config.expansionRules.join("\n")}
 ### STYLE PROTOCOL: ${normalizedStyle}`;
       } else {
         const isSurgical = brief.toLowerCase().match(/surgery|resection|dissection|laparoscop|robotic|endoscop|incision/);
-        expansionSystemPrompt = `### ROLE: PRINCIPAL MEDICAL ILLUSTRATOR (SVSP v1.1 - PRUNING MODE)
+        const isCardiac = brief.match(/cardiac|coronar|myocard|atheroscler|aorta|heart|MI|infarct/i);
+
+        if (isSurgical) {
+          expansionSystemPrompt = `### ROLE: PRINCIPAL MEDICAL ILLUSTRATOR (SVSP v1.1 - PRUNING MODE)
 Refine into a 'Surgical Specification' using STRASBERG'S CRITICAL VIEW logic:
 1. IMAGING: Stereoscopic 30° endoscopy, uniform surgical illumination, no chiaroscuro, no bokeh.
 2. ANATOMICAL RELATIONS: Identify structures by their COURSE and RELATION to landmarks, NOT by visual artifacts like 'pulsation'.
@@ -74,6 +77,38 @@ ${config.expansionRules.join("\n        ")}
 STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
 ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}
 HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
+        } else if (isCardiac) {
+          expansionSystemPrompt = `### ROLE: PRINCIPAL MEDICAL ILLUSTRATOR (CARDIOLOGY SPECIALIST)
+Refine into a 'Gross Pathology Specification' for Cardiac/Vascular disease:
+1. IMAGING: Cross-sectional anatomical view, high-fidelity gross pathology rendering.
+2. ANATOMICAL RELATIONS: Clear depiction of vessel lumens, arterial walls (intima/media), and plaque morphology.
+3. PRUNING MANDATE: Maintain tissue-level realism. Focus on luminal obstruction and myocardial texture.
+4. IDENTITY: South Asian (Indian) descent for all human representations.
+
+### MANDATORY RULES:
+- Word Count: 180-250 words.
+- STYLE: NEJM/Lancet Scholarly Plate. 
+${dynamicBlacklist}
+${config.expansionRules.join("\n        ")}
+STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
+${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}
+HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
+        } else {
+          expansionSystemPrompt = `### ROLE: PRINCIPAL MEDICAL ILLUSTRATOR
+Refine the brief into a high-fidelity 'Disease Mapping Blueprint'.
+1. IMAGING: Multi-scale biological view (Tissue → Cellular → Molecular).
+2. IDENTITY: All human characters MUST be of South Asian (Indian) descent.
+3. PRUNING: Only include structures relevant to the mechanism.
+
+### MANDATORY RULES:
+- Word Count: 180-250 words.
+- STYLE: Scholarly BioRender/NEJM.
+${dynamicBlacklist}
+${config.expansionRules.join("\n        ")}
+STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
+${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}
+HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
+        }
       }
 
       const { refinedText, providerHistory: expHistory } = await GenerationService.expandBrief(brief, expansionSystemPrompt, image || "");
