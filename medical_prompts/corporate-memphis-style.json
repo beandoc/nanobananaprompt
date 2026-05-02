@@ -1,0 +1,143 @@
+{
+  "style_guide": {
+    "name": "Corporate Memphis (Public Health Edition)",
+    "also_known_as": ["Big Tech Illustration Style", "Alegria Style", "Tech Bro Art"],
+    "description": "A flat, colorful illustration style popularized by major tech companies. Adapted for Medical/Telehealth applications with strict adherence to South Asian (Indian) identity standards. Characterized by simple geometric shapes, pastel/vivid color palettes, and a friendly, optimistic aesthetic.",
+    "origin": "Mid-2010s, widely adopted in Silicon Valley SaaS and startup culture",
+    "tone": "Friendly, inclusive, optimistic, professional yet approachable"
+  },
+
+  "visual_characteristics": {
+    "figures": {
+      "body_proportions": "Elongated, rubbery limbs; small heads relative to bodies",
+      "hands_and_feet": "Oversized, round, simplified — often mitten-like",
+      "faces": "Minimal features; curved eyelid lines (concave downward for calm/closed eyes), small 'L' or simple vertical line for nose, gentle smile or neutral line mouth",
+      "skin_tones": "Strictly South Asian (Indian) heritage — warm browns, golden tans, rich deep ebony",
+      "hair": "Bold solid-color shapes — natural dark hair, dark browns, modern urban Indian styling",
+      "posture": "Dynamic, collaborative, active — reaching, pointing, shoulder-sitting, and nurturing hugs; figures often interact with oversized metaphorical objects",
+      "outline": "None or extremely thin uniform stroke for clothing definition"
+    },
+    "geometry": {
+      "shapes": "Flat 2D circles, rectangles, triangles, organic blobs",
+      "decorative_elements": ["Oversized floating educational icons (books, trophies, magnifying glasses)", "Simplified medical tools (stethoscopes as thick lines)", "Rounded organic leaves", "Stylized floral shapes", "Floating dots", "Soft hearts"],
+      "depth": "Minimal — slight overlap to suggest layering, no real perspective",
+      "shadows": "Flat single-tone colored shadows, no gradients; optional use of dashed lines for clothing seams or fabric texture"
+    },
+    "color_palette": {
+      "primary_style": "Bold pastels mixed with saturated accent colors",
+      "background_colors": ["#F5F0E8", "#FFFDF5", "#F0F4FF", "#FFF5F0", "#E8F5F0"],
+      "skin_tones": ["#8D5524", "#C68642", "#E8A87C", "#F1C27D"],
+      "accent_colors": ["#FF6B6B", "#4ECDC4", "#FFE66D", "#6C5CE7", "#A8E6CF", "#FD79A8", "#74B9FF"],
+      "neutral_tones": ["#2D3436", "#636E72", "#B2BEC3", "#DFE6E9"],
+      "avoid": ["Photorealistic gradients", "Neon colors", "Dark moody tones", "Metallic effects"]
+    },
+    "typography_hints": {
+      "style": "Clean sans-serif, rounded fonts",
+      "examples": ["Nunito", "Poppins", "Circular", "DM Sans"],
+      "usage": "Minimal text in illustrations; bold, simple when present"
+    }
+  },
+
+  "high_end_quality_guidelines": {
+    "composition": {
+      "rule_of_thirds": true,
+      "negative_space": "Generous — avoid overcrowding",
+      "focal_point": "One or two clear primary characters or objects",
+      "balance": "Asymmetric but visually balanced through color and shape weight",
+      "layering": "2–3 visual depth levels using shape overlap",
+      "nurturing_geometry": "Enveloping/Nurturing layouts where characters are contained within or hugging large circular, heart, or organic shapes to suggest safety and care",
+      "pathways": "Winding organic road or river-like path compositions showing characters at different stages of a journey (e.g., childhood to adulthood)"
+    },
+    "lighting": {
+      "style": "Flat lighting with optional soft cel-shaded highlights",
+      "highlight_method": "Single-tone lighter shape overlay at 30–40% opacity",
+      "shadow_method": "Single-tone darker shape, offset slightly below objects",
+      "avoid": ["Realistic light sources", "Complex gradients", "Lens flares"]
+    },
+      "detail_level": {
+        "background": "Simple geometric or gradient wash — no photographic elements",
+        "mid_ground": "Abstract oversized props (giant puzzle pieces, books, huge laptops, massive fruit) in same flat style acting as surreal metaphors",
+        "foreground": "Primary characters with slightly more shape complexity, including subtle dashed-line stitching on clothes",
+        "micro_details": "Small floating accents (dots, stars, small birds, single leaves) scattered for visual rhythm"
+      },
+    "cohesion_principles": [
+      "All elements share same stroke weight (0 or uniform 2–4px)",
+      "Consistent flat shadow direction (bottom-right or bottom-left for all objects)",
+      "Limited palette — max 5–6 colors per scene",
+      "Every shape uses colors pulled from defined palette only",
+      "Human figures maintain consistent proportional exaggeration throughout",
+      "Adhere to strictly Indian Identity for all human representations"
+    ]
+  },
+
+  "prompt_templates": [
+    {
+      "id": "PT001",
+      "name": "Healthcare & Wellness",
+      "use_case": "Health apps, telemedicine, wellness platforms",
+      "prompt": "Corporate Memphis flat illustration, friendly Indian family of three with warm brown skin tones, father and mother hugging a young child in an enveloping embrace, minimal faces with curved eyelid lines and small 'L' noses, elongated simplified limbs, round feet, soft teal and lavender background, floating hearts and rounded organic leaves, gentle smiles, limited palette of emerald, violet, white, and warm coral, no photorealism, nurturing and safe composition, clean high-end vector illustration",
+      "color_hint": "#F0E6FF background, #A8E6CF and #FF6B6B accents",
+      "mood": "Caring, professional, reassuring"
+    },
+    {
+      "id": "PT002",
+      "name": "Diversity & Inclusion Hero Banner",
+      "use_case": "Corporate reports, Medical DEI pages, patient portals",
+      "prompt": "Corporate Memphis style editorial illustration, diverse group of five Indian figures standing together in modern urban styling, range of warm tone skin colors from golden to deep brown, colorful solid hair shapes, elongated simplified bodies, flat graphic style, rich warm background gradient-free cream tone, medical plus and star shapes scattered around, unified color palette of coral, teal, golden yellow and lavender, inclusive joyful composition, no shadows except flat color offsets, high-end polished vector quality",
+      "color_hint": "#FFF5F0 background, multi-tone Indian figures, #FFE66D and #4ECDC4 accents",
+      "mood": "Celebratory, inclusive, uplifting"
+    },
+    {
+      "id": "PT003",
+      "name": "Nurturing Growth & Education",
+      "use_case": "Early intervention scripts, educational pathways, support guides",
+      "prompt": "Corporate Memphis flat illustration, an Indian child with warm brown skin flying on a giant oversized blue book through a soft cloudy sky, arms wide in joy, minimal face with curved eyelid lines and small L-nose, second scene shows a doctor with a simple stethoscope writing on a tablet, floating stars and trophy icons, vibrant palette of violet, teal, and emerald, soft pastel backdrop, nurturing and optimistic, high-end vector art",
+      "color_hint": "#F0F4FF background, #6C5CE7 book, #4ECDC4 accents",
+      "mood": "Playful, optimistic, supportive"
+    }
+  ],
+
+  "negative_prompts": {
+    "always_avoid": [
+      "photorealistic rendering",
+      "3D shading or volumetric lighting",
+      "complex gradients or blending",
+      "realistic facial features or expressions",
+      "detailed anatomically correct hands",
+      "dark or moody color schemes",
+      "horror, surrealism, or dystopian elements",
+      "text overlays unless minimal",
+      "cluttered backgrounds",
+      "excessive detail that breaks flat style",
+      "drop shadows with blur",
+      "lens flare or bokeh effects",
+      "realistic hair strands or skin texture"
+    ],
+    "universal_negative_prompt": "no photorealism, no 3D rendering, no gradients, no complex shadows, no realistic anatomy, no detailed textures, no dark moodiness, no clutter, no blur effects"
+  },
+
+  "generation_settings": {
+    "recommended_aspect_ratios": {
+      "hero_banner": "16:9",
+      "square_social": "1:1",
+      "tall_mobile": "9:16",
+      "editorial": "4:3",
+      "wide_illustration": "3:1"
+    },
+    "style_keywords": [
+      "flat illustration",
+      "vector art",
+      "corporate Memphis",
+      "alegria style",
+      "2D characters",
+      "geometric shapes",
+      "pastel palette",
+      "elongated limbs",
+      "minimal faces",
+      "floating elements",
+      "clean composition",
+      "tech illustration style",
+      "healthcare illustration"
+    ]
+  }
+}

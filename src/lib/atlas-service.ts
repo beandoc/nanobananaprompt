@@ -64,6 +64,17 @@ class AtlasServiceSingleton {
     private _index: AtlasEntry[] | null = null;
     private _keywordMap: Map<string, number[]> = new Map();
 
+    // Appends expanded synonym terms so trigger detection fires on abbreviations like "CKD", "MI", "COPD"
+    private _expandBriefWithSynonyms(brief: string): string {
+        let expanded = brief;
+        for (const [abbr, expansions] of Object.entries(MEDICAL_SYNONYMS)) {
+            if (new RegExp(`\\b${abbr}\\b`, "i").test(brief)) {
+                expanded += " " + expansions.join(" ").replace(/_/g, " ");
+            }
+        }
+        return expanded;
+    }
+
     private _initialize() {
         if (this._index) return;
         
@@ -181,11 +192,12 @@ class AtlasServiceSingleton {
         if (!this._index) return "";
 
         const lowerBrief = brief.toLowerCase();
-        const tokens = lowerBrief.split(/\W+/).filter(t => t.length > 2);
-        
-        // Detect Active Subspecialties
+        const expandedBrief = this._expandBriefWithSynonyms(lowerBrief);
+        const tokens = expandedBrief.split(/\W+/).filter(t => t.length > 2);
+
+        // Detect Active Subspecialties — uses synonym-expanded brief so "CKD" triggers nephrology, "COPD" triggers pulmonology, etc.
         const activeSubspecialties = Object.entries(SUBSPECIALTY_TRIGGERS)
-            .filter(([_, triggers]) => triggers.some(t => lowerBrief.includes(t)))
+            .filter(([_, triggers]) => triggers.some(t => expandedBrief.includes(t)))
             .map(([sub]) => sub);
 
         let context = "\nANATOMY ATLAS REFERENCE & SPATIAL STANDARDS (STRICT ADHERENCE REQUIRED):\n";
@@ -241,13 +253,18 @@ class AtlasServiceSingleton {
     }
 
     getBlacklist(brief: string): string[] {
-        const lb = brief.toLowerCase();
-        const tokens = lb.split(/\W+/);
-        
-        const isCardiac = tokens.includes("mi") || tokens.includes("hcm") || ["heart", "cardiac", "myocard", "ventricle", "aorta"].some(k => lb.includes(k));
-        const isRenal = tokens.includes("ckd") || tokens.includes("gn") || ["kidney", "renal", "glomerul", "nephr"].some(k => lb.includes(k));
-        const isNeuro = ["brain", "neuro", "cortex", "neuron", "synapse"].some(k => lb.includes(k));
-        const isPulmonary = tokens.includes("copd") || tokens.includes("pe") || ["lung", "pulmonary", "alveol", "bronch"].some(k => lb.includes(k));
+        const expanded = this._expandBriefWithSynonyms(brief.toLowerCase());
+
+        const activeSubspecialties = new Set(
+            Object.entries(SUBSPECIALTY_TRIGGERS)
+                .filter(([_, triggers]) => triggers.some(t => expanded.includes(t)))
+                .map(([sub]) => sub)
+        );
+
+        const isCardiac = activeSubspecialties.has("cardiology");
+        const isRenal = activeSubspecialties.has("nephrology") || activeSubspecialties.has("urology");
+        const isNeuro = activeSubspecialties.has("neurology");
+        const isPulmonary = activeSubspecialties.has("pulmonology");
 
         const baseBanned = ["Tumor core", "Sano Shunt"];
 

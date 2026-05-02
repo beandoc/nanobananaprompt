@@ -87,20 +87,35 @@ export function BlueprintConsole({
                         </Tooltip>
                     )}
                     {!isVideo && (
-                        <Tooltip content="Copy exactly the targeted prompt designed for Imagen 3 (Gemini Web).">
+                        <Tooltip content="Copies an Imagen 4-optimized prose prompt for Gemini web — no bracket tags, style inline, negatives integrated.">
                             <button
                                 onClick={() => {
-                                    const jsonPrompt = (data as any)?.diffusion_synthesis?.compiled_prompt || (data as any)?.diffusion_synthesis?.master_prompt || (data as any)?.prompt || "";
-                                    const masterPrompt = (expansionText && (expansionText.length > jsonPrompt.length)) ? expansionText : jsonPrompt;
-                                    const negPrompt = (data as any)?.diffusion_synthesis?.negative_prompt || "no text, no 3d render";
-                                    const finalPrompt = `Strictly follow this prompt:\n\n${masterPrompt}\n\nNegative Constraints:\n${negPrompt}`;
-                                    navigator.clipboard.writeText(finalPrompt || "Failed to generate prompt.");
+                                    // Prefer imagen_prompt (Imagen 4-native prose); fall back to compiled_prompt
+                                    const imagenPrompt = (data as any)?.diffusion_synthesis?.imagen_prompt;
+                                    const fallback = (data as any)?.diffusion_synthesis?.compiled_prompt || (data as any)?.diffusion_synthesis?.master_prompt || "";
+                                    navigator.clipboard.writeText(imagenPrompt || fallback || "Failed to generate prompt.");
                                     window.open("https://gemini.google.com/app", "_blank");
                                 }}
                                 className="bg-indigo-600 hover:bg-indigo-500 text-[10px] md:text-[11px] text-white font-black uppercase tracking-widest px-4 md:px-5 py-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
                             >
                                 <Terminal className="w-3.5 h-3.5" />
                                 Copy Imagen Prompt
+                            </button>
+                        </Tooltip>
+                    )}
+                    {!isVideo && (
+                        <Tooltip content="Copies a GPT-4o-optimized prompt for ChatGPT — style-first, conversational framing, negatives as constraints.">
+                            <button
+                                onClick={() => {
+                                    const chatgptPrompt = (data as any)?.diffusion_synthesis?.chatgpt_prompt;
+                                    const fallback = (data as any)?.diffusion_synthesis?.imagen_prompt || (data as any)?.diffusion_synthesis?.master_prompt || "";
+                                    navigator.clipboard.writeText(chatgptPrompt || fallback || "Failed to generate prompt.");
+                                    window.open("https://chatgpt.com", "_blank");
+                                }}
+                                className="bg-emerald-700 hover:bg-emerald-600 text-[10px] md:text-[11px] text-white font-black uppercase tracking-widest px-4 md:px-5 py-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
+                            >
+                                <Terminal className="w-3.5 h-3.5" />
+                                Copy ChatGPT Prompt
                             </button>
                         </Tooltip>
                     )}

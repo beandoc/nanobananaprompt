@@ -12,10 +12,18 @@ export class GenerationService {
     let error: Error | null = null;
 
     if (this.genAI) {
-      const modelsToTry = ["gemini-1.5-flash", "gemini-2.0-flash"];
+      const modelsToTry = ["gemini-2.5-flash", "gemini-2.0-flash"];
       for (const m of modelsToTry) {
         try {
-          const model = this.genAI.getGenerativeModel({ model: m, safetySettings });
+          const model = this.genAI.getGenerativeModel({
+            model: m,
+            generationConfig: {
+              temperature: 0.6,
+              topP: 0.9,
+              ...(m === "gemini-2.5-flash" ? { thinkingConfig: { thinkingBudget: 4096 } } : {}),
+            },
+            safetySettings,
+          });
           const userParts: any[] = [`CONVERT TO MASTERCLASS SPEC: ${brief}`];
           if (image) {
             const base64Data = image.split(",")[1];
@@ -79,12 +87,17 @@ export class GenerationService {
     let error: Error | null = null;
 
     if (this.genAI) {
-      const jsonModels = lightweight ? ["gemini-1.5-flash"] : ["gemini-1.5-flash", "gemini-2.0-flash"];
+      const jsonModels = lightweight ? ["gemini-2.5-flash-lite"] : ["gemini-2.5-flash", "gemini-2.0-flash"];
       for (const m of jsonModels) {
         try {
           const model = this.genAI.getGenerativeModel({
             model: m,
-            generationConfig: { responseMimeType: "application/json" },
+            generationConfig: {
+              responseMimeType: "application/json",
+              temperature: 0.15,
+              topP: 0.8,
+              ...(m.startsWith("gemini-2.5") ? { thinkingConfig: { thinkingBudget: 6000 } } : {}),
+            },
             safetySettings,
           });
           const result = await model.generateContent([systemInstruction, `GENERATE JSON BLUEPRINT FOR: ${prompt}`]);

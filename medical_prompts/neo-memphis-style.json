@@ -1,0 +1,44 @@
+{
+  "style_guide": {
+    "name": "Neo-Memphis 3.0 (Premium Editorial)",
+    "version": "3.0.0",
+    "description": "The evolution of Corporate Memphis. Moving away from flat 2D into a textured, dimensional, and premium editorial aesthetic. Features 'Clay-morphism' volume, digital grain, and sophisticated mesh gradients while maintaining the inclusive foundation of South Asian (Indian) identity standards.",
+    "tone": "Premium, Sophisticated, Vibrant, Trustworthy"
+  },
+  "visual_characteristics": {
+    "rendering_engine": {
+      "texture": "Procedural grainy digital noise, 15% intensity, matte paper finish",
+      "lighting": "Cinematic softbox studio lighting, subtle rim highlights, directional soft shadows with slight amber/blue tints",
+      "shading": "Clay-morphic 'inflate' effect (soft 3D volume), no harsh edges, smooth ambient occlusion"
+    },
+    "figures": {
+      "identity": "Strictly South Asian (Indian) characters. Warm skin tones (golden, chocolate, deep bronze). Authentic urban Indian styling including modern kurtas, linen shirts, and professional tech-wear.",
+      "proportions": "Elongated limbs, fluid rubber-hose motion, simplified but elegant facial features with expressive curved eyes and sharp but stylized jawlines.",
+      "detailing": "Subtle fabric textures, translucent fingernails, and soft-focus hair shapes."
+    },
+    "environment": {
+      "elements": "Glassmorphic floating UI elements, translucent 3D medical icons, frosted glass textures, organic 3D blobs, and levitating geometric shapes.",
+      "background": "Deep mesh gradients (e.g., Midnight Blue to Lavender), high-contrast negative space, or soft textured gray studio backdrops."
+    }
+  },
+  "prompt_logic": {
+    "core_keywords": [
+      "Neo-Memphis 3.0",
+      "3D Claymorphism",
+      "Grainy texture",
+      "Glassmorphism",
+      "Mesh gradient",
+      "Inflated vector art",
+      "Indian characters",
+      "Premium editorial illustration"
+    ],
+    "negative_prompt": "flat 2010s corporate memphis, aliasing, sharp edges, low resolution, caucasian features, neon colors, messy lines, watermark, cluttered background"
+  },
+  "presets": [
+    {
+      "id": "NEO_HEALTH_001",
+      "label": "Neo-Medical Care",
+      "prompt": "Premium Neo-Memphis 3.0 illustration: A sophisticated Indian doctor with warm skin tones hugging a giant 3D translucent glass heart, soft clay-morphic volume, grainy matte texture, deep lavender mesh gradient background, elongated limbs, elegant South Asian features, cinematic lighting, high-end editorial finish."
+    }
+  ]
+}

@@ -21,6 +21,13 @@ export interface CameraSettings {
     aesthetic: string;
 }
 
+export interface CinemaPreferences {
+    lens: string;
+    aperture: string;
+    lighting: string;
+    shot_type: string;
+}
+
 export interface VisualAccuracy {
     textures: string;
     lighting: string;
@@ -463,6 +470,7 @@ export interface GenerateRequest {
     previousImage?: string | null;
     assetInstruction?: AssetType;
     parentPrompt?: BlueprintData | null;
+    cinema?: CinemaPreferences;
 }
 
 export interface RefineRequest {

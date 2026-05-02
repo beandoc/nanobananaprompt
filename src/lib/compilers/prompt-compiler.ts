@@ -1,32 +1,143 @@
+// Infers anatomical scale from subject and primary focus terms for Imagen 4 opening sentence
+const inferScale = (subject: string, primaryFocus: string[]): string => {
+  const all = `${subject} ${primaryFocus.join(" ")}`.toLowerCase();
+  if (/foot.process|podocyte|endosome|receptor|gpcr|membrane.channel|ribosome|mitochondri|vesicle/.test(all))
+    return "electron microscopy-scale";
+  if (/glomerul|nephron|alveol|synapse|capillar|tubule|histolog|h&e|histopath/.test(all))
+    return "light microscopy-scale";
+  if (/kidney|heart|lung|liver|brain|organ|cortex|medulla|lobe|ventricle|aorta/.test(all))
+    return "gross anatomy-scale";
+  if (/surgical|laparoscop|endoscop|operative|dissection|resection|incision/.test(all))
+    return "surgical field-scale";
+  return "medical illustration-scale";
+};
+
+// Builds a ChatGPT/GPT-4o-native prompt — style instruction first, conversational framing,
+// negatives integrated as constraints rather than a trailing block
+const buildChatGPTPrompt = (ds: any, subject: string): string => {
+  const pw = ds.priority_weighting || {};
+  const primary = (pw.primary_focus || []).join(", ");
+  const secondary = (pw.secondary_context || []).join(", ");
+  const styleTokens: string[] = ds.style_descriptors || [];
+  const journalStyle = styleTokens.slice(0, 3).join(", ") || "BioRender matte plasticine 2.5D style";
+  const scale = inferScale(subject, pw.primary_focus || []);
+
+  // GPT-4o responds best when style is declared as an imperative opening sentence
+  const styleDirective = `Create a ${journalStyle} medical illustration.`;
+
+  // Subject + scale as second sentence — GPT-4o treats early sentences as high-weight anchors
+  const subjectSentence = ` The subject is ${primary || subject} at ${scale}.`;
+
+  // Pathophysiology hook woven conversationally
+  const physioHook = ds.pathophysiology_visual_summary
+    ? ` The image should visually convey: ${ds.pathophysiology_visual_summary.replace(/\.$/, "")}.`
+    : "";
+
+  // Anatomical detail from master prompt
+  const core = ds.master_prompt ? ` ${ds.master_prompt.trim()}` : "";
+
+  // Spatial composition — GPT-4o follows compositional instructions well when explicit
+  const spatial = ds.spatial_narrative
+    ? ` Compositional arrangement: ${ds.spatial_narrative}`
+    : "";
+
+  // Color as explicit instruction (GPT-4o responds better to "use X color for Y" than inline descriptors)
+  const colors = Array.isArray(ds.color_language) && ds.color_language.length
+    ? ` Use the following color treatment: ${ds.color_language.map((c: any) => `${c.zone} in ${c.color_descriptor}`).join("; ")}.`
+    : "";
+
+  // Secondary context
+  const secondarySentence = secondary ? ` Include supporting anatomical context: ${secondary}.` : "";
+
+  // Remaining style tags as reinforcing instructions
+  const styleReinforce = styleTokens.length > 3
+    ? ` Additional style requirements: ${styleTokens.slice(3).join(", ")}.`
+    : "";
+
+  // GPT-4o handles negatives best as explicit "do not include" instructions mid-prompt, not trailing
+  const negatives = ds.negative_prompt
+    ? ` Important constraints — do not include: ${ds.negative_prompt.replace(/^(negative constraints?:?\s*|avoid:?\s*)/i, "")}`
+    : " Important constraints — do not include: text labels, numeric annotations, photorealism, dramatic cinematic shadows, or background clutter.";
+
+  return `${styleDirective}${subjectSentence}${physioHook}${core}${spatial}${colors}${secondarySentence}${styleReinforce}${negatives}`.replace(/\s{2,}/g, " ").trim();
+};
+
+// Builds an Imagen 4-native prose prompt — no bracket tags, style inline, negatives at end
+const buildImagenPrompt = (ds: any, subject: string): string => {
+  const pw = ds.priority_weighting || {};
+  const primary = (pw.primary_focus || []).join(", ");
+  const secondary = (pw.secondary_context || []).join(", ");
+  const styleTokens: string[] = ds.style_descriptors || [];
+  const journalStyle = styleTokens.slice(0, 3).join(", ") || "BioRender matte plasticine 2.5D style";
+  const scale = inferScale(subject, pw.primary_focus || []);
+
+  // Opening: scale + style + subject + pathophysiology hook
+  const physioHook = ds.pathophysiology_visual_summary
+    ? ` depicting ${ds.pathophysiology_visual_summary.replace(/\.$/, "")}`
+    : "";
+  const opening = `A ${scale} ${journalStyle} medical illustration of ${primary || subject}${physioHook}.`;
+
+  // Body: spatial narrative + color language integrated naturally
+  const spatial = ds.spatial_narrative ? ` ${ds.spatial_narrative}` : "";
+  const colors = Array.isArray(ds.color_language) && ds.color_language.length
+    ? ` Color palette: ${ds.color_language.map((c: any) => `${c.zone} rendered in ${c.color_descriptor}`).join("; ")}.`
+    : "";
+
+  // Core description
+  const core = ds.master_prompt ? ` ${ds.master_prompt.trim()}` : "";
+
+  // Secondary context as a supporting sentence
+  const secondarySentence = secondary ? ` Supporting anatomical context includes ${secondary}.` : "";
+
+  // Remaining style tags woven as a closing phrase
+  const styleClose = styleTokens.length > 3
+    ? ` Rendered with ${styleTokens.slice(3).join(", ")}.`
+    : "";
+
+  // Negatives inline — Imagen 4 responds to these in prose, not as a separate block
+  const negatives = ds.negative_prompt
+    ? ` ${ds.negative_prompt.replace(/^negative constraints?:?\s*/i, "Avoid: ")}`
+    : " No text labels, no numeric annotations, no photorealism, no dramatic shadows, no background clutter.";
+
+  return `${opening}${spatial}${core}${secondarySentence}${colors}${styleClose}${negatives}`.replace(/\s{2,}/g, " ").trim();
+};
+
 export const compileMedicalPrompt = (adData: any) => {
   if (adData.diffusion_synthesis && typeof adData.diffusion_synthesis === "object") {
     console.log("[SOVEREIGN COMPILER] Compiling final prompt with Principle-based pruning...");
     let cleanMaster = adData.diffusion_synthesis.master_prompt || "";
 
-    // 1. Noise Pruning (Principle 8)
+    // 1. Noise Pruning
     cleanMaster = cleanMaster.replace(/stroke_dasharray|stroke_width|z_index|opacity|#[0-9a-fA-F]{6}|\{\s*x:\s*\d.*?\}/g, "");
     cleanMaster = cleanMaster.replace(/ent_\w+|panel_\w+|p1_\w+|p2_\w+|p3_\w+/g, "");
+    adData.diffusion_synthesis.master_prompt = cleanMaster;
 
-    // 2. Structural/Compositional Normalization
     const ds = adData.diffusion_synthesis;
-    let compiledBlocks = [];
+    const subject = adData.metadata?.subject || adData.scientific_subject || "";
 
-    // Priority Weighting
+    // 2. Legacy block format (kept for internal reference / non-Gemini renderers)
+    const compiledBlocks: string[] = [];
     if (ds.priority_weighting) {
       const pw = ds.priority_weighting;
-      if (pw.primary_focus?.length) compiledBlocks.push(`[PRIMARY FOCUS]:\n${pw.primary_focus.join(", ")}`);
+      if (pw.primary_focus?.length)   compiledBlocks.push(`[PRIMARY FOCUS]:\n${pw.primary_focus.join(", ")}`);
       if (pw.secondary_context?.length) compiledBlocks.push(`[SECONDARY CONTEXT]:\n${pw.secondary_context.join(", ")}`);
     }
-
-    // Spatial Narrative (New Hero Signal)
-    if (ds.spatial_narrative) {
-      compiledBlocks.push(`[SPATIAL ARRANGEMENT]:\n${ds.spatial_narrative}`);
-    }
-
+    if (ds.spatial_narrative)        compiledBlocks.push(`[SPATIAL ARRANGEMENT]:\n${ds.spatial_narrative}`);
     compiledBlocks.push(`[DETAILED SPECIFICATION]:\n${cleanMaster.trim()}`);
     if (ds.style_descriptors?.length) compiledBlocks.push(`[STYLE PROTOCOL]:\n${ds.style_descriptors.join(", ")}`);
-
+    if (ds.color_language?.length) {
+      const colorDesc = ds.color_language.map((c: any) => `${c.zone}: ${c.color_descriptor}`).join("; ");
+      compiledBlocks.push(`[COLOR PROTOCOL]:\n${colorDesc}`);
+    }
+    if (ds.pathophysiology_visual_summary) compiledBlocks.push(`[PATHOPHYSIOLOGY NARRATIVE]:\n${ds.pathophysiology_visual_summary}`);
+    if (ds.negative_prompt)           compiledBlocks.push(`[NEGATIVE CONSTRAINTS]:\n${ds.negative_prompt}`);
     adData.diffusion_synthesis.compiled_prompt = compiledBlocks.join("\n\n");
+
+    // 3. Imagen 4 / Gemini Web prose prompt — paste this directly into Gemini web
+    adData.diffusion_synthesis.imagen_prompt = buildImagenPrompt(ds, subject);
+
+    // 4. ChatGPT / GPT-4o prose prompt — style-first, conversational framing, mid-prompt negatives
+    adData.diffusion_synthesis.chatgpt_prompt = buildChatGPTPrompt(ds, subject);
   }
 };
 

@@ -21,6 +21,7 @@ import { useGenerate } from "@/hooks/useGenerate";
 import { useRender } from "@/hooks/useRender";
 import { useRefine } from "@/hooks/useRefine";
 import { useImageActions } from "@/hooks/useImageActions";
+import { useAssetHistory } from "@/hooks/useAssetHistory";
 
 import { Mode, AssetType, LibraryItem } from "@/types";
 import { apiClient } from "@/lib/api-client";
@@ -44,6 +45,12 @@ export default function Home() {
   // --- Grouped State: Navigation & Modals ---
   const [showLibrary, setShowLibrary] = useState(false);
   const [refinement, setRefinement] = useState("");
+  const [cinema, setCinema] = useState({
+    lens: "35mm-documentary",
+    aperture: "f/2.8",
+    lighting: "soft-natural-daylight",
+    shot_type: "medium-shot"
+  });
 
   // --- External Refs ---
   const externalRenderRef = useRef<HTMLInputElement>(null);
@@ -97,6 +104,14 @@ export default function Home() {
     vectorizeToSVG,
     downloadImage
   } = useImageActions(renderedImage);
+  const { history, addAsset, removeAsset } = useAssetHistory();
+
+  // Sync uploaded image to history
+  useEffect(() => {
+    if (assetImage && !history.some(h => h.url === assetImage)) {
+      addAsset(assetImage);
+    }
+  }, [assetImage, history, addAsset]);
 
   // --- Core Handlers (Memoized) ---
   const loadFromLibrary = useCallback((item: LibraryItem) => {
@@ -119,9 +134,10 @@ export default function Home() {
       isStoryboard,
       selectedStyle,
       assetImage,
-      assetType
+      assetType,
+      cinema
     });
-  }, [generateBlueprint, mode, isStoryboard, selectedStyle, assetImage, assetType]);
+  }, [generateBlueprint, mode, isStoryboard, selectedStyle, assetImage, assetType, cinema]);
 
   // --- State Persistence & Mode Switches ---
   useEffect(() => {
@@ -240,6 +256,10 @@ export default function Home() {
             refinePrompt={onGenerate}
             fileInputRef={fileInputRef}
             handleFileUpload={handleFileUpload}
+            cinema={cinema}
+            setCinema={setCinema}
+            assetHistory={history}
+            removeAssetFromHistory={removeAsset}
           />
 
           <div className="space-y-6">

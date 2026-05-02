@@ -168,7 +168,7 @@ export const medicalIllustrationSchema: Schema = {
             required: ["entities"]
         }
     },
-    required: ["metadata", "medical_content", "visual_specification", "rendering_instructions", "diffusion_synthesis"]
+    required: ["metadata", "medical_content", "spatial_layout", "biological_graph", "diffusion_synthesis"]
 };
 
 

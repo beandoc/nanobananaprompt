@@ -14,10 +14,10 @@ export function useGenerate() {
         mode,
         isStoryboard,
         selectedStyle,
-        assetImage,
         assetType,
         isRefinement = false,
-        refinement = ""
+        refinement = "",
+        cinema
     }: {
         mode: Mode,
         isStoryboard: boolean,
@@ -25,7 +25,8 @@ export function useGenerate() {
         assetImage: string | null,
         assetType: AssetType,
         isRefinement?: boolean,
-        refinement?: string
+        refinement?: string,
+        cinema?: any
     }) => {
         let activeBrief = isRefinement ? refinement : brief;
 
@@ -51,6 +52,7 @@ export function useGenerate() {
             previousImage: null, // renderedImage removed, so previousImage is null
             assetInstruction: assetType,
             parentPrompt: isRefinement ? result?.data : null,
+            cinema
         };
 
         try {

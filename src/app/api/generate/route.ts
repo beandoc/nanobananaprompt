@@ -15,7 +15,7 @@ import { medicalIllustrationSchema } from "@/lib/schemas/medical-illustration";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { mode = "medical", brief = "", style = "Watercolor-Field-Notes", isStoryboard = false, image = null, lightweight = false } = body;
+    const { mode = "medical", brief = "", style = "Watercolor-Field-Notes", isStoryboard = false, image = null, lightweight = false, cinema = null } = body;
     const normalizedStyle = style && style !== "" && style !== "-" ? style : mode === "infographic" ? "Nature-Gold-Standard" : mode === "medical" ? "NEJM" : "Modern";
 
     if (!brief) return ResponseManager.badRequest("No brief provided");
@@ -41,11 +41,11 @@ export async function POST(req: NextRequest) {
                 ${config.expansionRules.join("\n        ")}
                 STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
                 ${atlasContext ? `\nMEDICAL REFERENCE DATA:\n${atlasContext}` : ""}`;
-      } else if (mode === "video" || mode === "comic") {
+      } else if (mode === "video" || mode === "comic" || mode === "ad") {
         expansionSystemPrompt = `### ROLE: ELITE CINEMATIC DIRECTOR
 Refine the user's brief into a 'Masterclass Cinematic Specification' using the CINEMATIC ONTOLOGY:
-1. OPTICS: 35mm/50mm anamorphic, shallow depth-of-field, cinematic bokeh.
-2. LIGHTING: Chiaroscuro shadows, volumetric lighting, dramatic rim-lighting.
+1. OPTICS: Use a ${cinema?.lens || "35mm-documentary"} lens, aperture set to ${cinema?.aperture || "f/2.8"} for optimal depth-of-field. Shot type: ${cinema?.shot_type || "cinematic"}.
+2. LIGHTING: ${cinema?.lighting || "dramatic lighting"}, Chiaroscuro shadows, volumetric lighting, dramatic rim-lighting.
 3. CAUSALITY: Emotional weight and narrative pacing.
 4. IDENTITY: Strict South Asian character lock (skin tone, modern urban Indian styling).
 
@@ -146,6 +146,10 @@ HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels."`;
       promptFile: filename,
       folder: mode + "_prompts",
       providerHistory,
+      // Imagen 4 / Gemini web optimized prompt — paste this directly into Gemini web
+      ...(mode === "medical" && adData.diffusion_synthesis?.imagen_prompt
+        ? { geminiWebPrompt: adData.diffusion_synthesis.imagen_prompt }
+        : {}),
       ...(validationResult && !validationResult.valid ? { _validation_warnings: validationResult.issues } : {}),
     });
   } catch (error: any) {

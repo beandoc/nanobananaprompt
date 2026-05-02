@@ -7,7 +7,11 @@ import { Tooltip } from "../Shared/Tooltip";
 import { StyleSelector } from "./StyleSelector";
 import { BriefInput } from "./BriefInput";
 import { cn } from "@/lib/utils";
-import { Mode, AssetType, StylePreset } from "@/types";
+import { Mode, AssetType, StylePreset, CinemaPreferences } from "@/types";
+import { CinemaControls } from "./CinemaControls";
+import { AssetPicker } from "./AssetPicker";
+import { AssetHistoryItem } from "@/hooks/useAssetHistory";
+import { History } from "lucide-react";
 
 interface ProjectInputProps {
     mode: Mode;
@@ -26,6 +30,10 @@ interface ProjectInputProps {
     refinePrompt: () => void;
     fileInputRef: React.RefObject<HTMLInputElement | null>;
     handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    cinema: CinemaPreferences;
+    setCinema: (val: CinemaPreferences) => void;
+    assetHistory: AssetHistoryItem[];
+    removeAssetFromHistory: (id: string) => void;
 }
 
 const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
@@ -82,6 +90,12 @@ const ALL_STYLE_PRESETS: Record<Mode, StylePreset[]> = {
     ],
 
     medical: [
+        { 
+            label: "[PRO] Neo-Memphis 3.0 (Grainy)", 
+            value: "Neo-Memphis 3.0 style, premium 3D clay-morphism, grainy digital noise textures, translucent glassmorphism icons, elongated Indian characters with South Asian skin tones, elegant facial features, deep mesh gradient background, cinematic studio lighting, high-end editorial vector aesthetic.", 
+            description: "The premium evolution of Corporate Memphis: grainy textures, 3D volume, and glassmorphism for a modern editorial look." 
+        },
+        { label: "Corporate Memphis (Public Health)", value: "Corporate Memphis flat illustration, Indian characters with South Asian skin, minimal faces (L-noses, curved eyelid lines), surreal metaphors (flying on books, holding giant puzzle pieces), life-path winding road composition, oversized floating icons, flat vibrant colors, subtle dashed-line clothing seams, no gradients.", description: "Friendly, flat vector style popular in tech, modified perfectly for inclusive patient education/public health." },
         { label: "Classic NEJM Editorial", value: "New England Journal of Medicine style, 2.5D soft volumetric digital painting, muted clinical colors, directional flow dynamics", description: "Classic 2.5D medical painting style with soft volumes and clinical palettes." },
         { label: "Professional BioRender Style", value: "BioRender-standard scientific illustration, clean 2.5D vector assets, matte plastic textures", description: "Standard BioRender vector aesthetic for professional scientific posters." },
         { label: "Macro-Probe Lens (Scientific)", value: "Ultra-macro probe lens movement, 1000fps slow motion, scientific microscopic focus", description: "Microscopic detail with extreme depth of field and slow-motion clarity." },
@@ -134,8 +148,15 @@ export function ProjectInput({
     handleGenerate,
     refinePrompt,
     fileInputRef,
-    handleFileUpload
+    handleFileUpload,
+    cinema,
+    setCinema,
+    assetHistory,
+    removeAssetFromHistory
 }: ProjectInputProps) {
+    const [showAssetPicker, setShowAssetPicker] = useState(false);
+    const isCinemaMode = mode === 'ad' || mode === 'video';
+
     return (
         <section className="space-y-4 md:space-y-6 lg:sticky lg:top-32 h-fit">
             <div className="flex items-center gap-3 px-2 md:px-4">
@@ -173,12 +194,26 @@ export function ProjectInput({
                             </button>
                         </Tooltip>
                     </div>
-                    <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="image/*" className="hidden" />
-                    <Tooltip content="Upload an image to extract its style, colors, or structure.">
-                        <button type="button" onClick={() => fileInputRef.current?.click()} className={cn("w-full sm:w-auto px-4 py-2 rounded-full text-[10px] font-black border uppercase transition-all flex items-center justify-center gap-2", assetImage ? "bg-indigo-50 text-indigo-600 border-indigo-200" : "bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100")}>
-                            <Upload className="w-3.5 h-3.5" /> {assetImage ? "Asset Loaded" : "Link Reference"}
-                        </button>
-                    </Tooltip>
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <Tooltip content="Browse previously uploaded assets.">
+                            <button 
+                                type="button" 
+                                onClick={() => setShowAssetPicker(!showAssetPicker)}
+                                className={cn(
+                                    "px-4 py-2 rounded-full text-[10px] font-black border uppercase transition-all flex items-center justify-center gap-2",
+                                    showAssetPicker ? "bg-indigo-600 text-white border-indigo-600" : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50"
+                                )}
+                            >
+                                <History className="w-3.5 h-3.5" /> History
+                            </button>
+                        </Tooltip>
+                        <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="image/*" className="hidden" />
+                        <Tooltip content="Upload an image to extract its style, colors, or structure.">
+                            <button type="button" onClick={() => fileInputRef.current?.click()} className={cn("flex-1 sm:flex-none px-4 py-2 rounded-full text-[10px] font-black border uppercase transition-all flex items-center justify-center gap-2", assetImage ? "bg-indigo-50 text-indigo-600 border-indigo-200" : "bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100")}>
+                                <Upload className="w-3.5 h-3.5" /> {assetImage ? "Asset Loaded" : "Link Reference"}
+                            </button>
+                        </Tooltip>
+                    </div>
                 </div>
 
                 <StyleSelector
@@ -186,6 +221,28 @@ export function ProjectInput({
                     setSelectedStyle={setSelectedStyle}
                     stylePresets={ALL_STYLE_PRESETS[mode]}
                 />
+
+                <AnimatePresence>
+                    {showAssetPicker && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="mb-8 p-6 bg-slate-50/50 rounded-3xl border border-slate-100 overflow-hidden"
+                        >
+                            <AssetPicker
+                                history={assetHistory}
+                                onSelect={(url) => {
+                                    setAssetImage(url);
+                                    setShowAssetPicker(false);
+                                }}
+                                onRemove={removeAssetFromHistory}
+                                selectedUrl={assetImage}
+                                onUploadClick={() => fileInputRef.current?.click()}
+                            />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {assetImage && (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 md:mb-10 p-4 md:p-8 bg-indigo-50/40 rounded-2xl md:rounded-[2rem] border border-indigo-100 flex flex-col sm:flex-row gap-4 md:gap-8 items-center shadow-inner relative group/asset">
@@ -229,6 +286,12 @@ export function ProjectInput({
                     mode={mode}
                     brief={brief}
                     onBriefChange={setBrief}
+                />
+                
+                <CinemaControls 
+                    cinema={cinema} 
+                    setCinema={setCinema} 
+                    active={isCinemaMode} 
                 />
 
                 <div className="mt-8 md:mt-10 flex flex-col md:flex-row justify-between items-stretch md:items-center -mx-5 md:-mx-10 -mb-5 md:-mb-10 px-5 md:px-10 py-6 md:py-10 bg-slate-50/50 border-t border-slate-100 gap-6">

@@ -77,7 +77,7 @@ const validatePhysicsAlignment = (tissue: string = "", flow: any = {}): string[]
  */
 export const validateMedicalOutput = (data: any): { valid: boolean; issues: string[] } => {
   const issues: string[] = [];
-  const subject = (data?.scientific_subject || "").toLowerCase();
+  const subject = (data?.metadata?.subject || data?.scientific_subject || "").toLowerCase();
   const isSurgical = subject.match(/surgery|resection|dissection|laparoscop|robotic|endoscop|incision/);
 
   // 0. SVSP v1.0 BLOCKERS (Hard Rejects)
@@ -120,7 +120,7 @@ export const validateMedicalOutput = (data: any): { valid: boolean; issues: stri
   }
 
   // 1. Strict Physics Validation
-  const physicsIssues = validatePhysicsAlignment(data?.scientific_subject || data?.tissue?.name, data?.flow_dynamics);
+  const physicsIssues = validatePhysicsAlignment(data?.metadata?.subject || data?.scientific_subject || data?.tissue?.name, data?.flow_dynamics);
   issues.push(...physicsIssues);
 
   // 2. Check pathophysiology cascade is populated

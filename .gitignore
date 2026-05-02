@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# logs
+*.log
+*_log.txt
+
+# debug / temporary
+diag_output.json
+expansion_proof.json
+models_debug.json
+test-gemini.js
+test-groq.js
+
