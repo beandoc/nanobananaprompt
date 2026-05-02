@@ -1,7 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Upload, Zap, X, ShieldCheck, Loader2, Database, Sparkles, Film } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Upload, Zap, X, ShieldCheck, Loader2, Database, Sparkles, Film, History } from "lucide-react";
+
 import Image from "next/image";
 import { Tooltip } from "../Shared/Tooltip";
 import { StyleSelector } from "./StyleSelector";
@@ -11,7 +13,7 @@ import { Mode, AssetType, StylePreset, CinemaPreferences } from "@/types";
 import { CinemaControls } from "./CinemaControls";
 import { AssetPicker } from "./AssetPicker";
 import { AssetHistoryItem } from "@/hooks/useAssetHistory";
-import { History } from "lucide-react";
+
 
 interface ProjectInputProps {
     mode: Mode;

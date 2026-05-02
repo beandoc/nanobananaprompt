@@ -1,5 +1,8 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { creativeProtocols } from "@/lib/config/generation";
-import { atlasService } from "../atlas-service";
+
+import { atlasService } from "./atlas-service";
 
 export const getProtocol = (mode: string, style: string) => {
   const lStyle = style.toLowerCase();
@@ -45,3 +48,8 @@ export const setNestedValue = (obj: any, path: string, value: any) => {
 export const getNestedValue = (obj: any, path: string) => {
   return path.split(".").reduce((o, i) => o?.[i], obj);
 };
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
