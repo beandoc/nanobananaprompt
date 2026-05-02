@@ -6,8 +6,8 @@ import { Schema, SchemaType } from "@google/generative-ai";
  * FIVE-LAYER ARCHITECTURE:
  *   Layer 1 — metadata          : Identity, citation, journal standard
  *   Layer 2 — medical_content   : Pathophysiology cascade, anatomical zones, cellular markers
- *   Layer 3 — visual_specification : SVG/coordinate layout for programmatic renderers
- *   Layer 4 — rendering_instructions: SVG/CSS stroke + flow specs for code-based rendering
+ *   Layer 3 — spatial_layout        : Compositional arrangement using relative spatial language
+ *   Layer 4 — biological_graph      : Biological entity primitives and their interactions
  *   Layer 5 — diffusion_synthesis  : ★ Diffusion-optimized master prompt (natural language)
  *
  * CRITICAL DESIGN RULE:
