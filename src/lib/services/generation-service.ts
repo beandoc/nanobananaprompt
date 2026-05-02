@@ -20,7 +20,7 @@ export class GenerationService {
             generationConfig: {
               temperature: 0.6,
               topP: 0.9,
-              ...(m === "gemini-2.5-flash" ? { thinkingConfig: { thinkingBudget: 4096 } } : {}),
+              ...(m === "gemini-2.5-flash" ? { thinkingConfig: { thinkingBudget: 1024 } } : {}),
             },
             safetySettings,
           });
@@ -96,7 +96,7 @@ export class GenerationService {
               responseMimeType: "application/json",
               temperature: 0.15,
               topP: 0.8,
-              ...(m.startsWith("gemini-2.5") ? { thinkingConfig: { thinkingBudget: 6000 } } : {}),
+              ...(m.startsWith("gemini-2.5") ? { thinkingConfig: { thinkingBudget: 2048 } } : {}),
             },
             safetySettings,
           });
