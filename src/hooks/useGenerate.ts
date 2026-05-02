@@ -14,11 +14,13 @@ export function useGenerate() {
         mode,
         isStoryboard,
         selectedStyle,
+        assetImage,
         assetType,
         isRefinement = false,
         refinement = "",
         cinema
     }: {
+
         mode: Mode,
         isStoryboard: boolean,
         selectedStyle: string,
