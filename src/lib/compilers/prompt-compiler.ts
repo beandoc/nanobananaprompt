@@ -62,7 +62,7 @@ const extractBiologicalEntities = (adData: any): { primaryEntities: string[]; in
       const relLower = rel.toLowerCase();
       const tgtLower = tgt.toLowerCase();
       // If target is already mentioned inside the relationship phrase, don't append it
-      const targetAlreadyInRel = tgtLower.split(" ").some(w => w.length > 4 && relLower.includes(w));
+      const targetAlreadyInRel = tgtLower.split(" ").some((w: string) => w.length > 4 && relLower.includes(w));
       if (targetAlreadyInRel) return `${src} ${rel}`;
       // Detect "verb to/into/through location" patterns — insert target before the preposition
       // e.g. "recruits to border zone" + "Neutrophils" → "recruits Neutrophils to border zone"
