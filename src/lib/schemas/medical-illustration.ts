@@ -29,7 +29,7 @@ export const medicalIllustrationSchema: Schema = {
             properties: {
                 master_prompt: {
                     type: SchemaType.STRING,
-                    description: "HERO FIELD: 150–250 word consolidated prompt. Open with anatomical subject, layer with pathophysiology, and close with journal style. Use ONLY natural language."
+                    description: "HERO FIELD: 180–260 word consolidated rendering description. Structure: (1) ANATOMY BASELINE — describe each structure's normal visual appearance (color, texture, surface, opacity) as an artist would see it; (2) PATHOLOGICAL CHANGE — describe exactly how disease alters each structure's appearance (e.g., 'the basement membrane thickens from 300nm to over 600nm, appearing as a homogeneous slate-grey band losing its laminar transparency'); (3) RENDERING INSTRUCTION — specify lighting direction, surface material (matte vs glossy), depth cues. Do NOT use publication names like 'NEJM' or 'Nature' — describe the actual visual appearance instead. Do NOT repeat spatial positions already in spatial_narrative. Use ONLY natural language with zero coordinates or schema IDs."
                 },
                 spatial_narrative: {
                     type: SchemaType.STRING,
@@ -37,7 +37,7 @@ export const medicalIllustrationSchema: Schema = {
                 },
                 style_descriptors: {
                     type: SchemaType.ARRAY,
-                    description: "Ordered list of 6–10 style tags (e.g., 'NEJM scholarly plate', 'BioRender matte plasticine', 'soft clinical lighting').",
+                    description: "Ordered list of 6–10 rendering style tokens that image generation models (Gemini ImageFX, DALL-E 3) understand natively. Use RENDERING LANGUAGE, not publication brand names. Good tokens: 'matte plastic 2.5D render', 'isometric anatomical view', 'clean white background', 'soft ambient clinical lighting', 'BioRender-style 3D illustration', 'Netter watercolor-and-ink style', 'flat scientific vector diagram', 'photorealistic gross anatomy render', 'H&E staining color palette', 'transmission electron microscopy style'. BAD tokens to avoid: 'NEJM scholarly plate', 'Nature standard', 'journal quality' — these are meaningless to image models.",
                     items: { type: SchemaType.STRING }
                 },
                 color_language: {

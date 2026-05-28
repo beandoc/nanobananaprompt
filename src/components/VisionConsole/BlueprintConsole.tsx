@@ -73,38 +73,36 @@ export function BlueprintConsole({
                 </div>
                 <div className="flex items-center gap-2">
                     {!isVideo && expansionText && (
-                        <Tooltip content="Copy ONLY the Masterclass Refined Text (Phase 1). No JSON metadata.">
+                        <Tooltip content="Phase 1 scientific brief — for human reference only. Use 'Copy Imagen Prompt' or 'Copy ChatGPT Prompt' to generate images.">
                             <button
                                 onClick={() => {
                                     navigator.clipboard.writeText(expansionText);
-                                    window.open("https://gemini.google.com/app", "_blank");
                                 }}
-                                className="bg-emerald-600 hover:bg-emerald-500 text-[10px] md:text-[11px] text-white font-black uppercase tracking-widest px-4 md:px-5 py-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
+                                className="bg-slate-500 hover:bg-slate-400 text-[10px] md:text-[11px] text-white font-black uppercase tracking-widest px-4 md:px-5 py-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
                             >
                                 <Eye className="w-3.5 h-3.5" />
-                                Copy Refined Text
+                                Copy Brief (Reference)
                             </button>
                         </Tooltip>
                     )}
                     {!isVideo && (
-                        <Tooltip content="Copies an Imagen 4-optimized prose prompt for Gemini web — no bracket tags, style inline, negatives integrated.">
+                        <Tooltip content="Gemini ImageFX prompt — model-native style tokens, prose negatives, aspect ratio included. Paste into Gemini ImageFX or Imagen 4.">
                             <button
                                 onClick={() => {
-                                    // Prefer imagen_prompt (Imagen 4-native prose); fall back to compiled_prompt
                                     const imagenPrompt = (data as any)?.diffusion_synthesis?.imagen_prompt;
-                                    const fallback = (data as any)?.diffusion_synthesis?.compiled_prompt || (data as any)?.diffusion_synthesis?.master_prompt || "";
+                                    const fallback = (data as any)?.diffusion_synthesis?.master_prompt || "";
                                     navigator.clipboard.writeText(imagenPrompt || fallback || "Failed to generate prompt.");
                                     window.open("https://gemini.google.com/app", "_blank");
                                 }}
                                 className="bg-indigo-600 hover:bg-indigo-500 text-[10px] md:text-[11px] text-white font-black uppercase tracking-widest px-4 md:px-5 py-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
                             >
                                 <Terminal className="w-3.5 h-3.5" />
-                                Copy Imagen Prompt
+                                Copy → Gemini
                             </button>
                         </Tooltip>
                     )}
                     {!isVideo && (
-                        <Tooltip content="Copies a GPT-4o-optimized prompt for ChatGPT — style-first, conversational framing, negatives as constraints.">
+                        <Tooltip content="DALL-E 3 / ChatGPT prompt — style imperative first, all negatives reframed as positive visual directives (DALL-E 3 ignores negative prompts). Paste into ChatGPT image generation.">
                             <button
                                 onClick={() => {
                                     const chatgptPrompt = (data as any)?.diffusion_synthesis?.chatgpt_prompt;
@@ -115,7 +113,7 @@ export function BlueprintConsole({
                                 className="bg-emerald-700 hover:bg-emerald-600 text-[10px] md:text-[11px] text-white font-black uppercase tracking-widest px-4 md:px-5 py-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
                             >
                                 <Terminal className="w-3.5 h-3.5" />
-                                Copy ChatGPT Prompt
+                                Copy → ChatGPT
                             </button>
                         </Tooltip>
                     )}

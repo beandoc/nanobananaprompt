@@ -57,7 +57,7 @@ export class GenerationService {
           }
 
           if (refinedText) {
-            providerHistory.push({ phase: "expansion", model: m, status: "success", stats: { words: wordCount, density: lexicalDensity } });
+            providerHistory.push({ phase: "expansion", model: m, status: "success", stats: { words: wordCount, density: totalDensity } });
             break;
           }
         } catch (err: any) {

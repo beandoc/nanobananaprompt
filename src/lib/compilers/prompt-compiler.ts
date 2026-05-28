@@ -63,116 +63,204 @@ const extractBiologicalEntities = (adData: any): { primaryEntities: string[]; in
   return { primaryEntities, interactions: interactionLabels };
 };
 
-// Builds a ChatGPT/GPT-4o-native prompt — style instruction first, conversational framing,
-// negatives integrated as constraints rather than a trailing block
+// Maps journal standard to model-native rendering style tokens that DALL-E 3 / GPT-4o understand
+const resolveRenderStyle = (styleTokens: string[], scale: string): { opening: string; reinforcement: string } => {
+  const joined = styleTokens.join(" ").toLowerCase();
+
+  // Electron / ultrastructural scale
+  if (scale.includes("electron")) {
+    return {
+      opening: "A high-resolution transmission electron microscopy (TEM) scientific illustration",
+      reinforcement: "rendered in the style of a Nature Cell Biology figure plate, clean white background, precise ultrastructural detail, muted scientific color palette, zero text or labels",
+    };
+  }
+  // Light microscopy / histology scale
+  if (scale.includes("light microscopy")) {
+    return {
+      opening: "A photorealistic light microscopy histological illustration",
+      reinforcement: "in the style of a NEJM case report figure, H&E or immunofluorescence staining palette, crisp tissue section detail, white background, no annotations",
+    };
+  }
+  // Surgical field
+  if (scale.includes("surgical")) {
+    return {
+      opening: "A 4K surgical field illustration under cold LED operative lighting",
+      reinforcement: "in the style of a Netter surgical anatomy plate, diagrammatic photorealism, tissue planes clearly differentiated, sterile field background, no text overlays",
+    };
+  }
+  // Molecular / pathway
+  if (scale.includes("molecular")) {
+    return {
+      opening: "A clean scientific pathway diagram illustration",
+      reinforcement: "in the style of a Cell or Nature Reviews mechanistic figure, flat 2D vector style, white background, color-coded molecular components, no text labels",
+    };
+  }
+  // Gross anatomy — default
+  const isBiorender = joined.includes("biorender") || joined.includes("plasticine") || joined.includes("2.5d");
+  const isNejm = joined.includes("nejm") || joined.includes("scholarly") || joined.includes("netter");
+  const isNature = joined.includes("nature") || joined.includes("structural");
+
+  if (isBiorender) {
+    return {
+      opening: "A BioRender-style 3D medical illustration",
+      reinforcement: "matte plastic 2.5D rendering, soft ambient clinical lighting, pastel anatomical color palette, clean white background, isometric anatomical view, no labels or text",
+    };
+  }
+  if (isNejm) {
+    return {
+      opening: "A NEJM-standard anatomical illustration",
+      reinforcement: "Netter-style watercolor-and-ink rendering, muted clinical palette, fine stipple shading, white background, scholarly medical plate aesthetic, no text annotations",
+    };
+  }
+  if (isNature) {
+    return {
+      opening: "A Nature journal high-impact scientific illustration",
+      reinforcement: "photorealistic 3D render with ambient occlusion, vibrant scientifically accurate colors, high contrast, white background, no labels",
+    };
+  }
+  return {
+    opening: "A high-fidelity medical scientific illustration",
+    reinforcement: "clean matte 3D render, white background, anatomically accurate, scholarly journal plate quality, no text or labels",
+  };
+};
+
+// Infers canvas aspect ratio from panel count and scale
+const inferAspectRatio = (adData: any, scale: string): string => {
+  const panels = adData?.spatial_layout?.panels || [];
+  if (panels.length >= 3) return "wide landscape format (16:9 aspect ratio)";
+  if (panels.length === 2) return "landscape format (4:3 aspect ratio)";
+  if (scale.includes("electron") || scale.includes("light microscopy")) return "square format (1:1 aspect ratio)";
+  return "portrait or square format (3:4 or 1:1 aspect ratio)";
+};
+
+// Deduplicates semantic overlap between master_prompt and spatial_narrative
+// master_prompt often repeats spatial info already in spatial_narrative — we strip it
+const deduplicateMasterAndSpatial = (master: string, spatial: string): string => {
+  if (!spatial || !master) return master;
+  // Extract first ~12 words of spatial as a fingerprint, remove any sentence from master that starts with similar tokens
+  const spatialWords = spatial.toLowerCase().split(/\s+/).slice(0, 12);
+  const sentences = master.split(/(?<=[.!?])\s+/);
+  const filtered = sentences.filter(sentence => {
+    const sWords = sentence.toLowerCase().split(/\s+/).slice(0, 8);
+    const overlap = sWords.filter(w => w.length > 5 && spatialWords.includes(w)).length;
+    return overlap < 3; // keep sentence unless it shares 3+ significant words with spatial opener
+  });
+  return filtered.join(" ").trim();
+};
+
+// Builds a ChatGPT/DALL-E 3-native prompt
+// Key rules for DALL-E 3: (1) style imperative first, (2) no negative framing — reframe as positives,
+// (3) composition as explicit instruction, (4) colors as "use X for Y" directives
 const buildChatGPTPrompt = (ds: any, subject: string, adData?: any): string => {
   const pw = ds.priority_weighting || {};
   const primary = (pw.primary_focus || []).join(", ");
   const secondary = (pw.secondary_context || []).join(", ");
   const styleTokens: string[] = ds.style_descriptors || [];
-  const journalStyle = styleTokens.slice(0, 3).join(", ") || "BioRender matte plasticine 2.5D style";
   const scale = inferScale(subject, pw.primary_focus || []);
+  const { opening, reinforcement } = resolveRenderStyle(styleTokens, scale);
+  const aspectRatio = inferAspectRatio(adData, scale);
 
-  // GPT-4o responds best when style is declared as an imperative opening sentence
-  const styleDirective = `Create a ${journalStyle} medical illustration.`;
+  // DALL-E 3: style imperative as the very first clause
+  const styleDirective = `${opening} of ${primary || subject}.`;
 
-  // Subject + scale as second sentence — GPT-4o treats early sentences as high-weight anchors
-  const subjectSentence = ` The subject is ${primary || subject} at ${scale}.`;
-
-  // Pathophysiology hook woven conversationally
+  // Pathophysiology as positive visual directive (DALL-E 3 ignores "do not" — state what TO show)
   const physioHook = ds.pathophysiology_visual_summary
-    ? ` The image should visually convey: ${ds.pathophysiology_visual_summary.replace(/\.$/, "")}.`
+    ? ` The illustration shows: ${ds.pathophysiology_visual_summary.replace(/\.$/, "")}.`
     : "";
 
-  // Anatomical detail from master prompt
-  const core = ds.master_prompt ? ` ${ds.master_prompt.trim()}` : "";
+  // Deduplicate master vs spatial before including both
+  const cleanMaster = deduplicateMasterAndSpatial(ds.master_prompt || "", ds.spatial_narrative || "");
 
-  // Spatial composition — GPT-4o follows compositional instructions well when explicit
+  // Spatial composition — DALL-E 3 follows explicit layout well
   const spatial = ds.spatial_narrative
-    ? ` Compositional arrangement: ${ds.spatial_narrative}`
+    ? ` Layout: ${ds.spatial_narrative}`
     : "";
 
-  // Color as explicit instruction (GPT-4o responds better to "use X color for Y" than inline descriptors)
+  // Core anatomical description (deduplicated)
+  const core = cleanMaster ? ` ${cleanMaster}` : "";
+
+  // Colors as explicit directives (DALL-E 3 responds to "use X color for Y")
   const colors = Array.isArray(ds.color_language) && ds.color_language.length
-    ? ` Use the following color treatment: ${ds.color_language.map((c: any) => `${c.zone} in ${c.color_descriptor}`).join("; ")}.`
+    ? ` Color treatment: ${ds.color_language.map((c: any) => `use ${c.color_descriptor} for ${c.zone}`).join("; ")}.`
     : "";
 
   // Secondary context
-  const secondarySentence = secondary ? ` Include supporting anatomical context: ${secondary}.` : "";
+  const secondarySentence = secondary ? ` Supporting anatomy includes ${secondary}.` : "";
 
-  // Mechanistic causality from Layer 2 — GPT-4o anchors well to explicit mechanism statements
+  // Mechanistic causality
   const mechanistic = adData ? extractMechanisticCausality(adData) : "";
-  const mechanisticSentence = mechanistic ? ` Scientific mechanism to depict: ${mechanistic}` : "";
+  const mechanisticSentence = mechanistic ? ` Depict the mechanism: ${mechanistic}` : "";
 
-  // Biological graph entities from Layer 4 — adds precision to key interaction rendering
-  const { interactions } = adData ? extractBiologicalEntities(adData) : { interactions: [] };
-  const bioGraphSentence = interactions.length > 0
-    ? ` Depict the following biological interactions: ${interactions.join("; ")}.`
-    : "";
+  // Style reinforcement — model-native rendering tokens
+  const styleFooter = ` Rendering style: ${reinforcement}.`;
 
-  // Remaining style tags as reinforcing instructions
-  const styleReinforce = styleTokens.length > 3
-    ? ` Additional style requirements: ${styleTokens.slice(3).join(", ")}.`
-    : "";
+  // Aspect ratio
+  const canvasDirective = ` Canvas: ${aspectRatio}.`;
 
-  // GPT-4o handles negatives best as explicit "do not include" instructions mid-prompt, not trailing
-  const negatives = ds.negative_prompt
-    ? ` Important constraints — do not include: ${ds.negative_prompt.replace(/^(negative constraints?:?\s*|avoid:?\s*)/i, "")}`
-    : " Important constraints — do not include: text labels, numeric annotations, photorealism, dramatic cinematic shadows, or background clutter.";
+  // DALL-E 3: NO negative prompts — reframe as positive "pure visual" directive
+  const purityDirective = " Pure visual anatomy — no text, no labels, no annotations, no arrows, no captions anywhere in the image.";
 
-  return `${styleDirective}${subjectSentence}${physioHook}${core}${spatial}${colors}${secondarySentence}${mechanisticSentence}${bioGraphSentence}${styleReinforce}${negatives}`.replace(/\s{2,}/g, " ").trim();
+  return `${styleDirective}${physioHook}${spatial}${core}${colors}${secondarySentence}${mechanisticSentence}${styleFooter}${canvasDirective}${purityDirective}`.replace(/\s{2,}/g, " ").trim();
 };
 
-// Builds an Imagen 4-native prose prompt — no bracket tags, style inline, negatives at end
+// Builds a Gemini ImageFX / Imagen 4-native prose prompt
+// Key rules for Gemini: (1) clean prose, no bracket tags, (2) style tokens inline as descriptors,
+// (3) negatives as trailing prose sentence, (4) opening sentence = scale + style + subject
 const buildImagenPrompt = (ds: any, subject: string, adData?: any): string => {
   const pw = ds.priority_weighting || {};
   const primary = (pw.primary_focus || []).join(", ");
   const secondary = (pw.secondary_context || []).join(", ");
   const styleTokens: string[] = ds.style_descriptors || [];
-  const journalStyle = styleTokens.slice(0, 3).join(", ") || "BioRender matte plasticine 2.5D style";
   const scale = inferScale(subject, pw.primary_focus || []);
+  const { opening, reinforcement } = resolveRenderStyle(styleTokens, scale);
+  const aspectRatio = inferAspectRatio(adData, scale);
 
-  // Opening: scale + style + subject + pathophysiology hook
+  // Opening: style + subject + pathophysiology hook in one sentence
   const physioHook = ds.pathophysiology_visual_summary
-    ? ` depicting ${ds.pathophysiology_visual_summary.replace(/\.$/, "")}`
+    ? `, showing ${ds.pathophysiology_visual_summary.replace(/\.$/, "")}`
     : "";
-  const opening = `A ${scale} ${journalStyle} medical illustration of ${primary || subject}${physioHook}.`;
+  const openingSentence = `${opening} of ${primary || subject}${physioHook}.`;
 
-  // Body: spatial narrative + color language integrated naturally
-  const spatial = ds.spatial_narrative ? ` ${ds.spatial_narrative}` : "";
-  const colors = Array.isArray(ds.color_language) && ds.color_language.length
-    ? ` Color palette: ${ds.color_language.map((c: any) => `${c.zone} rendered in ${c.color_descriptor}`).join("; ")}.`
-    : "";
+  // Spatial composition as next sentence — Gemini anchors composition from early prose
+  const spatial = ds.spatial_narrative ? ` ${ds.spatial_narrative}.` : "";
 
-  // Core description
-  const core = ds.master_prompt ? ` ${ds.master_prompt.trim()}` : "";
+  // Deduplicate master vs spatial before appending
+  const cleanMaster = deduplicateMasterAndSpatial(ds.master_prompt || "", ds.spatial_narrative || "");
+  const core = cleanMaster ? ` ${cleanMaster.trim()}` : "";
 
-  // Mechanistic causality from Layer 2 (medical_content) — adds scientific depth
+  // Mechanistic causality from Layer 2
   const mechanistic = adData ? extractMechanisticCausality(adData) : "";
   const mechanisticSentence = mechanistic ? ` ${mechanistic}` : "";
 
-  // Biological entities from Layer 4 (biological_graph) — enriches subject precision
+  // Biological graph interactions from Layer 4
   const { primaryEntities, interactions } = adData ? extractBiologicalEntities(adData) : { primaryEntities: [], interactions: [] };
   const bioGraphSentence = interactions.length > 0
-    ? ` Key biological interactions shown: ${interactions.join("; ")}.`
+    ? ` Biological interactions depicted: ${interactions.join("; ")}.`
     : primaryEntities.length > 0 && !primary.includes(primaryEntities[0])
-    ? ` Biological entities: ${primaryEntities.join(", ")}.`
+    ? ` Key entities: ${primaryEntities.join(", ")}.`
     : "";
 
-  // Secondary context as a supporting sentence
-  const secondarySentence = secondary ? ` Supporting anatomical context includes ${secondary}.` : "";
+  // Secondary context
+  const secondarySentence = secondary ? ` Supporting anatomical context: ${secondary}.` : "";
 
-  // Remaining style tags woven as a closing phrase
-  const styleClose = styleTokens.length > 3
-    ? ` Rendered with ${styleTokens.slice(3).join(", ")}.`
+  // Colors as prose descriptors — Gemini follows inline color descriptions naturally
+  const colors = Array.isArray(ds.color_language) && ds.color_language.length
+    ? ` Color palette: ${ds.color_language.map((c: any) => `${c.zone} in ${c.color_descriptor}`).join("; ")}.`
     : "";
 
-  // Negatives inline — Imagen 4 responds to these in prose, not as a separate block
-  const negatives = ds.negative_prompt
-    ? ` ${ds.negative_prompt.replace(/^negative constraints?:?\s*/i, "Avoid: ")}`
-    : " No text labels, no numeric annotations, no photorealism, no dramatic shadows, no background clutter.";
+  // Canvas aspect ratio
+  const canvasDirective = ` ${aspectRatio}.`;
 
-  return `${opening}${spatial}${core}${mechanisticSentence}${bioGraphSentence}${secondarySentence}${colors}${styleClose}${negatives}`.replace(/\s{2,}/g, " ").trim();
+  // Style reinforcement using model-native tokens
+  const styleFooter = ` ${reinforcement}.`;
+
+  // Negatives as trailing prose — Gemini ImageFX handles these well inline
+  const rawNeg = ds.negative_prompt
+    ? ds.negative_prompt.replace(/^(negative constraints?:?\s*|avoid:?\s*|no\s)/i, "").trim()
+    : "text, labels, arrows, annotations, numbers, photorealism, dramatic cinematic shadows, dark backgrounds";
+  const negatives = ` Do not include: ${rawNeg}.`;
+
+  return `${openingSentence}${spatial}${core}${mechanisticSentence}${bioGraphSentence}${secondarySentence}${colors}${canvasDirective}${styleFooter}${negatives}`.replace(/\s{2,}/g, " ").trim();
 };
 
 export const compileMedicalPrompt = (adData: any) => {
