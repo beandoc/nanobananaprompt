@@ -35,14 +35,21 @@ export class GenerationService {
           let firstDraft = result.response.text().trim();
           
           // --- SOVEREIGN RECURSIVE HARDENER ---
-          const lexicalDensity = (firstDraft.match(/texture|lighting|optics|refraction|scattering|detailed|anatomy|clinical|specular/gi) || []).length;
+          // Visual rendering density — covers optics, lighting, material science
+          const visualDensity = (firstDraft.match(/texture|lighting|optics|refraction|scattering|detailed|anatomy|clinical|specular|translucen|transmit|absorb|scatter|reflect|diffuse|volumetric|chromatic|luminan|irradianc/gi) || []).length;
+          // Scientific/mechanistic density — pathophysiology, cellular, molecular terminology
+          const scientificDensity = (firstDraft.match(/pathway|signaling|cascade|receptor|kinase|phosphorylat|cytokine|membrane|organelle|mitochondri|nucleu|chromatin|apoptosis|necrosis|fibrosis|inflammat|ischemi|infarct|perfusion|edema|exudate|lesion|plaque|stenosis|thrombos|embolism|necrotic|granuloma|abscess|effusion|atrophy|hypertrophy|metaplasia|dysplasia/gi) || []).length;
           const wordCount = firstDraft.split(/\s+/).length;
+          const totalDensity = visualDensity + scientificDensity;
 
-          if (wordCount < 120 || lexicalDensity < 4) {
-            console.log(`[Sovereign Hardener] Up-sampling thin prompt (Words: ${wordCount}, Density: ${lexicalDensity})...`);
+          if (wordCount < 120 || totalDensity < 5) {
+            console.log(`[Sovereign Hardener] Up-sampling thin prompt (Words: ${wordCount}, Visual: ${visualDensity}, Scientific: ${scientificDensity})...`);
+            const missingDimension = scientificDensity < 2
+              ? "mechanistic pathophysiology (causal cellular events, molecular markers, tissue-level consequences)"
+              : "visual rendering detail (subsurface scattering, fluid viscosity, clinical micro-textures, surface translucency)";
             const reworkResult = await model.generateContent([
                 systemPrompt,
-                { text: `EXISTING DRAFT: ${firstDraft}\n\nCRITICAL FEEDBACK: This draft is too thin. Increase prose density by 2x. Add highly specific detail about subsurface scattering, fluid visosity, and clinical micro-textures.` }
+                { text: `EXISTING DRAFT: ${firstDraft}\n\nCRITICAL FEEDBACK: This draft is too thin — specifically lacking ${missingDimension}. Increase prose density by 2x. Integrate both mechanistic scientific causality AND fine visual texture descriptions. Every structure should have: (1) what it IS anatomically, (2) what is HAPPENING to it pathologically, and (3) how it LOOKS visually.` }
             ]);
             refinedText = reworkResult.response.text().trim();
           } else {

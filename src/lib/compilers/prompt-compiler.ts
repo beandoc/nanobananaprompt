@@ -1,20 +1,71 @@
 // Infers anatomical scale from subject and primary focus terms for Imagen 4 opening sentence
 const inferScale = (subject: string, primaryFocus: string[]): string => {
   const all = `${subject} ${primaryFocus.join(" ")}`.toLowerCase();
-  if (/foot.process|podocyte|endosome|receptor|gpcr|membrane.channel|ribosome|mitochondri|vesicle/.test(all))
+  // Ultrastructural / electron microscopy — single proteins, organelles, membrane structures
+  if (/foot.process|podocyte|endosome|receptor|gpcr|membrane.channel|ribosome|mitochondri|vesicle|lysosome|nucleus|chromatin|exosome|pore.complex|actin|cytoskeleton|tight.junction|desmoso|integrin|caveola|clathrin|golgi/.test(all))
     return "electron microscopy-scale";
-  if (/glomerul|nephron|alveol|synapse|capillar|tubule|histolog|h&e|histopath/.test(all))
+  // Light microscopy — tissue sections, H&E, histopathology, nephron-level, alveolar, synaptic
+  if (/glomerul|nephron|alveol|synapse|capillar|tubule|histolog|h&e|histopath|stain|biopsy|section|acinus|islet|follicle|villus|crypt|arteriole|venule|lymphocyte|neutrophil|macrophage|fibroblast|hepatocyte|cardiomyocyte|neuron|axon|myelin/.test(all))
     return "light microscopy-scale";
-  if (/kidney|heart|lung|liver|brain|organ|cortex|medulla|lobe|ventricle|aorta/.test(all))
+  // Gross anatomy — organ-level, body systems, lobes, major vessels
+  if (/kidney|heart|lung|liver|brain|organ|cortex|medulla|lobe|ventricle|aorta|pancreas|spleen|colon|bowel|intestine|stomach|bladder|thyroid|adrenal|uterus|prostate|gallbladder|trachea|bronchus|pleura|peritoneum|mesentery|diaphragm|femur|tibia|humerus|spine|vertebra/.test(all))
     return "gross anatomy-scale";
-  if (/surgical|laparoscop|endoscop|operative|dissection|resection|incision/.test(all))
+  // Surgical field — operative context, retraction, instrument-visible anatomy
+  if (/surgical|laparoscop|endoscop|operative|dissection|resection|incision|retract|trocar|anastomosis|suture|clamp|staple|drain|cauteriz|debride|excis/.test(all))
     return "surgical field-scale";
+  // Molecular / structural biology — proteins, pathways, signaling cascades
+  if (/pathway|signaling|cascade|protein|kinase|phosphorylat|mutation|gene|dna|rna|transcription|translation|apoptosis|necrosis|autophagy|ubiquitin|proteasome|cytokine|interleukin|chemokine|toll.like|complement|antibody|antigen|mhc|tcr/.test(all))
+    return "molecular biology-scale";
   return "medical illustration-scale";
+};
+
+// Extracts mechanistic causality from the medical content layer (Layer 2)
+const extractMechanisticCausality = (adData: any): string => {
+  const mc = adData.medical_content || {};
+  const pathoCascade: string[] = mc.pathophysiology_cascade || mc.pathophysiology || [];
+  const cellularMarkers: string[] = mc.cellular_markers || mc.molecular_markers || [];
+  const mechanism: string = mc.mechanism || mc.primary_mechanism || "";
+
+  const parts: string[] = [];
+  if (mechanism) parts.push(`The pathophysiological mechanism is ${mechanism.toLowerCase()}`);
+  if (pathoCascade.length > 0) {
+    const cascade = pathoCascade.slice(0, 3).join(", leading to ").toLowerCase();
+    parts.push(`Causal sequence: ${cascade}`);
+  }
+  if (cellularMarkers.length > 0) {
+    parts.push(`Key molecular markers include ${cellularMarkers.slice(0, 4).join(", ")}`);
+  }
+  return parts.length > 0 ? parts.join(". ") + "." : "";
+};
+
+// Extracts biological entities from the biological graph (Layer 4) for richer subject description
+const extractBiologicalEntities = (adData: any): { primaryEntities: string[]; interactions: string[] } => {
+  const bg = adData.biological_graph || {};
+  const entities: any[] = bg.entities || bg.nodes || [];
+  const interactions: any[] = bg.interactions || bg.edges || [];
+
+  const primaryEntities = entities
+    .filter((e: any) => e.role === "primary" || e.priority === "high" || e.type === "anatomical_structure")
+    .map((e: any) => e.name || e.label || e.id)
+    .filter(Boolean)
+    .slice(0, 5);
+
+  const interactionLabels = interactions
+    .map((i: any) => {
+      const src = i.source || i.from || "";
+      const tgt = i.target || i.to || "";
+      const rel = i.relationship || i.type || i.label || "interacts with";
+      return src && tgt ? `${src} ${rel} ${tgt}` : "";
+    })
+    .filter(Boolean)
+    .slice(0, 3);
+
+  return { primaryEntities, interactions: interactionLabels };
 };
 
 // Builds a ChatGPT/GPT-4o-native prompt — style instruction first, conversational framing,
 // negatives integrated as constraints rather than a trailing block
-const buildChatGPTPrompt = (ds: any, subject: string): string => {
+const buildChatGPTPrompt = (ds: any, subject: string, adData?: any): string => {
   const pw = ds.priority_weighting || {};
   const primary = (pw.primary_focus || []).join(", ");
   const secondary = (pw.secondary_context || []).join(", ");
@@ -49,6 +100,16 @@ const buildChatGPTPrompt = (ds: any, subject: string): string => {
   // Secondary context
   const secondarySentence = secondary ? ` Include supporting anatomical context: ${secondary}.` : "";
 
+  // Mechanistic causality from Layer 2 — GPT-4o anchors well to explicit mechanism statements
+  const mechanistic = adData ? extractMechanisticCausality(adData) : "";
+  const mechanisticSentence = mechanistic ? ` Scientific mechanism to depict: ${mechanistic}` : "";
+
+  // Biological graph entities from Layer 4 — adds precision to key interaction rendering
+  const { interactions } = adData ? extractBiologicalEntities(adData) : { interactions: [] };
+  const bioGraphSentence = interactions.length > 0
+    ? ` Depict the following biological interactions: ${interactions.join("; ")}.`
+    : "";
+
   // Remaining style tags as reinforcing instructions
   const styleReinforce = styleTokens.length > 3
     ? ` Additional style requirements: ${styleTokens.slice(3).join(", ")}.`
@@ -59,11 +120,11 @@ const buildChatGPTPrompt = (ds: any, subject: string): string => {
     ? ` Important constraints — do not include: ${ds.negative_prompt.replace(/^(negative constraints?:?\s*|avoid:?\s*)/i, "")}`
     : " Important constraints — do not include: text labels, numeric annotations, photorealism, dramatic cinematic shadows, or background clutter.";
 
-  return `${styleDirective}${subjectSentence}${physioHook}${core}${spatial}${colors}${secondarySentence}${styleReinforce}${negatives}`.replace(/\s{2,}/g, " ").trim();
+  return `${styleDirective}${subjectSentence}${physioHook}${core}${spatial}${colors}${secondarySentence}${mechanisticSentence}${bioGraphSentence}${styleReinforce}${negatives}`.replace(/\s{2,}/g, " ").trim();
 };
 
 // Builds an Imagen 4-native prose prompt — no bracket tags, style inline, negatives at end
-const buildImagenPrompt = (ds: any, subject: string): string => {
+const buildImagenPrompt = (ds: any, subject: string, adData?: any): string => {
   const pw = ds.priority_weighting || {};
   const primary = (pw.primary_focus || []).join(", ");
   const secondary = (pw.secondary_context || []).join(", ");
@@ -86,6 +147,18 @@ const buildImagenPrompt = (ds: any, subject: string): string => {
   // Core description
   const core = ds.master_prompt ? ` ${ds.master_prompt.trim()}` : "";
 
+  // Mechanistic causality from Layer 2 (medical_content) — adds scientific depth
+  const mechanistic = adData ? extractMechanisticCausality(adData) : "";
+  const mechanisticSentence = mechanistic ? ` ${mechanistic}` : "";
+
+  // Biological entities from Layer 4 (biological_graph) — enriches subject precision
+  const { primaryEntities, interactions } = adData ? extractBiologicalEntities(adData) : { primaryEntities: [], interactions: [] };
+  const bioGraphSentence = interactions.length > 0
+    ? ` Key biological interactions shown: ${interactions.join("; ")}.`
+    : primaryEntities.length > 0 && !primary.includes(primaryEntities[0])
+    ? ` Biological entities: ${primaryEntities.join(", ")}.`
+    : "";
+
   // Secondary context as a supporting sentence
   const secondarySentence = secondary ? ` Supporting anatomical context includes ${secondary}.` : "";
 
@@ -99,7 +172,7 @@ const buildImagenPrompt = (ds: any, subject: string): string => {
     ? ` ${ds.negative_prompt.replace(/^negative constraints?:?\s*/i, "Avoid: ")}`
     : " No text labels, no numeric annotations, no photorealism, no dramatic shadows, no background clutter.";
 
-  return `${opening}${spatial}${core}${secondarySentence}${colors}${styleClose}${negatives}`.replace(/\s{2,}/g, " ").trim();
+  return `${opening}${spatial}${core}${mechanisticSentence}${bioGraphSentence}${secondarySentence}${colors}${styleClose}${negatives}`.replace(/\s{2,}/g, " ").trim();
 };
 
 export const compileMedicalPrompt = (adData: any) => {
@@ -134,10 +207,10 @@ export const compileMedicalPrompt = (adData: any) => {
     adData.diffusion_synthesis.compiled_prompt = compiledBlocks.join("\n\n");
 
     // 3. Imagen 4 / Gemini Web prose prompt — paste this directly into Gemini web
-    adData.diffusion_synthesis.imagen_prompt = buildImagenPrompt(ds, subject);
+    adData.diffusion_synthesis.imagen_prompt = buildImagenPrompt(ds, subject, adData);
 
     // 4. ChatGPT / GPT-4o prose prompt — style-first, conversational framing, mid-prompt negatives
-    adData.diffusion_synthesis.chatgpt_prompt = buildChatGPTPrompt(ds, subject);
+    adData.diffusion_synthesis.chatgpt_prompt = buildChatGPTPrompt(ds, subject, adData);
   }
 };
 

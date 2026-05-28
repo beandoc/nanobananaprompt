@@ -46,14 +46,20 @@ export const agentConfigs: Record<string, any> = {
     jsonRole: "Director of Dynamic Clinical Physics",
     jsonInstructions: (style: string) => {
       const styleLock = style.toLowerCase().includes("nejm") || style.toLowerCase().includes("journal") || style.toLowerCase().includes("scholarly") ? "SCHOLARLY_NEJM" : "BIORENDER_MODERN";
-      return `### SOVEREIGN v33.0 MEDICAL ILLUSTRATION PROTOCOL
+      return `### SOVEREIGN v34.0 MEDICAL ILLUSTRATION PROTOCOL
 1. HERO LAYER: You MUST populate 'diffusion_synthesis' FIRST. It is the absolute authority for rendering.
 2. SPATIAL MAPPING: Use ONLY natural language for positioning. NO coordinates. Use terms like 'superior to', 'lateral to', 'floating within'.
 3. IDENTITY: Mandate South Asian (Indian) descent in diffusion_synthesis.
 4. ARCHITECTURE: Choose the layout (Unified vs Multi-panel) based ONLY on the brief. No hardcoded 3-section bias.
 5. SCALE-LOCK: Enforce single-scale consistency unless a zoom-inset is explicitly requested.
 6. GEOMETRIC FIDELITY: Use anatomically correct primitives described in words.
-7. SENSORY RICHNESS: Maintain 250-300 word density in 'diffusion_synthesis.master_prompt'. 100% descriptive migration required.`;
+7. SENSORY RICHNESS: Maintain 250-300 word density in 'diffusion_synthesis.master_prompt'. 100% descriptive migration required.
+8. SCIENTIFIC CAUSALITY (NEW — CRITICAL): 'master_prompt' MUST contain three scientific strata:
+   a) WHAT: The anatomical subject and its normal structure (e.g., "the glomerular basement membrane, normally a trilaminar structure").
+   b) MECHANISM: The pathophysiological process at play (e.g., "advanced glycation end-products cross-link type IV collagen, expanding the mesangial matrix").
+   c) VISUAL CONSEQUENCE: How the mechanism manifests visually (e.g., "rendered as irregular thickening of the membrane, pale grey and homogeneous, devoid of its normal laminated architecture").
+9. MEDICAL_CONTENT FIDELITY: Populate 'medical_content.pathophysiology_cascade' as an ordered causal chain (minimum 3 steps). Populate 'medical_content.cellular_markers' with at least 3 specific proteins or cell types relevant to the disease.
+10. BIOLOGICAL_GRAPH PRECISION: Populate 'biological_graph.entities' with typed entries (type: 'cell', 'protein', 'tissue', 'organ'). Each interaction MUST specify relationship type (e.g., 'activates', 'inhibits', 'secretes', 'damages', 'infiltrates').`;
     },
     subjectPath: "metadata.subject",
     stylePath: "metadata.journal_standard",
