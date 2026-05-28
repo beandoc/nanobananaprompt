@@ -4,15 +4,18 @@ const inferScale = (subject: string, primaryFocus: string[]): string => {
   // Ultrastructural / electron microscopy — single proteins, organelles, membrane structures
   if (/foot.process|podocyte|endosome|receptor|gpcr|membrane.channel|ribosome|mitochondri|vesicle|lysosome|nucleus|chromatin|exosome|pore.complex|actin|cytoskeleton|tight.junction|desmoso|integrin|caveola|clathrin|golgi/.test(all))
     return "electron microscopy-scale";
-  // Light microscopy — tissue sections, H&E, histopathology, nephron-level, alveolar, synaptic
-  if (/glomerul|nephron|alveol|synapse|capillar|tubule|histolog|h&e|histopath|stain|biopsy|section|acinus|islet|follicle|villus|crypt|arteriole|venule|lymphocyte|neutrophil|macrophage|fibroblast|hepatocyte|cardiomyocyte|neuron|axon|myelin/.test(all))
-    return "light microscopy-scale";
-  // Gross anatomy — organ-level, body systems, lobes, major vessels
-  if (/kidney|heart|lung|liver|brain|organ|cortex|medulla|lobe|ventricle|aorta|pancreas|spleen|colon|bowel|intestine|stomach|bladder|thyroid|adrenal|uterus|prostate|gallbladder|trachea|bronchus|pleura|peritoneum|mesentery|diaphragm|femur|tibia|humerus|spine|vertebra/.test(all))
-    return "gross anatomy-scale";
-  // Surgical field — operative context, retraction, instrument-visible anatomy
-  if (/surgical|laparoscop|endoscop|operative|dissection|resection|incision|retract|trocar|anastomosis|suture|clamp|staple|drain|cauteriz|debride|excis/.test(all))
+  // Surgical field checked BEFORE light microscopy — operative terms are unambiguous
+  // and words like "dissection" contain "section" which would otherwise false-positive into LM scale
+  if (/surgical|laparoscop|endoscop|operative|cholecystectom|appendectom|trocar|retract|cauteriz|debride|anastomosis|suture|clamp|staple|\bdissection\b|\bresection\b|\bincision\b|\bexcision\b/.test(all))
     return "surgical field-scale";
+  // Gross anatomy checked BEFORE light microscopy — cardiac infarct, gross pathology, organ cross-sections
+  // "cardiomyocyte" is a histology term but a cardiac gross subject (infarct, STEMI, ventricle) is gross anatomy
+  if (/\binfarct\b|infarction|stemi|nstemi|gross.path|4.chamber|cross.section.*heart|heart.*cross.section|ventricle|aorta|myocardium|kidney|lung|liver|brain|organ.*cross|cortex|medulla|lobe|pancreas|spleen|colon|bowel|intestine|gallbladder|trachea|bronchus|pleura|peritoneum|mesentery|diaphragm|femur|spine/.test(all))
+    return "gross anatomy-scale";
+  // Light microscopy — tissue sections, H&E, histopathology, nephron-level, alveolar, synaptic
+  // Use \bsection\b to avoid matching "dissection"
+  if (/glomerul|nephron|alveol|synapse|capillar|tubule|histolog|h&e|histopath|stain|biopsy|\bsection\b|acinus|islet|follicle|villus|crypt|arteriole|venule|lymphocyte|neutrophil|macrophage|fibroblast|hepatocyte|cardiomyocyte|neuron|axon|myelin/.test(all))
+    return "light microscopy-scale";
   // Molecular / structural biology — proteins, pathways, signaling cascades
   if (/pathway|signaling|cascade|protein|kinase|phosphorylat|mutation|gene|dna|rna|transcription|translation|apoptosis|necrosis|autophagy|ubiquitin|proteasome|cytokine|interleukin|chemokine|toll.like|complement|antibody|antigen|mhc|tcr/.test(all))
     return "molecular biology-scale";
@@ -55,7 +58,24 @@ const extractBiologicalEntities = (adData: any): { primaryEntities: string[]; in
       const src = i.source || i.from || "";
       const tgt = i.target || i.to || "";
       const rel = i.relationship || i.type || i.label || "interacts with";
-      return src && tgt ? `${src} ${rel} ${tgt}` : "";
+      if (!src || !tgt) return "";
+      const relLower = rel.toLowerCase();
+      const tgtLower = tgt.toLowerCase();
+      // If target is already mentioned inside the relationship phrase, don't append it
+      const targetAlreadyInRel = tgtLower.split(" ").some(w => w.length > 4 && relLower.includes(w));
+      if (targetAlreadyInRel) return `${src} ${rel}`;
+      // Detect "verb to/into/through location" patterns — insert target before the preposition
+      // e.g. "recruits to border zone" + "Neutrophils" → "recruits Neutrophils to border zone"
+      const prepMatch = rel.match(/^(\w+)\s+(to|into|through|from|toward|onto|across)\s+(.+)$/i);
+      if (prepMatch) {
+        return `${src} ${prepMatch[1]} ${tgt} ${prepMatch[2]} ${prepMatch[3]}`;
+      }
+      // Detect "verb noun" patterns (relationship ends with a noun, not a preposition) — insert "in/of" before target
+      // e.g. "causes ischemic necrosis" + "Anterior LV myocardium" → "causes ischemic necrosis in Anterior LV myocardium"
+      const endsWithNoun = /\b(necrosis|fibrosis|expansion|compression|hypertrophy|atrophy|inflammation|damage|injury|activation|suppression|dysfunction)\s*$/i.test(rel);
+      if (endsWithNoun) return `${src} ${rel} in ${tgt}`;
+      // Default: "source relationship target"
+      return `${src} ${rel} ${tgt}`;
     })
     .filter(Boolean)
     .slice(0, 3);
@@ -129,8 +149,11 @@ const inferAspectRatio = (adData: any, scale: string): string => {
   const panels = adData?.spatial_layout?.panels || [];
   if (panels.length >= 3) return "wide landscape format (16:9 aspect ratio)";
   if (panels.length === 2) return "landscape format (4:3 aspect ratio)";
+  // Surgical fields and gross anatomy are always widescreen — endoscopes output 16:9
+  if (scale.includes("surgical")) return "wide landscape format (16:9 aspect ratio)";
+  if (scale.includes("gross anatomy")) return "landscape format (4:3 aspect ratio)";
   if (scale.includes("electron") || scale.includes("light microscopy")) return "square format (1:1 aspect ratio)";
-  return "portrait or square format (3:4 or 1:1 aspect ratio)";
+  return "landscape format (4:3 aspect ratio)";
 };
 
 // Deduplicates semantic overlap between master_prompt and spatial_narrative
@@ -161,7 +184,9 @@ const buildChatGPTPrompt = (ds: any, subject: string, adData?: any): string => {
   const aspectRatio = inferAspectRatio(adData, scale);
 
   // DALL-E 3: style imperative as the very first clause
-  const styleDirective = `${opening} of ${primary || subject}.`;
+  // Use metadata subject (natural description) as preferred opener; fall back to primary_focus list
+  const subjectPhrase = subject || primary;
+  const styleDirective = `${opening} of ${subjectPhrase}.`;
 
   // Pathophysiology as positive visual directive (DALL-E 3 ignores "do not" — state what TO show)
   const physioHook = ds.pathophysiology_visual_summary
@@ -172,8 +197,10 @@ const buildChatGPTPrompt = (ds: any, subject: string, adData?: any): string => {
   const cleanMaster = deduplicateMasterAndSpatial(ds.master_prompt || "", ds.spatial_narrative || "");
 
   // Spatial composition — DALL-E 3 follows explicit layout well
-  const spatial = ds.spatial_narrative
-    ? ` Layout: ${ds.spatial_narrative}`
+  // Strip trailing period before adding to avoid ".." double-period artifact
+  const spatialCleanChatGPT = ds.spatial_narrative ? ds.spatial_narrative.replace(/\.+$/, "") : "";
+  const spatial = spatialCleanChatGPT
+    ? ` Layout: ${spatialCleanChatGPT}.`
     : "";
 
   // Core anatomical description (deduplicated)
@@ -216,13 +243,17 @@ const buildImagenPrompt = (ds: any, subject: string, adData?: any): string => {
   const aspectRatio = inferAspectRatio(adData, scale);
 
   // Opening: style + subject + pathophysiology hook in one sentence
+  // Use metadata subject (natural description) as preferred opener; fall back to primary_focus list
+  const subjectPhrase = subject || primary;
   const physioHook = ds.pathophysiology_visual_summary
     ? `, showing ${ds.pathophysiology_visual_summary.replace(/\.$/, "")}`
     : "";
-  const openingSentence = `${opening} of ${primary || subject}${physioHook}.`;
+  const openingSentence = `${opening} of ${subjectPhrase}${physioHook}.`;
 
   // Spatial composition as next sentence — Gemini anchors composition from early prose
-  const spatial = ds.spatial_narrative ? ` ${ds.spatial_narrative}.` : "";
+  // Strip trailing period from spatial_narrative before appending to avoid ".." double-period artifact
+  const spatialClean = ds.spatial_narrative ? ds.spatial_narrative.replace(/\.+$/, "") : "";
+  const spatial = spatialClean ? ` ${spatialClean}.` : "";
 
   // Deduplicate master vs spatial before appending
   const cleanMaster = deduplicateMasterAndSpatial(ds.master_prompt || "", ds.spatial_narrative || "");
