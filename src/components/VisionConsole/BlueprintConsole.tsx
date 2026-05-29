@@ -35,7 +35,7 @@ export function BlueprintConsole({
 }: BlueprintConsoleProps) {
     const isVideo = mode === 'video';
     const [copiedEngine, setCopiedEngine] = useState<string | null>(null);
-    const [viewMode, setViewMode] = useState<'prose' | 'json'>(isVideo ? 'prose' : 'json');
+    const [viewMode, setViewMode] = useState<'prose' | 'json'>('prose');
     const videoData = data as any;
 
     const copyEnginePrompt = (engine: VideoEngine) => {
@@ -229,30 +229,76 @@ export function BlueprintConsole({
             </div>
 
             {/* CONSOLE DISPLAY */}
-            <div className="bg-slate-900 rounded-2xl md:rounded-[2rem] p-5 md:p-8 border border-white/5 max-h-[300px] overflow-auto mb-6 md:mb-8 shadow-2xl relative group/code">
-                {viewMode === 'json' ? (
+            {viewMode === 'json' ? (
+                <div className="bg-slate-900 rounded-2xl md:rounded-[2rem] p-5 md:p-8 border border-white/5 max-h-[300px] overflow-auto mb-6 md:mb-8 shadow-2xl relative">
                     <pre className="text-[10px] md:text-[11px] text-indigo-300 font-mono leading-relaxed whitespace-pre-wrap">
                         {JSON.stringify(data, null, 2)}
                     </pre>
-                ) : (
-                    <div className="space-y-4">
-                        <p className="text-[11px] md:text-xs text-slate-300 font-medium leading-relaxed italic border-l-2 border-indigo-500/30 pl-4 py-2 bg-white/5 rounded-r-xl">
-                            {isVideo 
-                                ? (videoData?.diffusion_synthesis?.engine_prompts?.veo || videoData?.compiled_master_prompt || "Generating masterclass prose...")
-                                : (expansionText || (data as any)?.diffusion_synthesis?.compiled_prompt || (data as any)?.prompt || "Generating refined text...")
-                            }
-                        </p>
-                        <div className="pt-4 border-t border-white/5">
-                            <span className="text-[8px] font-black text-slate-500 uppercase tracking-[0.2em]">Engine Signal Density: High</span>
+                    <div className="absolute top-4 right-4 items-center gap-2 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 hidden sm:flex">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest">Raw JSON</span>
+                    </div>
+                </div>
+            ) : isVideo ? (
+                <div className="bg-slate-900 rounded-2xl md:rounded-[2rem] p-5 md:p-8 border border-white/5 max-h-[300px] overflow-auto mb-6 md:mb-8 shadow-2xl relative">
+                    <p className="text-[11px] md:text-xs text-slate-300 font-medium leading-relaxed italic border-l-2 border-rose-500/30 pl-4 py-2 bg-white/5 rounded-r-xl">
+                        {videoData?.diffusion_synthesis?.engine_prompts?.veo || videoData?.compiled_master_prompt || "Generating masterclass prose..."}
+                    </p>
+                </div>
+            ) : (
+                /* Medical / non-video: show Gemini and ChatGPT prompts as primary output */
+                <div className="space-y-4 mb-6 md:mb-8">
+                    {/* Gemini Prompt */}
+                    <div className="rounded-2xl border border-indigo-200/60 overflow-hidden shadow-sm">
+                        <div className="flex items-center justify-between px-4 py-2.5 bg-indigo-50 border-b border-indigo-100">
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                                <span className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em]">Gemini Prompt — paste into Gemini ImageFX / Imagen</span>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    const p = (data as any)?.diffusion_synthesis?.imagen_prompt || (data as any)?.diffusion_synthesis?.master_prompt || "";
+                                    navigator.clipboard.writeText(p);
+                                    window.open("https://gemini.google.com/app", "_blank");
+                                }}
+                                className="text-[9px] font-black text-indigo-600 hover:text-indigo-800 uppercase tracking-widest bg-indigo-100 hover:bg-indigo-200 px-3 py-1 rounded-lg transition-all"
+                            >
+                                Copy + Open Gemini ↗
+                            </button>
+                        </div>
+                        <div className="bg-slate-900 p-5 max-h-[220px] overflow-auto">
+                            <p className="text-[11px] md:text-xs text-indigo-200 font-mono leading-relaxed whitespace-pre-wrap">
+                                {(data as any)?.diffusion_synthesis?.imagen_prompt || "Generating Gemini prompt..."}
+                            </p>
                         </div>
                     </div>
-                )}
-                
-                <div className="absolute top-4 right-4 items-center gap-2 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 hidden sm:flex">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest">Validated</span>
+
+                    {/* ChatGPT Prompt */}
+                    <div className="rounded-2xl border border-emerald-200/60 overflow-hidden shadow-sm">
+                        <div className="flex items-center justify-between px-4 py-2.5 bg-emerald-50 border-b border-emerald-100">
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-emerald-600" />
+                                <span className="text-[9px] font-black text-emerald-700 uppercase tracking-[0.2em]">ChatGPT Prompt — paste into ChatGPT image generation</span>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    const p = (data as any)?.diffusion_synthesis?.chatgpt_prompt || (data as any)?.diffusion_synthesis?.imagen_prompt || "";
+                                    navigator.clipboard.writeText(p);
+                                    window.open("https://chatgpt.com", "_blank");
+                                }}
+                                className="text-[9px] font-black text-emerald-700 hover:text-emerald-900 uppercase tracking-widest bg-emerald-100 hover:bg-emerald-200 px-3 py-1 rounded-lg transition-all"
+                            >
+                                Copy + Open ChatGPT ↗
+                            </button>
+                        </div>
+                        <div className="bg-slate-900 p-5 max-h-[220px] overflow-auto">
+                            <p className="text-[11px] md:text-xs text-emerald-200 font-mono leading-relaxed whitespace-pre-wrap">
+                                {(data as any)?.diffusion_synthesis?.chatgpt_prompt || "Generating ChatGPT prompt..."}
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            )}
 
             <div className="p-5 md:p-8 bg-slate-50/80 rounded-2xl md:rounded-[2rem] border border-slate-200 relative">
                 <div className="flex items-center justify-between mb-4 md:mb-6">
