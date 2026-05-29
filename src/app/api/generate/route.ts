@@ -49,12 +49,15 @@ export async function POST(req: NextRequest) {
     // (b) inject organ context directly into the JSON system instruction
     // This keeps us well under Vercel Hobby's 10s limit for these complex cases.
     const ORGAN_PATTERNS_EARLY: { label: string; pattern: RegExp }[] = [
-      { label: "lung/pulmonary", pattern: /\b(lung|pulmonar|alveol|bronch|hemoptysis|diffuse.alveolar|pneum)\b/i },
-      { label: "kidney/renal", pattern: /\b(kidney|renal|glomerul|nephron|crescent|glomerulonephritis|nephrotic|nephritic)\b/i },
-      { label: "heart/cardiac", pattern: /\b(heart|cardiac|coronar|myocard|pericardi|ventricle|atrium)\b/i },
-      { label: "skin/dermal", pattern: /\b(skin|derm|rash|purpura|vasculitis.*skin)\b/i },
-      { label: "joints/synovial", pattern: /\b(joint|arthritis|synovit)\b/i },
-      { label: "brain/CNS", pattern: /\b(brain|cerebr|encephalit|neurolog|cns)\b/i },
+      // Hematology first — schistocytes, peripheral smear findings get their own panel
+      { label: "hematology/blood smear", pattern: /\b(schistocyte|schistocyt|peripheral.blood.smear|blood.smear|hemolytic.anemia|microangiopathic|blast|red.cell.fragment|helmet.cell|bone.marrow)\b/i },
+      { label: "lung/pulmonary",          pattern: /\b(lung|pulmonar|alveol|bronch|hemoptysis|diffuse.alveolar|pneum)\b/i },
+      { label: "kidney/renal",            pattern: /\b(kidney|renal|glomerul|nephron|crescent|glomerulonephritis|nephrotic|nephritic)\b/i },
+      { label: "heart/cardiac",           pattern: /\b(heart|cardiac|coronar|myocard|pericardi|ventricle|atrium)\b/i },
+      // Skin fires ONLY on histological skin terms — NOT on purpura/petechiae (clinical signs)
+      { label: "skin/dermal",             pattern: /\b(epiderm|dermis|keratinocyte|melanocyte|skin.biopsy|basal.cell.carcinoma)\b/i },
+      { label: "joints/synovial",         pattern: /\b(joint|arthritis|synovit)\b/i },
+      { label: "brain/CNS",               pattern: /\b(brain|cerebr|cerebral.microvessel|cerebral.arteriole|encephalit|meningi|cns)\b/i },
     ];
     const earlyOrgans = ORGAN_PATTERNS_EARLY.filter(o => o.pattern.test(brief)).map(o => o.label);
     const isMultiOrganFastPath = mode === "medical" && earlyOrgans.length >= 2;
@@ -97,12 +100,15 @@ ${config.expansionRules.join("\n")}
         // Multi-organ / multi-system syndromic detection
         // Catches: pulmonary-renal syndrome, Goodpasture's, ANCA vasculitis, SLE, etc.
         const ORGAN_PATTERNS: { label: string; pattern: RegExp }[] = [
+          // Hematology first — peripheral smear findings must not bleed into tissue panels
+          { label: "hematology/blood smear (schistocytes, peripheral smear)", pattern: /\b(schistocyte|schistocyt|peripheral.blood.smear|blood.smear|hemolytic.anemia|microangiopathic|red.cell.fragment|helmet.cell|bone.marrow)\b/i },
           { label: "lung/pulmonary (alveolar hemorrhage, pneumonitis, etc.)", pattern: /\b(lung|pulmonar|alveol|bronch|hemoptysis|alveolar.hemorrhage|diffuse.alveolar|pneum)\b/i },
           { label: "kidney/renal (glomerulonephritis, crescentic nephritis, etc.)", pattern: /\b(kidney|renal|glomerul|nephron|crescent|glomerulonephritis|nephrotic|nephritic)\b/i },
           { label: "heart/cardiac", pattern: /\b(heart|cardiac|coronar|myocard|pericardi|endocardi|ventricle|atrium)\b/i },
-          { label: "skin (vasculitic rash, purpura)", pattern: /\b(skin|derm|rash|purpura|vasculitis.*skin)\b/i },
+          // Skin: histological structures ONLY — purpura/petechiae are clinical signs, not organs
+          { label: "skin (epidermis, dermis — histological findings)", pattern: /\b(epiderm|dermis|keratinocyte|melanocyte|skin.biopsy|basal.cell.carcinoma)\b/i },
           { label: "joints (arthritis)", pattern: /\b(joint|arthritis|synovit)\b/i },
-          { label: "brain/CNS", pattern: /\b(brain|cerebr|encephalit|neurolog|cns)\b/i },
+          { label: "brain/CNS (cerebral microvessels, cortical pathology)", pattern: /\b(brain|cerebr|cerebral.microvessel|cerebral.arteriole|encephalit|meningi|cns)\b/i },
         ];
         const affectedOrgans = ORGAN_PATTERNS.filter(o => o.pattern.test(brief)).map(o => o.label);
         const isMultiOrgan = affectedOrgans.length >= 2;

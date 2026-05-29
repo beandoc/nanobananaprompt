@@ -1,49 +1,52 @@
-// Detects multi-organ / multi-system cases (e.g. pulmonary + renal, lung + kidney)
-// Returns array of organ labels involved, or empty array for single-organ cases
+// ─── ORGAN DETECTION ────────────────────────────────────────────────────────
+//
+// Rules:
+// 1. Clinical signs (purpura, petechiae, ecchymoses, rash) are SYMPTOMS, not
+//    histological organs — they must NOT fire the skin/dermal organ panel.
+//    Skin only fires on explicit histological skin structure terms.
+// 2. Blood/hematology is a distinct specimen type (peripheral smear, bone marrow)
+//    and gets its own panel when schistocytes, blasts, or smear findings appear.
+// 3. Brain/CNS fires on microvessel, cerebral, or CNS terms — not on generic
+//    "neurological symptoms" which are clinical, not histological.
+
 const detectMultiOrganCase = (subject: string, primaryFocus: string[], brief?: string): string[] => {
   const all = `${subject} ${primaryFocus.join(" ")} ${brief || ""}`.toLowerCase();
   const organs: { label: string; pattern: RegExp }[] = [
-    { label: "lung/pulmonary", pattern: /\b(lung|pulmonar|alveol|bronch|pleura|pneumo|hemoptysis|alveolar.hemorrhage|diffuse.alveolar)\b/ },
-    { label: "kidney/renal", pattern: /\b(kidney|renal|glomerul|nephron|tubul|crescent|glomerulonephritis|nephrotic|nephritic)\b/ },
-    { label: "heart/cardiac", pattern: /\b(heart|cardiac|coronar|myocard|pericardi|endocardi|ventricle|atrium|aorta)\b/ },
-    { label: "liver/hepatic", pattern: /\b(liver|hepat|cirrhosis|fibrosis.*liver|portal.hypertension)\b/ },
-    { label: "skin/dermal", pattern: /\b(skin|derm|epiderm|rash|vasculitis.*skin|purpura)\b/ },
-    { label: "brain/neurological", pattern: /\b(brain|neuron|cerebr|encephalit|meningi|spinal)\b/ },
-    { label: "joint/synovial", pattern: /\b(joint|synovi|cartilage|arthritis|articular)\b/ },
+    // Hematology — peripheral blood smear / bone marrow: must be detected FIRST
+    // so schistocytes, blasts etc. get their own panel, not dumped into kidney/brain
+    { label: "hematology/blood smear", pattern: /\b(schistocyte|schistocyt|peripheral.blood.smear|blood.smear|hemolytic.anemia|microangiopathic|blast|red.cell.fragment|helmet.cell|bone.marrow|erythrocyte.fragment|rouleaux|anisocytosis|poikilocytosis)\b/ },
+    { label: "lung/pulmonary",          pattern: /\b(lung|pulmonar|alveol|bronch|pleura|pneumo|hemoptysis|alveolar.hemorrhage|diffuse.alveolar)\b/ },
+    { label: "kidney/renal",            pattern: /\b(kidney|renal|glomerul|nephron|tubul|crescent|glomerulonephritis|nephrotic|nephritic|arteriole.*renal|renal.*arteriole)\b/ },
+    { label: "heart/cardiac",           pattern: /\b(heart|cardiac|coronar|myocard|pericardi|endocardi|ventricle|atrium|aorta)\b/ },
+    { label: "liver/hepatic",           pattern: /\b(liver|hepat|cirrhosis|fibrosis.*liver|portal.hypertension)\b/ },
+    // Skin fires ONLY on histological skin structures — NOT clinical signs like purpura/petechiae
+    { label: "skin/dermal",             pattern: /\b(epiderm|dermis|dermo|keratinocyte|melanocyte|squamous.*skin|basal.cell|skin.biopsy)\b/ },
+    { label: "brain/neurological",      pattern: /\b(brain|cerebr|cerebral.microvessel|cerebral.arteriole|encephalit|meningi|spinal|cortical.microvessel|cns.microvessel)\b/ },
+    { label: "joint/synovial",          pattern: /\b(joint|synovi|cartilage|arthritis|articular)\b/ },
   ];
   return organs.filter(o => o.pattern.test(all)).map(o => o.label);
 };
 
-// Infers anatomical scale from subject and primary focus terms for Imagen 4 opening sentence
+// ─── SCALE INFERENCE ────────────────────────────────────────────────────────
 const inferScale = (subject: string, primaryFocus: string[], brief?: string): string => {
   const all = `${subject} ${primaryFocus.join(" ")} ${brief || ""}`.toLowerCase();
-
-  // Multi-organ systemic disease → composite light microscopy scale (n-panel)
   const organs = detectMultiOrganCase(subject, primaryFocus, brief);
   if (organs.length >= 2) return `composite-${organs.length} light microscopy-scale`;
 
-  // Ultrastructural / electron microscopy — single proteins, organelles, membrane structures
   if (/foot.process|podocyte|endosome|receptor|gpcr|membrane.channel|ribosome|mitochondri|vesicle|lysosome|nucleus|chromatin|exosome|pore.complex|actin|cytoskeleton|tight.junction|desmoso|integrin|caveola|clathrin|golgi/.test(all))
     return "electron microscopy-scale";
-  // Surgical field checked BEFORE light microscopy — operative terms are unambiguous
-  // and words like "dissection" contain "section" which would otherwise false-positive into LM scale
   if (/surgical|laparoscop|endoscop|operative|cholecystectom|appendectom|trocar|retract|cauteriz|debride|anastomosis|suture|clamp|staple|\bdissection\b|\bresection\b|\bincision\b|\bexcision\b/.test(all))
     return "surgical field-scale";
-  // Gross anatomy checked BEFORE light microscopy — cardiac infarct, gross pathology, organ cross-sections
-  // "cardiomyocyte" is a histology term but a cardiac gross subject (infarct, STEMI, ventricle) is gross anatomy
   if (/\binfarct\b|infarction|stemi|nstemi|gross.path|4.chamber|cross.section.*heart|heart.*cross.section|ventricle|aorta|myocardium|kidney|lung|liver|brain|organ.*cross|cortex|medulla|lobe|pancreas|spleen|colon|bowel|intestine|gallbladder|trachea|bronchus|pleura|peritoneum|mesentery|diaphragm|femur|spine/.test(all))
     return "gross anatomy-scale";
-  // Light microscopy — tissue sections, H&E, histopathology, nephron-level, alveolar, synaptic
-  // Use \bsection\b to avoid matching "dissection"
   if (/glomerul|nephron|alveol|synapse|capillar|tubule|histolog|h&e|histopath|stain|biopsy|\bsection\b|acinus|islet|follicle|villus|crypt|arteriole|venule|lymphocyte|neutrophil|macrophage|fibroblast|hepatocyte|cardiomyocyte|neuron|axon|myelin/.test(all))
     return "light microscopy-scale";
-  // Molecular / structural biology — proteins, pathways, signaling cascades
   if (/pathway|signaling|cascade|protein|kinase|phosphorylat|mutation|gene|dna|rna|transcription|translation|apoptosis|necrosis|autophagy|ubiquitin|proteasome|cytokine|interleukin|chemokine|toll.like|complement|antibody|antigen|mhc|tcr/.test(all))
     return "molecular biology-scale";
   return "medical illustration-scale";
 };
 
-// Extracts mechanistic causality from the medical content layer (Layer 2)
+// ─── MECHANISTIC CAUSALITY ──────────────────────────────────────────────────
 const extractMechanisticCausality = (adData: any): string => {
   const mc = adData.medical_content || {};
   const pathoCascade: string[] = mc.pathophysiology_cascade || mc.pathophysiology || [];
@@ -62,7 +65,7 @@ const extractMechanisticCausality = (adData: any): string => {
   return parts.length > 0 ? parts.join(". ") + "." : "";
 };
 
-// Extracts biological entities from the biological graph (Layer 4) for richer subject description
+// ─── BIOLOGICAL ENTITY EXTRACTION ──────────────────────────────────────────
 const extractBiologicalEntities = (adData: any): { primaryEntities: string[]; interactions: string[] } => {
   const bg = adData.biological_graph || {};
   const entities: any[] = bg.entities || bg.nodes || [];
@@ -82,20 +85,12 @@ const extractBiologicalEntities = (adData: any): { primaryEntities: string[]; in
       if (!src || !tgt) return "";
       const relLower = rel.toLowerCase();
       const tgtLower = tgt.toLowerCase();
-      // If target is already mentioned inside the relationship phrase, don't append it
       const targetAlreadyInRel = tgtLower.split(" ").some((w: string) => w.length > 4 && relLower.includes(w));
       if (targetAlreadyInRel) return `${src} ${rel}`;
-      // Detect "verb to/into/through location" patterns — insert target before the preposition
-      // e.g. "recruits to border zone" + "Neutrophils" → "recruits Neutrophils to border zone"
       const prepMatch = rel.match(/^(\w+)\s+(to|into|through|from|toward|onto|across)\s+(.+)$/i);
-      if (prepMatch) {
-        return `${src} ${prepMatch[1]} ${tgt} ${prepMatch[2]} ${prepMatch[3]}`;
-      }
-      // Detect "verb noun" patterns (relationship ends with a noun, not a preposition) — insert "in/of" before target
-      // e.g. "causes ischemic necrosis" + "Anterior LV myocardium" → "causes ischemic necrosis in Anterior LV myocardium"
+      if (prepMatch) return `${src} ${prepMatch[1]} ${tgt} ${prepMatch[2]} ${prepMatch[3]}`;
       const endsWithNoun = /\b(necrosis|fibrosis|expansion|compression|hypertrophy|atrophy|inflammation|damage|injury|activation|suppression|dysfunction)\s*$/i.test(rel);
       if (endsWithNoun) return `${src} ${rel} in ${tgt}`;
-      // Default: "source relationship target"
       return `${src} ${rel} ${tgt}`;
     })
     .filter(Boolean)
@@ -104,12 +99,220 @@ const extractBiologicalEntities = (adData: any): { primaryEntities: string[]; in
   return { primaryEntities, interactions: interactionLabels };
 };
 
-// Maps journal standard to model-native rendering style tokens that DALL-E 3 / GPT-4o understand
+// ─── UNIFYING MECHANISM RESOLVER ────────────────────────────────────────────
+//
+// Extracts the disease-specific unifying mechanism from the JSON output.
+// Falls back gracefully — NEVER uses the old generic "immune-mediated systemic vasculitis"
+// which is medically wrong for most systemic diseases (TTP, Goodpasture, SLE, ANCA, etc.)
+
+const resolveUnifyingMechanism = (adData: any, brief?: string): string => {
+  const mc = adData?.medical_content || {};
+
+  // Priority 1: explicit mechanism field from JSON
+  if (mc.mechanism && mc.mechanism.length > 10) return mc.mechanism;
+  if (mc.primary_mechanism && mc.primary_mechanism.length > 10) return mc.primary_mechanism;
+
+  // Priority 2: first step of pathophysiology cascade
+  const cascade: any[] = mc.pathophysiology?.cascade || mc.pathophysiology_cascade || [];
+  if (cascade.length > 0) {
+    const first = cascade[0];
+    if (typeof first === "string" && first.length > 10) return first;
+    if (first?.mechanism && first.mechanism.length > 10) return first.mechanism;
+    if (first?.event && first.event.length > 10) return first.event;
+  }
+
+  // Priority 3: disease-specific keyword inference from brief — avoids wrong generic fallback
+  const b = (brief || "").toLowerCase();
+  if (/adamts13|ttp|thrombotic.thrombocytopenic/.test(b))
+    return "ADAMTS13 deficiency leading to uncleaved ultra-large vWF multimers, spontaneous platelet aggregation, and thrombotic microangiopathy";
+  if (/anti.gbm|goodpasture/.test(b))
+    return "anti-glomerular basement membrane antibody deposition targeting type IV collagen in alveolar and glomerular basement membranes";
+  if (/anca|anti.neutrophil/.test(b))
+    return "ANCA-mediated neutrophil activation causing pauci-immune necrotizing vasculitis of small vessels";
+  if (/sle|lupus/.test(b))
+    return "immune complex deposition activating complement, causing multi-organ endothelial injury";
+  if (/hus|hemolytic.uremic/.test(b))
+    return "Shiga toxin-mediated endothelial injury causing thrombotic microangiopathy predominantly in renal microvasculature";
+  if (/ige|anaphyla|mast.cell/.test(b))
+    return "IgE-mediated mast cell degranulation releasing histamine, tryptase, and leukotrienes";
+  if (/atheroscler|plaque|coronar|stemi|lad.occlusion/.test(b))
+    return "plaque rupture with superimposed thrombus causing acute coronary occlusion and downstream ischemic necrosis";
+
+  // Last resort: generic but accurate for most inflammatory cases
+  return "systemic inflammatory cascade causing multi-organ microvascular injury";
+};
+
+// ─── PANEL ITEM ROUTER ───────────────────────────────────────────────────────
+//
+// Routes primary_focus items to their correct organ panel.
+// Each organ has explicit keyword patterns so items are never misassigned.
+
+const routeItemToOrgan = (item: string, organKey: string): boolean => {
+  const t = item.toLowerCase();
+  switch (organKey) {
+    case "hematology":
+      return /schistocyte|blood.smear|peripheral.smear|hemolytic|anemia|red.cell.fragment|helmet.cell|elliptocyte|spherocyte|blasts|platelet|thrombocytopenia|bone.marrow/.test(t);
+    case "lung":
+      return /lung|pulmonar|alveol|hemorrhage|dah|bronch|pneum|hemoptysis|capillar.*lung|alveolar.capillar/.test(t);
+    case "kidney":
+      return /kidney|renal|glomerul|crescent|nephron|gbm|tubul|bowman|arteriole.*renal|podocyte|mesangi/.test(t);
+    case "brain":
+      return /brain|cerebr|microvessel|cerebral|cortical|cns|encephal|meningi|neural/.test(t);
+    case "heart":
+      return /heart|cardiac|myocard|coronar|ventricle|atrium|endocard|epicard|pericard/.test(t);
+    case "liver":
+      return /liver|hepat|hepatocyte|sinusoid|portal|lobul/.test(t);
+    case "skin":
+      return /epiderm|dermis|keratinocyte|melanocyte|basal.cell|squamous/.test(t);
+    case "joint":
+      return /joint|synovi|cartilage|articular|pannus/.test(t);
+    default:
+      return false;
+  }
+};
+
+// ─── H&E COLOR PALETTE ──────────────────────────────────────────────────────
+//
+// Validated H&E-accurate color descriptors per structure type.
+// Used to override or supplement LLM-generated color_language when
+// the LLM produces non-histological colors (blue-grey, flesh tone, etc.)
+
+const HE_COLOR_CORRECTIONS: Record<string, string> = {
+  // Thrombi
+  "platelet.rich.microthrombus|platelet.thrombus|white.thrombus": "granular pale eosinophilic pink, filling the arteriolar lumen in cross-section, with visible platelet clumping",
+  "hyaline.thrombus|hyaline.microthrombus": "glassy homogeneous deeply eosinophilic pink, occluding the microvessel lumen without fibrin strands",
+  "fibrin.thrombus|red.thrombus": "pale eosinophilic fibrin mesh with entrapped erythrocytes appearing deep red",
+
+  // Erythrocytes and smear findings
+  "schistocyte|red.cell.fragment|helmet.cell": "hyperchromatic fragmented erythrocytes — helmet-shaped or triangular, deep red-orange against a pale pink background",
+  "erythrocyte|red.blood.cell": "biconcave disc, uniform deep eosinophilic red-orange",
+
+  // Necrosis types
+  "coagulative.necrosis": "pale homogeneous eosinophilic ghost outlines of myocytes, nuclear pyknosis and karyolysis, loss of cross-striations",
+  "contraction.band.necrosis": "hypereosinophilic transverse bands across myocyte cytoplasm, deep pink, irregular band spacing",
+  "liquefactive.necrosis": "pale amorphous eosinophilic debris with nuclear shadows",
+  "caseous.necrosis": "structureless pale pink granular material with dystrophic calcification foci",
+
+  // Glomerular structures
+  "crescent|cellular.crescent": "dense pale pink proliferating parietal epithelial cells and macrophages filling Bowman's space, compressing the glomerular tuft",
+  "glomerular.tuft": "compact capillary loops with mesangial expansion, deep eosinophilic basement membranes",
+  "bowman.space": "clear crescentic space between Bowman's capsule parietal layer and glomerular tuft",
+  "fibrin.strands": "delicate pale yellow interwoven filaments within the crescent",
+
+  // Alveolar structures
+  "blood.filled.alveoli|alveolar.hemorrhage": "dark red-brown erythrocytes filling alveolar airspaces, obscuring the delicate alveolar septae",
+  "hemosiderin.laden.macrophage": "golden-brown coarse granular cytoplasmic deposits within macrophages, best seen on Prussian blue stain appearing deep blue",
+  "alveolar.septa": "thin pale pink fibrous walls with minimal cellularity in normal zones",
+
+  // Vascular
+  "cerebral.microvessel|cortical.microvessel": "thin-walled endothelium-lined channels, pale pink walls, red cell content",
+  "renal.arteriole|cortical.arteriole": "thick muscular wall with pale eosinophilic smooth muscle, round lumen",
+};
+
+// Returns a corrected color description if the zone matches a known H&E pattern
+const getHeColor = (zone: string): string | null => {
+  const z = zone.toLowerCase();
+  for (const [pattern, color] of Object.entries(HE_COLOR_CORRECTIONS)) {
+    if (new RegExp(pattern).test(z)) return color;
+  }
+  return null;
+};
+
+// Validates and corrects color_language entries — replaces non-H&E colors
+const sanitizeColorLanguage = (colorLang: any[]): any[] => {
+  if (!Array.isArray(colorLang)) return [];
+  return colorLang.map((c: any) => {
+    const zone = c.zone || "";
+    const desc = c.color_descriptor || "";
+    // Flag non-H&E colors: blue-grey, flesh tone, yellow-green, purple-red are not H&E valid
+    const isNonHE = /blue.grey|flesh.tone|yellow.green|purple.red|mottled.purple|ischemic.blue/.test(desc.toLowerCase());
+    if (isNonHE) {
+      const corrected = getHeColor(zone);
+      if (corrected) return { ...c, color_descriptor: corrected };
+    }
+    return c;
+  });
+};
+
+// ─── HISTOLOGY INSET RENDERER ───────────────────────────────────────────────
+//
+// When a case has both gross anatomy and histology findings (e.g. STEMI with
+// gross cardiac cross-section + histology inset), generates an explicit
+// rendering contract for the inset so Gemini/ChatGPT knows exactly what to render.
+
+const buildHistologyInsetBlock = (brief?: string): string => {
+  if (!brief) return "";
+  const b = brief.toLowerCase();
+  const hasHistoInset = /histolog|h&e|inset|biopsy|microscop|contraction.band|wavy.fiber|schistocyte|cellular.crescent|foam.cell/.test(b);
+  const hasGross = /gross|cross.section|infarct|ventricle|organ|4.chamber|stemi|nstemi/.test(b);
+  if (!hasHistoInset || !hasGross) return "";
+
+  return " A rectangular H&E histology inset occupies the lower-right quadrant of the frame, bordered by a thin white frame, rendered at 40x magnification on a pale pink eosinophilic background.";
+};
+
+// ─── TEMPORAL PATHOLOGY CORRECTOR ───────────────────────────────────────────
+//
+// Corrects medically inaccurate timing claims in the generated text.
+// E.g. neutrophil infiltration at 6h post-STEMI is wrong — it peaks at 24-72h.
+// This runs on the compiled prompt text before output.
+
+const applyTemporalCorrections = (text: string, brief?: string): string => {
+  if (!brief) return text;
+  const b = brief.toLowerCase();
+
+  // 6-hour STEMI: neutrophil infiltration is wrong — correct to margination
+  if (/6.hour|6h\b|6hrs/.test(b) && /stemi|infarct|myocard/.test(b)) {
+    text = text
+      .replace(/frank neutrophil infiltration/gi, "early neutrophil margination at the hyperemic border zone")
+      .replace(/neutrophil infiltration/gi, "early neutrophil margination at the ischemic border zone")
+      .replace(/neutrophils infiltrat/gi, "neutrophils beginning to marginate at the ischemic periphery");
+  }
+
+  return text;
+};
+
+// ─── NEGATIVE PROMPT BUILDER ─────────────────────────────────────────────────
+//
+// Produces a single, clean, non-redundant negative directive.
+// Fixes the "Do not include: Do not show..." double-negative formatter bug.
+
+const buildNegativeDirective = (ds: any, isGemini: boolean): string => {
+  // Strip the raw negative_prompt of its own prefix words
+  const raw = (ds.negative_prompt || "")
+    .replace(/^(negative constraints?:?\s*|avoid:?\s*|do not include:?\s*|do not show:?\s*)/i, "")
+    .trim();
+
+  // Build a clean exclusion list — deduplicate the most common redundancies
+  const baseExclusions = "cartoonish or unrealistic colors, blurry or low-resolution rendering, abstract non-medical imagery, 3D photorealistic rendering, human face or portrait";
+  const textExclusion = "any text characters, written labels, numeric markers, arrows, annotations, or diagram callouts anywhere in the image";
+
+  const combined = raw
+    ? `${textExclusion}, ${raw}`
+    : `${textExclusion}, ${baseExclusions}`;
+
+  return isGemini
+    ? ` Do not include: ${combined}.`
+    : ` Pure scientific visual only — exclude: ${combined}.`;
+};
+
+// ─── RENDER STYLE RESOLVER ───────────────────────────────────────────────────
+//
+// Dispatches opening sentence and reinforcement style based on:
+// (1) user's selected style (userStyle — highest priority)
+// (2) LLM-generated style_descriptors (styleTokens)
+// (3) scale (composite, surgical, gross, light microscopy, etc.)
+//
+// The composite branch now correctly respects userStyle (NEJM vs BioRender)
+// instead of hardcoding NEJM for all multi-organ cases.
+
 const resolveRenderStyle = (styleTokens: string[], scale: string, userStyle?: string): { opening: string; reinforcement: string } => {
   const joined = (styleTokens.join(" ") + " " + (userStyle || "")).toLowerCase();
 
-  // Composite multi-organ / systemic disease — dual or multi-panel illustration
-  // Panel count is embedded in scale string as "composite-N" or inferred from adData
+  const isBiorender = joined.includes("biorender") || joined.includes("plasticine") || joined.includes("2.5d");
+  const isNejm     = joined.includes("nejm") || joined.includes("scholarly") || joined.includes("netter");
+  const isNature   = joined.includes("nature") || joined.includes("structural");
+
+  // ── Composite multi-organ ────────────────────────────────────────────────
   if (scale.includes("composite")) {
     const panelCountMatch = scale.match(/composite-(\d+)/);
     const n = panelCountMatch ? parseInt(panelCountMatch[1]) : 2;
@@ -118,55 +321,58 @@ const resolveRenderStyle = (styleTokens: string[], scale: string, userStyle?: st
       ? "left panel and right panel clearly separated by a thin white divider"
       : `${n} equal-width panels separated by thin white dividers`;
 
-    const isBiorender = joined.includes("biorender") || joined.includes("plasticine") || joined.includes("2.5d");
-    const isNejm = joined.includes("nejm") || joined.includes("scholarly") || joined.includes("netter");
-
     if (isBiorender) {
       return {
         opening: `A ${panelWord} BioRender-standard scientific illustration depicting systemic disease across ${n} organs`,
         reinforcement: `rendered with clean 2.5D vector assets and matte plastic textures, ${panelDivider}, each panel depicting the corresponding organ's histopathology, soft ambient clinical lighting, pastel anatomical color palette, white background, no labels or text`,
       };
     }
-    // Default composite style: NEJM histopathology plate
+    // NEJM is the default for composite (histopathology plate)
     return {
       opening: `A ${panelWord} histopathology illustration depicting systemic disease across ${n} organs`,
       reinforcement: `in the style of a NEJM case report figure, H&E staining palette, ${panelDivider}, each panel labeled by organ, crisp tissue section detail, white background, no annotations`,
     };
   }
 
-  // Electron / ultrastructural scale
+  // ── Electron microscopy ──────────────────────────────────────────────────
   if (scale.includes("electron")) {
     return {
       opening: "A high-resolution transmission electron microscopy (TEM) scientific illustration",
       reinforcement: "rendered in the style of a Nature Cell Biology figure plate, clean white background, precise ultrastructural detail, muted scientific color palette, zero text or labels",
     };
   }
-  // Light microscopy / histology scale
+
+  // ── Light microscopy / histology ─────────────────────────────────────────
   if (scale.includes("light microscopy")) {
+    if (isBiorender) {
+      return {
+        opening: "A BioRender-standard histopathology illustration",
+        reinforcement: "clean 2.5D vector rendering, H&E staining color palette, crisp tissue section detail, white background, soft clinical lighting, no annotations",
+      };
+    }
     return {
       opening: "A photorealistic light microscopy histological illustration",
       reinforcement: "in the style of a NEJM case report figure, H&E or immunofluorescence staining palette, crisp tissue section detail, white background, no annotations",
     };
   }
-  // Surgical field
+
+  // ── Surgical field ───────────────────────────────────────────────────────
   if (scale.includes("surgical")) {
     return {
       opening: "A 4K surgical field illustration under cold LED operative lighting",
-      reinforcement: "in the style of a Netter surgical anatomy plate, diagrammatic photorealism, tissue planes clearly differentiated, sterile field background, no text overlays",
+      reinforcement: "in the style of a Netter surgical anatomy plate, diagrammatic photorealism, tissue planes clearly differentiated by color and reflectivity, sterile field background, no text overlays",
     };
   }
-  // Molecular / pathway
+
+  // ── Molecular / pathway ──────────────────────────────────────────────────
   if (scale.includes("molecular")) {
     return {
       opening: "A clean scientific pathway diagram illustration",
       reinforcement: "in the style of a Cell or Nature Reviews mechanistic figure, flat 2D vector style, white background, color-coded molecular components, no text labels",
     };
   }
-  // Gross anatomy — default
-  const isBiorender = joined.includes("biorender") || joined.includes("plasticine") || joined.includes("2.5d");
-  const isNejm = joined.includes("nejm") || joined.includes("scholarly") || joined.includes("netter");
-  const isNature = joined.includes("nature") || joined.includes("structural");
 
+  // ── Gross anatomy / default ──────────────────────────────────────────────
   if (isBiorender) {
     return {
       opening: "A BioRender-style 3D medical illustration",
@@ -191,82 +397,96 @@ const resolveRenderStyle = (styleTokens: string[], scale: string, userStyle?: st
   };
 };
 
-// Infers canvas aspect ratio from panel count and scale
-const inferAspectRatio = (adData: any, scale: string): string => {
-  const panels = adData?.spatial_layout?.panels || [];
-  if (panels.length >= 3) return "wide landscape format (16:9 aspect ratio)";
-  if (panels.length === 2) return "landscape format (4:3 aspect ratio)";
-  // Composite multi-organ cases need wider canvas for more panels
+// ─── ASPECT RATIO ────────────────────────────────────────────────────────────
+//
+// Aspect ratio is determined by TRUE panel count (from organs array),
+// NOT from spatial_layout.panels (which may be wrong) and NOT from
+// false-positive organ counts (purpura triggering skin panel).
+
+const inferAspectRatio = (scale: string, trueOrganCount: number): string => {
   if (scale.includes("composite")) {
-    const panelCountMatch = scale.match(/composite-(\d+)/);
-    const n = panelCountMatch ? parseInt(panelCountMatch[1]) : 2;
-    return n >= 3 ? "wide landscape format (16:9 aspect ratio)" : "landscape format (4:3 aspect ratio)";
+    return trueOrganCount >= 3
+      ? "wide landscape format (16:9 aspect ratio)"
+      : "landscape format (4:3 aspect ratio)";
   }
-  // Surgical fields and gross anatomy are always widescreen — endoscopes output 16:9
   if (scale.includes("surgical")) return "wide landscape format (16:9 aspect ratio)";
   if (scale.includes("gross anatomy")) return "landscape format (4:3 aspect ratio)";
   if (scale.includes("electron") || scale.includes("light microscopy")) return "square format (1:1 aspect ratio)";
   return "landscape format (4:3 aspect ratio)";
 };
 
-// Deduplicates semantic overlap between master_prompt and spatial_narrative
-// master_prompt often repeats spatial info already in spatial_narrative — we strip it
+// ─── DEDUPLICATION ───────────────────────────────────────────────────────────
 const deduplicateMasterAndSpatial = (master: string, spatial: string): string => {
   if (!spatial || !master) return master;
-  // Extract first ~12 words of spatial as a fingerprint, remove any sentence from master that starts with similar tokens
   const spatialWords = spatial.toLowerCase().split(/\s+/).slice(0, 12);
   const sentences = master.split(/(?<=[.!?])\s+/);
   const filtered = sentences.filter(sentence => {
     const sWords = sentence.toLowerCase().split(/\s+/).slice(0, 8);
     const overlap = sWords.filter(w => w.length > 5 && spatialWords.includes(w)).length;
-    return overlap < 3; // keep sentence unless it shares 3+ significant words with spatial opener
+    return overlap < 3;
   });
   return filtered.join(" ").trim();
 };
 
-// Builds a split-panel composition description for multi-organ systemic disease cases
+// ─── MULTI-ORGAN PANEL BLOCK ─────────────────────────────────────────────────
+//
+// Builds the panel composition description injected immediately after the
+// opening sentence in both Gemini and ChatGPT prompts.
+//
+// Fixes:
+// - Organ routing: each primary_focus item is routed to the correct organ panel
+//   using routeItemToOrgan(), not heuristic substring matching
+// - Unifying mechanism: uses resolveUnifyingMechanism(), never the generic fallback
+// - Color language: sanitized for H&E accuracy before inclusion
+// - Hematology panel: gets its own explicit rendering instruction (smear, not tissue section)
+
 const buildMultiOrganPanelComposition = (
   organs: string[],
   primary: string,
   ds: any,
-  adData: any
+  adData: any,
+  brief?: string
 ): { panelBlock: string; panelColors: string } => {
-  const mc = adData?.medical_content || {};
-  const pathoCascade: string[] = mc.pathophysiology_cascade || mc.pathophysiology || [];
-  const unifyingMechanism = mc.mechanism || mc.primary_mechanism || pathoCascade[0] || "immune-mediated systemic vasculitis";
-
-  // Split primary_focus items between the detected organs heuristically
+  const unifyingMechanism = resolveUnifyingMechanism(adData, brief);
   const primaryItems: string[] = ds.priority_weighting?.primary_focus || [];
+
   const panels = organs.map((organ, i) => {
-    const organKey = organ.split("/")[0]; // e.g. "lung", "kidney"
-    const organItems = primaryItems.filter(item =>
-      item.toLowerCase().includes(organKey) ||
-      // For lung: catch alveolar, hemorrhage, DAH terms
-      (organKey === "lung" && /alveol|hemorrhage|dah|pulmonar|pneum|bronch/.test(item.toLowerCase())) ||
-      // For kidney: catch glomerul, crescent, GBM, nephron terms
-      (organKey === "kidney" && /glomerul|crescent|nephron|gbm|tubul|bowman/.test(item.toLowerCase()))
+    const organKey = organ.split("/")[0]; // "hematology", "lung", "kidney", "brain", etc.
+
+    // Route items to this organ using the explicit router
+    const organItems = primaryItems.filter(item => routeItemToOrgan(item, organKey));
+
+    // Fallback: distribute unrouted items evenly
+    const unroutedItems = primaryItems.filter(item =>
+      !organs.some(o => routeItemToOrgan(item, o.split("/")[0]))
     );
-    // Fallback: distribute remaining items across panels evenly
-    const fallbackItems = primaryItems.filter((_, idx) => idx % organs.length === i);
+    const fallbackItems = unroutedItems.filter((_, idx) => idx % organs.length === i);
+
     const panelItems = organItems.length > 0 ? organItems : fallbackItems;
     const panelLabel = organ.replace("/", " or ");
     const panelDesc = panelItems.length > 0 ? panelItems.join(", ") : `${organ} histopathology`;
-    return `Panel ${i + 1} (${panelLabel}): ${panelDesc}`;
+
+    // Hematology panel gets an explicit specimen rendering instruction
+    const specimenNote = organKey === "hematology"
+      ? " (peripheral blood smear, Wright-Giemsa stain, 100x oil immersion magnification)"
+      : "";
+
+    return `Panel ${i + 1} (${panelLabel}${specimenNote}): ${panelDesc}`;
   });
 
-  const panelBlock = `This is a ${organs.length}-panel composite illustration. ${panels.join(". ")}. All panels share the same histological scale and staining style, connected by the unifying disease mechanism: ${unifyingMechanism}.`;
+  const panelBlock = `This is a ${organs.length}-panel composite illustration. ${panels.join(". ")}. All panels share the same scale and staining style, connected by the unifying disease mechanism: ${unifyingMechanism}.`;
 
-  const colorLang: any[] = ds.color_language || [];
-  const panelColors = colorLang.length
-    ? colorLang.map((c: any) => `${c.zone}: ${c.color_descriptor}`).join("; ")
+  // Sanitize color language for H&E validity before emitting
+  const rawColorLang: any[] = ds.color_language || [];
+  const sanitizedColors = sanitizeColorLanguage(rawColorLang);
+  const panelColors = sanitizedColors.length
+    ? sanitizedColors.map((c: any) => `${c.zone}: ${c.color_descriptor}`).join("; ")
     : "";
 
   return { panelBlock, panelColors };
 };
 
-// Builds a ChatGPT/DALL-E 3-native prompt
-// Key rules for DALL-E 3: (1) style imperative first, (2) no negative framing — reframe as positives,
-// (3) composition as explicit instruction, (4) colors as "use X for Y" directives
+// ─── CHATGPT / DALL-E 3 PROMPT BUILDER ──────────────────────────────────────
 const buildChatGPTPrompt = (ds: any, subject: string, adData?: any, brief?: string, userStyle?: string): string => {
   const pw = ds.priority_weighting || {};
   const primary = (pw.primary_focus || []).join(", ");
@@ -275,66 +495,52 @@ const buildChatGPTPrompt = (ds: any, subject: string, adData?: any, brief?: stri
   const organs = detectMultiOrganCase(subject, pw.primary_focus || [], brief);
   const scale = inferScale(subject, pw.primary_focus || [], brief);
   const { opening, reinforcement } = resolveRenderStyle(styleTokens, scale, userStyle);
-  const aspectRatio = inferAspectRatio(adData, scale);
+  const aspectRatio = inferAspectRatio(scale, organs.length);
 
-  // DALL-E 3: style imperative as the very first clause
-  // Use metadata subject (natural description) as preferred opener; fall back to primary_focus list
   const subjectPhrase = subject || primary;
   const styleDirective = `${opening} of ${subjectPhrase}.`;
 
-  // Multi-organ composite: inject panel composition block immediately after the opening
+  // Multi-organ panel block
   let multiOrganBlock = "";
   if (organs.length >= 2 && adData) {
-    const { panelBlock, panelColors } = buildMultiOrganPanelComposition(organs, primary, ds, adData);
+    const { panelBlock, panelColors } = buildMultiOrganPanelComposition(organs, primary, ds, adData, brief);
     multiOrganBlock = ` ${panelBlock}`;
     if (panelColors) multiOrganBlock += ` Color protocol per panel: ${panelColors}.`;
   }
 
-  // Pathophysiology as positive visual directive (DALL-E 3 ignores "do not" — state what TO show)
+  // Histology inset contract (for gross+histology dual-scale cases)
+  const insetBlock = buildHistologyInsetBlock(brief);
+
   const physioHook = ds.pathophysiology_visual_summary
     ? ` The illustration shows: ${ds.pathophysiology_visual_summary.replace(/\.$/, "")}.`
     : "";
 
-  // Deduplicate master vs spatial before including both
   const cleanMaster = deduplicateMasterAndSpatial(ds.master_prompt || "", ds.spatial_narrative || "");
-
-  // Spatial composition — DALL-E 3 follows explicit layout well
-  // Strip trailing period before adding to avoid ".." double-period artifact
-  const spatialCleanChatGPT = ds.spatial_narrative ? ds.spatial_narrative.replace(/\.+$/, "") : "";
-  const spatial = spatialCleanChatGPT
-    ? ` Layout: ${spatialCleanChatGPT}.`
-    : "";
-
-  // Core anatomical description (deduplicated)
+  const spatialClean = ds.spatial_narrative ? ds.spatial_narrative.replace(/\.+$/, "") : "";
+  const spatial = spatialClean ? ` Layout: ${spatialClean}.` : "";
   const core = cleanMaster ? ` ${cleanMaster}` : "";
 
-  // Colors as explicit directives — skip if already emitted in multi-organ block
+  // Colors only for single-organ (multi-organ colors are in the panel block)
   const colors = organs.length < 2 && Array.isArray(ds.color_language) && ds.color_language.length
-    ? ` Color treatment: ${ds.color_language.map((c: any) => `use ${c.color_descriptor} for ${c.zone}`).join("; ")}.`
+    ? ` Color treatment: ${sanitizeColorLanguage(ds.color_language).map((c: any) => `use ${c.color_descriptor} for ${c.zone}`).join("; ")}.`
     : "";
 
-  // Secondary context
   const secondarySentence = secondary ? ` Supporting anatomy includes ${secondary}.` : "";
-
-  // Mechanistic causality
   const mechanistic = adData ? extractMechanisticCausality(adData) : "";
   const mechanisticSentence = mechanistic ? ` Depict the mechanism: ${mechanistic}` : "";
-
-  // Style reinforcement — model-native rendering tokens
   const styleFooter = ` Rendering style: ${reinforcement}.`;
-
-  // Aspect ratio
   const canvasDirective = ` Canvas: ${aspectRatio}.`;
+  const negatives = buildNegativeDirective(ds, false);
 
-  // DALL-E 3: NO negative prompts — reframe as positive "pure visual" directive
-  const purityDirective = " Pure visual anatomy — no text, no labels, no annotations, no arrows, no captions anywhere in the image.";
+  let result = `${styleDirective}${multiOrganBlock}${insetBlock}${physioHook}${spatial}${core}${colors}${secondarySentence}${mechanisticSentence}${styleFooter}${canvasDirective}${negatives}`
+    .replace(/\s{2,}/g, " ")
+    .trim();
 
-  return `${styleDirective}${multiOrganBlock}${physioHook}${spatial}${core}${colors}${secondarySentence}${mechanisticSentence}${styleFooter}${canvasDirective}${purityDirective}`.replace(/\s{2,}/g, " ").trim();
+  result = applyTemporalCorrections(result, brief);
+  return result;
 };
 
-// Builds a Gemini ImageFX / Imagen 4-native prose prompt
-// Key rules for Gemini: (1) clean prose, no bracket tags, (2) style tokens inline as descriptors,
-// (3) negatives as trailing prose sentence, (4) opening sentence = scale + style + subject
+// ─── GEMINI / IMAGEN 4 PROMPT BUILDER ───────────────────────────────────────
 const buildImagenPrompt = (ds: any, subject: string, adData?: any, brief?: string, userStyle?: string): string => {
   const pw = ds.priority_weighting || {};
   const primary = (pw.primary_focus || []).join(", ");
@@ -343,39 +549,34 @@ const buildImagenPrompt = (ds: any, subject: string, adData?: any, brief?: strin
   const organs = detectMultiOrganCase(subject, pw.primary_focus || [], brief);
   const scale = inferScale(subject, pw.primary_focus || [], brief);
   const { opening, reinforcement } = resolveRenderStyle(styleTokens, scale, userStyle);
-  const aspectRatio = inferAspectRatio(adData, scale);
+  const aspectRatio = inferAspectRatio(scale, organs.length);
 
-  // Opening: style + subject + pathophysiology hook in one sentence
-  // Use metadata subject (natural description) as preferred opener; fall back to primary_focus list
   const subjectPhrase = subject || primary;
   const physioHook = ds.pathophysiology_visual_summary
     ? `, showing ${ds.pathophysiology_visual_summary.replace(/\.$/, "")}`
     : "";
   const openingSentence = `${opening} of ${subjectPhrase}${physioHook}.`;
 
-  // Multi-organ composite: inject explicit panel composition block right after opening
-  // This is the key instruction Gemini needs to render BOTH organs, not just one
+  // Multi-organ panel block
   let multiOrganBlock = "";
   if (organs.length >= 2 && adData) {
-    const { panelBlock, panelColors } = buildMultiOrganPanelComposition(organs, primary, ds, adData);
+    const { panelBlock, panelColors } = buildMultiOrganPanelComposition(organs, primary, ds, adData, brief);
     multiOrganBlock = ` ${panelBlock}`;
     if (panelColors) multiOrganBlock += ` Color protocol: ${panelColors}.`;
   }
 
-  // Spatial composition as next sentence — Gemini anchors composition from early prose
-  // Strip trailing period from spatial_narrative before appending to avoid ".." double-period artifact
+  // Histology inset contract
+  const insetBlock = buildHistologyInsetBlock(brief);
+
   const spatialClean = ds.spatial_narrative ? ds.spatial_narrative.replace(/\.+$/, "") : "";
   const spatial = spatialClean ? ` ${spatialClean}.` : "";
 
-  // Deduplicate master vs spatial before appending
   const cleanMaster = deduplicateMasterAndSpatial(ds.master_prompt || "", ds.spatial_narrative || "");
   const core = cleanMaster ? ` ${cleanMaster.trim()}` : "";
 
-  // Mechanistic causality from Layer 2
   const mechanistic = adData ? extractMechanisticCausality(adData) : "";
   const mechanisticSentence = mechanistic ? ` ${mechanistic}` : "";
 
-  // Biological graph interactions from Layer 4
   const { primaryEntities, interactions } = adData ? extractBiologicalEntities(adData) : { primaryEntities: [], interactions: [] };
   const bioGraphSentence = interactions.length > 0
     ? ` Biological interactions depicted: ${interactions.join("; ")}.`
@@ -383,35 +584,31 @@ const buildImagenPrompt = (ds: any, subject: string, adData?: any, brief?: strin
     ? ` Key entities: ${primaryEntities.join(", ")}.`
     : "";
 
-  // Secondary context
   const secondarySentence = secondary ? ` Supporting anatomical context: ${secondary}.` : "";
 
-  // Colors as prose descriptors — skip if already emitted in multi-organ block
   const colors = organs.length < 2 && Array.isArray(ds.color_language) && ds.color_language.length
-    ? ` Color palette: ${ds.color_language.map((c: any) => `${c.zone} in ${c.color_descriptor}`).join("; ")}.`
+    ? ` Color palette: ${sanitizeColorLanguage(ds.color_language).map((c: any) => `${c.zone} in ${c.color_descriptor}`).join("; ")}.`
     : "";
 
-  // Canvas aspect ratio
   const canvasDirective = ` ${aspectRatio}.`;
-
-  // Style reinforcement using model-native tokens
   const styleFooter = ` ${reinforcement}.`;
+  const negatives = buildNegativeDirective(ds, true);
 
-  // Negatives as trailing prose — Gemini ImageFX handles these well inline
-  const rawNeg = ds.negative_prompt
-    ? ds.negative_prompt.replace(/^(negative constraints?:?\s*|avoid:?\s*|no\s)/i, "").trim()
-    : "text, labels, arrows, annotations, numbers, photorealism, dramatic cinematic shadows, dark backgrounds";
-  const negatives = ` Do not include: ${rawNeg}.`;
+  let result = `${openingSentence}${multiOrganBlock}${insetBlock}${spatial}${core}${mechanisticSentence}${bioGraphSentence}${secondarySentence}${colors}${canvasDirective}${styleFooter}${negatives}`
+    .replace(/\s{2,}/g, " ")
+    .trim();
 
-  return `${openingSentence}${multiOrganBlock}${spatial}${core}${mechanisticSentence}${bioGraphSentence}${secondarySentence}${colors}${canvasDirective}${styleFooter}${negatives}`.replace(/\s{2,}/g, " ").trim();
+  result = applyTemporalCorrections(result, brief);
+  return result;
 };
 
+// ─── MAIN EXPORT ─────────────────────────────────────────────────────────────
 export const compileMedicalPrompt = (adData: any, brief?: string, userStyle?: string) => {
   if (adData.diffusion_synthesis && typeof adData.diffusion_synthesis === "object") {
-    console.log("[SOVEREIGN COMPILER] Compiling final prompt with Principle-based pruning...");
+    console.log("[SOVEREIGN COMPILER v2.0] Compiling with medical accuracy gates...");
     let cleanMaster = adData.diffusion_synthesis.master_prompt || "";
 
-    // 1. Noise Pruning
+    // Noise pruning — strip SVG/schema artifacts that bleed through from JSON
     cleanMaster = cleanMaster.replace(/stroke_dasharray|stroke_width|z_index|opacity|#[0-9a-fA-F]{6}|\{\s*x:\s*\d.*?\}/g, "");
     cleanMaster = cleanMaster.replace(/ent_\w+|panel_\w+|p1_\w+|p2_\w+|p3_\w+/g, "");
     adData.diffusion_synthesis.master_prompt = cleanMaster;
@@ -419,28 +616,28 @@ export const compileMedicalPrompt = (adData: any, brief?: string, userStyle?: st
     const ds = adData.diffusion_synthesis;
     const subject = adData.metadata?.subject || adData.scientific_subject || "";
 
-    // 2. Legacy block format (kept for internal reference / non-Gemini renderers)
+    // Legacy block format (kept for non-diffusion renderers)
     const compiledBlocks: string[] = [];
     if (ds.priority_weighting) {
       const pw = ds.priority_weighting;
-      if (pw.primary_focus?.length)   compiledBlocks.push(`[PRIMARY FOCUS]:\n${pw.primary_focus.join(", ")}`);
+      if (pw.primary_focus?.length)     compiledBlocks.push(`[PRIMARY FOCUS]:\n${pw.primary_focus.join(", ")}`);
       if (pw.secondary_context?.length) compiledBlocks.push(`[SECONDARY CONTEXT]:\n${pw.secondary_context.join(", ")}`);
     }
-    if (ds.spatial_narrative)        compiledBlocks.push(`[SPATIAL ARRANGEMENT]:\n${ds.spatial_narrative}`);
+    if (ds.spatial_narrative)          compiledBlocks.push(`[SPATIAL ARRANGEMENT]:\n${ds.spatial_narrative}`);
     compiledBlocks.push(`[DETAILED SPECIFICATION]:\n${cleanMaster.trim()}`);
-    if (ds.style_descriptors?.length) compiledBlocks.push(`[STYLE PROTOCOL]:\n${ds.style_descriptors.join(", ")}`);
+    if (ds.style_descriptors?.length)  compiledBlocks.push(`[STYLE PROTOCOL]:\n${ds.style_descriptors.join(", ")}`);
     if (ds.color_language?.length) {
-      const colorDesc = ds.color_language.map((c: any) => `${c.zone}: ${c.color_descriptor}`).join("; ");
+      const colorDesc = sanitizeColorLanguage(ds.color_language).map((c: any) => `${c.zone}: ${c.color_descriptor}`).join("; ");
       compiledBlocks.push(`[COLOR PROTOCOL]:\n${colorDesc}`);
     }
     if (ds.pathophysiology_visual_summary) compiledBlocks.push(`[PATHOPHYSIOLOGY NARRATIVE]:\n${ds.pathophysiology_visual_summary}`);
-    if (ds.negative_prompt)           compiledBlocks.push(`[NEGATIVE CONSTRAINTS]:\n${ds.negative_prompt}`);
+    if (ds.negative_prompt)             compiledBlocks.push(`[NEGATIVE CONSTRAINTS]:\n${ds.negative_prompt}`);
     adData.diffusion_synthesis.compiled_prompt = compiledBlocks.join("\n\n");
 
-    // 3. Imagen 4 / Gemini Web prose prompt — paste this directly into Gemini web
+    // Gemini / Imagen 4 prose prompt
     adData.diffusion_synthesis.imagen_prompt = buildImagenPrompt(ds, subject, adData, brief, userStyle);
 
-    // 4. ChatGPT / GPT-4o prose prompt — style-first, conversational framing, mid-prompt negatives
+    // ChatGPT / DALL-E 3 prose prompt
     adData.diffusion_synthesis.chatgpt_prompt = buildChatGPTPrompt(ds, subject, adData, brief, userStyle);
   }
 };
@@ -453,51 +650,35 @@ export const compileVideoPrompt = (adData: any) => {
   const veoClip = adData.veo_clip || {};
   const fps = style.fps || 24;
 
-  // --- RULE 1: Duration enforcement (4 / 6 / 8 only) ---
   const ALLOWED_DURATIONS = [4, 6, 8];
   let finalDuration = veoClip.duration_seconds || 8;
-  if (!ALLOWED_DURATIONS.includes(finalDuration)) {
-    finalDuration = 8;
-  }
+  if (!ALLOWED_DURATIONS.includes(finalDuration)) finalDuration = 8;
 
-  // GLOBAL DURATION SYNC (Resolver)
   adData.veo_clip.duration_seconds = finalDuration;
   if (adData.clip_strategy) adData.clip_strategy.duration_seconds = finalDuration;
   if (adData.temporal_arc) adData.temporal_arc.total_duration_seconds = finalDuration;
 
-  // --- v7.0: Resolution Constraint Validator ---
   if (veoClip.resolution === "4K UHD" || veoClip.resolution === "4K") {
     console.log("[v7.0 Validator] 4K not supported by Veo 3.1. Capping to 1080p.");
     adData.veo_clip.resolution = "1080p";
     veoClip.resolution = "1080p";
   }
 
-  // --- v7.0: Negative Prompt Validator ---
   let processedNegatives = negatives.map((neg: string) => {
     const lower = neg.toLowerCase();
-    if (lower.startsWith("no urban") || lower.includes("no modern")) {
-      return "natural rural elements only";
-    }
-    if (lower.match(/^no [a-zA-Z]+$/)) {
-      // simple adjective block
-      return neg.replace(/^no /i, "exclude ");
-    }
+    if (lower.startsWith("no urban") || lower.includes("no modern")) return "natural rural elements only";
+    if (lower.match(/^no [a-zA-Z]+$/)) return neg.replace(/^no /i, "exclude ");
     return neg;
   });
 
-  // --- v6.1 SYNTHESIS LAYER ---
-  // We rely on the LLM's fluid prose in adData.compiled_master_prompt.
   let compiledPrompt = adData.compiled_master_prompt || "";
 
-  // --- RULE 6: Negative prompt enforcement ---
-  // If the LLM missed 'Exclude:' in the prose, we inject it based on negative_prompts
   if (compiledPrompt && !compiledPrompt.includes("Exclude:")) {
     const negBlock = processedNegatives.length > 0 ? processedNegatives.join(". ") + "." : "No morphing. No subtitles.";
     compiledPrompt = `${compiledPrompt.trim()} Exclude: ${negBlock}`;
     adData.compiled_master_prompt = compiledPrompt;
   }
 
-  // --- v9.5: CINEMASTER TECHNICAL LOOKUP & PHYSICS VALIDATOR ---
   const visualMode = adData.style?.visual_mode || "";
   const rawStyle = typeof style === "string" ? style.toLowerCase() : visualMode.toLowerCase();
   const vTags: string[] = [];
@@ -511,20 +692,12 @@ export const compileVideoPrompt = (adData: any) => {
 
   if (rawStyle.includes("80s") || rawStyle.includes("vintage")) {
     vTags.push("Kodak 5247 film stock", "heavy 35mm grain", "analog gate weave", "magenta/cyan neon practicals");
-    forcedFps = 24;
-    forcedAspectRatio = "4:3";
-    forcedColorTemp = 3200;
-    forcedStock = "Kodak 5247 color negative";
-    forcedShadows = "hard";
-    forcedGrade = "vintage-warm";
+    forcedFps = 24; forcedAspectRatio = "4:3"; forcedColorTemp = 3200;
+    forcedStock = "Kodak 5247 color negative"; forcedShadows = "hard"; forcedGrade = "vintage-warm";
   } else if (rawStyle.includes("noir")) {
     vTags.push("high-contrast Chiaroscuro lighting", "anamorphic prime lens", "deep blacks", "moody rim lighting", "shallow vertical depth of field");
-    forcedAspectRatio = "2.39:1";
-    forcedColorTemp = 3200;
-    forcedStock = "ARRI Alexa 65 Noir-tuned";
-    forcedShadows = "hard-defined-silhouette";
-    forcedGrade = "cinematic-noir-high-contrast";
-    // Physics override for noir
+    forcedAspectRatio = "2.39:1"; forcedColorTemp = 3200;
+    forcedStock = "ARRI Alexa 65 Noir-tuned"; forcedShadows = "hard-defined-silhouette"; forcedGrade = "cinematic-noir-high-contrast";
     if (adData.motion_physics) {
       adData.motion_physics.dust_dynamics = {
         behavior: "slow gravitational fall with light turbulence",
@@ -532,115 +705,60 @@ export const compileVideoPrompt = (adData: any) => {
       };
     }
   } else if (rawStyle.includes("cyberpunk") || rawStyle.includes("neon") || rawStyle.includes("anime")) {
-    // Physics for Cyberpunk
     if (adData.motion_physics) {
       adData.motion_physics.rain_interaction = {
-        tire_spray: "directional streaks",
-        surface_response: "rippled reflections",
-        impact_pattern: "high-speed splatter",
+        tire_spray: "directional streaks", surface_response: "rippled reflections", impact_pattern: "high-speed splatter",
       };
     }
   } else if (rawStyle.includes("ghibli") || rawStyle.includes("skytale")) {
-    vTags.push("Studio Ghibli hand-painted style", "watercolor textures");
-    forcedFps = 12;
-    isStylised = true;
-    forcedAspectRatio = "16:9";
+    vTags.push("Studio Ghibli hand-painted style", "watercolor textures"); forcedFps = 12; isStylised = true; forcedAspectRatio = "16:9";
   } else if (rawStyle.includes("photorealistic")) {
-    vTags.push("clean ultra-realistic 8k", "sharp optical focus", "global illumination");
-    forcedFps = 24;
-    forcedAspectRatio = "16:9";
-    forcedStock = "RED Monstro 8K VV";
+    vTags.push("clean ultra-realistic 8k", "sharp optical focus", "global illumination"); forcedFps = 24; forcedAspectRatio = "16:9"; forcedStock = "RED Monstro 8K VV";
   } else if (rawStyle.includes("picture book")) {
-    vTags.push("soft watercolor painting", "pastel tones", "paper texture");
-    forcedFps = 12;
-    isStylised = true;
-    forcedAspectRatio = "4:3";
+    vTags.push("soft watercolor painting", "pastel tones", "paper texture"); forcedFps = 12; isStylised = true; forcedAspectRatio = "4:3";
   } else if (rawStyle.includes("3d cartoon") || rawStyle.includes("hyper cartoon")) {
-    vTags.push("Pixar-like 3D CGI", "subsurface scattering", "squash-and-stretch motion");
-    forcedFps = 24;
-    isStylised = true;
-    forcedAspectRatio = "16:9";
+    vTags.push("Pixar-like 3D CGI", "subsurface scattering", "squash-and-stretch motion"); forcedFps = 24; isStylised = true; forcedAspectRatio = "16:9";
   } else if (rawStyle.includes("retro comics")) {
-    vTags.push("vintage comic book cel-shading", "Ben-Day dot halftone", "heavy ink contours");
-    forcedFps = 12;
-    isStylised = true;
-    forcedAspectRatio = "4:3";
-  } else if (rawStyle.includes("anime")) {
-    vTags.push("high-energy anime style", "dynamic action smears", "flat shading");
-    forcedFps = 24;
-    isStylised = true;
-    forcedAspectRatio = "16:9";
+    vTags.push("vintage comic book cel-shading", "Ben-Day dot halftone", "heavy ink contours"); forcedFps = 12; isStylised = true; forcedAspectRatio = "4:3";
   } else if (rawStyle.includes("pixel art")) {
-    vTags.push("16-bit pixel art", "crisp square pixels", "retro gaming aesthetic");
-    forcedFps = 8;
-    isStylised = true;
-    forcedAspectRatio = "4:3";
+    vTags.push("16-bit pixel art", "crisp square pixels", "retro gaming aesthetic"); forcedFps = 8; isStylised = true; forcedAspectRatio = "4:3";
   } else if (rawStyle.includes("illustration") || rawStyle.includes("minimalist")) {
-    vTags.push("flat vector illustration", "clean minimalist linework", "high negative space");
-    forcedFps = 12;
-    isStylised = true;
-    forcedAspectRatio = "16:9";
+    vTags.push("flat vector illustration", "clean minimalist linework", "high negative space"); forcedFps = 12; isStylised = true; forcedAspectRatio = "16:9";
   } else if (rawStyle.includes("dreamtale")) {
-    vTags.push("ethereal bloom", "soft focus magical glowing particles", "pastel volumetric lighting");
-    forcedFps = 24;
-    forcedColorTemp = 4500;
-    forcedAspectRatio = "16:9";
+    vTags.push("ethereal bloom", "soft focus magical glowing particles", "pastel volumetric lighting"); forcedFps = 24; forcedColorTemp = 4500; forcedAspectRatio = "16:9";
   } else if (rawStyle.includes("horror")) {
-    vTags.push("underexposed moody rim lighting", "eerie volumetric fog", "cold desaturated shadows");
-    forcedFps = 24;
-    forcedColorTemp = 3200;
-    forcedAspectRatio = "2.39:1";
+    vTags.push("underexposed moody rim lighting", "eerie volumetric fog", "cold desaturated shadows"); forcedFps = 24; forcedColorTemp = 3200; forcedAspectRatio = "2.39:1";
   } else if (rawStyle.includes("sketchbook")) {
-    vTags.push("raw charcoal pencil sketch", "rough hand-drawn motion", "visible parchment grain");
-    forcedFps = 8;
-    isStylised = true;
-    forcedAspectRatio = "1:1";
+    vTags.push("raw charcoal pencil sketch", "rough hand-drawn motion", "visible parchment grain"); forcedFps = 8; isStylised = true; forcedAspectRatio = "1:1";
   } else if (rawStyle.includes("drone")) {
-    vTags.push("aerial drone cinematography", "hyper-smooth gimbal stabilization", "sweeping landscape view");
-    forcedFps = 24;
-    forcedAspectRatio = "16:9";
-    forcedStock = "DJI Inspire 3 ProRes Raw";
+    vTags.push("aerial drone cinematography", "hyper-smooth gimbal stabilization", "sweeping landscape view"); forcedFps = 24; forcedAspectRatio = "16:9"; forcedStock = "DJI Inspire 3 ProRes Raw";
   }
 
-  // --- GLOBAL STYLE RESOLVER (Resolver) ---
   if (adData.veo_clip) adData.veo_clip.aspect_ratio = forcedAspectRatio;
-  if (adData.style) {
-    adData.style.fps = forcedFps;
-    adData.style.grade_profile = forcedGrade;
-  }
-  if (adData.lighting) {
-    adData.lighting.colour_temp_K = forcedColorTemp;
-    adData.lighting.shadow_behavior = forcedShadows;
-  }
+  if (adData.style) { adData.style.fps = forcedFps; adData.style.grade_profile = forcedGrade; }
+  if (adData.lighting) { adData.lighting.colour_temp_K = forcedColorTemp; adData.lighting.shadow_behavior = forcedShadows; }
 
-  // --- CINEMATOGRAPHY CONTRADICTION FIXER ---
   if (adData.cinematography) {
     const c = adData.cinematography;
     if (c.camera_platform === "hand-held" && c.camera_movement && c.camera_movement.toLowerCase().includes("zoom")) {
-      console.log("[v12.0 Physics] Fixing handheld-zoom contradiction -> Changing to 'Dolly Push'");
       adData.cinematography.camera_movement = "gradual dolly push";
       adData.cinematography.stabilization = "high-performance gimbal";
     }
   }
 
-  // --- STYLE CONTRADICTION PRUNER (v15.0) ---
   if (rawStyle.includes("noir")) {
     const sections = adData.compiled_master_prompt.split("Exclude:");
     let positivePrompt = sections[0];
     let negativePrompt = sections.length > 1 ? "Exclude: " + sections[1] : "";
-
     positivePrompt = positivePrompt
       .replace(/sun-drenched|bright airy|warm golden|golden hour|soft natural daylight/gi, (match: string) => {
         return positivePrompt.includes("moody low-key") ? "" : "moody low-key";
       })
       .replace(/5500K/g, "3200K");
-
     negativePrompt = negativePrompt.replace(/no dark shadows|no deep blacks|no moody atmosphere|no low-key lighting/gi, "");
-
     adData.compiled_master_prompt = (positivePrompt.trim() + " " + negativePrompt.trim()).trim();
   }
 
-  // --- v20.0 THE LOMBARDI SYNTHESIS ---
   const prose_word_count = (adData.compiled_master_prompt || "").split(/\s+/).length;
   if (prose_word_count < 140 && Array.isArray(adData.scene_core?.action_sequence)) {
     console.log("[v20.0 Lombardi Synthesis] Final Gold Standard Synthesis.");
@@ -666,9 +784,7 @@ export const compileVideoPrompt = (adData: any) => {
       const styleDesc = isCyberpunk ? "stylized cyberpunk anime aesthetic" : `${rawStyle} rendering style`;
       const lightingGrammar = isCyberpunk ? "neon signage in magenta and cyan, creating layered light patterns that ripple across the wet asphalt" : `palette-driven lighting with ${isNoir ? "high-contrast shadows" : "vivid saturation"}`;
       const animeMotifs = isCyberpunk ? "holographic billboards, suspended signage, and foreground cables creating layered depth" : "hand-painted backgrounds and textured brushwork";
-
       const opening = `A high-speed tracking shot establishes ${formattedSubject} within a ${location}, rendered in a ${styleDesc}. ${lightingGrammar}.`;
-
       const subjectRef = isVehicle ? "The vehicle" : "The subject";
       const motionBody = (adData.scene_core.action_sequence || [])
         .map((b: any, index: number) => {
@@ -677,14 +793,11 @@ export const compileVideoPrompt = (adData: any) => {
           return `The sequence resolves with smooth, continuous motion as it reaches ${b.action.toLowerCase()}.`;
         })
         .join(" ");
-
       const physicsDetail = isCyberpunk ? "Rain-streaks diagonally across the frame, catching light from holographic billboards above. Directional tire spray and high-speed splatter define the contact with the rain-slick surface." : "Physics govern the movement with consistent stylistic continuity and clean rendering. No digital artifacts.";
       const technicalFooter = `Visual composition relies on ${animeMotifs}, with ${isCyberpunk ? "bloom and light scattering" : "clean linework"} defining the frame. Saturated highlight roll-off ensures deep stylistic depth.`;
-
       finalProse = `${opening} ${motionBody} ${physicsDetail} ${technicalFooter}`;
     } else {
       const opening = `A professional tracking shot frames ${formattedSubject} in ${isNoir ? "low-key" : "natural"} ${forcedColorTemp}K lighting, his weathered features catching a narrow shaft of light within a ${location}.`;
-
       const motionBody = (adData.scene_core.action_sequence || [])
         .map((b: any, index: number) => {
           if (index === 0) return `He ${b.action.toLowerCase()} steadily, the motion deliberate and weighted, as deep shadows pool across the textured surface.`;
@@ -692,22 +805,17 @@ export const compileVideoPrompt = (adData: any) => {
           return `He finishes ${b.action.toLowerCase()} with quiet rhythm as the shot resolves.`;
         })
         .join(" ");
-
       const physicsDetail = isDrone ? "Hyper-smooth gimbal stabilization ensures zero vibration, maintaining a cinematic drift." : "Volumetric beams cut through the moisture-laden atmosphere, revealing slow-falling particles shaped by subtle air currents.";
       const technicalFooter = `Captured on an ${forcedStock || "industry-standard 35mm camera"} at ${forcedFps}fps, with a premium cinematic lens and selective focus. High-contrast chiaroscuro defines the scene, with deep blacks and a controlled rim light separating subject from background.`;
-
       finalProse = `${opening} ${motionBody} ${physicsDetail} ${technicalFooter}`;
     }
 
     const finalNegatives = (adData.negative_prompts || []).length > 0 ? `Exclude ${adData.negative_prompts.join(", ")}.` : `Exclude ${isAnimated ? "photorealism, camera-based artifacts, and physical lens behavior" : "high-key lighting, warm daylight, and digital artifacts"}.`;
-
     adData.compiled_master_prompt = `${finalProse} ${finalNegatives} The ${finalDuration}-second shot maintains absolute visual coherence.`.replace(/[{}[\]"]/g, "");
   }
 
-  // --- v20.5 SOVEREIGN QUALITY GATE (FINAL) ---
   const final_prose = adData.compiled_master_prompt || "";
   const final_word_count = final_prose.trim().split(/\s+/).length;
-
   const validation_results: any[] = [];
   let hard_reject = false;
 
