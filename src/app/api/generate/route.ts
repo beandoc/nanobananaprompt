@@ -270,4 +270,4 @@ HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels, no annotatio
   }
 }
 
-export const maxDuration = 60;
+export const maxDuration = 300;

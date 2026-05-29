@@ -11,6 +11,10 @@ export class GenerationService {
     let providerHistory: any[] = [];
     let error: Error | null = null;
 
+    // Multi-organ briefs are already dense by construction — skip the recursive hardener
+    // to avoid a second LLM call that pushes the total execution time past the Vercel limit
+    const isMultiOrgan = systemPrompt.includes("CRITICAL MULTI-ORGAN MANDATE");
+
     if (this.genAI) {
       const modelsToTry = ["gemini-2.5-flash", "gemini-2.0-flash"];
       for (const m of modelsToTry) {
@@ -20,7 +24,9 @@ export class GenerationService {
             generationConfig: {
               temperature: 0.6,
               topP: 0.9,
-              ...(m === "gemini-2.5-flash" ? { thinkingConfig: { thinkingBudget: 512 } } : {}),
+              // Multi-organ cases: disable thinking budget entirely — the system prompt
+              // already provides the full reasoning structure; thinking adds latency with no gain
+              ...(m === "gemini-2.5-flash" ? { thinkingConfig: { thinkingBudget: isMultiOrgan ? 0 : 512 } } : {}),
             },
             safetySettings,
           });
@@ -30,11 +36,12 @@ export class GenerationService {
             const mimeType = image.split(";")[0].split(":")[1];
             userParts.push({ inlineData: { data: base64Data, mimeType } });
           }
-          
+
           let result = await model.generateContent([systemPrompt, ...userParts]);
           let firstDraft = result.response.text().trim();
-          
+
           // --- SOVEREIGN RECURSIVE HARDENER ---
+          // Skipped for multi-organ cases (already dense; second call risks 504 timeout)
           // Visual rendering density — covers optics, lighting, material science
           const visualDensity = (firstDraft.match(/texture|lighting|optics|refraction|scattering|detailed|anatomy|clinical|specular|translucen|transmit|absorb|scatter|reflect|diffuse|volumetric|chromatic|luminan|irradianc/gi) || []).length;
           // Scientific/mechanistic density — pathophysiology, cellular, molecular terminology
@@ -42,7 +49,7 @@ export class GenerationService {
           const wordCount = firstDraft.split(/\s+/).length;
           const totalDensity = visualDensity + scientificDensity;
 
-          if (wordCount < 120 || totalDensity < 5) {
+          if (!isMultiOrgan && (wordCount < 120 || totalDensity < 5)) {
             console.log(`[Sovereign Hardener] Up-sampling thin prompt (Words: ${wordCount}, Visual: ${visualDensity}, Scientific: ${scientificDensity})...`);
             const missingDimension = scientificDensity < 2
               ? "mechanistic pathophysiology (causal cellular events, molecular markers, tissue-level consequences)"
