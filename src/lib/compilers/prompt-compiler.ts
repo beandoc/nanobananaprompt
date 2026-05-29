@@ -105,10 +105,10 @@ const extractBiologicalEntities = (adData: any): { primaryEntities: string[]; in
 };
 
 // Maps journal standard to model-native rendering style tokens that DALL-E 3 / GPT-4o understand
-const resolveRenderStyle = (styleTokens: string[], scale: string): { opening: string; reinforcement: string } => {
-  const joined = styleTokens.join(" ").toLowerCase();
+const resolveRenderStyle = (styleTokens: string[], scale: string, userStyle?: string): { opening: string; reinforcement: string } => {
+  const joined = (styleTokens.join(" ") + " " + (userStyle || "")).toLowerCase();
 
-  // Composite multi-organ / systemic disease — dual or multi-panel histology plate
+  // Composite multi-organ / systemic disease — dual or multi-panel illustration
   // Panel count is embedded in scale string as "composite-N" or inferred from adData
   if (scale.includes("composite")) {
     const panelCountMatch = scale.match(/composite-(\d+)/);
@@ -117,6 +117,17 @@ const resolveRenderStyle = (styleTokens: string[], scale: string): { opening: st
     const panelDivider = n === 2
       ? "left panel and right panel clearly separated by a thin white divider"
       : `${n} equal-width panels separated by thin white dividers`;
+
+    const isBiorender = joined.includes("biorender") || joined.includes("plasticine") || joined.includes("2.5d");
+    const isNejm = joined.includes("nejm") || joined.includes("scholarly") || joined.includes("netter");
+
+    if (isBiorender) {
+      return {
+        opening: `A ${panelWord} BioRender-standard scientific illustration depicting systemic disease across ${n} organs`,
+        reinforcement: `rendered with clean 2.5D vector assets and matte plastic textures, ${panelDivider}, each panel depicting the corresponding organ's histopathology, soft ambient clinical lighting, pastel anatomical color palette, white background, no labels or text`,
+      };
+    }
+    // Default composite style: NEJM histopathology plate
     return {
       opening: `A ${panelWord} histopathology illustration depicting systemic disease across ${n} organs`,
       reinforcement: `in the style of a NEJM case report figure, H&E staining palette, ${panelDivider}, each panel labeled by organ, crisp tissue section detail, white background, no annotations`,
@@ -256,14 +267,14 @@ const buildMultiOrganPanelComposition = (
 // Builds a ChatGPT/DALL-E 3-native prompt
 // Key rules for DALL-E 3: (1) style imperative first, (2) no negative framing — reframe as positives,
 // (3) composition as explicit instruction, (4) colors as "use X for Y" directives
-const buildChatGPTPrompt = (ds: any, subject: string, adData?: any, brief?: string): string => {
+const buildChatGPTPrompt = (ds: any, subject: string, adData?: any, brief?: string, userStyle?: string): string => {
   const pw = ds.priority_weighting || {};
   const primary = (pw.primary_focus || []).join(", ");
   const secondary = (pw.secondary_context || []).join(", ");
   const styleTokens: string[] = ds.style_descriptors || [];
   const organs = detectMultiOrganCase(subject, pw.primary_focus || [], brief);
   const scale = inferScale(subject, pw.primary_focus || [], brief);
-  const { opening, reinforcement } = resolveRenderStyle(styleTokens, scale);
+  const { opening, reinforcement } = resolveRenderStyle(styleTokens, scale, userStyle);
   const aspectRatio = inferAspectRatio(adData, scale);
 
   // DALL-E 3: style imperative as the very first clause
@@ -324,14 +335,14 @@ const buildChatGPTPrompt = (ds: any, subject: string, adData?: any, brief?: stri
 // Builds a Gemini ImageFX / Imagen 4-native prose prompt
 // Key rules for Gemini: (1) clean prose, no bracket tags, (2) style tokens inline as descriptors,
 // (3) negatives as trailing prose sentence, (4) opening sentence = scale + style + subject
-const buildImagenPrompt = (ds: any, subject: string, adData?: any, brief?: string): string => {
+const buildImagenPrompt = (ds: any, subject: string, adData?: any, brief?: string, userStyle?: string): string => {
   const pw = ds.priority_weighting || {};
   const primary = (pw.primary_focus || []).join(", ");
   const secondary = (pw.secondary_context || []).join(", ");
   const styleTokens: string[] = ds.style_descriptors || [];
   const organs = detectMultiOrganCase(subject, pw.primary_focus || [], brief);
   const scale = inferScale(subject, pw.primary_focus || [], brief);
-  const { opening, reinforcement } = resolveRenderStyle(styleTokens, scale);
+  const { opening, reinforcement } = resolveRenderStyle(styleTokens, scale, userStyle);
   const aspectRatio = inferAspectRatio(adData, scale);
 
   // Opening: style + subject + pathophysiology hook in one sentence
@@ -395,7 +406,7 @@ const buildImagenPrompt = (ds: any, subject: string, adData?: any, brief?: strin
   return `${openingSentence}${multiOrganBlock}${spatial}${core}${mechanisticSentence}${bioGraphSentence}${secondarySentence}${colors}${canvasDirective}${styleFooter}${negatives}`.replace(/\s{2,}/g, " ").trim();
 };
 
-export const compileMedicalPrompt = (adData: any, brief?: string) => {
+export const compileMedicalPrompt = (adData: any, brief?: string, userStyle?: string) => {
   if (adData.diffusion_synthesis && typeof adData.diffusion_synthesis === "object") {
     console.log("[SOVEREIGN COMPILER] Compiling final prompt with Principle-based pruning...");
     let cleanMaster = adData.diffusion_synthesis.master_prompt || "";
@@ -427,10 +438,10 @@ export const compileMedicalPrompt = (adData: any, brief?: string) => {
     adData.diffusion_synthesis.compiled_prompt = compiledBlocks.join("\n\n");
 
     // 3. Imagen 4 / Gemini Web prose prompt — paste this directly into Gemini web
-    adData.diffusion_synthesis.imagen_prompt = buildImagenPrompt(ds, subject, adData, brief);
+    adData.diffusion_synthesis.imagen_prompt = buildImagenPrompt(ds, subject, adData, brief, userStyle);
 
     // 4. ChatGPT / GPT-4o prose prompt — style-first, conversational framing, mid-prompt negatives
-    adData.diffusion_synthesis.chatgpt_prompt = buildChatGPTPrompt(ds, subject, adData, brief);
+    adData.diffusion_synthesis.chatgpt_prompt = buildChatGPTPrompt(ds, subject, adData, brief, userStyle);
   }
 };
 

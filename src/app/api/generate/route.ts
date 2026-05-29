@@ -266,7 +266,7 @@ DO NOT collapse to a single organ. Every organ listed above must appear in the J
     let validationResult: { valid: boolean; issues: string[] } | null = null;
     if (mode === "medical") {
       validationResult = validateMedicalOutput(adData);
-      compileMedicalPrompt(adData, brief);
+      compileMedicalPrompt(adData, brief, normalizedStyle);
     } else if (mode === "infographic") {
       validationResult = validateInfographicOutput(adData, normalizedStyle);
     } else if (mode === "video") {
