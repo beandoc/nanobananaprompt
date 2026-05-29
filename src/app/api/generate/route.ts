@@ -12,22 +12,21 @@ import { storyboardSchema } from "@/lib/schemas/storyboard";
 import { comicStripSchema } from "@/lib/schemas/comic-strip";
 import { medicalIllustrationSchema } from "@/lib/schemas/medical-illustration";
 
-// Streams a single JSON payload as newline-delimited JSON events so Vercel Hobby's
-// 10s wall-clock limit is bypassed — the connection stays alive while we work and
-// flushes the final result when ready.
+// Wraps a JSON payload in a ReadableStream so Vercel Hobby's 10s wall-clock limit
+// is bypassed — the connection stays alive while LLM calls run, then flushes the
+// full result. Content-Type stays application/json so clients need no special handling.
 function streamJson(payload: object): Response {
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     start(controller) {
-      controller.enqueue(encoder.encode(JSON.stringify(payload) + "\n"));
+      controller.enqueue(encoder.encode(JSON.stringify(payload)));
       controller.close();
     },
   });
   return new Response(stream, {
     headers: {
-      "Content-Type": "application/x-ndjson",
-      "Transfer-Encoding": "chunked",
-      "X-Accel-Buffering": "no", // disable Nginx proxy buffering on Vercel
+      "Content-Type": "application/json",
+      "X-Accel-Buffering": "no", // disable Nginx/Vercel proxy buffering
     },
   });
 }

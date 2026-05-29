@@ -18,36 +18,35 @@ const getHeaders = () => {
 };
 
 async function handleResponse<T>(resp: Response): Promise<T> {
-    const contentType = resp.headers.get("content-type") || "";
-
-    // Streaming NDJSON response — read the full stream then parse the last complete line
-    if (contentType.includes("x-ndjson") || contentType.includes("octet-stream")) {
-        const reader = resp.body?.getReader();
-        if (!reader) throw new Error("No response body");
-        const decoder = new TextDecoder();
-        let raw = "";
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            raw += decoder.decode(value, { stream: true });
-        }
-        const line = raw.trim().split("\n").filter(Boolean).pop() || "{}";
-        const body: ApiResponse<T> = JSON.parse(line);
-        if (!body.success) throw new Error((body as any).error || `Request failed with status ${resp.status}`);
-        return body.data as T;
+    // Always read via stream — works for both streaming and plain JSON responses.
+    // Content-type sniffing is unreliable: Vercel's edge rewrites headers on
+    // streaming responses, so we can't rely on "x-ndjson" being present.
+    const reader = resp.body?.getReader();
+    if (!reader) {
+        // No body reader — last-resort fallback
+        if (!resp.ok) throw new Error(`Request failed with status ${resp.status}`);
+        throw new Error("Empty response body");
     }
 
-    // Fallback: plain JSON response
-    if (!contentType.includes("application/json")) {
-        const text = await resp.text();
-        console.error("Non-JSON response received:", text.substring(0, 100));
-        throw new Error(`API returned ${resp.status} ${resp.statusText}. Expected JSON but got ${contentType || 'plain text'}.`);
+    const decoder = new TextDecoder();
+    let raw = "";
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        raw += decoder.decode(value, { stream: true });
     }
 
-    const body: ApiResponse<T> = await resp.json();
-    if (!resp.ok || !body.success) {
-        throw new Error(body.error || `Request failed with status ${resp.status}`);
+    // Parse the last non-empty JSON line (handles both single-line and NDJSON)
+    const lastLine = raw.trim().split("\n").filter(Boolean).pop() || "{}";
+    let body: ApiResponse<T>;
+    try {
+        body = JSON.parse(lastLine);
+    } catch {
+        console.error("Failed to parse response:", raw.substring(0, 200));
+        throw new Error(`API returned unparseable response (status ${resp.status})`);
     }
+
+    if (!body.success) throw new Error((body as any).error || `Request failed with status ${resp.status}`);
     return body.data as T;
 }
 
