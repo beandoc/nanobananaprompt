@@ -58,6 +58,30 @@ ${config.expansionRules.join("\n")}
         const isSurgical = brief.toLowerCase().match(/surgery|resection|dissection|laparoscop|robotic|endoscop|incision/);
         const isCardiac = brief.match(/cardiac|coronar|myocard|atheroscler|aorta|heart|MI|infarct/i);
 
+        // Multi-organ / multi-system syndromic detection
+        // Catches: pulmonary-renal syndrome, Goodpasture's, ANCA vasculitis, SLE, etc.
+        const ORGAN_PATTERNS: { label: string; pattern: RegExp }[] = [
+          { label: "lung/pulmonary (alveolar hemorrhage, pneumonitis, etc.)", pattern: /\b(lung|pulmonar|alveol|bronch|hemoptysis|alveolar.hemorrhage|diffuse.alveolar|pneum)\b/i },
+          { label: "kidney/renal (glomerulonephritis, crescentic nephritis, etc.)", pattern: /\b(kidney|renal|glomerul|nephron|crescent|glomerulonephritis|nephrotic|nephritic)\b/i },
+          { label: "heart/cardiac", pattern: /\b(heart|cardiac|coronar|myocard|pericardi|endocardi|ventricle|atrium)\b/i },
+          { label: "skin (vasculitic rash, purpura)", pattern: /\b(skin|derm|rash|purpura|vasculitis.*skin)\b/i },
+          { label: "joints (arthritis)", pattern: /\b(joint|arthritis|synovit)\b/i },
+          { label: "brain/CNS", pattern: /\b(brain|cerebr|encephalit|neurolog|cns)\b/i },
+        ];
+        const affectedOrgans = ORGAN_PATTERNS.filter(o => o.pattern.test(brief)).map(o => o.label);
+        const isMultiOrgan = affectedOrgans.length >= 2;
+
+        const multiOrganMandate = isMultiOrgan
+          ? `\n\n### CRITICAL MULTI-ORGAN MANDATE (SYSTEMIC DISEASE DETECTED):
+This brief involves a SYSTEMIC / MULTI-ORGAN disease affecting: ${affectedOrgans.join("; ")}.
+You MUST describe ALL affected organs with equal specificity. DO NOT default to the most dramatic single organ.
+- For EACH affected organ: provide (1) the specific histopathological finding, (2) its microscopic appearance, (3) its color and staining characteristics.
+- The visual output will be a SPLIT-PANEL / COMPOSITE illustration — one panel per organ.
+- Your expanded brief must contain a separate paragraph for EACH organ's pathology, of equal depth.
+- The unifying systemic mechanism (e.g., anti-GBM antibodies, ANCA vasculitis, immune complex deposition) must be named and explained.
+- FAILURE TO DESCRIBE ALL ORGANS = CRITICAL SPECIFICATION ERROR.`
+          : "";
+
         if (isSurgical) {
           expansionSystemPrompt = `### ROLE: PRINCIPAL SURGICAL MEDICAL ILLUSTRATOR (SVSP v2.0 — OPERATIVE ANATOMY PROTOCOL)
 
@@ -151,10 +175,11 @@ Translate Phase 1 into a precise visual brief:
 6. IDENTITY: All human representations must be South Asian (Indian) descent.
 
 ### OUTPUT REQUIREMENTS:
-- Word Count: 220-300 words of precise scientific prose.
+- Word Count: 220-300 words of precise scientific prose (add 80 words per additional organ if multi-organ case).
 - Every structure must be described with: (1) anatomical name, (2) normal baseline appearance, (3) pathological change, (4) visual rendering instruction.
 - Integrate all relevant data from the MEDICAL REFERENCE section below.
 - STYLE: Scholarly BioRender matte plasticine 2.5D / NEJM plate.
+${multiOrganMandate}
 ${dynamicBlacklist}
 ${config.expansionRules.join("\n")}
 STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
@@ -190,7 +215,7 @@ HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels, no annotatio
     let validationResult: { valid: boolean; issues: string[] } | null = null;
     if (mode === "medical") {
       validationResult = validateMedicalOutput(adData);
-      compileMedicalPrompt(adData);
+      compileMedicalPrompt(adData, brief);
     } else if (mode === "infographic") {
       validationResult = validateInfographicOutput(adData, normalizedStyle);
     } else if (mode === "video") {

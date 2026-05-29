@@ -1,6 +1,27 @@
+// Detects multi-organ / multi-system cases (e.g. pulmonary + renal, lung + kidney)
+// Returns array of organ labels involved, or empty array for single-organ cases
+const detectMultiOrganCase = (subject: string, primaryFocus: string[], brief?: string): string[] => {
+  const all = `${subject} ${primaryFocus.join(" ")} ${brief || ""}`.toLowerCase();
+  const organs: { label: string; pattern: RegExp }[] = [
+    { label: "lung/pulmonary", pattern: /\b(lung|pulmonar|alveol|bronch|pleura|pneumo|hemoptysis|alveolar.hemorrhage|diffuse.alveolar)\b/ },
+    { label: "kidney/renal", pattern: /\b(kidney|renal|glomerul|nephron|tubul|crescent|glomerulonephritis|nephrotic|nephritic)\b/ },
+    { label: "heart/cardiac", pattern: /\b(heart|cardiac|coronar|myocard|pericardi|endocardi|ventricle|atrium|aorta)\b/ },
+    { label: "liver/hepatic", pattern: /\b(liver|hepat|cirrhosis|fibrosis.*liver|portal.hypertension)\b/ },
+    { label: "skin/dermal", pattern: /\b(skin|derm|epiderm|rash|vasculitis.*skin|purpura)\b/ },
+    { label: "brain/neurological", pattern: /\b(brain|neuron|cerebr|encephalit|meningi|spinal)\b/ },
+    { label: "joint/synovial", pattern: /\b(joint|synovi|cartilage|arthritis|articular)\b/ },
+  ];
+  return organs.filter(o => o.pattern.test(all)).map(o => o.label);
+};
+
 // Infers anatomical scale from subject and primary focus terms for Imagen 4 opening sentence
-const inferScale = (subject: string, primaryFocus: string[]): string => {
-  const all = `${subject} ${primaryFocus.join(" ")}`.toLowerCase();
+const inferScale = (subject: string, primaryFocus: string[], brief?: string): string => {
+  const all = `${subject} ${primaryFocus.join(" ")} ${brief || ""}`.toLowerCase();
+
+  // Multi-organ systemic disease → composite light microscopy scale (n-panel)
+  const organs = detectMultiOrganCase(subject, primaryFocus, brief);
+  if (organs.length >= 2) return `composite-${organs.length} light microscopy-scale`;
+
   // Ultrastructural / electron microscopy — single proteins, organelles, membrane structures
   if (/foot.process|podocyte|endosome|receptor|gpcr|membrane.channel|ribosome|mitochondri|vesicle|lysosome|nucleus|chromatin|exosome|pore.complex|actin|cytoskeleton|tight.junction|desmoso|integrin|caveola|clathrin|golgi/.test(all))
     return "electron microscopy-scale";
@@ -87,6 +108,21 @@ const extractBiologicalEntities = (adData: any): { primaryEntities: string[]; in
 const resolveRenderStyle = (styleTokens: string[], scale: string): { opening: string; reinforcement: string } => {
   const joined = styleTokens.join(" ").toLowerCase();
 
+  // Composite multi-organ / systemic disease — dual or multi-panel histology plate
+  // Panel count is embedded in scale string as "composite-N" or inferred from adData
+  if (scale.includes("composite")) {
+    const panelCountMatch = scale.match(/composite-(\d+)/);
+    const n = panelCountMatch ? parseInt(panelCountMatch[1]) : 2;
+    const panelWord = n === 2 ? "dual-panel" : n === 3 ? "triptych three-panel" : `${n}-panel`;
+    const panelDivider = n === 2
+      ? "left panel and right panel clearly separated by a thin white divider"
+      : `${n} equal-width panels separated by thin white dividers`;
+    return {
+      opening: `A ${panelWord} histopathology illustration depicting systemic disease across ${n} organs`,
+      reinforcement: `in the style of a NEJM case report figure, H&E staining palette, ${panelDivider}, each panel labeled by organ, crisp tissue section detail, white background, no annotations`,
+    };
+  }
+
   // Electron / ultrastructural scale
   if (scale.includes("electron")) {
     return {
@@ -149,6 +185,12 @@ const inferAspectRatio = (adData: any, scale: string): string => {
   const panels = adData?.spatial_layout?.panels || [];
   if (panels.length >= 3) return "wide landscape format (16:9 aspect ratio)";
   if (panels.length === 2) return "landscape format (4:3 aspect ratio)";
+  // Composite multi-organ cases need wider canvas for more panels
+  if (scale.includes("composite")) {
+    const panelCountMatch = scale.match(/composite-(\d+)/);
+    const n = panelCountMatch ? parseInt(panelCountMatch[1]) : 2;
+    return n >= 3 ? "wide landscape format (16:9 aspect ratio)" : "landscape format (4:3 aspect ratio)";
+  }
   // Surgical fields and gross anatomy are always widescreen — endoscopes output 16:9
   if (scale.includes("surgical")) return "wide landscape format (16:9 aspect ratio)";
   if (scale.includes("gross anatomy")) return "landscape format (4:3 aspect ratio)";
@@ -171,15 +213,56 @@ const deduplicateMasterAndSpatial = (master: string, spatial: string): string =>
   return filtered.join(" ").trim();
 };
 
+// Builds a split-panel composition description for multi-organ systemic disease cases
+const buildMultiOrganPanelComposition = (
+  organs: string[],
+  primary: string,
+  ds: any,
+  adData: any
+): { panelBlock: string; panelColors: string } => {
+  const mc = adData?.medical_content || {};
+  const pathoCascade: string[] = mc.pathophysiology_cascade || mc.pathophysiology || [];
+  const unifyingMechanism = mc.mechanism || mc.primary_mechanism || pathoCascade[0] || "immune-mediated systemic vasculitis";
+
+  // Split primary_focus items between the detected organs heuristically
+  const primaryItems: string[] = ds.priority_weighting?.primary_focus || [];
+  const panels = organs.map((organ, i) => {
+    const organKey = organ.split("/")[0]; // e.g. "lung", "kidney"
+    const organItems = primaryItems.filter(item =>
+      item.toLowerCase().includes(organKey) ||
+      // For lung: catch alveolar, hemorrhage, DAH terms
+      (organKey === "lung" && /alveol|hemorrhage|dah|pulmonar|pneum|bronch/.test(item.toLowerCase())) ||
+      // For kidney: catch glomerul, crescent, GBM, nephron terms
+      (organKey === "kidney" && /glomerul|crescent|nephron|gbm|tubul|bowman/.test(item.toLowerCase()))
+    );
+    // Fallback: distribute remaining items across panels evenly
+    const fallbackItems = primaryItems.filter((_, idx) => idx % organs.length === i);
+    const panelItems = organItems.length > 0 ? organItems : fallbackItems;
+    const panelLabel = organ.replace("/", " or ");
+    const panelDesc = panelItems.length > 0 ? panelItems.join(", ") : `${organ} histopathology`;
+    return `Panel ${i + 1} (${panelLabel}): ${panelDesc}`;
+  });
+
+  const panelBlock = `This is a ${organs.length}-panel composite illustration. ${panels.join(". ")}. All panels share the same histological scale and staining style, connected by the unifying disease mechanism: ${unifyingMechanism}.`;
+
+  const colorLang: any[] = ds.color_language || [];
+  const panelColors = colorLang.length
+    ? colorLang.map((c: any) => `${c.zone}: ${c.color_descriptor}`).join("; ")
+    : "";
+
+  return { panelBlock, panelColors };
+};
+
 // Builds a ChatGPT/DALL-E 3-native prompt
 // Key rules for DALL-E 3: (1) style imperative first, (2) no negative framing — reframe as positives,
 // (3) composition as explicit instruction, (4) colors as "use X for Y" directives
-const buildChatGPTPrompt = (ds: any, subject: string, adData?: any): string => {
+const buildChatGPTPrompt = (ds: any, subject: string, adData?: any, brief?: string): string => {
   const pw = ds.priority_weighting || {};
   const primary = (pw.primary_focus || []).join(", ");
   const secondary = (pw.secondary_context || []).join(", ");
   const styleTokens: string[] = ds.style_descriptors || [];
-  const scale = inferScale(subject, pw.primary_focus || []);
+  const organs = detectMultiOrganCase(subject, pw.primary_focus || [], brief);
+  const scale = inferScale(subject, pw.primary_focus || [], brief);
   const { opening, reinforcement } = resolveRenderStyle(styleTokens, scale);
   const aspectRatio = inferAspectRatio(adData, scale);
 
@@ -187,6 +270,14 @@ const buildChatGPTPrompt = (ds: any, subject: string, adData?: any): string => {
   // Use metadata subject (natural description) as preferred opener; fall back to primary_focus list
   const subjectPhrase = subject || primary;
   const styleDirective = `${opening} of ${subjectPhrase}.`;
+
+  // Multi-organ composite: inject panel composition block immediately after the opening
+  let multiOrganBlock = "";
+  if (organs.length >= 2 && adData) {
+    const { panelBlock, panelColors } = buildMultiOrganPanelComposition(organs, primary, ds, adData);
+    multiOrganBlock = ` ${panelBlock}`;
+    if (panelColors) multiOrganBlock += ` Color protocol per panel: ${panelColors}.`;
+  }
 
   // Pathophysiology as positive visual directive (DALL-E 3 ignores "do not" — state what TO show)
   const physioHook = ds.pathophysiology_visual_summary
@@ -206,8 +297,8 @@ const buildChatGPTPrompt = (ds: any, subject: string, adData?: any): string => {
   // Core anatomical description (deduplicated)
   const core = cleanMaster ? ` ${cleanMaster}` : "";
 
-  // Colors as explicit directives (DALL-E 3 responds to "use X color for Y")
-  const colors = Array.isArray(ds.color_language) && ds.color_language.length
+  // Colors as explicit directives — skip if already emitted in multi-organ block
+  const colors = organs.length < 2 && Array.isArray(ds.color_language) && ds.color_language.length
     ? ` Color treatment: ${ds.color_language.map((c: any) => `use ${c.color_descriptor} for ${c.zone}`).join("; ")}.`
     : "";
 
@@ -227,18 +318,19 @@ const buildChatGPTPrompt = (ds: any, subject: string, adData?: any): string => {
   // DALL-E 3: NO negative prompts — reframe as positive "pure visual" directive
   const purityDirective = " Pure visual anatomy — no text, no labels, no annotations, no arrows, no captions anywhere in the image.";
 
-  return `${styleDirective}${physioHook}${spatial}${core}${colors}${secondarySentence}${mechanisticSentence}${styleFooter}${canvasDirective}${purityDirective}`.replace(/\s{2,}/g, " ").trim();
+  return `${styleDirective}${multiOrganBlock}${physioHook}${spatial}${core}${colors}${secondarySentence}${mechanisticSentence}${styleFooter}${canvasDirective}${purityDirective}`.replace(/\s{2,}/g, " ").trim();
 };
 
 // Builds a Gemini ImageFX / Imagen 4-native prose prompt
 // Key rules for Gemini: (1) clean prose, no bracket tags, (2) style tokens inline as descriptors,
 // (3) negatives as trailing prose sentence, (4) opening sentence = scale + style + subject
-const buildImagenPrompt = (ds: any, subject: string, adData?: any): string => {
+const buildImagenPrompt = (ds: any, subject: string, adData?: any, brief?: string): string => {
   const pw = ds.priority_weighting || {};
   const primary = (pw.primary_focus || []).join(", ");
   const secondary = (pw.secondary_context || []).join(", ");
   const styleTokens: string[] = ds.style_descriptors || [];
-  const scale = inferScale(subject, pw.primary_focus || []);
+  const organs = detectMultiOrganCase(subject, pw.primary_focus || [], brief);
+  const scale = inferScale(subject, pw.primary_focus || [], brief);
   const { opening, reinforcement } = resolveRenderStyle(styleTokens, scale);
   const aspectRatio = inferAspectRatio(adData, scale);
 
@@ -249,6 +341,15 @@ const buildImagenPrompt = (ds: any, subject: string, adData?: any): string => {
     ? `, showing ${ds.pathophysiology_visual_summary.replace(/\.$/, "")}`
     : "";
   const openingSentence = `${opening} of ${subjectPhrase}${physioHook}.`;
+
+  // Multi-organ composite: inject explicit panel composition block right after opening
+  // This is the key instruction Gemini needs to render BOTH organs, not just one
+  let multiOrganBlock = "";
+  if (organs.length >= 2 && adData) {
+    const { panelBlock, panelColors } = buildMultiOrganPanelComposition(organs, primary, ds, adData);
+    multiOrganBlock = ` ${panelBlock}`;
+    if (panelColors) multiOrganBlock += ` Color protocol: ${panelColors}.`;
+  }
 
   // Spatial composition as next sentence — Gemini anchors composition from early prose
   // Strip trailing period from spatial_narrative before appending to avoid ".." double-period artifact
@@ -274,8 +375,8 @@ const buildImagenPrompt = (ds: any, subject: string, adData?: any): string => {
   // Secondary context
   const secondarySentence = secondary ? ` Supporting anatomical context: ${secondary}.` : "";
 
-  // Colors as prose descriptors — Gemini follows inline color descriptions naturally
-  const colors = Array.isArray(ds.color_language) && ds.color_language.length
+  // Colors as prose descriptors — skip if already emitted in multi-organ block
+  const colors = organs.length < 2 && Array.isArray(ds.color_language) && ds.color_language.length
     ? ` Color palette: ${ds.color_language.map((c: any) => `${c.zone} in ${c.color_descriptor}`).join("; ")}.`
     : "";
 
@@ -291,10 +392,10 @@ const buildImagenPrompt = (ds: any, subject: string, adData?: any): string => {
     : "text, labels, arrows, annotations, numbers, photorealism, dramatic cinematic shadows, dark backgrounds";
   const negatives = ` Do not include: ${rawNeg}.`;
 
-  return `${openingSentence}${spatial}${core}${mechanisticSentence}${bioGraphSentence}${secondarySentence}${colors}${canvasDirective}${styleFooter}${negatives}`.replace(/\s{2,}/g, " ").trim();
+  return `${openingSentence}${multiOrganBlock}${spatial}${core}${mechanisticSentence}${bioGraphSentence}${secondarySentence}${colors}${canvasDirective}${styleFooter}${negatives}`.replace(/\s{2,}/g, " ").trim();
 };
 
-export const compileMedicalPrompt = (adData: any) => {
+export const compileMedicalPrompt = (adData: any, brief?: string) => {
   if (adData.diffusion_synthesis && typeof adData.diffusion_synthesis === "object") {
     console.log("[SOVEREIGN COMPILER] Compiling final prompt with Principle-based pruning...");
     let cleanMaster = adData.diffusion_synthesis.master_prompt || "";
@@ -326,10 +427,10 @@ export const compileMedicalPrompt = (adData: any) => {
     adData.diffusion_synthesis.compiled_prompt = compiledBlocks.join("\n\n");
 
     // 3. Imagen 4 / Gemini Web prose prompt — paste this directly into Gemini web
-    adData.diffusion_synthesis.imagen_prompt = buildImagenPrompt(ds, subject, adData);
+    adData.diffusion_synthesis.imagen_prompt = buildImagenPrompt(ds, subject, adData, brief);
 
     // 4. ChatGPT / GPT-4o prose prompt — style-first, conversational framing, mid-prompt negatives
-    adData.diffusion_synthesis.chatgpt_prompt = buildChatGPTPrompt(ds, subject, adData);
+    adData.diffusion_synthesis.chatgpt_prompt = buildChatGPTPrompt(ds, subject, adData, brief);
   }
 };
 
