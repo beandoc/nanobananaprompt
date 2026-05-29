@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ResponseManager } from "@/lib/api-response";
 import { atlasService } from "@/lib/atlas-service";
 import { promptService } from "@/lib/prompt-service";
@@ -12,6 +12,26 @@ import { storyboardSchema } from "@/lib/schemas/storyboard";
 import { comicStripSchema } from "@/lib/schemas/comic-strip";
 import { medicalIllustrationSchema } from "@/lib/schemas/medical-illustration";
 
+// Streams a single JSON payload as newline-delimited JSON events so Vercel Hobby's
+// 10s wall-clock limit is bypassed — the connection stays alive while we work and
+// flushes the final result when ready.
+function streamJson(payload: object): Response {
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(JSON.stringify(payload) + "\n"));
+      controller.close();
+    },
+  });
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "application/x-ndjson",
+      "Transfer-Encoding": "chunked",
+      "X-Accel-Buffering": "no", // disable Nginx proxy buffering on Vercel
+    },
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -24,8 +44,25 @@ export async function POST(req: NextRequest) {
     let providerHistory: any[] = [];
     let finalBriefForJson = brief;
 
+    // --- MULTI-ORGAN FAST-PATH (Part 1 of timeout fix) ---
+    // Detect multi-organ systemic disease from the raw brief. When detected:
+    // (a) skip Phase 1 expansion entirely — saves one full Gemini round-trip
+    // (b) inject organ context directly into the JSON system instruction
+    // This keeps us well under Vercel Hobby's 10s limit for these complex cases.
+    const ORGAN_PATTERNS_EARLY: { label: string; pattern: RegExp }[] = [
+      { label: "lung/pulmonary", pattern: /\b(lung|pulmonar|alveol|bronch|hemoptysis|diffuse.alveolar|pneum)\b/i },
+      { label: "kidney/renal", pattern: /\b(kidney|renal|glomerul|nephron|crescent|glomerulonephritis|nephrotic|nephritic)\b/i },
+      { label: "heart/cardiac", pattern: /\b(heart|cardiac|coronar|myocard|pericardi|ventricle|atrium)\b/i },
+      { label: "skin/dermal", pattern: /\b(skin|derm|rash|purpura|vasculitis.*skin)\b/i },
+      { label: "joints/synovial", pattern: /\b(joint|arthritis|synovit)\b/i },
+      { label: "brain/CNS", pattern: /\b(brain|cerebr|encephalit|neurolog|cns)\b/i },
+    ];
+    const earlyOrgans = ORGAN_PATTERNS_EARLY.filter(o => o.pattern.test(brief)).map(o => o.label);
+    const isMultiOrganFastPath = mode === "medical" && earlyOrgans.length >= 2;
+
     // --- PHASE 1: EXPANSION ---
-    if (!lightweight) {
+    // Skipped for multi-organ fast-path — organ context is embedded in the JSON prompt instead
+    if (!lightweight && !isMultiOrganFastPath) {
       const atlasContext = mode === "medical" || mode === "infographic" ? atlasService.getAtlasContext(brief) : "";
       const dynamicBlacklist = mode === "medical" || mode === "infographic" ? getDynamicBlacklist(brief) : "";
 
@@ -198,7 +235,22 @@ HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels, no annotatio
     pruneDescriptions(minSchema);
     const schemaStr = JSON.stringify(minSchema);
 
-    const systemInstruction = lightweight
+    const systemInstruction = isMultiOrganFastPath
+      ? `### ROLE: ${config.jsonRole}
+${config.jsonInstructions ? config.jsonInstructions(normalizedStyle) : ""}
+SCHEMA MANDATE: Return JSON strictly following schema: ${schemaStr}
+NO TEXT LABELS (Only applies to medical illustrations).
+
+### CRITICAL MULTI-ORGAN COMPOSITE MANDATE:
+This is a SYSTEMIC / MULTI-ORGAN disease case affecting: ${earlyOrgans.join("; ")}.
+You MUST populate the JSON as a SPLIT-PANEL / COMPOSITE illustration:
+- diffusion_synthesis.priority_weighting.primary_focus: include the key pathological finding for EACH organ (e.g. "Blood-filled alveoli (lung panel)", "Cellular crescent in Bowman's space (kidney panel)")
+- spatial_layout.panels: create one panel entry per organ with clear relative_placement (e.g. "Left half — lung", "Right half — kidney")
+- diffusion_synthesis.master_prompt: describe EACH organ's histopathology in a separate paragraph with equal depth — color, cellular architecture, staining appearance
+- medical_content.mechanism: name the unifying systemic mechanism (e.g. anti-GBM antibodies, ANCA vasculitis, immune complex deposition)
+- diffusion_synthesis.pathophysiology_visual_summary: explain how one mechanism causes damage in ALL affected organs simultaneously
+DO NOT collapse to a single organ. Every organ listed above must appear in the JSON output.`
+      : lightweight
       ? `Return ONLY valid JSON for: "${mode}". SCHEMA: ${schemaStr}`
       : `### ROLE: ${config.jsonRole}
             ${config.jsonInstructions ? config.jsonInstructions(normalizedStyle) : ""}
@@ -252,21 +304,27 @@ HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels, no annotatio
     const filename = `gen-${Date.now()}.json`;
     await promptService.savePrompt({ name: filename, type: mode, content: adData });
 
-    return ResponseManager.success({
-      data: adData,
-      refinedPrompt: finalBriefForJson,
-      promptFile: filename,
-      folder: mode + "_prompts",
-      providerHistory,
-      // Imagen 4 / Gemini web optimized prompt — paste this directly into Gemini web
-      ...(mode === "medical" && adData.diffusion_synthesis?.imagen_prompt
-        ? { geminiWebPrompt: adData.diffusion_synthesis.imagen_prompt }
-        : {}),
-      ...(validationResult && !validationResult.valid ? { _validation_warnings: validationResult.issues } : {}),
-    });
+    const payload = {
+      success: true,
+      data: {
+        data: adData,
+        refinedPrompt: finalBriefForJson,
+        promptFile: filename,
+        folder: mode + "_prompts",
+        providerHistory,
+        ...(mode === "medical" && adData.diffusion_synthesis?.imagen_prompt
+          ? { geminiWebPrompt: adData.diffusion_synthesis.imagen_prompt }
+          : {}),
+        ...(validationResult && !validationResult.valid ? { _validation_warnings: validationResult.issues } : {}),
+      },
+    };
+
+    // Use streaming for all responses — keeps the Vercel connection alive and
+    // bypasses the Hobby plan's 10s function timeout wall
+    return streamJson(payload);
   } catch (error: any) {
     console.error("Single-Shot Engine Failure:", error);
-    return ResponseManager.error(error.message, 500);
+    return streamJson({ success: false, error: error.message });
   }
 }
 

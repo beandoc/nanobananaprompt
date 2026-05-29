@@ -18,8 +18,27 @@ const getHeaders = () => {
 };
 
 async function handleResponse<T>(resp: Response): Promise<T> {
-    const contentType = resp.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
+    const contentType = resp.headers.get("content-type") || "";
+
+    // Streaming NDJSON response — read the full stream then parse the last complete line
+    if (contentType.includes("x-ndjson") || contentType.includes("octet-stream")) {
+        const reader = resp.body?.getReader();
+        if (!reader) throw new Error("No response body");
+        const decoder = new TextDecoder();
+        let raw = "";
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            raw += decoder.decode(value, { stream: true });
+        }
+        const line = raw.trim().split("\n").filter(Boolean).pop() || "{}";
+        const body: ApiResponse<T> = JSON.parse(line);
+        if (!body.success) throw new Error((body as any).error || `Request failed with status ${resp.status}`);
+        return body.data as T;
+    }
+
+    // Fallback: plain JSON response
+    if (!contentType.includes("application/json")) {
         const text = await resp.text();
         console.error("Non-JSON response received:", text.substring(0, 100));
         throw new Error(`API returned ${resp.status} ${resp.statusText}. Expected JSON but got ${contentType || 'plain text'}.`);
