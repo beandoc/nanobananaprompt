@@ -39,9 +39,10 @@ export const agentConfigs: Record<string, any> = {
     expansionRules: [
       "1. SPATIAL COMPOSITION: Do NOT default to 3 panels. Use the most effective layout for the brief. If a single focused view is best, use it. If multiple perspectives are needed, describe them relative to each other (e.g., 'Inset', 'Adjacent', 'Foreground').",
       "2. STYLE PROTOCOL: Specify a clean, matte plasticine 2.5D BioRender style with soft clinical colors and a clean scientific background.",
-      "3. SENSORY DEPTH: Describe anatomical subjects using visual textures (e.g., 'glistening myocardial tissue', 'pearlescent valves') combined with the Identity Lock (South Asian/Indian descent).",
+      "3. SENSORY DEPTH: Describe anatomical subjects using visual textures (e.g., 'glistening myocardial tissue', 'pearlescent valves'). Apply the Identity Lock (South Asian/Indian descent) if and only if human figures (patients, surgeons) are explicitly requested in the brief. Do not introduce physicians or observers otherwise.",
       "4. SPATIAL LANGUAGE: Replace all coordinates and x/y mentions with relative anatomical terms: Superior, Inferior, Lateral, Medial, Superficial, Deep, Anterior, Posterior, Foreground, Background.",
-      "5. ABSOLUTE NEGATIVE PROMPT: Conclude with: 'Negative Constraints: Absolutely zero typography, no text, no alphabet characters, no written labels, no numeric markers, no photorealism. Keep lighting scientific and clean.'",
+      "5. ABSOLUTE NEGATIVE PROMPT: Conclude with: 'Negative Constraints: Absolutely zero typography, no text, no alphabet characters, no written labels, no numeric markers, no photorealism, no arrows, no line diagrams, no clinical staff. Keep lighting scientific and clean.'",
+      "6. ZERO DIAGRAM ELEMENT LEAKS: Focus 100% on the anatomical and tissue structures. Do NOT describe conceptual diagram lines, arrows, callout shapes, or floating text titles (like 'Genetic Predisposition')."
     ],
     jsonRole: "Director of Dynamic Clinical Physics",
     jsonInstructions: (style: string) => {
@@ -49,9 +50,9 @@ export const agentConfigs: Record<string, any> = {
       return `### SOVEREIGN v34.0 MEDICAL ILLUSTRATION PROTOCOL
 1. HERO LAYER: You MUST populate 'diffusion_synthesis' FIRST. It is the absolute authority for rendering.
 2. SPATIAL MAPPING: Use ONLY natural language for positioning. NO coordinates. Use terms like 'superior to', 'lateral to', 'floating within'.
-3. IDENTITY: Mandate South Asian (Indian) descent in diffusion_synthesis.
+3. IDENTITY: Mandate South Asian (Indian) descent in diffusion_synthesis only when human subjects (e.g. patients, surgeons) are explicitly requested in the brief. If the brief is purely microscopic, cellular, or tissue pathology, do not include any physicians or human figures. Ensure no arrows or text tags exist in the master_prompt.
 4. ARCHITECTURE: Choose the layout (Unified vs Multi-panel) based ONLY on the brief. No hardcoded 3-section bias.
-5. SCALE-LOCK: Enforce single-scale consistency unless a zoom-inset is explicitly requested.
+5. SCALE-LOCK: Enforce single-scale consistency unless a zoom-inset is explicitly requested. CRITICAL — SCALE RULES: Wire-loop lesions, endocapillary proliferation, fibrinoid necrosis, crescents, mesangiolysis, tubular atrophy, foam cells = ALWAYS light microscopy / H&E scale. NEVER describe these as TEM or electron microscopy. Only use TEM if the brief explicitly requests foot process effacement at ultrastructural/nanometer scale. Default glomerular disease = light microscopy.
 6. GEOMETRIC FIDELITY: Use anatomically correct primitives described in words.
 7. SENSORY RICHNESS: Maintain 250-300 word density in 'diffusion_synthesis.master_prompt'. 100% descriptive migration required.
 8. SCIENTIFIC CAUSALITY (NEW — CRITICAL): 'master_prompt' MUST contain three scientific strata:

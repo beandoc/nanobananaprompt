@@ -17,14 +17,39 @@ const getHeaders = () => {
     };
 };
 
+function finalizeBody<T>(body: ApiResponse<T>, resp: Response): T {
+    // Every successful API response carries success:true. Anything else — an
+    // explicit failure envelope, an error-only body, or a non-ok response — is
+    // surfaced as an Error using the server's message when present.
+    if (!body || !body.success) {
+        throw new Error((body as any)?.error || `Request failed with status ${resp.status ?? "unknown"}`);
+    }
+    return body.data as T;
+}
+
 async function handleResponse<T>(resp: Response): Promise<T> {
-    // Always read via stream — works for both streaming and plain JSON responses.
-    // Content-type sniffing is unreliable: Vercel's edge rewrites headers on
-    // streaming responses, so we can't rely on "x-ndjson" being present.
-    const reader = resp.body?.getReader();
+    // Prefer reading via stream — works for both streaming and plain JSON
+    // responses. Content-type sniffing is unreliable: Vercel's edge rewrites
+    // headers on streaming responses, so we can't rely on "x-ndjson" being present.
+    // Falls back to text()/json() when no readable stream is exposed (e.g. mocked
+    // responses in tests, or runtimes that don't surface a ReadableStream body).
+    const reader = resp.body?.getReader?.();
+
     if (!reader) {
-        // No body reader — last-resort fallback
-        if (!resp.ok) throw new Error(`Request failed with status ${resp.status}`);
+        if (typeof (resp as any).text === "function") {
+            const text = (await (resp as any).text())?.trim();
+            if (text) {
+                try {
+                    return finalizeBody<T>(JSON.parse(text), resp);
+                } catch {
+                    throw new Error(`API returned unparseable response (status ${resp.status ?? "unknown"})`);
+                }
+            }
+        }
+        if (typeof (resp as any).json === "function") {
+            return finalizeBody<T>(await (resp as any).json(), resp);
+        }
+        if (!resp.ok) throw new Error(`Request failed with status ${resp.status ?? "unknown"}`);
         throw new Error("Empty response body");
     }
 
@@ -37,17 +62,21 @@ async function handleResponse<T>(resp: Response): Promise<T> {
     }
 
     // Parse the last non-empty JSON line (handles both single-line and NDJSON)
-    const lastLine = raw.trim().split("\n").filter(Boolean).pop() || "{}";
+    const lastLine = raw.trim().split("\n").filter(Boolean).pop() || "";
+    if (!lastLine) {
+        if (!resp.ok) throw new Error(`Request failed with status ${resp.status ?? "unknown"}`);
+        throw new Error("Empty response body");
+    }
+
     let body: ApiResponse<T>;
     try {
         body = JSON.parse(lastLine);
     } catch {
         console.error("Failed to parse response:", raw.substring(0, 200));
-        throw new Error(`API returned unparseable response (status ${resp.status})`);
+        throw new Error(`API returned unparseable response (status ${resp.status ?? "unknown"})`);
     }
 
-    if (!body.success) throw new Error((body as any).error || `Request failed with status ${resp.status}`);
-    return body.data as T;
+    return finalizeBody<T>(body, resp);
 }
 
 export const apiClient = {
@@ -92,7 +121,9 @@ export const apiClient = {
         const resp = await fetch("/api/library", {
             headers: getHeaders(),
         });
-        const data = await handleResponse<{ prompts: LibraryItem[] }>(resp);
-        return data.prompts;
+        // The /api/library route returns the LibraryItem[] directly as `data`.
+        // Tolerate both the bare-array shape and a legacy { prompts: [...] } wrapper.
+        const data = await handleResponse<LibraryItem[] | { prompts: LibraryItem[] }>(resp);
+        return Array.isArray(data) ? data : (data?.prompts ?? []);
     }
 };

@@ -75,6 +75,46 @@ class AtlasServiceSingleton {
         return expanded;
     }
 
+    // Resolves canonical clinical terms present in the brief — both from
+    // abbreviations (MI → myocardial_infarction) and from full phrases already
+    // written out (e.g. "myocardial infarction"). Returns the canonical names in
+    // their underscored, upper-cased atlas form so the LLM is explicitly grounded
+    // on the exact condition rather than guessing from shorthand.
+    private _resolveClinicalTerms(brief: string): string[] {
+        const lower = brief.toLowerCase();
+        const resolved = new Set<string>();
+        for (const [abbr, expansions] of Object.entries(MEDICAL_SYNONYMS)) {
+            const abbrHit = new RegExp(`\\b${abbr}\\b`, "i").test(brief);
+            for (const term of expansions) {
+                const phrase = term.replace(/_/g, " ");
+                if (abbrHit || lower.includes(phrase)) {
+                    resolved.add(term.toUpperCase());
+                }
+            }
+        }
+        return Array.from(resolved);
+    }
+
+    // Pulls searchable medical terms out of an atlas entry's nested content so
+    // disease/structure searches (e.g. "coronary", "myocardial", "purkinje")
+    // match the rich reference data — not just the broad container title.
+    private _extractContentTerms(data: any, depth: number = 0): string[] {
+        if (depth > 4 || data == null) return [];
+        const STOPWORDS = new Set(["with", "this", "that", "from", "into", "their", "than", "then", "they", "them", "your", "have", "which", "also", "type", "kind", "based", "uses", "used", "using", "global", "standard", "view"]);
+        const out: string[] = [];
+        if (typeof data === "string") {
+            data.toLowerCase().replace(/_/g, " ").split(/\W+/).forEach(w => { if (w.length > 3 && !STOPWORDS.has(w)) out.push(w); });
+        } else if (Array.isArray(data)) {
+            data.forEach(item => out.push(...this._extractContentTerms(item, depth + 1)));
+        } else if (typeof data === "object") {
+            for (const [k, v] of Object.entries(data)) {
+                k.toLowerCase().replace(/_/g, " ").split(/\W+/).forEach(w => { if (w.length > 3 && !STOPWORDS.has(w)) out.push(w); });
+                out.push(...this._extractContentTerms(v, depth + 1));
+            }
+        }
+        return out;
+    }
+
     private _initialize() {
         if (this._index) return;
         
@@ -116,15 +156,15 @@ class AtlasServiceSingleton {
         const getKeywords = (title: string, extraData: any = null): string[] => {
             const cleanTitle = title.toLowerCase().replace(/_/g, ' ');
             const terms = [title.toLowerCase(), cleanTitle, ...cleanTitle.split(' ')];
-            
+
             for (const [abbr, expanded] of Object.entries(MEDICAL_SYNONYMS)) {
                 if (expanded.includes(title.toLowerCase())) terms.push(abbr);
             }
 
+            // Index the entry's nested content so structure/disease searches match
+            // the actual reference data, not only the broad container title.
             if (extraData && typeof extraData === 'object') {
-                const searchStr = JSON.stringify(extraData).toLowerCase();
-                if (searchStr.includes("glomerulus")) terms.push("glomerulus");
-                if (searchStr.includes("heart")) terms.push("heart");
+                terms.push(...this._extractContentTerms(extraData));
             }
 
             return Array.from(new Set(terms.filter(t => t.length > 2)));
@@ -202,9 +242,16 @@ class AtlasServiceSingleton {
 
         let context = "\nANATOMY ATLAS REFERENCE & SPATIAL STANDARDS (STRICT ADHERENCE REQUIRED):\n";
 
+        // Resolved clinical terms — grounds the LLM on the exact canonical condition,
+        // whether the user typed an abbreviation ("HCM") or the full phrase.
+        const clinicalTerms = this._resolveClinicalTerms(brief);
+        if (clinicalTerms.length > 0) {
+            context += `- CLINICAL TERMS RESOLVED: ${clinicalTerms.join("; ")}\n\n`;
+        }
+
         const spatial = (atlasData as any).spatial_and_orientational_standards;
         if (spatial) {
-            context += `- ORIENTATION & PLANES [GLOBAL STANDARD]:\n`;
+            context += `ORIENTATION & PLANES [GLOBAL STANDARD]:\n`;
             if (spatial.anatomical_planes) {
                 context += `  * PLANES: ${Object.entries(spatial.anatomical_planes).map(([k,v]) => `${k.toUpperCase()}(${v})`).join(" | ")}\n`;
             }
@@ -249,7 +296,10 @@ class AtlasServiceSingleton {
             context += this._index[idx].context + "\n";
         }
 
-        return found ? context : "";
+        // Keep the context whenever we have either matched atlas entries OR
+        // resolved clinical terms — otherwise the spatial standards block (and
+        // the grounding terms) would be silently discarded.
+        return (found || clinicalTerms.length > 0) ? context : "";
     }
 
     getBlacklist(brief: string): string[] {

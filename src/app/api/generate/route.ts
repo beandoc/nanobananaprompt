@@ -209,12 +209,13 @@ C) HISTOLOGICAL & GROSS APPEARANCE:
 
 ### PHASE 2 — VISUAL SPECIFICATION FOR ILLUSTRATOR:
 Translate Phase 1 into a precise visual brief:
-1. SCALE & VIEW: Specify whether this is electron microscopy, light microscopy, gross anatomy, or multi-scale view. Choose the scale that shows the pathology most clearly.
+1. SCALE & VIEW: Specify whether this is electron microscopy, light microscopy, gross anatomy, or multi-scale view. Choose the scale that shows the pathology most clearly. CRITICAL RULE: Wire-loop lesions, endocapillary proliferation, crescents, mesangiolysis, foam cells, tubular atrophy, and interstitial fibrosis are ALL light microscopy (H&E) findings — NEVER electron microscopy. Only use EM scale when the brief explicitly asks for ultrastructural detail (foot process effacement at nanometer scale, electron-dense deposits by EM, podocyte ultrastructure). If unsure between EM and light microscopy for a glomerular disease, default to light microscopy.
 2. STRUCTURAL INVENTORY: List every structure visible in the image, what it looks like normally, and how the disease has altered its appearance.
 3. COLOR LANGUAGE: Use precise descriptive color language for each structure (e.g., "the thickened GBM appears as a homogeneous slate-grey band, losing its normal laminar transparency"; "foam cells appear as pale, vacuolated cells with irregular cytoplasmic borders").
 4. SPATIAL COMPOSITION: Describe which structure occupies foreground/background/center using anatomical directional language (superior, inferior, lateral, medial).
 5. PATHOPHYSIOLOGY VISUAL SUMMARY: Write 2-3 sentences describing what the viewer's eye should understand about the disease mechanism from looking at the image.
-6. IDENTITY: All human representations must be South Asian (Indian) descent.
+6. IDENTITY: All human representations (such as patients or clinical staff in surgical or clinical fields, if and only if explicitly requested in the brief) must be South Asian (Indian) descent. If the brief is about cells, organs, or microscopic views, do NOT introduce physicians, observers, or human figures of any kind.
+7. CONCEPTUAL PRUNING: Focus 100% on the physical biological structures. Do NOT introduce abstract flow diagram components, lines, arrows, callout bubbles, or conceptual floating titles (e.g. 'Genetic Predisposition') into the illustration.
 
 ### OUTPUT REQUIREMENTS:
 - Word Count: 220-300 words of precise scientific prose (add 80 words per additional organ if multi-organ case).
@@ -226,7 +227,7 @@ ${dynamicBlacklist}
 ${config.expansionRules.join("\n")}
 STYLE PROTOCOL: ${getProtocol(mode, normalizedStyle)}
 ${atlasContext ? `\nMEDICAL REFERENCE DATA (use these specific anatomical terms and structures in your output):\n${atlasContext}` : ""}
-HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels, no annotations."`;
+HARD ZERO-TEXT BAN: Terminate with: "No text characters, no labels, no annotations, no arrows, no human observers."`;
         }
       }
 

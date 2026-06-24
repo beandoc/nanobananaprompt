@@ -49,7 +49,8 @@ describe('apiClient', () => {
         const body = { brief: 'test brief', mode: 'medical' as const, isStoryboard: false, style: '', image: null, assetInstruction: 'style' as const };
         const result = await apiClient.generateBlueprint(body);
 
-        expect(result).toEqual(mockResult);
+        // handleResponse unwraps the { success, data } envelope and returns `data`.
+        expect(result).toEqual(mockResult.data);
         expect(global.fetch).toHaveBeenCalledWith('/api/generate', expect.objectContaining({
             method: 'POST',
             body: JSON.stringify(body)

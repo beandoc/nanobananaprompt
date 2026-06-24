@@ -19,25 +19,59 @@ const detectMultiOrganCase = (subject: string, primaryFocus: string[], brief?: s
     { label: "kidney/renal",            pattern: /\b(kidney|renal|glomerul|nephron|tubul|crescent|glomerulonephritis|nephrotic|nephritic|arteriole.*renal|renal.*arteriole)\b/ },
     { label: "heart/cardiac",           pattern: /\b(heart|cardiac|coronar|myocard|pericardi|endocardi|ventricle|atrium|aorta)\b/ },
     { label: "liver/hepatic",           pattern: /\b(liver|hepat|cirrhosis|fibrosis.*liver|portal.hypertension)\b/ },
-    // Skin fires ONLY on histological skin structures — NOT clinical signs like purpura/petechiae
-    { label: "skin/dermal",             pattern: /\b(epiderm|dermis|dermo|keratinocyte|melanocyte|squamous.*skin|basal.cell|skin.biopsy)\b/ },
+    // Skin fires ONLY on histological skin structures or skin explicitly — NOT clinical signs like purpura/petechiae
+    { label: "skin/dermal",             pattern: /\b(epiderm|dermis|dermo|keratinocyte|melanocyte|skin|squamous.*skin|basal.cell|skin.biopsy)\b/ },
     { label: "brain/neurological",      pattern: /\b(brain|cerebr|cerebral.microvessel|cerebral.arteriole|encephalit|meningi|spinal|cortical.microvessel|cns.microvessel)\b/ },
     { label: "joint/synovial",          pattern: /\b(joint|synovi|cartilage|arthritis|articular)\b/ },
   ];
-  return organs.filter(o => o.pattern.test(all)).map(o => o.label);
+  const detected = organs.filter(o => o.pattern.test(all)).map(o => o.label);
+
+  // Check for clinical symptoms/actions in the brief
+  const b = (brief || "").toLowerCase();
+  const hasClinicalSymptom = /\b(coughing|cough|hemoptysis|hurting|pain|ache|rash|purpura|petechiae|swelling|shortness.of.breath|dyspnea|fatigue|fever|bleeding.*nose|clinical.presentation|symptom)\b/i.test(b);
+
+  if (hasClinicalSymptom && detected.length > 0) {
+    detected.unshift("clinical");
+  }
+  return detected;
 };
 
 // ─── SCALE INFERENCE ────────────────────────────────────────────────────────
 const inferScale = (subject: string, primaryFocus: string[], brief?: string): string => {
   const all = `${subject} ${primaryFocus.join(" ")} ${brief || ""}`.toLowerCase();
   const organs = detectMultiOrganCase(subject, primaryFocus, brief);
-  if (organs.length >= 2) return `composite-${organs.length} light microscopy-scale`;
+  if (organs.length >= 2) {
+    if (organs.includes("clinical")) {
+      return `composite-${organs.length} clinical-and-microscopic-scale`;
+    }
+    return `composite-${organs.length} light microscopy-scale`;
+  }
+
+  // Surgical field takes precedence over gross anatomy if surgical keywords are present
+  if (/surgical|laparoscop|endoscop|operative|cholecystectom|appendectom|trocar|retract|cauteriz|debride|anastomosis|suture|clamp|staple|\bdissection\b|\bresection\b|\bincision\b|\bexcision\b/.test(all))
+    return "surgical field-scale";
+
+  // Explicit histology overrides take precedence over gross anatomy for purely microscopic findings
+  if (/histolog|microscop|h&e|stain|biopsy|neutrophil.infiltrat|coagulative.necrosis/.test(all))
+    return "light microscopy-scale";
+
+  // Gross anatomy takes ABSOLUTE PRIORITY — vascular cross-sections are gross pathology,
+  // not histology, even when macrophages/foam cells are mentioned in mechanism text.
+  if (/coronary.*cross|cross.section.*coronary|atheroscler|fibrous.cap|necrotic.lipid|lipid.core|plaque.rupture|vulnerable.plaque|carotid|aortic.dissect|aneurysm|\binfarct\b|infarction|stemi|nstemi|gross.path|4.chamber|cross.section.*heart|heart.*cross.section|ventricle|aorta|myocardium|kidney|lung|liver|brain|organ.*cross|cortex|medulla|lobe|pancreas|spleen|colon|bowel|intestine|gallbladder|trachea|bronchus|pleura|peritoneum|mesentery|diaphragm|femur|spine/.test(all))
+    return "gross anatomy-scale";
+
+  // Light microscopy pathology terms take PRIORITY over EM cellular terms.
+  // Wire-loop, crescent, glomerulonephritis, endocapillary — these are H&E findings
+  // even when the LLM expansion mentions podocytes or foot processes.
+  // Note: foam.cell excluded — foam cells appear in atherosclerosis (gross anatomy), handled above.
+  if (/wire.loop|wire loop|endocapillary|crescent|glomerulonephritis|nephritis|mesangiolysis|mesangial.expand|tubular.atrophy|interstitial.fibros|h&e|histopath|histolog|stain|biopsy/.test(all))
+    return "light microscopy-scale";
 
   if (/foot.process|podocyte|endosome|receptor|gpcr|membrane.channel|ribosome|mitochondri|vesicle|lysosome|nucleus|chromatin|exosome|pore.complex|actin|cytoskeleton|tight.junction|desmoso|integrin|caveola|clathrin|golgi/.test(all))
     return "electron microscopy-scale";
   if (/surgical|laparoscop|endoscop|operative|cholecystectom|appendectom|trocar|retract|cauteriz|debride|anastomosis|suture|clamp|staple|\bdissection\b|\bresection\b|\bincision\b|\bexcision\b/.test(all))
     return "surgical field-scale";
-  if (/\binfarct\b|infarction|stemi|nstemi|gross.path|4.chamber|cross.section.*heart|heart.*cross.section|ventricle|aorta|myocardium|kidney|lung|liver|brain|organ.*cross|cortex|medulla|lobe|pancreas|spleen|colon|bowel|intestine|gallbladder|trachea|bronchus|pleura|peritoneum|mesentery|diaphragm|femur|spine/.test(all))
+  if (/\binfarct\b|infarction|stemi|nstemi|gross.path|4.chamber|cross.section.*heart|heart.*cross.section|ventricle|aorta|myocardium|kidney|lung|liver|brain|organ.*cross|cortex|medulla|lobe|pancreas|spleen|colon|bowel|intestine|gallbladder|trachea|bronchus|pleura|peritoneum|mesentery|diaphragm|femur|spine|coronary.*cross|cross.section.*coronary|atheroscler|fibrous.cap|necrotic.lipid|lipid.core|plaque.rupture|vulnerable.plaque|carotid|aortic.dissect|aneurysm/.test(all))
     return "gross anatomy-scale";
   if (/glomerul|nephron|alveol|synapse|capillar|tubule|histolog|h&e|histopath|stain|biopsy|\bsection\b|acinus|islet|follicle|villus|crypt|arteriole|venule|lymphocyte|neutrophil|macrophage|fibroblast|hepatocyte|cardiomyocyte|neuron|axon|myelin/.test(all))
     return "light microscopy-scale";
@@ -49,14 +83,22 @@ const inferScale = (subject: string, primaryFocus: string[], brief?: string): st
 // ─── MECHANISTIC CAUSALITY ──────────────────────────────────────────────────
 const extractMechanisticCausality = (adData: any): string => {
   const mc = adData.medical_content || {};
-  const pathoCascade: string[] = mc.pathophysiology_cascade || mc.pathophysiology || [];
+  const pathoObj = mc.pathophysiology || {};
+  const pathoDesc = pathoObj.description || "";
+  const pathoCascade: any[] = pathoObj.cascade || mc.pathophysiology_cascade || [];
   const cellularMarkers: string[] = mc.cellular_markers || mc.molecular_markers || [];
   const mechanism: string = mc.mechanism || mc.primary_mechanism || "";
 
   const parts: string[] = [];
-  if (mechanism) parts.push(`The pathophysiological mechanism is ${mechanism.toLowerCase()}`);
+  if (pathoDesc) parts.push(`Pathophysiology: ${pathoDesc}`);
+  if (mechanism && !pathoDesc) parts.push(`The pathophysiological mechanism is ${mechanism.toLowerCase()}`);
+  
   if (pathoCascade.length > 0) {
-    const cascade = pathoCascade.slice(0, 3).join(", leading to ").toLowerCase();
+    const cascadeStrings = pathoCascade.map(c => {
+      if (typeof c === "string") return c;
+      return [c.event, c.mechanism, c.consequence].filter(Boolean).join(" ");
+    });
+    const cascade = cascadeStrings.slice(0, 3).join(", leading to ");
     parts.push(`Causal sequence: ${cascade}`);
   }
   if (cellularMarkers.length > 0) {
@@ -150,14 +192,23 @@ const resolveUnifyingMechanism = (adData: any, brief?: string): string => {
 const routeItemToOrgan = (item: string, organKey: string): boolean => {
   const t = item.toLowerCase();
   switch (organKey) {
+    case "clinical":
+      return /coughing|cough|hemoptysis|hurting|pain|ache|rash|purpura|petechiae|swelling|shortness|dyspnea|fatigue|fever|patient/.test(t);
     case "hematology":
-      return /schistocyte|blood.smear|peripheral.smear|hemolytic|anemia|red.cell.fragment|helmet.cell|elliptocyte|spherocyte|blasts|platelet|thrombocytopenia|bone.marrow/.test(t);
+      // "platelet" alone is too broad — matches "platelet-rich thrombus in cerebral microvessel".
+      // Require hematology-specimen context: smear, thrombocytopenia, or morphology terms.
+      return /schistocyte|blood.smear|peripheral.smear|hemolytic|anemia|red.cell.fragment|helmet.cell|elliptocyte|spherocyte|blasts|thrombocytopenia|bone.marrow/.test(t)
+        || (/platelet/.test(t) && /smear|thrombocytopenia|count|peripheral/.test(t));
     case "lung":
       return /lung|pulmonar|alveol|hemorrhage|dah|bronch|pneum|hemoptysis|capillar.*lung|alveolar.capillar/.test(t);
     case "kidney":
-      return /kidney|renal|glomerul|crescent|nephron|gbm|tubul|bowman|arteriole.*renal|podocyte|mesangi/.test(t);
+      // "renal cortical" must be detected before brain's "cortical" fires.
+      return /kidney|renal|glomerul|crescent|nephron|gbm|tubul|bowman|renal.*arteriole|arteriole.*renal|podocyte|mesangi/.test(t);
     case "brain":
-      return /brain|cerebr|microvessel|cerebral|cortical|cns|encephal|meningi|neural/.test(t);
+      // "cortical" alone is too broad — "renal cortical arteriole" would match.
+      // Require brain-specific qualifiers.
+      return /brain|cerebr|cerebral.microvessel|cerebral.arteriole|cortical.microvessel|cortical.neuron|cns|encephal|meningi|neural/.test(t)
+        || (/\bcortical\b/.test(t) && !/renal/.test(t));
     case "heart":
       return /heart|cardiac|myocard|coronar|ventricle|atrium|endocard|epicard|pericard/.test(t);
     case "liver":
@@ -204,6 +255,11 @@ const HE_COLOR_CORRECTIONS: Record<string, string> = {
   "hemosiderin.laden.macrophage": "golden-brown coarse granular cytoplasmic deposits within macrophages, best seen on Prussian blue stain appearing deep blue",
   "alveolar.septa": "thin pale pink fibrous walls with minimal cellularity in normal zones",
 
+  // Glomerulonephritis — immune complex deposits
+  "wire.loop|wire loop|subendothelial.deposit|immune.complex.deposit": "thick rigid deeply eosinophilic pale pink-white bands, almost refractile, expanding the capillary wall to 3-4x normal thickness",
+  "endocapillary.proliferat|endocapillary.cell": "pale eosinophilic cytoplasm with oval vesicular nuclei packed within obliterated capillary loops",
+  "mesangial.matrix|mesangial.expansion": "pale eosinophilic cream matrix expanded between capillary loops, with enlarged oval mesangial cell nuclei",
+
   // Vascular
   "cerebral.microvessel|cortical.microvessel": "thin-walled endothelium-lined channels, pale pink walls, red cell content",
   "renal.arteriole|cortical.arteriole": "thick muscular wall with pale eosinophilic smooth muscle, round lumen",
@@ -224,8 +280,9 @@ const sanitizeColorLanguage = (colorLang: any[]): any[] => {
   return colorLang.map((c: any) => {
     const zone = c.zone || "";
     const desc = c.color_descriptor || "";
-    // Flag non-H&E colors: blue-grey, flesh tone, yellow-green, purple-red are not H&E valid
-    const isNonHE = /blue.grey|flesh.tone|yellow.green|purple.red|mottled.purple|ischemic.blue/.test(desc.toLowerCase());
+    // Flag non-H&E colors. Lavender/violet are immunofluorescence colors, not H&E.
+    // Blue-grey, flesh tone, yellow-green, purple-red also invalid for H&E plates.
+    const isNonHE = /blue.grey|flesh.tone|yellow.green|purple.red|mottled.purple|ischemic.blue|\blavender\b|pale.lavender|rosy.lavender|violet.pink|lilac/.test(desc.toLowerCase());
     if (isNonHE) {
       const corrected = getHeColor(zone);
       if (corrected) return { ...c, color_descriptor: corrected };
@@ -271,28 +328,103 @@ const applyTemporalCorrections = (text: string, brief?: string): string => {
   return text;
 };
 
+// ─── SURGICAL CONTEXT ENRICHER ──────────────────────────────────────────────
+//
+// Enriches surgical/laparoscopic prompts to enforce anatomical boundaries,
+// correct instrument representations, and add critical landmarks like lymph nodes.
+const enrichSurgicalContext = (text: string, brief?: string): string => {
+  if (!brief) return text;
+  const b = brief.toLowerCase();
+  
+  let enriched = text;
+
+  // 1. Instrument correction (clip applier vs scissors/dissectors)
+  if (/\b(clamp|clip|clip.applier)\b/i.test(b)) {
+    // Standard placeholder technique to prevent double-replacement, consuming any existing "metallic" or "surgical" prefixes to avoid duplicate tokens
+    enriched = enriched.replace(/\b(metallic\s+)?(surgical\s+)?clamp\b/gi, "___SURGICAL_CLAMP___");
+    enriched = enriched.replace(/\b(metallic\s+)?(surgical\s+)?clip\b/gi, "___SURGICAL_CLIP___");
+    
+    enriched = enriched.replace(/___SURGICAL_CLAMP___/g, "metallic clip applier jaws clamping the cystic artery (with blunt parallel jaws, no scissors or cutting blades visible)");
+    enriched = enriched.replace(/___SURGICAL_CLIP___/g, "metallic titanium clip");
+  }
+
+  // 2. Calot's triangle demarcation & Cystic lymph node
+  if (/calot|cholecystectom/i.test(b)) {
+    // Inject Calot's triangle demarcation and the cystic lymph node (Lund's node)
+    if (!enriched.toLowerCase().includes("lymph node")) {
+      const supportPattern = /(supporting anatomical context:|supporting anatomy includes)/i;
+      if (supportPattern.test(enriched)) {
+        enriched = enriched.replace(
+          supportPattern,
+          "$1 the small oval pale-yellow cystic lymph node (lymph node of Lund) situated in the hepatocystic angle, "
+        );
+      } else {
+        enriched += " Supporting anatomical context includes the small oval pale-yellow cystic lymph node (lymph node of Lund) situated in the hepatocystic angle.";
+      }
+    }
+    
+    // Ensure the lymph node is in the color protocol/palette so the image model draws it
+    if (!enriched.toLowerCase().includes("lymph node in") && !enriched.toLowerCase().includes("lymph node: ")) {
+      const colorPattern = /(color palette:|color protocol:|color treatment: use|color treatment:)/i;
+      if (colorPattern.test(enriched)) {
+        enriched = enriched.replace(
+          colorPattern,
+          "$1 cystic lymph node in pale yellow, small oval structure; "
+        );
+      }
+    }
+
+    // Demarcate boundaries clearly
+    const demarcation = " Calot's triangle is clearly demarcated, defined medially by the common hepatic duct, laterally by the cystic duct, and superiorly by the liver edge, with all boundaries sharply outlined.";
+    if (!enriched.toLowerCase().includes("demarcated") && !enriched.toLowerCase().includes("demarcation")) {
+      enriched += demarcation;
+    }
+  }
+
+  return enriched;
+};
+
 // ─── NEGATIVE PROMPT BUILDER ─────────────────────────────────────────────────
 //
 // Produces a single, clean, non-redundant negative directive.
 // Fixes the "Do not include: Do not show..." double-negative formatter bug.
 
-const buildNegativeDirective = (ds: any, isGemini: boolean): string => {
+const buildNegativeDirective = (ds: any, isGemini: boolean, scale: string = "", brief: string = "", subject: string = ""): string => {
   // Strip the raw negative_prompt of its own prefix words
   const raw = (ds.negative_prompt || "")
     .replace(/^(negative constraints?:?\s*|avoid:?\s*|do not include:?\s*|do not show:?\s*)/i, "")
     .trim();
 
-  // Build a clean exclusion list — deduplicate the most common redundancies
-  const baseExclusions = "cartoonish or unrealistic colors, blurry or low-resolution rendering, abstract non-medical imagery, 3D photorealistic rendering, human face or portrait";
+  // ── ChatGPT / DALL-E 3 ──────────────────────────────────────────────────
+  if (!isGemini) {
+    return " Pure visual anatomy — no text, no labels, no annotations, photographed as a clean scientific plate on a plain background.";
+  }
+
+  // ── Gemini / Imagen 4 ───────────────────────────────────────────────────
+  const isClinical = scale.includes("clinical");
+  const isEM = scale.includes("electron");
+  const isCardiac = /heart|cardiac|myocard|coronar|ventricle|atrium/.test(`${brief} ${subject}`.toLowerCase());
+  
+  let baseExclusions = "cartoonish or unrealistic colors, blurry or low-resolution rendering, abstract non-medical imagery, 3D photorealistic rendering, human face or portrait, tissue texture as background, red or pink background fill, myocardial muscle fibers as background, any background other than solid white";
+  
+  if (isClinical) {
+    baseExclusions = baseExclusions.replace(", human face or portrait", "");
+  }
+  if (isEM) {
+    baseExclusions = baseExclusions.replace(", any background other than solid white", ", any background other than solid black");
+  }
+  if (isCardiac) {
+    baseExclusions = baseExclusions.replace(", myocardial muscle fibers as background", "");
+  }
+  
   const textExclusion = "any text characters, written labels, numeric markers, arrows, annotations, or diagram callouts anywhere in the image";
 
+  // Always include baseExclusions — raw from LLM adds extra specifics, never replaces the base.
   const combined = raw
-    ? `${textExclusion}, ${raw}`
+    ? `${textExclusion}, ${baseExclusions}, ${raw}`
     : `${textExclusion}, ${baseExclusions}`;
 
-  return isGemini
-    ? ` Do not include: ${combined}.`
-    : ` Pure scientific visual only — exclude: ${combined}.`;
+  return ` Do not include: ${combined}.`;
 };
 
 // ─── RENDER STYLE RESOLVER ───────────────────────────────────────────────────
@@ -321,6 +453,18 @@ const resolveRenderStyle = (styleTokens: string[], scale: string, userStyle?: st
       ? "left panel and right panel clearly separated by a thin white divider"
       : `${n} equal-width panels separated by thin white dividers`;
 
+    if (scale.includes("clinical-and-microscopic")) {
+      const clinicalDesc = "a clinical scene depicting a South Asian (Indian) patient experiencing the symptoms (with realistic, textbook clinical presentation, no text overlays)";
+      const microDesc = isBiorender
+        ? "BioRender 2.5D matte plasticine histopathology view"
+        : "NEJM watercolor-and-ink histopathology view";
+      
+      return {
+        opening: `A ${panelWord} multi-scale illustration showing both the clinical presentation and the microscopic pathology`,
+        reinforcement: `comprising ${panelDivider}, where Panel 1 depicts ${clinicalDesc}, and the subsequent panels depict the corresponding histopathology under H&E staining (${microDesc}), solid white background, no text or annotations`,
+      };
+    }
+
     if (isBiorender) {
       return {
         opening: `A ${panelWord} BioRender-standard scientific illustration depicting systemic disease across ${n} organs`,
@@ -338,7 +482,7 @@ const resolveRenderStyle = (styleTokens: string[], scale: string, userStyle?: st
   if (scale.includes("electron")) {
     return {
       opening: "A high-resolution transmission electron microscopy (TEM) scientific illustration",
-      reinforcement: "rendered in the style of a Nature Cell Biology figure plate, clean white background, precise ultrastructural detail, muted scientific color palette, zero text or labels",
+      reinforcement: "rendered in the style of a Nature Cell Biology figure plate, dark-field black background, precise ultrastructural detail, muted scientific color palette, zero text or labels",
     };
   }
 
@@ -358,6 +502,24 @@ const resolveRenderStyle = (styleTokens: string[], scale: string, userStyle?: st
 
   // ── Surgical field ───────────────────────────────────────────────────────
   if (scale.includes("surgical")) {
+    if (isBiorender) {
+      return {
+        opening: "A BioRender-style laparoscopic surgical illustration",
+        reinforcement: "rendered with clean 2.5D vector assets and flat-lit matte plasticine textures, depicting the operative view inside a circular laparoscopic port-view frame, clinical gross pathology colors, isolated against a solid plain white background, no text or annotations",
+      };
+    }
+    if (isNejm) {
+      return {
+        opening: "A NEJM-style surgical anatomy illustration",
+        reinforcement: "in the style of a Netter surgical anatomy plate, watercolor-and-ink rendering, diagrammatic photorealism, tissue planes clearly differentiated by color and reflectivity, clean white background, no text annotations",
+      };
+    }
+    if (isNature) {
+      return {
+        opening: "A Nature journal high-impact surgical illustration",
+        reinforcement: "photorealistic 3D laparoscopic view with high-contrast volumetric lighting, crisp tissue boundaries, circular endoscope frame, clean background, no labels",
+      };
+    }
     return {
       opening: "A 4K surgical field illustration under cold LED operative lighting",
       reinforcement: "in the style of a Netter surgical anatomy plate, diagrammatic photorealism, tissue planes clearly differentiated by color and reflectivity, sterile field background, no text overlays",
@@ -375,8 +537,8 @@ const resolveRenderStyle = (styleTokens: string[], scale: string, userStyle?: st
   // ── Gross anatomy / default ──────────────────────────────────────────────
   if (isBiorender) {
     return {
-      opening: "A BioRender-style 3D medical illustration",
-      reinforcement: "matte plastic 2.5D rendering, soft ambient clinical lighting, pastel anatomical color palette, clean white background, isometric anatomical view, no labels or text",
+      opening: "A BioRender-style gross anatomy medical illustration",
+      reinforcement: "matte plastic 2.5D rendering, soft ambient clinical lighting, gross pathology color palette (not H&E), solid plain white background with NO surrounding tissue texture, the specimen floats isolated against white, isometric anatomical view, no labels or text",
     };
   }
   if (isNejm) {
@@ -464,17 +626,26 @@ const buildMultiOrganPanelComposition = (
 
     const panelItems = organItems.length > 0 ? organItems : fallbackItems;
     const panelLabel = organ.replace("/", " or ");
-    const panelDesc = panelItems.length > 0 ? panelItems.join(", ") : `${organ} histopathology`;
+    const panelDesc = panelItems.length > 0
+      ? panelItems.join(", ")
+      : organKey === "clinical"
+      ? "macroscopic clinical presentation of patient symptoms"
+      : `${organ} histopathology`;
 
-    // Hematology panel gets an explicit specimen rendering instruction
-    const specimenNote = organKey === "hematology"
+    // Clinical and Hematology panels get explicit specimen rendering instructions
+    const specimenNote = organKey === "clinical"
+      ? " (clinical illustration of a South Asian patient, natural warm lighting, clinical environment)"
+      : organKey === "hematology"
       ? " (peripheral blood smear, Wright-Giemsa stain, 100x oil immersion magnification)"
       : "";
 
     return `Panel ${i + 1} (${panelLabel}${specimenNote}): ${panelDesc}`;
   });
 
-  const panelBlock = `This is a ${organs.length}-panel composite illustration. ${panels.join(". ")}. All panels share the same scale and staining style, connected by the unifying disease mechanism: ${unifyingMechanism}.`;
+  const hasClinical = organs.includes("clinical");
+  const panelBlock = hasClinical
+    ? `This is a ${organs.length}-panel composite illustration. ${panels.join(". ")}. Panel 1 shows the macroscopic clinical symptom of the patient, while the other panels show the microscopic histopathology, connected by the unifying disease mechanism: ${unifyingMechanism}.`
+    : `This is a ${organs.length}-panel composite illustration. ${panels.join(". ")}. All panels share the same scale and staining style, connected by the unifying disease mechanism: ${unifyingMechanism}.`;
 
   // Sanitize color language for H&E validity before emitting
   const rawColorLang: any[] = ds.color_language || [];
@@ -530,13 +701,14 @@ const buildChatGPTPrompt = (ds: any, subject: string, adData?: any, brief?: stri
   const mechanisticSentence = mechanistic ? ` Depict the mechanism: ${mechanistic}` : "";
   const styleFooter = ` Rendering style: ${reinforcement}.`;
   const canvasDirective = ` Canvas: ${aspectRatio}.`;
-  const negatives = buildNegativeDirective(ds, false);
+  const negatives = buildNegativeDirective(ds, false, scale, brief, subject);
 
   let result = `${styleDirective}${multiOrganBlock}${insetBlock}${physioHook}${spatial}${core}${colors}${secondarySentence}${mechanisticSentence}${styleFooter}${canvasDirective}${negatives}`
     .replace(/\s{2,}/g, " ")
     .trim();
 
   result = applyTemporalCorrections(result, brief);
+  result = enrichSurgicalContext(result, brief);
   return result;
 };
 
@@ -592,13 +764,14 @@ const buildImagenPrompt = (ds: any, subject: string, adData?: any, brief?: strin
 
   const canvasDirective = ` ${aspectRatio}.`;
   const styleFooter = ` ${reinforcement}.`;
-  const negatives = buildNegativeDirective(ds, true);
+  const negatives = buildNegativeDirective(ds, true, scale, brief, subject);
 
   let result = `${openingSentence}${multiOrganBlock}${insetBlock}${spatial}${core}${mechanisticSentence}${bioGraphSentence}${secondarySentence}${colors}${canvasDirective}${styleFooter}${negatives}`
     .replace(/\s{2,}/g, " ")
     .trim();
 
   result = applyTemporalCorrections(result, brief);
+  result = enrichSurgicalContext(result, brief);
   return result;
 };
 

@@ -8,6 +8,9 @@ export default defineConfig({
         environment: 'jsdom',
         globals: true,
         setupFiles: './src/tests/setup.ts',
+        // Ignore macOS AppleDouble resource-fork files (._*.test.ts), which are
+        // binary and would otherwise be collected as (failing) test suites.
+        exclude: ['**/node_modules/**', '**/dist/**', '**/._*'],
         alias: {
             '@': path.resolve(__dirname, './src'),
         },
