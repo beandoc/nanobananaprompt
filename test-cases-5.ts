@@ -3,7 +3,7 @@ config({ path: ".env.local" });
 import { compileMedicalPrompt } from "./src/lib/compilers/prompt-compiler";
 
 // Mocking the adData structure for 5 different cases
-const cases = [
+const cases: Array<{ name: string; brief: string; adData: any }> = [
   {
     name: "Case 1: Electron Microscopy (Podocyte effacement)",
     brief: "Glomerulus showing podocyte effacement.",

@@ -4,7 +4,7 @@ dotenv.config({ path: ".env.local" });
 async function run() {
   const { compileMedicalPrompt } = await import("./src/lib/compilers/prompt-compiler");
   
-  const adData = {
+  const adData: any = {
     metadata: {
       subject: "surgical dissection of Calot's triangle",
       journal_standard: "BioRender"
